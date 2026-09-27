@@ -5,98 +5,182 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Meu Pet Virtual - Edição Suprema de Minijogos</title>
   <style>
+    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 10px rgba(241, 196, 15, 0.4), 0 10px 30px rgba(0,0,0,0.3); } 50% { box-shadow: 0 0 20px rgba(241, 196, 15, 0.8), 0 10px 30px rgba(0,0,0,0.3); } }
+    @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+    @keyframes slideInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-40px) scale(0.8); } }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
-    body { background: linear-gradient(135deg, #1e3c72, #2a5298); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #333; padding: 10px; }
+    body {
+      background: linear-gradient(-45deg, #050816, #120d2d, #101a3f, #040915);
+      background-size: 400% 400%; animation: gradientShift 15s ease infinite;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #333; padding: 10px;
+    }
     
+    .ambient-layer {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .ambient-icon {
+      position: absolute; font-size: clamp(20px, 3vw, 32px); opacity: 0.22; animation: floatUp 8s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.25));
+    }
+    .ambient-icon:nth-child(1) { left: 8%; top: 12%; }
+    .ambient-icon:nth-child(2) { right: 10%; top: 18%; animation-delay: 1s; }
+    .ambient-icon:nth-child(3) { left: 18%; bottom: 16%; animation-delay: 2s; }
+    .ambient-icon:nth-child(4) { right: 18%; bottom: 18%; animation-delay: 3s; }
+
     #game-container {
-      width: 100%; max-width: 480px; background: #ffffff; border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4); padding: 16px; display: flex;
-      flex-direction: column; gap: 10px; position: relative; overflow: hidden;
+      width: 100%; max-width: 480px; background: linear-gradient(180deg, rgba(12,18,35,0.96), rgba(15,23,42,0.94));
+      border: 1px solid rgba(96,165,250,0.35); border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.42), 0 0 30px rgba(56,189,248,0.2); padding: 16px; display: flex;
+      flex-direction: column; gap: 10px; position: relative; overflow: hidden; animation: slideInDown 0.6s ease-out; z-index: 1;
     }
 
     .overlay-screen {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(20, 20, 35, 0.95); z-index: 100; display: flex;
+      background: linear-gradient(135deg, rgba(20, 20, 35, 0.97), rgba(44, 62, 80, 0.97)); z-index: 100; display: flex;
       flex-direction: column; justify-content: center; align-items: center;
-      color: white; padding: 20px; text-align: center; gap: 12px;
+      color: white; padding: 20px; text-align: center; gap: 12px; animation: slideInDown 0.4s ease-out;
     }
-    .overlay-screen h1 { font-size: 22px; color: #f1c40f; }
+    .overlay-screen h1 { font-size: 22px; color: #f1c40f; animation: pulse 2s ease-in-out infinite; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
     .overlay-screen p { font-size: 13px; color: #bdc3c7; line-height: 1.4; }
+    .hero-card {
+      background: rgba(15, 23, 42, 0.42); border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 16px 18px; width: min(100%, 290px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.3); backdrop-filter: blur(10px);
+    }
+    .hero-badges { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .status-pill {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #f8fafc; border-radius: 999px; padding: 5px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .theme-picker {
+      display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+    }
+    .theme-choice {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #e2e8f0; border-radius: 999px;
+      padding: 7px 11px; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: all 0.2s ease;
+    }
+    .theme-choice.active { box-shadow: 0 0 18px rgba(96,165,250,0.4); border-color: rgba(96,165,250,0.6); background: rgba(96,165,250,0.12); }
 
-    .header { display: flex; justify-content: space-between; align-items: center; }
-    .badge { background: #f39c12; color: white; padding: 6px 12px; border-radius: 12px; font-size: 13px; font-weight: bold; }
+    .header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .badge { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; padding: 8px 14px; border-radius: 12px; font-size: 13px; font-weight: bold; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4); animation: glow 2s ease-in-out infinite; }
+    .theme-chip {
+      background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56,189,248,0.4); color: #bae6fd; border-radius: 999px;
+      padding: 7px 10px; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+      box-shadow: inset 0 0 8px rgba(56,189,248,0.25), 0 0 12px rgba(56,189,248,0.2);
+    }
     .header-right { display: flex; gap: 8px; align-items: center; }
-    .moedas { font-size: 15px; color: #27ae60; font-weight: 800; background: #e8f8f5; padding: 5px 10px; border-radius: 12px; border: 1px solid #a3e4d7; }
-    .btn-icon { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    .moedas { font-size: 15px; color: #27ae60; font-weight: 800; background: linear-gradient(135deg, #e8f8f5, #d5f4e6); padding: 8px 12px; border-radius: 12px; border: 2px solid #a3e4d7; box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2); transition: all 0.3s ease; }
+    .moedas:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.35); }
+    .btn-icon { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3); transition: all 0.3s ease; }
+    .btn-icon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5); }
+    .btn-icon:active { transform: translateY(0); }
 
-    .xp-container { background: #f8f9f9; padding: 6px 10px; border-radius: 10px; border: 1px solid #eaeded; }
-    .xp-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #7f8c8d; margin-bottom: 3px; }
-    .bar-bg { height: 10px; background: #ebedef; border-radius: 5px; overflow: hidden; }
-    .bar-fill { height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 5px; }
-    #bar-xp { background: linear-gradient(90deg, #8e44ad, #9b59b6); }
+    .xp-container { background: linear-gradient(135deg, #f8f9f9, #ecf0f1); padding: 10px 12px; border-radius: 12px; border: 2px solid #e8eaed; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+    .xp-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #5a6c7d; margin-bottom: 5px; }
+    .bar-bg { height: 12px; background: linear-gradient(90deg, #ecf0f1, #e8eaed); border-radius: 6px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+    .bar-fill { height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 6px; box-shadow: 0 0 8px rgba(0,0,0,0.2); }
+    #bar-xp { background: linear-gradient(90deg, #8e44ad, #af7ac5); box-shadow: 0 0 12px rgba(142, 68, 173, 0.5); }
 
-    .bars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .stat-box { font-size: 10px; font-weight: bold; color: #566573; }
-    #bar-fome { background: linear-gradient(90deg, #e74c3c, #c0392b); }
-    #bar-higiene { background: linear-gradient(90deg, #3498db, #2980b9); }
-    #bar-energia { background: linear-gradient(90deg, #f1c40f, #f39c12); }
-    #bar-felicidade { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+    .bars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-box { font-size: 10px; font-weight: bold; color: #5a6c7d; background: linear-gradient(135deg, #f5f7fa, #ecf1f6); padding: 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    #bar-fome { background: linear-gradient(90deg, #e74c3c, #ec7063); box-shadow: 0 0 12px rgba(231, 76, 60, 0.4); }
+    #bar-higiene { background: linear-gradient(90deg, #3498db, #5dade2); box-shadow: 0 0 12px rgba(52, 152, 219, 0.4); }
+    #bar-energia { background: linear-gradient(90deg, #f1c40f, #f4d03f); box-shadow: 0 0 12px rgba(241, 196, 15, 0.4); }
+    #bar-felicidade { background: linear-gradient(90deg, #2ecc71, #58d68d); box-shadow: 0 0 12px rgba(46, 204, 113, 0.4); }
 
     #pet-stage {
-      height: 150px; background: radial-gradient(circle, #ffffff 0%, #f2f4f4 100%);
+      height: 160px; background: linear-gradient(135deg, #f8f9fa 0%, #ecf1f6 50%, #f0f4f8 100%);
       border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center;
-      position: relative; border: 2px dashed #bdc3c7; padding: 8px;
+      position: relative; border: 3px solid #d5e8f7; padding: 12px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05), 0 4px 16px rgba(30, 60, 114, 0.1);
+      overflow: hidden;
+    }
+    #pet-stage::before {
+      content: ''; position: absolute; inset: 12px; border-radius: 14px;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.7), rgba(148,163,184,0.1) 45%, transparent 70%);
+      pointer-events: none;
     }
     .pet-dialog {
-      background: #34495e; color: white; padding: 6px 10px; border-radius: 10px;
-      font-size: 11px; font-weight: 600; text-align: center; margin-bottom: 6px; max-width: 90%;
+      background: linear-gradient(135deg, #34495e, #2c3e50); color: white; padding: 10px 14px; border-radius: 12px;
+      font-size: 12px; font-weight: 600; text-align: center; margin-bottom: 8px; max-width: 95%; box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: slideInDown 0.4s ease-out; position: relative; z-index: 1;
     }
-    .pet-avatar { font-size: 60px; transition: transform 0.2s; cursor: pointer; }
-    .pet-avatar:active { transform: scale(1.15); }
+    .pet-avatar { font-size: 65px; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; animation: bounce 3s ease-in-out infinite; position: relative; z-index: 1; }
+    .pet-avatar:hover { transform: scale(1.1); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+    .pet-avatar:active { transform: scale(1.2); animation: none; }
+    .pet-stage-decor {
+      position: absolute; inset: auto auto 12px 12px; font-size: 18px; opacity: 0.3; z-index: 0;
+      animation: floatUp 5s ease-in-out infinite;
+    }
+    .pet-stage-decor.right { inset: 16px 14px auto auto; animation-delay: 1s; }
 
-    .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .minigames-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-height: 140px; overflow-y: auto; padding-right: 2px; }
-    button { background: #34495e; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 10px; cursor: pointer; }
-    button:active { transform: scale(0.95); }
-    button:disabled { background: #d5dbdb; color: #7f8c8d; cursor: not-allowed; }
+    .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .minigames-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 140px; overflow-y: auto; padding-right: 2px; }
+    .minigames-grid::-webkit-scrollbar { width: 4px; } .minigames-grid::-webkit-scrollbar-track { background: transparent; } .minigames-grid::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 2px; }
+    button { background: #34495e; color: white; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.3s ease; }
+    button:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
+    button:active { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    button:disabled { background: #d5dbdb; color: #95a5a6; cursor: not-allowed; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transform: none; }
 
-    #btn-racao { background: #e74c3c; } #btn-banho { background: #3498db; }
-    #btn-dormir { background: #f1c40f; color: #2c3e50; } #btn-carinho { background: #2ecc71; }
+    #btn-racao { background: linear-gradient(135deg, #e74c3c, #ec7063); } 
+    #btn-banho { background: linear-gradient(135deg, #3498db, #5dade2); }
+    #btn-dormir { background: linear-gradient(135deg, #f1c40f, #f4d03f); color: #2c3e50; } 
+    #btn-carinho { background: linear-gradient(135deg, #2ecc71, #58d68d); }
 
-    .section-title { font-size: 11px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; margin-top: 2px; }
+    .section-title { font-size: 11px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
     
-    .canvas-game { width: 100%; height: 200px; background: #2c3e50; border-radius: 12px; position: relative; touch-action: none; }
-    canvas { width: 100%; height: 100%; border-radius: 12px; }
+    .canvas-game { width: 100%; height: 200px; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border-radius: 14px; position: relative; touch-action: none; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+    canvas { width: 100%; height: 100%; border-radius: 14px; }
 
-    #memory-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; height: 180px; }
-    .memory-card { background: #34495e; color: transparent; font-size: 22px; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; }
-    .memory-card.flipped { background: #ecf0f1; color: #000; }
+    #memory-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: 100%; height: 180px; }
+    .memory-card { background: linear-gradient(135deg, #34495e, #2c3e50); color: transparent; font-size: 24px; display: flex; justify-content: center; align-items: center; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.3s ease; border: 2px solid transparent; }
+    .memory-card:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+    .memory-card.flipped { background: linear-gradient(135deg, #ecf0f1, #d5e8f7); color: #000; border-color: #3498db; box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3); }
+
+    .floating-particles {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .particle {
+      position: absolute; width: 8px; height: 8px; border-radius: 50%; opacity: 0.8;
+      animation: floatUp 4s linear forwards;
+    }
   </style>
 </head>
 <body>
 
+<div class="floating-particles" id="floating-particles"></div>
+
 <div id="game-container">
   
+  <div id="particle-container" style="position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
   <div id="start-screen" class="overlay-screen">
-    <h1>🐾 Meu Pet Virtual</h1>
-    <p>Cuide do pet, divirta-se nos 10 minijogos e ganhe curiosidades a cada nível!</p>
-    <button style="padding: 12px 25px; font-size: 16px; background: #2ecc71;" onclick="iniciarJogo()">▶️ JOGAR</button>
+    <div class="hero-card" style="width: min(100%, 320px);">
+      <h1 style="font-size: 22px; margin-bottom: 8px;">🐾 Meu Pet Virtual</h1>
+      <p style="font-size: 13px; color: #bdc3c7; line-height: 1.4;">Cuide do pet, divirta-se nos 10 minijogos e ganhe curiosidades a cada nível!</p>
+      <div class="theme-picker" aria-label="Escolha de tema">
+        <button type="button" class="theme-choice active" data-theme="cyber">Cyber</button>
+        <button type="button" class="theme-choice" data-theme="sunset">Sunset</button>
+        <button type="button" class="theme-choice" data-theme="forest">Forest</button>
+      </div>
+    </div>
+    <button style="padding: 12px 25px; font-size: 16px; background: linear-gradient(135deg, #2ecc71, #58d68d); box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 8px 28px rgba(46, 204, 113, 0.6)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 6px 20px rgba(46, 204, 113, 0.4)'; this.style.transform='translateY(0)';" onclick="iniciarJogo()">▶️ JOGAR</button>
   </div>
 
   <div id="pause-screen" class="overlay-screen" style="display: none;">
     <h1>⏸️ JOGO PAUSADO</h1>
-    <button style="padding: 10px 20px; font-size: 14px; background: #3498db;" onclick="alternarPause()">▶️ CONTINUAR</button>
+    <button style="padding: 10px 20px; font-size: 14px; background: linear-gradient(135deg, #3498db, #5dade2); box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 8px 28px rgba(52, 152, 219, 0.6)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 6px 20px rgba(52, 152, 219, 0.4)'; this.style.transform='translateY(0)';" onclick="alternarPause()">▶️ CONTINUAR</button>
   </div>
 
   <div id="story-screen" class="overlay-screen" style="display: none;">
     <h1>🎉 NOVO NÍVEL ALCANÇADO!</h1>
-    <p id="story-title" style="color: #f1c40f; font-weight: bold; font-size: 15px;"></p>
-    <p id="story-text" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: left;"></p>
-    <button style="padding: 8px 16px; font-size: 13px; background: #2ecc71;" onclick="fecharHistoria()">CONTINUAR</button>
+    <p id="story-title" style="color: #f1c40f; font-weight: bold; font-size: 15px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);"></p>
+    <p id="story-text" style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 12px; text-align: left; border-left: 4px solid #f1c40f; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"></p>
+    <button style="padding: 10px 20px; font-size: 13px; background: linear-gradient(135deg, #2ecc71, #58d68d); box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 8px 28px rgba(46, 204, 113, 0.6)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 6px 20px rgba(46, 204, 113, 0.4)'; this.style.transform='translateY(0)';" onclick="fecharHistoria()">CONTINUAR</button>
   </div>
 
   <div class="header">
     <span class="badge" id="lvl-txt">Nível 1</span>
+    <span class="theme-chip">Tema Cyber</span>
     <div class="header-right">
       <span class="moedas" id="moedas-txt">💰 50</span>
       <button class="btn-icon" onclick="alternarPause()">⏸️</button>
@@ -116,6 +200,8 @@
   </div>
 
   <div id="pet-stage">
+    <div class="pet-stage-decor">✨</div>
+    <div class="pet-stage-decor right">🌟</div>
     <div class="pet-dialog" id="pet-dialog">Oi! Escolha um dos minijogos para jogarmos!</div>
     <div id="pet-avatar" class="pet-avatar" onclick="fazerCarinho()">🐱</div>
   </div>
@@ -129,36 +215,145 @@
 
   <span class="section-title">🎮 Todos os Minijogos (10)</span>
   <div class="minigames-grid">
-    <button style="background: #e67e22;" onclick="abrirMinijogo('memoria')">🧠 Memória</button>
-    <button style="background: #e74c3c;" onclick="abrirMinijogo('rato')">🐭 Pega Rato</button>
-    <button style="background: #2ecc71;" onclick="abrirMinijogo('sapinho')">🐸 Sapinho</button>
-    <button style="background: #00cec9;" onclick="abrirMinijogo('peixe')">🐟 Peixe</button>
-    <button style="background: #9b59b6;" onclick="abrirMinijogo('carro')">🏎️ Corrida</button>
-    <button style="background: #f1c40f; color: #2c3e50;" onclick="abrirMinijogo('pacgato')">🟡 Pac-Gato</button>
-    <button style="background: #27ae60;" onclick="abrirMinijogo('cobrinha')">🐍 Cobrinha</button>
-    <button style="background: #e67e22;" onclick="abrirMinijogo('mario')">🍄 Super Pet</button>
-    <button style="background: #e74c3c;" onclick="abrirMinijogo('petrun')">🏃 Pet Run</button>
-    <button style="background: #34495e;" onclick="abrirMinijogo('torre')">🏢 Torre</button>
-    <button style="background: #8e44ad;" onclick="abrirMinijogo('nave')">🚀 Pet Space</button>
+    <button style="background: linear-gradient(135deg, #e67e22, #d35400); box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(230, 126, 34, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(230, 126, 34, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('memoria')">🧠 Memória</button>
+    <button style="background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(231, 76, 60, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('rato')">🐭 Pega Rato</button>
+    <button style="background: linear-gradient(135deg, #2ecc71, #27ae60); box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(46, 204, 113, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(46, 204, 113, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('sapinho')">🐸 Sapinho</button>
+    <button style="background: linear-gradient(135deg, #00cec9, #00a8a8); box-shadow: 0 4px 12px rgba(0, 206, 201, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(0, 206, 201, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0, 206, 201, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('peixe')">🐟 Peixe</button>
+    <button style="background: linear-gradient(135deg, #9b59b6, #8e44ad); box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(155, 89, 182, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(155, 89, 182, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('carro')">🏎️ Corrida</button>
+    <button style="background: linear-gradient(135deg, #f1c40f, #d4a600); color: #2c3e50; box-shadow: 0 4px 12px rgba(241, 196, 15, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(241, 196, 15, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(241, 196, 15, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('pacgato')">🟡 Pac-Gato</button>
+    <button style="background: linear-gradient(135deg, #27ae60, #229954); box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(39, 174, 96, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(39, 174, 96, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('cobrinha')">🐍 Cobrinha</button>
+    <button style="background: linear-gradient(135deg, #e67e22, #d35400); box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(230, 126, 34, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(230, 126, 34, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('mario')">🍄 Super Pet</button>
+    <button style="background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(231, 76, 60, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('petrun')">🏃 Pet Run</button>
+    <button style="background: linear-gradient(135deg, #34495e, #2c3e50); box-shadow: 0 4px 12px rgba(52, 73, 94, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(52, 73, 94, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(52, 73, 94, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('torre')">🏢 Torre</button>
+    <button style="background: linear-gradient(135deg, #8e44ad, #7d3c98); box-shadow: 0 4px 12px rgba(142, 68, 173, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(142, 68, 173, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(142, 68, 173, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('nave')">🚀 Pet Space</button>
   </div>
 
   <div id="modal-minijogo" class="overlay-screen" style="display: none;">
-    <h3 id="minijogo-titulo">Minijogo</h3>
-    <p id="minijogo-instrucao">Instruções</p>
-    <p>Pontos: <span id="minijogo-pts" style="color:#2ecc71; font-weight:bold;">0</span></p>
+    <h3 id="minijogo-titulo" style="color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">Minijogo</h3>
+    <p id="minijogo-instrucao" style="color: #bdc3c7;">Instruções</p>
+    <p style="color: #ecf0f1;">Pontos: <span id="minijogo-pts" style="color:#2ecc71; font-weight:bold; font-size: 16px; text-shadow: 0 0 8px rgba(46, 204, 113, 0.5);">0</span></p>
     
     <div class="canvas-game" id="canvas-container">
       <canvas id="game-canvas" width="400" height="200"></canvas>
       <div id="memory-board" style="display: none;"></div>
     </div>
     
-    <button style="background: #e74c3c; padding: 6px 14px; margin-top: 4px;" onclick="encerrarMinijogo()">Sair</button>
+    <button style="background: linear-gradient(135deg, #e74c3c, #ec7063); padding: 8px 16px; margin-top: 6px; box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 8px 28px rgba(231, 76, 60, 0.6)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 6px 20px rgba(231, 76, 60, 0.4)'; this.style.transform='translateY(0)';" onclick="encerrarMinijogo()">Sair</button>
   </div>
 
 </div>
 
 <script>
   const AudioCTX = new (window.AudioContext || window.webkitAudioContext)();
+  const particleLayer = document.getElementById('floating-particles');
+
+  const themes = {
+    cyber: {
+      body: 'linear-gradient(-45deg, #050816, #120d2d, #101a3f, #040915)',
+      container: 'linear-gradient(180deg, rgba(12,18,35,0.96), rgba(15,23,42,0.94))',
+      chip: 'rgba(56, 189, 248, 0.12)',
+      accent: '#7dd3fc'
+    },
+    sunset: {
+      body: 'linear-gradient(-45deg, #3b1d2a, #7c2d12, #f97316, #4c0519)',
+      container: 'linear-gradient(180deg, rgba(49,22,36,0.96), rgba(42,18,29,0.95))',
+      chip: 'rgba(251,146,60,0.12)',
+      accent: '#fdba74'
+    },
+    forest: {
+      body: 'linear-gradient(-45deg, #052e16, #14532d, #022c22, #052e16)',
+      container: 'linear-gradient(180deg, rgba(8,28,22,0.96), rgba(17,24,39,0.95))',
+      chip: 'rgba(52,211,153,0.12)',
+      accent: '#86efac'
+    }
+  };
+
+  function aplicarTema(themeName) {
+    const theme = themes[themeName] || themes.cyber;
+    const chip = document.querySelector('.theme-chip');
+    const temaLabel = themeName === 'sunset' ? 'Tema Sunset' : themeName === 'forest' ? 'Tema Forest' : 'Tema Cyber';
+    document.body.style.background = theme.body;
+    document.getElementById('game-container').style.background = theme.container;
+    if (chip) {
+      chip.textContent = temaLabel;
+      chip.style.background = theme.chip;
+      chip.style.borderColor = `${theme.accent}66`;
+      chip.style.color = theme.accent;
+    }
+    document.querySelectorAll('.theme-choice').forEach(button => {
+      const active = button.dataset.theme === themeName;
+      button.classList.toggle('active', active);
+    });
+  }
+
+  document.querySelectorAll('.theme-choice').forEach(button => {
+    button.addEventListener('click', () => aplicarTema(button.dataset.theme));
+  });
+
+  function inicializarDecoracoes() {
+    const layer = document.querySelector('.ambient-layer');
+    if (!layer) return;
+    for (let i = 0; i < 18; i++) {
+      const dot = document.createElement('span');
+      dot.style.position = 'absolute';
+      dot.style.width = `${5 + Math.random() * 10}px`;
+      dot.style.height = dot.style.width;
+      dot.style.borderRadius = '50%';
+      dot.style.left = `${Math.random() * 100}%`;
+      dot.style.top = `${Math.random() * 100}%`;
+      dot.style.background = i % 2 === 0 ? 'rgba(255,255,255,0.75)' : 'rgba(96,165,250,0.5)';
+      dot.style.boxShadow = '0 0 14px rgba(255,255,255,0.28)';
+      dot.style.animation = `floatUp ${5 + Math.random() * 6}s ease-in-out infinite`;
+      dot.style.animationDelay = `${Math.random() * 3}s`;
+      layer.appendChild(dot);
+    }
+  }
+
+  function criarParticula(x, y, color = '#fbbf24') {
+    if (!particleLayer) return;
+    const particle = document.createElement('span');
+    particle.className = 'particle';
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    particle.style.background = color;
+    particle.style.boxShadow = `0 0 12px ${color}`;
+    particle.style.animationDuration = `${(Math.random() * 2 + 2.2).toFixed(2)}s`;
+    particleLayer.appendChild(particle);
+    setTimeout(() => particle.remove(), 4200);
+  }
+
+  function criarBurst(x, y, color = '#fbbf24', quantidade = 12) {
+    for (let i = 0; i < quantidade; i++) {
+      const offsetX = (Math.random() - 0.5) * 80;
+      const offsetY = (Math.random() - 0.5) * 80;
+      criarParticula(x + offsetX, y + offsetY, color);
+    }
+  }
+
+  function dispararFeedback(texto, cor = '#fbbf24') {
+    const container = document.getElementById('game-container');
+    const badge = document.createElement('div');
+    badge.textContent = texto;
+    badge.style.position = 'absolute';
+    badge.style.left = '50%';
+    badge.style.top = '20%';
+    badge.style.transform = 'translateX(-50%)';
+    badge.style.padding = '6px 12px';
+    badge.style.borderRadius = '999px';
+    badge.style.background = cor;
+    badge.style.color = '#0f172a';
+    badge.style.fontWeight = '800';
+    badge.style.fontSize = '11px';
+    badge.style.boxShadow = '0 8px 20px rgba(15,23,42,0.28)';
+    badge.style.zIndex = '30';
+    badge.style.opacity = '0';
+    badge.style.animation = 'slideInDown 0.35s ease-out forwards';
+    container.appendChild(badge);
+    setTimeout(() => badge.remove(), 700);
+  }
+
+  inicializarDecoracoes();
+
   function tocarSom(tipo) {
     if (AudioCTX.state === 'suspended') AudioCTX.resume();
     const osc = AudioCTX.createOscillator();
@@ -202,14 +397,38 @@
 
   function salvarEstado() { localStorage.setItem('pet_lvl', game.nivel); localStorage.setItem('pet_xp', game.xp); localStorage.setItem('pet_moedas', game.moedas); }
 
+  function animarPet() {
+    const stage = document.getElementById('pet-stage');
+    const avatar = document.getElementById('pet-avatar');
+
+    if (pet.dormindo) {
+      avatar.style.filter = 'drop-shadow(0 0 18px rgba(251, 191, 36, 0.8))';
+      stage.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 28px rgba(251, 191, 36, 0.18)';
+    } else if (pet.felicidade >= 70 && pet.energia >= 50) {
+      avatar.style.filter = 'drop-shadow(0 0 18px rgba(52, 211, 153, 0.8))';
+      stage.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 28px rgba(52, 211, 153, 0.18)';
+    } else if (pet.fome < 35 || pet.higiene < 35) {
+      avatar.style.filter = 'drop-shadow(0 0 18px rgba(251, 113, 133, 0.8))';
+      stage.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 28px rgba(251, 113, 133, 0.18)';
+    } else {
+      avatar.style.filter = 'drop-shadow(0 0 18px rgba(56, 189, 248, 0.7))';
+      stage.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 20px rgba(56, 189, 248, 0.14)';
+    }
+  }
+
   function iniciarJogo() { document.getElementById('start-screen').style.display = 'none'; jogoIniciado = true; tocarSom('click'); setInterval(loopAtributos, 1000); atualizarUI(); }
   function alternarPause() { if (!jogoIniciado) return; gamePausado = !gamePausado; document.getElementById('pause-screen').style.display = gamePausado ? 'flex' : 'none'; tocarSom('click'); }
 
   function ganharXP(qtd) {
     game.xp += qtd;
+    const rect = document.getElementById('pet-avatar').getBoundingClientRect();
+    criarBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, '#fbbf24', 18);
+    dispararFeedback(`+${qtd} XP`, '#fbbf24');
     if (game.xp >= game.xpMax) {
       game.xp -= game.xpMax; game.nivel++; game.xpMax = Math.floor(game.xpMax * 1.3); game.moedas += 30;
       tocarSom('levelup'); mostrarHistoria();
+      criarBurst(window.innerWidth / 2, 120, '#8b5cf6', 28);
+      dispararFeedback('Nível +1', '#8b5cf6');
     }
     salvarEstado(); atualizarUI();
   }
@@ -243,6 +462,7 @@
     document.getElementById('bar-fome').style.width = `${pet.fome}%`; document.getElementById('bar-higiene').style.width = `${pet.higiene}%`;
     document.getElementById('bar-energia').style.width = `${pet.energia}%`; document.getElementById('bar-felicidade').style.width = `${pet.felicidade}%`;
     atualizarHumorEDialogo();
+    animarPet();
     document.getElementById('btn-racao').disabled = pet.dormindo || game.moedas < 10;
     document.getElementById('btn-banho').disabled = pet.dormindo || game.moedas < 5;
     document.getElementById('btn-carinho').disabled = pet.dormindo;
@@ -259,10 +479,10 @@
     atualizarUI();
   }
 
-  function alimentar() { if (game.moedas >= 10) { game.moedas -= 10; pet.fome = Math.min(100, pet.fome + 30); tocarSom('coin'); ganharXP(15); } }
-  function darBanho() { if (game.moedas >= 5) { game.moedas -= 5; pet.higiene = 100; tocarSom('coin'); ganharXP(10); } }
-  function dormir() { pet.dormindo = !pet.dormindo; tocarSom('click'); atualizarUI(); }
-  function fazerCarinho() { if (!pet.dormindo) { pet.felicidade = Math.min(100, pet.felicidade + 15); tocarSom('click'); ganharXP(5); } }
+  function alimentar() { if (game.moedas >= 10) { game.moedas -= 10; pet.fome = Math.min(100, pet.fome + 30); tocarSom('coin'); dispararFeedback('+10 de comida', '#fb7185'); ganharXP(15); } }
+  function darBanho() { if (game.moedas >= 5) { game.moedas -= 5; pet.higiene = 100; tocarSom('coin'); dispararFeedback('+ banho', '#38bdf8'); ganharXP(10); } }
+  function dormir() { pet.dormindo = !pet.dormindo; tocarSom('click'); dispararFeedback(pet.dormindo ? 'Dormindo...' : 'Acordou!', '#fbbf24'); atualizarUI(); }
+  function fazerCarinho() { if (!pet.dormindo) { pet.felicidade = Math.min(100, pet.felicidade + 15); tocarSom('click'); dispararFeedback('+ carinho', '#34d399'); ganharXP(5); } }
 
   /* --- MOTOR DOS MINIJOGOS --- */
   const canvas = document.getElementById('game-canvas'), ctx = canvas.getContext('2d'), memoryBoard = document.getElementById('memory-board');
