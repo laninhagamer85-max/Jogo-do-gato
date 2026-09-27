@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Meu Pet Virtual - Edição Suprema de Minijogos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body { background: linear-gradient(135deg, #1e3c72, #2a5298); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #333; padding: 10px; }
+    
+    #game-container {
+      width: 100%; max-width: 480px; background: #ffffff; border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4); padding: 16px; display: flex;
+      flex-direction: column; gap: 10px; position: relative; overflow: hidden;
+    }
+
+    .overlay-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(20, 20, 35, 0.95); z-index: 100; display: flex;
+      flex-direction: column; justify-content: center; align-items: center;
+      color: white; padding: 20px; text-align: center; gap: 12px;
+    }
+    .overlay-screen h1 { font-size: 22px; color: #f1c40f; }
+    .overlay-screen p { font-size: 13px; color: #bdc3c7; line-height: 1.4; }
+
+    .header { display: flex; justify-content: space-between; align-items: center; }
+    .badge { background: #f39c12; color: white; padding: 6px 12px; border-radius: 12px; font-size: 13px; font-weight: bold; }
+    .header-right { display: flex; gap: 8px; align-items: center; }
+    .moedas { font-size: 15px; color: #27ae60; font-weight: 800; background: #e8f8f5; padding: 5px 10px; border-radius: 12px; border: 1px solid #a3e4d7; }
+    .btn-icon { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+
+    .xp-container { background: #f8f9f9; padding: 6px 10px; border-radius: 10px; border: 1px solid #eaeded; }
+    .xp-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #7f8c8d; margin-bottom: 3px; }
+    .bar-bg { height: 10px; background: #ebedef; border-radius: 5px; overflow: hidden; }
+    .bar-fill { height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 5px; }
+    #bar-xp { background: linear-gradient(90deg, #8e44ad, #9b59b6); }
+
+    .bars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .stat-box { font-size: 10px; font-weight: bold; color: #566573; }
+    #bar-fome { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+    #bar-higiene { background: linear-gradient(90deg, #3498db, #2980b9); }
+    #bar-energia { background: linear-gradient(90deg, #f1c40f, #f39c12); }
+    #bar-felicidade { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+
+    #pet-stage {
+      height: 150px; background: radial-gradient(circle, #ffffff 0%, #f2f4f4 100%);
+      border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      position: relative; border: 2px dashed #bdc3c7; padding: 8px;
+    }
+    .pet-dialog {
+      background: #34495e; color: white; padding: 6px 10px; border-radius: 10px;
+      font-size: 11px; font-weight: 600; text-align: center; margin-bottom: 6px; max-width: 90%;
+    }
+    .pet-avatar { font-size: 60px; transition: transform 0.2s; cursor: pointer; }
+    .pet-avatar:active { transform: scale(1.15); }
+
+    .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .minigames-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-height: 140px; overflow-y: auto; padding-right: 2px; }
+    button { background: #34495e; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 10px; cursor: pointer; }
+    button:active { transform: scale(0.95); }
+    button:disabled { background: #d5dbdb; color: #7f8c8d; cursor: not-allowed; }
+
+    #btn-racao { background: #e74c3c; } #btn-banho { background: #3498db; }
+    #btn-dormir { background: #f1c40f; color: #2c3e50; } #btn-carinho { background: #2ecc71; }
+
+    .section-title { font-size: 11px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; margin-top: 2px; }
+    
+    .canvas-game { width: 100%; height: 200px; background: #2c3e50; border-radius: 12px; position: relative; touch-action: none; }
+    canvas { width: 100%; height: 100%; border-radius: 12px; }
+
+    #memory-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; height: 180px; }
+    .memory-card { background: #34495e; color: transparent; font-size: 22px; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; }
+    .memory-card.flipped { background: #ecf0f1; color: #000; }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  
+  <div id="start-screen" class="overlay-screen">
+    <h1>🐾 Meu Pet Virtual</h1>
+    <p>Cuide do pet, divirta-se nos 10 minijogos e ganhe curiosidades a cada nível!</p>
+    <button style="padding: 12px 25px; font-size: 16px; background: #2ecc71;" onclick="iniciarJogo()">▶️ JOGAR</button>
+  </div>
+
+  <div id="pause-screen" class="overlay-screen" style="display: none;">
+    <h1>⏸️ JOGO PAUSADO</h1>
+    <button style="padding: 10px 20px; font-size: 14px; background: #3498db;" onclick="alternarPause()">▶️ CONTINUAR</button>
+  </div>
+
+  <div id="story-screen" class="overlay-screen" style="display: none;">
+    <h1>🎉 NOVO NÍVEL ALCANÇADO!</h1>
+    <p id="story-title" style="color: #f1c40f; font-weight: bold; font-size: 15px;"></p>
+    <p id="story-text" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: left;"></p>
+    <button style="padding: 8px 16px; font-size: 13px; background: #2ecc71;" onclick="fecharHistoria()">CONTINUAR</button>
+  </div>
+
+  <div class="header">
+    <span class="badge" id="lvl-txt">Nível 1</span>
+    <div class="header-right">
+      <span class="moedas" id="moedas-txt">💰 50</span>
+      <button class="btn-icon" onclick="alternarPause()">⏸️</button>
+    </div>
+  </div>
+
+  <div class="xp-container">
+    <div class="xp-info"><span>Experiência (XP)</span><span id="xp-num">0/100</span></div>
+    <div class="bar-bg"><div id="bar-xp" class="bar-fill"></div></div>
+  </div>
+
+  <div class="bars-grid">
+    <div class="stat-box"><span>Fome</span><div class="bar-bg"><div id="bar-fome" class="bar-fill"></div></div></div>
+    <div class="stat-box"><span>Higiene</span><div class="bar-bg"><div id="bar-higiene" class="bar-fill"></div></div></div>
+    <div class="stat-box"><span>Energia</span><div class="bar-bg"><div id="bar-energia" class="bar-fill"></div></div></div>
+    <div class="stat-box"><span>Felicidade</span><div class="bar-bg"><div id="bar-felicidade" class="bar-fill"></div></div></div>
+  </div>
+
+  <div id="pet-stage">
+    <div class="pet-dialog" id="pet-dialog">Oi! Escolha um dos minijogos para jogarmos!</div>
+    <div id="pet-avatar" class="pet-avatar" onclick="fazerCarinho()">🐱</div>
+  </div>
+
+  <div class="actions-grid">
+    <button id="btn-racao" onclick="alimentar()">🍖 Comer ($10)</button>
+    <button id="btn-banho" onclick="darBanho()">🧼 Banho ($5)</button>
+    <button id="btn-dormir" onclick="dormir()">💤 Descansar</button>
+    <button id="btn-carinho" onclick="fazerCarinho()">❤️ Carinho</button>
+  </div>
+
+  <span class="section-title">🎮 Todos os Minijogos (10)</span>
+  <div class="minigames-grid">
+    <button style="background: #e67e22;" onclick="abrirMinijogo('memoria')">🧠 Memória</button>
+    <button style="background: #e74c3c;" onclick="abrirMinijogo('rato')">🐭 Pega Rato</button>
+    <button style="background: #2ecc71;" onclick="abrirMinijogo('sapinho')">🐸 Sapinho</button>
+    <button style="background: #00cec9;" onclick="abrirMinijogo('peixe')">🐟 Peixe</button>
+    <button style="background: #9b59b6;" onclick="abrirMinijogo('carro')">🏎️ Corrida</button>
+    <button style="background: #f1c40f; color: #2c3e50;" onclick="abrirMinijogo('pacgato')">🟡 Pac-Gato</button>
+    <button style="background: #27ae60;" onclick="abrirMinijogo('cobrinha')">🐍 Cobrinha</button>
+    <button style="background: #e67e22;" onclick="abrirMinijogo('mario')">🍄 Super Pet</button>
+    <button style="background: #e74c3c;" onclick="abrirMinijogo('petrun')">🏃 Pet Run</button>
+    <button style="background: #34495e;" onclick="abrirMinijogo('torre')">🏢 Torre</button>
+    <button style="background: #8e44ad;" onclick="abrirMinijogo('nave')">🚀 Pet Space</button>
+  </div>
+
+  <div id="modal-minijogo" class="overlay-screen" style="display: none;">
+    <h3 id="minijogo-titulo">Minijogo</h3>
+    <p id="minijogo-instrucao">Instruções</p>
+    <p>Pontos: <span id="minijogo-pts" style="color:#2ecc71; font-weight:bold;">0</span></p>
+    
+    <div class="canvas-game" id="canvas-container">
+      <canvas id="game-canvas" width="400" height="200"></canvas>
+      <div id="memory-board" style="display: none;"></div>
+    </div>
+    
+    <button style="background: #e74c3c; padding: 6px 14px; margin-top: 4px;" onclick="encerrarMinijogo()">Sair</button>
+  </div>
+
+</div>
+
+<script>
+  const AudioCTX = new (window.AudioContext || window.webkitAudioContext)();
+  function tocarSom(tipo) {
+    if (AudioCTX.state === 'suspended') AudioCTX.resume();
+    const osc = AudioCTX.createOscillator();
+    const gain = AudioCTX.createGain();
+    osc.connect(gain); gain.connect(AudioCTX.destination);
+
+    if (tipo === 'click') {
+      osc.frequency.setValueAtTime(400, AudioCTX.currentTime); gain.gain.setValueAtTime(0.1, AudioCTX.currentTime);
+      osc.start(); osc.stop(AudioCTX.currentTime + 0.05);
+    } else if (tipo === 'coin') {
+      osc.frequency.setValueAtTime(800, AudioCTX.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, AudioCTX.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.15, AudioCTX.currentTime); osc.start(); osc.stop(AudioCTX.currentTime + 0.1);
+    } else if (tipo === 'levelup') {
+      osc.frequency.setValueAtTime(300, AudioCTX.currentTime); osc.frequency.linearRampToValueAtTime(600, AudioCTX.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.2, AudioCTX.currentTime); osc.start(); osc.stop(AudioCTX.currentTime + 0.3);
+    }
+  }
+
+  // Lista com 50 curiosidades por nível
+  const historiasEducativas = Array.from({ length: 50 }, (_, i) => ({
+    t: `Nível ${i + 1} - Curiosidade`,
+    x: [
+      "Gatos passam 70% da vida dormindo para poupar energia.",
+      "Pac-Man foi inspirado no formato de uma pizza sem uma fatia.",
+      "O cérebro gera energia suficiente para acender uma luz LED.",
+      "O focinho de cada cão é único como uma digital humana.",
+      "Tetris foi criado por um engenheiro russo em 1984.",
+      "Os oceanos geram mais de 50% do oxigênio do planeta.",
+      "Sapinhos absorvem água através da pele em vez de beber.",
+      "Mario originalmente se chamava Jumpman e era carpinteiro.",
+      "Um dia em Vênus é mais longo do que um ano inteiro lá.",
+      "Golfinhos usam assobios únicos como se fossem seus nomes."
+    ][i % 10] + ` (Curiosidade exclusiva do Nível ${i + 1})`
+  }));
+
+  let gamePausado = false, jogoIniciado = false;
+  const game = { nivel: parseInt(localStorage.getItem('pet_lvl')) || 1, xp: parseInt(localStorage.getItem('pet_xp')) || 0, xpMax: 100, moedas: parseInt(localStorage.getItem('pet_moedas')) || 50 };
+  const pet = { fome: 80, higiene: 80, energia: 80, felicidade: 80, dormindo: false };
+
+  const elLvl = document.getElementById('lvl-txt'), elMoedas = document.getElementById('moedas-txt'), elXpNum = document.getElementById('xp-num'), elBarXp = document.getElementById('bar-xp'), elAvatar = document.getElementById('pet-avatar'), elDialog = document.getElementById('pet-dialog');
+
+  function salvarEstado() { localStorage.setItem('pet_lvl', game.nivel); localStorage.setItem('pet_xp', game.xp); localStorage.setItem('pet_moedas', game.moedas); }
+
+  function iniciarJogo() { document.getElementById('start-screen').style.display = 'none'; jogoIniciado = true; tocarSom('click'); setInterval(loopAtributos, 1000); atualizarUI(); }
+  function alternarPause() { if (!jogoIniciado) return; gamePausado = !gamePausado; document.getElementById('pause-screen').style.display = gamePausado ? 'flex' : 'none'; tocarSom('click'); }
+
+  function ganharXP(qtd) {
+    game.xp += qtd;
+    if (game.xp >= game.xpMax) {
+      game.xp -= game.xpMax; game.nivel++; game.xpMax = Math.floor(game.xpMax * 1.3); game.moedas += 30;
+      tocarSom('levelup'); mostrarHistoria();
+    }
+    salvarEstado(); atualizarUI();
+  }
+
+  function mostrarHistoria() {
+    const idx = Math.min(game.nivel - 1, historiasEducativas.length - 1);
+    const h = historiasEducativas[idx];
+    document.getElementById('story-title').innerText = `${h.t}`;
+    document.getElementById('story-text').innerText = h.x;
+    document.getElementById('story-screen').style.display = 'flex';
+  }
+
+  function fecharHistoria() { document.getElementById('story-screen').style.display = 'none'; }
+
+  function atualizarHumorEDialogo() {
+    if (pet.dormindo) { elAvatar.innerText = '😴'; elDialog.innerText = 'Zzz... Sonhando com peixinhos...'; }
+    else if (pet.fome < 30) { elAvatar.innerText = '😾'; elDialog.innerText = 'Estou faminto! Preciso de comida.'; }
+    else if (pet.higiene < 30) { elAvatar.innerText = '😿'; elDialog.innerText = 'Hora do banho! Estou sujeitinho.'; }
+    else if (pet.energia < 30) { elAvatar.innerText = '🙀'; elDialog.innerText = 'Que cansaço... Preciso dormir.'; }
+    else if (pet.felicidade < 40) { elAvatar.innerText = '😾'; elDialog.innerText = 'Estou tediado! Escolha um minijogo!'; }
+    else {
+      elAvatar.innerText = '😸';
+      const sugestoes = ["Que tal jogar Cobrinha?", "Vamos no Pet Run testar seus reflexos?", "Suba de nível para aprender mais curiosidades!"];
+      if (Math.random() < 0.2 || elDialog.innerText.includes('Zzz')) elDialog.innerText = sugestoes[Math.floor(Math.random() * sugestoes.length)];
+    }
+  }
+
+  function atualizarUI() {
+    elLvl.innerText = `Nível ${game.nivel}`; elMoedas.innerText = `💰 ${game.moedas}`;
+    elXpNum.innerText = `${game.xp}/${game.xpMax}`; elBarXp.style.width = `${Math.min(100, (game.xp / game.xpMax) * 100)}%`;
+    document.getElementById('bar-fome').style.width = `${pet.fome}%`; document.getElementById('bar-higiene').style.width = `${pet.higiene}%`;
+    document.getElementById('bar-energia').style.width = `${pet.energia}%`; document.getElementById('bar-felicidade').style.width = `${pet.felicidade}%`;
+    atualizarHumorEDialogo();
+    document.getElementById('btn-racao').disabled = pet.dormindo || game.moedas < 10;
+    document.getElementById('btn-banho').disabled = pet.dormindo || game.moedas < 5;
+    document.getElementById('btn-carinho').disabled = pet.dormindo;
+  }
+
+  function loopAtributos() {
+    if (gamePausado || !jogoIniciado) return;
+    if (!pet.dormindo) {
+      pet.fome = Math.max(0, pet.fome - 1); pet.higiene = Math.max(0, pet.higiene - 0.5);
+      pet.energia = Math.max(0, pet.energia - 0.3); pet.felicidade = Math.max(0, pet.felicidade - 0.5);
+    } else {
+      pet.energia = Math.min(100, pet.energia + 4); if (pet.energia >= 100) pet.dormindo = false;
+    }
+    atualizarUI();
+  }
+
+  function alimentar() { if (game.moedas >= 10) { game.moedas -= 10; pet.fome = Math.min(100, pet.fome + 30); tocarSom('coin'); ganharXP(15); } }
+  function darBanho() { if (game.moedas >= 5) { game.moedas -= 5; pet.higiene = 100; tocarSom('coin'); ganharXP(10); } }
+  function dormir() { pet.dormindo = !pet.dormindo; tocarSom('click'); atualizarUI(); }
+  function fazerCarinho() { if (!pet.dormindo) { pet.felicidade = Math.min(100, pet.felicidade + 15); tocarSom('click'); ganharXP(5); } }
+
+  /* --- MOTOR DOS MINIJOGOS --- */
+  const canvas = document.getElementById('game-canvas'), ctx = canvas.getContext('2d'), memoryBoard = document.getElementById('memory-board');
+  let minijogoLoop = null, pontosMinijogo = 0, inputX = canvas.width / 2, inputY = canvas.height / 2, acaoPressionada = false;
+
+  function atualizarInput(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    inputX = (clientX - rect.left) * (canvas.width / rect.width);
+    inputY = (clientY - rect.top) * (canvas.height / rect.height);
+  }
+
+  canvas.addEventListener('mousemove', atualizarInput); canvas.addEventListener('touchmove', atualizarInput);
+  canvas.addEventListener('touchstart', () => acaoPressionada = true); canvas.addEventListener('touchend', () => acaoPressionada = false);
+  canvas.addEventListener('mousedown', () => acaoPressionada = true); canvas.addEventListener('mouseup', () => acaoPressionada = false);
+
+  function abrirMinijogo(tipo) {
+    pontosMinijogo = 0; document.getElementById('minijogo-pts').innerText = '0';
+    document.getElementById('modal-minijogo').style.display = 'flex'; tocarSom('click');
+    canvas.style.display = 'block'; memoryBoard.style.display = 'none';
+
+    if (tipo === 'memoria') iniciarJogoMemoria();
+    else if (tipo === 'rato') iniciarJogoRato();
+    else if (tipo === 'sapinho') iniciarJogoSapinho();
+    else if (tipo === 'peixe') iniciarJogoPeixe();
+    else if (tipo === 'carro') iniciarJogoCarro();
+    else if (tipo === 'pacgato') iniciarJogoPacGato();
+    else if (tipo === 'cobrinha') iniciarJogoCobrinha();
+    else if (tipo === 'mario') iniciarJogoMario();
+    else if (tipo === 'petrun') iniciarJogoPetRun();
+    else if (tipo === 'torre') iniciarJogoTorre();
+    else if (tipo === 'nave') iniciarJogoNave();
+  }
+
+  function encerrarMinijogo() {
+    clearInterval(minijogoLoop); document.getElementById('modal-minijogo').style.display = 'none';
+    const moedasGanhas = Math.floor(pontosMinijogo / 2); game.moedas += moedasGanhas;
+    ganharXP(Math.floor(pontosMinijogo / 2)); pet.felicidade = Math.min(100, pet.felicidade + 20); atualizarUI();
+  }
+
+  /* IMPLEMENTAÇÃO DOS MINIJOGOS */
+  function iniciarJogoMemoria() {
+    document.getElementById('minijogo-titulo').innerText = '🧠 Jogo da Memória';
+    document.getElementById('minijogo-instrucao').innerText = 'Ache os pares iguais!';
+    canvas.style.display = 'none'; memoryBoard.style.display = 'grid'; memoryBoard.innerHTML = '';
+    const icones = ['🐱', '🐱', '🐭', '🐭', '🐸', '🐸', '🐟', '🐟']; icones.sort(() => Math.random() - 0.5);
+    let primeira = null, travado = false;
+    icones.forEach(icone => {
+      const card = document.createElement('div'); card.className = 'memory-card'; card.dataset.icon = icone;
+      card.onclick = () => {
+        if (travado || card.classList.contains('flipped')) return;
+        card.classList.add('flipped'); card.innerText = icone; tocarSom('click');
+        if (!primeira) primeira = card;
+        else {
+          if (primeira.dataset.icon === card.dataset.icon) {
+            pontosMinijogo += 20; document.getElementById('minijogo-pts').innerText = pontosMinijogo; tocarSom('coin'); primeira = null;
+            if (document.querySelectorAll('.memory-card.flipped').length === icones.length) setTimeout(encerrarMinijogo, 800);
+          } else {
+            travado = true;
+            setTimeout(() => { primeira.classList.remove('flipped'); card.classList.remove('flipped'); primeira.innerText = ''; card.innerText = ''; primeira = null; travado = false; }, 800);
+          }
+        }
+      };
+      memoryBoard.appendChild(card);
+    });
+  }
+
+  function iniciarJogoRato() {
+    document.getElementById('minijogo-titulo').innerText = '🐭 Pega Rato';
+    document.getElementById('minijogo-instrucao').innerText = 'Mova a patinha para pegar os ratinhos!';
+    let ratos = [];
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.font = '26px Sans-serif';
+      ctx.fillText('🐾', inputX - 13, canvas.height - 10);
+      if (Math.random() < 0.08) ratos.push({ x: Math.random() * (canvas.width - 20), y: 0 });
+      for (let i = ratos.length - 1; i >= 0; i--) {
+        ratos[i].y += 4; ctx.fillText('🐭', ratos[i].x, ratos[i].y);
+        if (ratos[i].y >= canvas.height - 30 && Math.abs(ratos[i].x - inputX) < 30) {
+          pontosMinijogo += 10; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo; ratos.splice(i, 1);
+        } else if (ratos[i].y > canvas.height) ratos.splice(i, 1);
+      }
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoSapinho() {
+    document.getElementById('minijogo-titulo').innerText = '🐸 Sapinho e as Moscas';
+    document.getElementById('minijogo-instrucao').innerText = 'Mova o sapo para pegar moscas!';
+    let moscas = [];
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.font = '26px Sans-serif';
+      ctx.fillText('🐸', inputX - 13, inputY);
+      if (Math.random() < 0.08) moscas.push({ x: Math.random() * (canvas.width - 20), y: Math.random() * (canvas.height - 20) });
+      for (let i = moscas.length - 1; i >= 0; i--) {
+        ctx.fillText('🪰', moscas[i].x, moscas[i].y);
+        if (Math.abs(moscas[i].x - inputX) < 25 && Math.abs(moscas[i].y - inputY) < 25) {
+          pontosMinijogo += 10; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo; moscas.splice(i, 1);
+        }
+      }
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoPeixe() {
+    document.getElementById('minijogo-titulo').innerText = '🐟 Pegar Peixes';
+    document.getElementById('minijogo-instrucao').innerText = 'Pegue peixes e desvie das bombas!';
+    let itens = [];
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.font = '26px Sans-serif';
+      ctx.fillText('🐱', inputX - 13, canvas.height - 10);
+      if (Math.random() < 0.1) itens.push({ x: Math.random() * (canvas.width - 20), y: 0, bomba: Math.random() < 0.2 });
+      for (let i = itens.length - 1; i >= 0; i--) {
+        itens[i].y += 3; ctx.fillText(itens[i].bomba ? '💣' : '🐟', itens[i].x, itens[i].y);
+        if (itens[i].y >= canvas.height - 30 && Math.abs(itens[i].x - inputX) < 30) {
+          if (itens[i].bomba) pontosMinijogo = Math.max(0, pontosMinijogo - 10); else { pontosMinijogo += 10; tocarSom('coin'); }
+          document.getElementById('minijogo-pts').innerText = pontosMinijogo; itens.splice(i, 1);
+        } else if (itens[i].y > canvas.height) itens.splice(i, 1);
+      }
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoCarro() {
+    document.getElementById('minijogo-titulo').innerText = '🏎️ Corrida de Carro';
+    document.getElementById('minijogo-instrucao').innerText = 'Mova o carro para pegar moedas!';
+    let obs = [];
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(40, 0, canvas.width - 80, canvas.height);
+      ctx.font = '26px Sans-serif'; const carX = Math.max(50, Math.min(canvas.width - 70, inputX));
+      ctx.fillText('🏎️', carX - 13, canvas.height - 15);
+      if (Math.random() < 0.08) obs.push({ x: 50 + Math.random() * (canvas.width - 120), y: 0, moeda: Math.random() < 0.5 });
+      for (let i = obs.length - 1; i >= 0; i--) {
+        obs[i].y += 4; ctx.fillText(obs[i].moeda ? '💰' : '🚧', obs[i].x, obs[i].y);
+        if (obs[i].y >= canvas.height - 35 && Math.abs(obs[i].x - carX) < 25) {
+          if (obs[i].moeda) { pontosMinijogo += 10; tocarSom('coin'); } else { pontosMinijogo = Math.max(0, pontosMinijogo - 10); }
+          document.getElementById('minijogo-pts').innerText = pontosMinijogo; obs.splice(i, 1);
+        } else if (obs[i].y > canvas.height) obs.splice(i, 1);
+      }
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoPacGato() {
+    document.getElementById('minijogo-titulo').innerText = '🟡 Pac-Gato';
+    document.getElementById('minijogo-instrucao').innerText = 'Coma as rações e fuja do cachorro!';
+    let racaos = [{x: 50, y: 50}, {x: 150, y: 50}, {x: 250, y: 50}, {x: 350, y: 50}, {x: 100, y: 120}, {x: 200, y: 120}, {x: 300, y: 120}];
+    let cao = { x: 350, y: 150, dx: -2 };
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.font = '22px Sans-serif';
+      ctx.fillText('😸', inputX - 11, inputY + 8);
+      cao.x += cao.dx; if (cao.x < 20 || cao.x > canvas.width - 40) cao.dx *= -1;
+      ctx.fillText('🐶', cao.x, cao.y);
+      racaos.forEach((r, i) => {
+        ctx.fillText('🍖', r.x, r.y);
+        if (Math.abs(r.x - inputX) < 20 && Math.abs(r.y - inputY) < 20) {
+          pontosMinijogo += 15; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo; racaos.splice(i, 1);
+        }
+      });
+      if (racaos.length === 0) setTimeout(encerrarMinijogo, 500);
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoCobrinha() {
+    document.getElementById('minijogo-titulo').innerText = '🐍 Jogo da Cobrinha';
+    document.getElementById('minijogo-instrucao').innerText = 'Mova o dedo no canvas para guiar a cobra!';
+    let cobra = [{x: 100, y: 100}, {x: 90, y: 100}, {x: 80, y: 100}];
+    let comida = {x: 200, y: 100};
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let cabeca = {x: cobra[0].x, y: cobra[0].y};
+      if (Math.abs(inputX - cabeca.x) > Math.abs(inputY - cabeca.y)) cabeca.x += inputX > cabeca.x ? 5 : -5;
+      else cabeca.y += inputY > cabeca.y ? 5 : -5;
+      cobra.unshift(cabeca);
+      if (Math.abs(cabeca.x - comida.x) < 15 && Math.abs(cabeca.y - comida.y) < 15) {
+        pontosMinijogo += 10; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo;
+        comida = {x: 20 + Math.random() * (canvas.width - 40), y: 20 + Math.random() * (canvas.height - 40)};
+      } else cobra.pop();
+      ctx.fillStyle = '#2ecc71'; cobra.forEach(p => ctx.fillRect(p.x, p.y, 10, 10));
+      ctx.font = '16px Sans-serif'; ctx.fillText('🍎', comida.x - 5, comida.y + 10);
+    }, 1000 / 20);
+  }
+
+  function iniciarJogoMario() {
+    document.getElementById('minijogo-titulo').innerText = '🍄 Super Pet';
+    document.getElementById('minijogo-instrucao').innerText = 'Toque/mantenha pressionado para pular e pegar moedas!';
+    let petY = canvas.height - 30, vy = 0, moedas = [{x: 200, y: 100}, {x: 300, y: 80}];
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (acaoPressionada && petY >= canvas.height - 30) vy = -10;
+      petY += vy; vy += 0.6; petY = Math.min(canvas.height - 30, petY);
+      ctx.font = '26px Sans-serif'; ctx.fillText('🐱', 50, petY);
+      ctx.fillStyle = '#7f8c8d'; ctx.fillRect(0, canvas.height - 5, canvas.width, 5);
+      moedas.forEach((m, i) => {
+        m.x -= 3; if (m.x < -20) m.x = canvas.width + Math.random() * 50;
+        ctx.fillText('🪙', m.x, m.y);
+        if (Math.abs(m.x - 50) < 20 && Math.abs(m.y - petY) < 25) {
+          pontosMinijogo += 10; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo; m.x = canvas.width + 50;
+        }
+      });
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoPetRun() {
+    document.getElementById('minijogo-titulo').innerText = '🏃 Pet Run';
+    document.getElementById('minijogo-instrucao').innerText = 'Segure para pular por cima das barreiras!';
+    let py = canvas.height - 30, vy = 0, obsX = canvas.width;
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (acaoPressionada && py >= canvas.height - 30) vy = -12;
+      py += vy; vy += 0.7; py = Math.min(canvas.height - 30, py);
+      ctx.font = '26px Sans-serif'; ctx.fillText('🐱', 40, py);
+      obsX -= 5; if (obsX < -20) { obsX = canvas.width; pontosMinijogo += 10; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo; }
+      ctx.fillText('📦', obsX, canvas.height - 10);
+      if (Math.abs(obsX - 40) < 20 && py > canvas.height - 40) { pontosMinijogo = Math.max(0, pontosMinijogo - 5); obsX = canvas.width; }
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoTorre() {
+    document.getElementById('minijogo-titulo').innerText = '🏢 Torre de Blocos';
+    document.getElementById('minijogo-instrucao').innerText = 'Toque na tela para soltar o bloco na pilha!';
+    let blocos = [{x: 150, w: 100, y: canvas.height - 20}];
+    let atual = {x: 0, w: 100, dx: 3};
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      atual.x += atual.dx; if (atual.x < 0 || atual.x + atual.w > canvas.width) atual.dx *= -1;
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(atual.x, canvas.height - 40 - (blocos.length * 15), atual.w, 15);
+      ctx.fillStyle = '#3498db'; blocos.forEach(b => ctx.fillRect(b.x, b.y, b.w, 15));
+      if (acaoPressionada) {
+        acaoPressionada = false;
+        let topo = blocos[blocos.length - 1];
+        if (Math.abs(atual.x - topo.x) < topo.w) {
+          blocos.push({x: atual.x, w: topo.w, y: canvas.height - 20 - (blocos.length * 15)});
+          pontosMinijogo += 15; tocarSom('coin'); document.getElementById('minijogo-pts').innerText = pontosMinijogo;
+        } else { encerrarMinijogo(); }
+      }
+    }, 1000 / 30);
+  }
+
+  function iniciarJogoNave() {
+    document.getElementById('minijogo-titulo').innerText = '🚀 Pet Space';
+    document.getElementById('minijogo-instrucao').innerText = 'Mova para desviar de asteroides!';
+    let asts = [];
+    minijogoLoop = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.font = '26px Sans-serif';
+      ctx.fillText('🚀', inputX - 13, canvas.height - 15);
+      if (Math.random() < 0.08) asts.push({x: Math.random() * (canvas.width - 20), y: 0});
+      for (let i = asts.length - 1; i >= 0; i--) {
+        asts[i].y += 4; ctx.fillText('🪨', asts[i].x, asts[i].y);
+        if (asts[i].y >= canvas.height - 30 && Math.abs(asts[i].x - inputX) < 25) {
+          pontosMinijogo = Math.max(0, pontosMinijogo - 10); asts.splice(i, 1);
+          document.getElementById('minijogo-pts').innerText = pontosMinijogo;
+        } else if (asts[i].y > canvas.height) { asts.splice(i, 1); pontosMinijogo += 5; document.getElementById('minijogo-pts').innerText = pontosMinijogo; }
+      }
+    }, 1000 / 30);
+  }
+</script>
+</body>
+</html>
