@@ -114,12 +114,15 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 .pet-speech { position: absolute; top: 29%; left: 50%; z-index: 6; width: max-content; max-width: min(290px, 80%); padding: 12px 16px; transform: translate(-50%, 5px) scale(.98); border: 1px solid rgb(255 255 255 / 70%); border-radius: 18px 18px 18px 5px; background: #fff; color: #22314e; box-shadow: 0 10px 28px rgb(9 22 47 / 22%); font-size: 12px; font-weight: 1000; line-height: 1.35; text-align: center; overflow-wrap: anywhere; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out), visibility 0s linear 420ms; }
 .pet-speech.is-visible { transform: translate(-50%, 0) scale(1); opacity: 1; visibility: visible; transition-delay: 0s; }
 .pet-speech.is-fading { transform: translate(-50%, -5px) scale(.98); opacity: 0; }
-.pet-speech::after { position: absolute; bottom: -8px; left: 22px; width: 14px; height: 14px; transform: rotate(45deg); border-right: 1px solid rgb(255 255 255 / 70%); border-bottom: 1px solid rgb(255 255 255 / 70%); background: #fff; content: ""; }
+.pet-speech::after { position: absolute; bottom: -8px; left: calc(50% - 7px); width: 14px; height: 14px; transform: rotate(45deg); border-right: 1px solid rgb(255 255 255 / 70%); border-bottom: 1px solid rgb(255 255 255 / 70%); background: #fff; content: ""; }
 .pet-nameplate { position: absolute; top: 39%; left: 50%; z-index: 5; display: inline-flex; align-items: center; gap: 7px; max-width: min(250px, 82%); padding: 7px 12px; transform: translate(-50%, -100%) translateY(5px); border: 1px solid rgb(255 255 255 / 18%); border-radius: 99px; background: rgb(9 23 53 / 88%); box-shadow: 0 8px 24px rgb(4 12 31 / 30%); color: #fff; font-size: 11px; font-weight: 1000; backdrop-filter: blur(12px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out), visibility 0s linear 650ms; }
 .pet-nameplate.is-visible { transform: translate(-50%, -100%); opacity: 1; visibility: visible; transition-delay: 0s; }
 .pet-level { margin-left: 2px; color: #c5d5f2; font-size: 9px; font-weight: 800; }
 .stage-hint { display: none; }
-.pet-tap-area { position: absolute; z-index: 2; bottom: 92px; left: 50%; width: min(300px, 52%); height: min(390px, 65%); transform: translateX(-50%); border: 0; border-radius: 50%; background: transparent; }
+.pet-tap-area { position: absolute; z-index: 2; top: 50%; left: 50%; width: 0; height: 0; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: transparent; visibility: hidden; pointer-events: none; }
+.pet-tap-area[data-positioned="true"] { visibility: visible; pointer-events: auto; }
+.scene-decoration-picker { position: absolute; z-index: 1; width: clamp(50px,7.5vw,100px); height: clamp(50px,7.5vw,100px); transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: transparent; cursor: grab; }
+.scene-decoration-picker:focus-visible { outline: 2px solid #9be9ff; outline-offset: 3px; }
 .mission-card { padding: 17px; border: 1px solid rgb(154 141 255 / 40%); border-radius: 21px; background: linear-gradient(150deg,rgb(39 34 104 / 96%),rgb(28 36 91 / 95%)); box-shadow: 0 20px 48px rgb(22 18 76 / 32%), inset 0 1px 0 rgb(255 255 255 / 11%); }
 .mission-heading { display: flex; align-items: center; gap: 9px; }
 .mission-star { display: grid; flex: 0 0 38px; width: 38px; height: 38px; place-items: center; border-radius: 12px; color: #ffdb54; filter: drop-shadow(0 2px 8px rgb(255 205 42 / 25%)); }
@@ -255,7 +258,6 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .mission-card { height: 100%; }
   .care-panel, .stats-panel, .shop-preview { min-height: 100%; }
   .pet-speech { top: 18%; }
-  .pet-tap-area { bottom: 67px; height: 65%; }
   .brand-lockup strong { font-size: 20px; }
 }
 @media (max-width: 600px) {
@@ -276,7 +278,6 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .dashboard-grid { gap: 9px; }
   .center-stage { min-height: 55svh; max-height: 500px; padding-bottom: 51px; }
   .pet-speech { top: 9%; padding: 9px 12px; font-size: 10px; }
-  .pet-tap-area { bottom: 53px; height: 63%; width: 62%; }
   .pet-nameplate { top: 24%; left: 50%; max-width: 82%; padding: 5px 9px; font-size: 9px; }
   .stage-hint { font-size: 8px; }
   .side-left, .side-right { grid-template-columns: 1fr; gap: 8px; }
@@ -776,6 +777,9 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 .stage-toolbar button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 31px; padding: 0 9px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 10px; background: rgb(9 24 54 / 78%); color: #f3f8ff; box-shadow: 0 6px 16px rgb(3 9 25 / 22%); font-size: 8px; font-weight: 1000; backdrop-filter: blur(10px); transition: transform 140ms var(--ease-out),background 140ms; }
 .stage-toolbar button:hover, .stage-toolbar button.active { transform: translateX(-2px); background: rgb(28 102 153 / 92%); }
 .stage-toolbar svg { color: #8de3ff; }
+.scene-photo-button { position: absolute; right: 12px; bottom: 12px; z-index: 12; display: grid; width: 34px; height: 34px; place-items: center; padding: 0; border: 1px solid rgb(255 255 255 / 32%); border-radius: 11px; background: rgb(8 23 50 / 62%); color: #effaff; box-shadow: 0 5px 18px rgb(1 9 26 / 24%); opacity: .78; backdrop-filter: blur(9px); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out), background 160ms; }
+.scene-photo-button:hover, .scene-photo-button:focus-visible { transform: translateY(-1px); background: rgb(8 23 50 / 88%); opacity: 1; outline: 2px solid rgb(146 227 255 / 68%); outline-offset: 2px; }
+.scene-photo-button:active { transform: scale(.96); }
 .placement-nudge { position: absolute; top: 25%; left: 50%; z-index: 9; display: flex; align-items: center; gap: 6px; max-width: 85%; padding: 7px 10px; transform: translateX(-50%); border: 1px solid rgb(126 221 255 / 34%); border-radius: 99px; background: rgb(7 24 53 / 83%); color: #e4f8ff; font-size: 8px; font-weight: 900; pointer-events: none; }
 .placement-nudge svg { color: #ffdc67; }
 .scene-decoration { position: absolute; z-index: 3; display: grid; width: clamp(50px,7.5vw,100px); height: clamp(50px,7.5vw,100px); place-items: center; padding: 0; border: 0; border-radius: 14px; background: transparent; color: #fff; touch-action: none; user-select: none; cursor: pointer; }
@@ -960,4 +964,45 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .decor-room-summary { margin-bottom: 9px; padding: 8px 9px; }
   .decor-room-summary strong { font-size: 9px; }
   .decor-room-summary small { font-size: 7px; }
+}
+
+
+/* Modo de tela limpa: mantém a cena e dois controles de retorno/configuração. */
+.focus-mode-toggle { border-color: rgb(133 218 255 / 40%); color: #a6e8ff; }
+.game-root.focus-mode .screen-ui { min-height: 0; padding: 0; pointer-events: none; }
+.game-root.focus-mode .topbar { position: fixed; top: 12px; right: 12px; z-index: 40; display: flex; width: auto; max-width: none; justify-content: flex-end; gap: 7px; margin: 0; pointer-events: auto; }
+.game-root.focus-mode .brand-lockup,
+.game-root.focus-mode .level-card,
+.game-root.focus-mode .side-column,
+.game-root.focus-mode .bottom-nav { display: none; }
+.game-root.focus-mode .top-actions { gap: 7px; }
+.game-root.focus-mode .top-actions .coin-pill,
+.game-root.focus-mode .top-actions .sound-toggle,
+.game-root.focus-mode .top-actions .pause-toggle { display: none; }
+.game-root.focus-mode .dashboard-grid { position: fixed; inset: 0; display: block; width: 100%; max-width: none; min-height: 0; margin: 0; padding: 0; pointer-events: none; }
+.game-root.focus-mode .center-stage { position: absolute; inset: 0; display: block; width: 100%; min-height: 0; height: 100%; max-height: none; padding: 0; overflow: visible; pointer-events: auto; }
+.game-root.focus-mode .stage-location-tag,
+.game-root.focus-mode .stage-companion-tag,
+.game-root.focus-mode .stage-toolbar,
+.game-root.focus-mode .stage-hint { display: none; }
+
+/* Presente aberto: o ícone/recompensa sobe e desaparece, sem bloquear a cena. */
+.gift-reveal-layer { position: fixed; inset: 0; z-index: 35; display: flex; align-items: flex-end; justify-content: center; padding: 0 16px max(88px,calc(env(safe-area-inset-bottom) + 78px)); pointer-events: none; }
+.gift-reveal-card { position: relative; display: flex; align-items: center; gap: 12px; width: min(360px,92vw); min-height: 84px; padding: 12px 16px; transform: translateY(18px) scale(.96); border: 1px solid rgb(255 255 255 / 22%); border-radius: 20px; background: linear-gradient(135deg,rgb(18 43 84 / 97%),rgb(13 28 60 / 97%)); box-shadow: 0 18px 50px rgb(1 8 24 / 45%),inset 0 1px 0 rgb(255 255 255 / 12%); opacity: 0; animation: gift-reveal-rise 2.8s var(--ease-out) both; }
+.gift-reveal-art { display: grid; flex: 0 0 56px; width: 56px; height: 56px; place-items: center; border: 1px solid rgb(255 255 255 / 14%); border-radius: 15px; background: radial-gradient(circle,#517bab,#24426f); }
+.gift-reveal-art img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 7px rgb(0 0 0 / 30%)); }
+.gift-reveal-art.coins-art { background: radial-gradient(circle,#8f702e,#544318); color: #ffdc54; }
+.gift-reveal-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.gift-reveal-copy small { color: #83dfff; font-size: 8px; font-weight: 1000; letter-spacing: 1px; }
+.gift-reveal-copy strong { color: #fff; font-family: "Baloo 2", "Nunito", sans-serif; font-size: 17px; line-height: 1.05; }
+.gift-reveal-copy > span { color: #b4c8e7; font-size: 9px; font-weight: 800; }
+.gift-reveal-spark { position: absolute; top: -9px; right: -8px; display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgb(255 255 255 / 22%); border-radius: 50%; background: #ffcf43; color: #603f00; }
+@keyframes gift-reveal-rise { 0% { transform: translateY(18px) scale(.96); opacity: 0; } 12% { transform: translateY(0) scale(1); opacity: 1; } 65% { transform: translateY(-10px) scale(1); opacity: 1; } 100% { transform: translateY(-42px) scale(.98); opacity: 0; } }
+@media (max-width: 600px) {
+  .game-root.focus-mode .topbar { top: max(9px,env(safe-area-inset-top)); right: 9px; }
+  .game-root.focus-mode .icon-button { width: 38px; height: 38px; }
+  .gift-reveal-layer { padding-bottom: max(76px,calc(env(safe-area-inset-bottom) + 68px)); }
+  .gift-reveal-card { min-height: 76px; padding: 10px 12px; }
+  .gift-reveal-art { flex-basis: 50px; width: 50px; height: 50px; }
+  .gift-reveal-copy strong { font-size: 15px; }
 }

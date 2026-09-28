@@ -34,3 +34,7 @@
 - `PLAN.md` — escopo, riscos e critérios de verificação.
 - `ASSETS.md` — inventário e caminhos da mídia.
 - `MEMORY.md` — decisões entre sessões e estado da branch/PR.
+
+
+## PWA e privacidade
+O clone é uma aplicação Vite estática: não tem backend/API ou autenticação. O manifest e os ícones são instaláveis, mas não há service worker nem cache offline. O progresso fica no `localStorage` do navegador sem criptografia.

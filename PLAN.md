@@ -30,3 +30,9 @@ Levar a campanha de dez casas a um pet game mais expressivo, móvel e jogável s
 
 ## Continuidade
 A versão do app fica em `src/`; assets locais ficam em `src/assets/`; preservar `legacy.html`. Desenvolver neste branch/PR aberto e não mesclar automaticamente em `main`.
+
+
+## Follow-up de experiência e instalação (2026-09-28)
+O toque em área vazia apenas move o pet; a hitbox acompanha o personagem e clipes PT-BR nativos variam por gênero para toque e cuidado. O modo de tela limpa oculta os painéis, e a câmera exporta um PNG do canvas sem HUD (partilha do sistema em dispositivos compatíveis ou download). Itens de decoração fixos ficam atrás do pet e só sobem para primeiro plano durante edição. Presentes surgem a cada 4,5–7,5 minutos; ao abrir, mostram a recompensa (miniatura ou moedas) e somem em cerca de 2,9 s. O manifest/ícones permitem instalar, mas não há service worker ou cache offline nesta versão.
+
+Validação final 2026-09-28: `pnpm check`, `pnpm build` e `git diff --check` passaram; `pnpm audit` completo e `pnpm audit --prod` retornaram zero advisories conhecidos. Toolchain resolvida: Vite 7.3.6, @vitejs/plugin-react 5.2.0 e Tailwind 4.3.3. O build mantém um aviso informativo de chunk Babylon de 1,17 MB (~287 KB gzip). A prévia local responde HTTP 200; a verificação visual final foi feita no preview WebDev desktop/mobile.

@@ -59,5 +59,7 @@ O catálogo tem **100 props únicos**, dez para cada casa: os quatro sprites leg
 | Abertura do onboarding e saudações do pet | `onboarding-intro.mp3`, `welcome-boy.mp3`, `welcome-girl.mp3` | introdução PT-BR e cumprimento masculino/feminino ao selecionar o personagem |
 | Companheiros | `voice-mimi.mp3`, `voice-tico.mp3` | frases divertidas ao toque |
 | Combinação match-3 | `match-combo.mp3` | chime curto para combos/cascatas |
+| Toque menino/menina | `pet-tap-boy.mp3`, `pet-tap-girl.mp3` | reação natural PT-BR ao tocar no pet |
+| Cuidado menino/menina | `pet-care-boy.mp3`, `pet-care-girl.mp3` | agradecimento natural PT-BR por gênero |
 
 Vite importa os arquivos por `src/game/assets.ts`; os assets não dependem do storage do WebDev. O modo `?demo=1` usa sprites de demonstração e nunca persiste no save ativo.

@@ -47,7 +47,7 @@ export function SceneDecoration({ placement, image, selected, onSelect, onFix, o
       observer.disconnect();
       window.removeEventListener("resize", updateScreenPosition);
     };
-  }, [position, placement.anchor]);
+  }, [position, placement.anchor, selected]);
 
   function currentBackgroundPoint() {
     if (placement.anchor === "background") return position;
@@ -124,12 +124,15 @@ export function SceneDecoration({ placement, image, selected, onSelect, onFix, o
   const positionStyle = placement.anchor === "background" && screenOffset
     ? { left: `${screenOffset.left}px`, top: `${screenOffset.top}px` }
     : { left: `${position.x}%`, top: `${position.y}%` };
+  const depthIndex = selected ? 30 : 3 + Math.round(position.y / 20);
+
+  if (!selected) return null;
 
   return (
     <div
       ref={nodeRef}
       className={`scene-decoration ${selected ? "selected" : "fixed"}`}
-      style={{ ...positionStyle, transform: `translate(-50%,-50%) rotate(${placement.rotation}deg)` }}
+      style={{ ...positionStyle, zIndex: depthIndex, transform: `translate(-50%,-50%) rotate(${placement.rotation}deg)` }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -151,6 +154,38 @@ export function SceneDecoration({ placement, image, selected, onSelect, onFix, o
       </>}
     </div>
   );
+}
+
+export function SceneDecorationPicker({ placement, onSelect }: {
+  placement: DecorationPlacement;
+  onSelect: () => void;
+}) {
+  const [screenOffset, setScreenOffset] = useState<ScreenOffset | null>(null);
+  const name = DECORATIONS.find((item) => item.id === placement.itemId)?.name ?? "Decoração";
+
+  useEffect(() => {
+    const stage = document.querySelector<HTMLElement>(".center-stage");
+    if (!stage || placement.anchor !== "background") {
+      setScreenOffset(null);
+      return;
+    }
+    const updateScreenPosition = () => {
+      const stageRect = stage.getBoundingClientRect();
+      const screen = backgroundPercentToScreen({ x: placement.x, y: placement.y });
+      setScreenOffset({ left: screen.x - stageRect.left, top: screen.y - stageRect.top });
+    };
+    updateScreenPosition();
+    const observer = new ResizeObserver(updateScreenPosition);
+    observer.observe(stage);
+    window.addEventListener("resize", updateScreenPosition);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateScreenPosition);
+    };
+  }, [placement.x, placement.y, placement.anchor]);
+
+  if (!screenOffset) return null;
+  return <button className="scene-decoration-picker" type="button" style={{ left: `${screenOffset.left}px`, top: `${screenOffset.top}px` }} onClick={(event) => { event.stopPropagation(); onSelect(); }} aria-label={`Selecionar ${name} para mover, girar ou fixar`} />;
 }
 
 export function SceneGift({ gift, image, now, onCollect }: {

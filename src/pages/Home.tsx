@@ -1,12 +1,12 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import {
-  Bath, BookOpen, Check, ChevronDown, ChevronRight, Coins, Gamepad2, Gift, Heart,
+  Bath, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Gamepad2, Gift, Heart,
   Home as HomeIcon, LockKeyhole, MapPin, Moon, PawPrint, Plus, Settings, ShoppingBag,
-  Sparkles, Star, Trophy, Utensils, Volume2, VolumeX, X,
+  Eye, EyeOff, Sparkles, Star, Trophy, Utensils, Volume2, VolumeX, X,
 } from "lucide-react";
 import MiniGameBoard from "@/components/MiniGameBoard";
 import OnboardingFlow from "@/components/OnboardingFlow";
-import { SceneDecoration, SceneGift } from "@/components/SceneDecoration";
+import { SceneDecoration, SceneDecorationPicker, SceneGift } from "@/components/SceneDecoration";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import {
   buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame,
@@ -17,15 +17,17 @@ import {
   type PetGender, type PetProfile, type SkinId, type StoreItemId,
 } from "@/game/PetGame";
 import { CAMPAIGN_LEVELS, getCampaignLevel, MINI_GAMES, type MiniGameId } from "@/game/levels";
-import { playCompanionVoice, playMatchSound, playPetVoice, speakPetText, stopPetVoice, type PetVoiceCue } from "@/game/audio";
+import { playCompanionVoice, playMatchSound, playPetVoice, stopPetVoice, type PetVoiceCue } from "@/game/audio";
 import { GAME_ASSETS } from "@/game/assets";
 import { legacyStagePercentToBackground, screenToBackgroundPercent } from "@/game/decorationCoordinates";
 
 type ShopTab = "looks" | "items" | "boosts" | "friends" | "decor";
 type CollapsedPanels = { stats: boolean; care: boolean; mission: boolean; shop: boolean };
+type GiftReveal = { key: string; kind: "coins"; amount: number } | { key: string; kind: "decoration"; name: string; image: string };
 const PANEL_PREF_KEY = "meu-pet-panels-v2";
 const SOUND_PREF_KEY = "meu-pet-sound-v2";
 const VOICE_PREF_KEY = "meu-pet-voice-v2";
+const FOCUS_MODE_PREF_KEY = "meu-pet-focus-mode-v1";
 const DEFAULT_PANELS: CollapsedPanels = { stats: false, care: false, mission: false, shop: false };
 const GameCanvas = lazy(() => import("@/components/GameCanvas"));
 
@@ -121,12 +123,15 @@ export default function Home() {
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_PREF_KEY) !== "false");
   const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem(VOICE_PREF_KEY) !== "false");
   const [collapsed, setCollapsed] = useState<CollapsedPanels>(loadPanels);
+  const [focusMode, setFocusMode] = useState(() => localStorage.getItem(FOCUS_MODE_PREF_KEY) === "true");
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [storyLevel, setStoryLevel] = useState<number | null>(null);
   const [roomsOpen, setRoomsOpen] = useState(false);
   const [selectedDecorationId, setSelectedDecorationId] = useState<string | null>(null);
   const [pendingDecoration, setPendingDecoration] = useState<DecorationId | null>(null);
   const [giftClock, setGiftClock] = useState(Date.now());
+  const [giftNextSpawnAt, setGiftNextSpawnAt] = useState(() => Date.now() + 150_000);
+  const [giftReveal, setGiftReveal] = useState<GiftReveal | null>(null);
   const [toast, setToast] = useState("");
   const [petLine, setPetLine] = useState("");
   const [petSpeechVisible, setPetSpeechVisible] = useState(false);
@@ -138,6 +143,11 @@ export default function Home() {
   const petSpeechTimerRef = useRef<number | null>(null);
   const petSpeechClearTimerRef = useRef<number | null>(null);
   const petNameTimerRef = useRef<number | null>(null);
+  const giftRevealTimerRef = useRef<number | null>(null);
+  const photoBusyRef = useRef(false);
+  const petTapAreaRef = useRef<HTMLButtonElement>(null);
+  const petSpeechElementRef = useRef<HTMLDivElement>(null);
+  const petNameplateRef = useRef<HTMLDivElement>(null);
   const previousLevelRef = useRef(game.level);
   const voiceOnRef = useRef(voiceOn);
 
@@ -177,7 +187,38 @@ export default function Home() {
   useEffect(() => { localStorage.setItem(PANEL_PREF_KEY, JSON.stringify(collapsed)); }, [collapsed]);
   useEffect(() => { localStorage.setItem(SOUND_PREF_KEY, String(soundOn)); }, [soundOn]);
   useEffect(() => { localStorage.setItem(VOICE_PREF_KEY, String(voiceOn)); }, [voiceOn]);
+  useEffect(() => { localStorage.setItem(FOCUS_MODE_PREF_KEY, String(focusMode)); }, [focusMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
+
+  useEffect(() => {
+    const followPet = (event: Event) => {
+      const detail = (event as CustomEvent<{ x: number; y: number; width: number; height: number }>).detail;
+      const stage = document.querySelector<HTMLElement>(".center-stage");
+      if (!stage || !detail) return;
+      const rect = stage.getBoundingClientRect();
+      const x = detail.x - rect.left;
+      const y = detail.y - rect.top;
+      const tapArea = petTapAreaRef.current;
+      if (tapArea) {
+        tapArea.style.left = `${x}px`;
+        tapArea.style.top = `${y}px`;
+        tapArea.style.width = `${detail.width}px`;
+        tapArea.style.height = `${detail.height}px`;
+        tapArea.dataset.positioned = "true";
+      }
+      const petTop = y - detail.height / 2;
+      if (petSpeechElementRef.current) {
+        petSpeechElementRef.current.style.left = `${x}px`;
+        petSpeechElementRef.current.style.top = `${Math.max(16, petTop - 24)}px`;
+      }
+      if (petNameplateRef.current) {
+        petNameplateRef.current.style.left = `${x}px`;
+        petNameplateRef.current.style.top = `${Math.max(16, petTop + 6)}px`;
+      }
+    };
+    window.addEventListener("pet:hitbox", followPet);
+    return () => window.removeEventListener("pet:hitbox", followPet);
+  }, []);
 
   useEffect(() => {
     if (game.profile && !game.tutorialComplete) setTutorialOpen(true);
@@ -211,14 +252,17 @@ export default function Home() {
   useEffect(() => {
     if (!game.profile || demoMode || paused || gamesOpen || shopOpen || settingsOpen || tutorialOpen || storyLevel !== null) return;
     const timer = window.setInterval(() => {
+      const now = Date.now();
+      setGiftClock(now);
+      const giftId = `gift-${now}-${Math.random().toString(36).slice(2, 8)}`;
       setGame((current) => {
-        let next = expireGifts(current);
-        if (Math.random() < 0.27) next = spawnSurpriseGift(next, `gift-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`);
-        return next;
+        const next = expireGifts(current, now);
+        return now >= giftNextSpawnAt ? spawnSurpriseGift(next, giftId, now) : next;
       });
+      if (now >= giftNextSpawnAt) setGiftNextSpawnAt(now + 270_000 + Math.floor(Math.random() * 180_000));
     }, 15000);
     return () => window.clearInterval(timer);
-  }, [game.profile, demoMode, paused, gamesOpen, shopOpen, settingsOpen, tutorialOpen, storyLevel]);
+  }, [game.profile, demoMode, paused, gamesOpen, shopOpen, settingsOpen, tutorialOpen, storyLevel, giftNextSpawnAt]);
 
   useEffect(() => {
     if (!game.gifts.length) return;
@@ -230,15 +274,21 @@ export default function Home() {
   }, [game.gifts.length]);
 
   useEffect(() => {
-    dispatchPetEvent("pet:room", { room: game.activeRoom });
-    dispatchPetEvent("pet:decorations", { placements: roomDecorations });
-  }, [game.activeRoom, game.roomDecorations]);
+    const syncScene = () => {
+      dispatchPetEvent("pet:room", { room: game.activeRoom });
+      dispatchPetEvent("pet:decorations", { placements: roomDecorations.filter((placement) => placement.id !== selectedDecorationId) });
+    };
+    window.addEventListener("pet:scene-ready", syncScene);
+    syncScene();
+    return () => window.removeEventListener("pet:scene-ready", syncScene);
+  }, [game.activeRoom, game.roomDecorations, selectedDecorationId]);
 
   useEffect(() => () => {
     if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
     if (petSpeechTimerRef.current !== null) window.clearTimeout(petSpeechTimerRef.current);
     if (petSpeechClearTimerRef.current !== null) window.clearTimeout(petSpeechClearTimerRef.current);
     if (petNameTimerRef.current !== null) window.clearTimeout(petNameTimerRef.current);
+    if (giftRevealTimerRef.current !== null) window.clearTimeout(giftRevealTimerRef.current);
     if (audioRef.current) void audioRef.current.close();
     stopPetVoice();
   }, []);
@@ -247,6 +297,52 @@ export default function Home() {
     setToast(message);
     if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
     toastTimerRef.current = window.setTimeout(() => setToast(""), 2700);
+  }
+
+  async function saveScenePhoto() {
+    if (photoBusyRef.current) return;
+    if (selectedDecorationId || pendingDecoration) {
+      showToast("Fixe ou cancele o item em edição para fotografar a cena completa.");
+      return;
+    }
+    photoBusyRef.current = true;
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const timer = window.setTimeout(() => reject(new Error("A captura demorou demais.")), 10000);
+        window.dispatchEvent(new CustomEvent("pet:capture-photo", { detail: {
+          resolve: (value: string) => { window.clearTimeout(timer); resolve(value); },
+          reject: (error: Error) => { window.clearTimeout(timer); reject(error); },
+        } }));
+      });
+      const blob = await (await fetch(dataUrl)).blob();
+      const filename = `meu-pet-${new Date().toISOString().replace(/[:.]/g, "-")}.png`;
+      const file = new File([blob], filename, { type: "image/png" });
+      let canShareFile = false;
+      try { canShareFile = typeof navigator.share === "function" && typeof navigator.canShare === "function" && navigator.canShare({ files: [file] }); } catch { /* Fallback to a regular PNG download. */ }
+      if (canShareFile && navigator.share) {
+        try {
+          await navigator.share({ files: [file], title: "Meu Pet Virtual", text: "Meu pet e sua casa!" });
+          showToast("Foto pronta! Escolha Fotos ou Galeria na partilha para salvá-la.");
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            showToast("Compartilhamento cancelado.");
+            return;
+          }
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 30000);
+      showToast("Foto PNG baixada. Abra a imagem em Fotos/Galeria para adicioná-la.");
+    } catch {
+      showToast("Não consegui capturar a foto agora. Tente novamente.");
+    } finally {
+      photoBusyRef.current = false;
+    }
   }
 
   function dismissPetSpeech() {
@@ -316,16 +412,14 @@ export default function Home() {
   }
 
   function petTap(event: MouseEvent<HTMLElement>) {
+    event.stopPropagation();
     if (pendingDecoration) { event.stopPropagation(); placeDecorationAt(event.clientX, event.clientY); return; }
     care("love", false);
     if (game.profile) {
       revealPetName();
-      const lines = game.profile.gender === "menina"
-        ? [`${petName} adora cafuné. Mas cuidado com o penteado!`, "Ronrom ativado. Modo fofura no máximo!", "Esse carinho vale três sardinhas, viu?"]
-        : [`${petName} aceita cafuné como forma oficial de pagamento!`, "Ronrom turbo ligado!", "Agora só falta um peixinho para completar meu dia."];
-      const line = lines[Math.floor(Math.random() * lines.length)];
-      showPetSpeech(line, 8200);
-      if (voiceOn) speakPetText(line, game.profile.gender, dismissPetSpeech);
+      const line = "Adorei esse cafuné! Meu dia ficou mais feliz!";
+      showPetSpeech(line, 7200);
+      if (voiceOn) playPetVoice("tap", game.profile.gender, dismissPetSpeech);
     }
   }
 
@@ -353,9 +447,20 @@ export default function Home() {
   }
 
   function collectGift(id: string) {
+    const gift = game.gifts.find((item) => item.id === id);
     const result = collectSurpriseGift(game, id, giftClock);
-    setGame(result.state); showToast(result.message); showPetSpeech(result.message);
-    if (result.ok) playTone("reward");
+    setGame(result.state);
+    if (!result.ok) { showToast(result.message); return; }
+    if (gift?.reward === "decoration") {
+      const itemId = gift.decorationId ?? "plant";
+      const item = DECORATIONS.find((entry) => entry.id === itemId);
+      setGiftReveal({ key: gift.id, kind: "decoration", name: item?.name ?? "Novo mimo", image: GAME_ASSETS.decorations[itemId] ?? GAME_ASSETS.decorations.plant });
+    } else {
+      setGiftReveal({ key: gift?.id ?? id, kind: "coins", amount: gift?.coins ?? 80 });
+    }
+    if (giftRevealTimerRef.current !== null) window.clearTimeout(giftRevealTimerRef.current);
+    giftRevealTimerRef.current = window.setTimeout(() => setGiftReveal(null), 2900);
+    playTone("reward");
   }
 
   function tapCompanion(id: CompanionId) {
@@ -381,7 +486,6 @@ export default function Home() {
     setGame((current) => setPetProfile(current, profile));
     showPetSpeech(`Miau! Oi, ${profile.name}! Eu adorei esse nome!`, 8000);
     dispatchPetEvent("pet:profile", { gender: profile.gender });
-    if (voiceOn) speakPetText(`Oi, ${profile.name}! Eu adorei esse nome. Vamos brincar juntos?`, profile.gender, dismissPetSpeech);
     dispatchPetEvent("pet:action", { action: "love" });
   }
 
@@ -458,7 +562,7 @@ export default function Home() {
   const closeGames = () => { setGamesOpen(false); setMiniId(null); };
 
   return (
-    <div className="game-root">
+    <div className={`game-root ${focusMode ? "focus-mode" : ""}`}>
       <Suspense fallback={<div className="scene-loading" aria-label="Carregando cenário do pet" />}><GameCanvas initialState={{ level: game.level, room: game.activeRoom, skin: game.skin, sleeping: game.sleeping, gender: game.profile?.gender ?? null, characterId: game.profile?.characterId ?? null, companion: game.activeCompanionId }} /></Suspense>
       <div className="room-overlay" aria-hidden="true" />
       <div className="screen-ui">
@@ -472,8 +576,9 @@ export default function Home() {
           <div className="top-actions">
             <button className="coin-pill" onClick={() => openShop("items")} aria-label="Abrir a loja de itens"><Coins size={21} fill="currentColor" /><strong>{game.coins.toLocaleString("pt-BR")}</strong><span className="coin-plus"><Plus size={15} /></span></button>
             <button className="icon-button" onClick={() => setSettingsOpen(true)} aria-label="Configurações"><Settings size={19} /></button>
-            <button className="icon-button" onClick={() => setSoundOn((value) => !value)} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
-            <button className="icon-button" onClick={() => setPaused(true)} aria-label="Pausar jogo"><span className="pause-symbol">Ⅱ</span></button>
+            <button className="icon-button sound-toggle" onClick={() => setSoundOn((value) => !value)} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
+            <button className="icon-button pause-toggle" onClick={() => setPaused(true)} aria-label="Pausar jogo"><span className="pause-symbol">Ⅱ</span></button>
+            <button className="icon-button focus-mode-toggle" type="button" onClick={() => setFocusMode((value) => !value)} aria-pressed={focusMode} aria-label={focusMode ? "Mostrar todas as informações" : "Ativar tela limpa"} title={focusMode ? "Mostrar interface completa" : "Tela limpa"}>{focusMode ? <Eye size={19} /> : <EyeOff size={19} />}</button>
           </div>
         </header>
 
@@ -498,17 +603,19 @@ export default function Home() {
           <section className="center-stage" aria-label={`Cenário de ${activeChapter.location}`} onClick={handleStageClick}>
             <div className="stage-location-tag"><HomeIcon size={13} /><span>CASA {game.activeRoom}</span><i />{activeChapter.location}</div>
             {currentCompanion && <button className="stage-companion-tag" type="button" onClick={() => tapCompanion(currentCompanion.id)} aria-label={`Ouvir ${currentCompanion.name}`}><span>✦</span> {currentCompanion.name}: toque para ouvir</button>}
-            {roomDecorations.map((placement) => <SceneDecoration key={placement.id} placement={placement} image={GAME_ASSETS.decorations[placement.itemId]} selected={selectedDecorationId === placement.id} onSelect={() => setSelectedDecorationId(placement.id)} onFix={() => setSelectedDecorationId(null)} onMove={moveDecoration} onRemove={(id) => { setSelectedDecorationId(null); setGame((current) => removeDecoration(current, id)); showToast("Item guardado novamente na mochila."); }} />)}
+            {roomDecorations.filter((placement) => placement.id !== selectedDecorationId).map((placement) => <SceneDecorationPicker key={`picker-${placement.id}`} placement={placement} onSelect={() => setSelectedDecorationId(placement.id)} />)}
+            {roomDecorations.filter((placement) => selectedDecorationId === placement.id).map((placement) => <SceneDecoration key={placement.id} placement={placement} image={GAME_ASSETS.decorations[placement.itemId]} selected onSelect={() => setSelectedDecorationId(placement.id)} onFix={() => setSelectedDecorationId(null)} onMove={moveDecoration} onRemove={(id) => { setSelectedDecorationId(null); setGame((current) => removeDecoration(current, id)); showToast("Item guardado novamente na mochila."); }} />)}
             {roomGifts.map((gift) => <SceneGift key={gift.id} gift={gift} image={GAME_ASSETS.gift} now={giftClock} onCollect={collectGift} />)}
             <div className="stage-toolbar" onClick={(event) => event.stopPropagation()}>
               <button type="button" onClick={() => setRoomsOpen(true)}><MapPin size={14} /> Casas</button>
               <button type="button" onClick={() => { setSelectedDecorationId(null); setPendingDecoration(null); openShop("decor"); }}><Sparkles size={14} /> Decorar</button>
             </div>
+            <button className="scene-photo-button" type="button" onClick={(event) => { event.stopPropagation(); void saveScenePhoto(); }} aria-label="Salvar foto limpa do cenário e do pet" title="Salvar foto limpa"><Camera size={16} /></button>
             {pendingDecoration && <div className="placement-nudge"><Sparkles size={14} /> Toque onde quer colocar o item</div>}
-            {petLine && <div className={`pet-speech ${petSpeechVisible ? "is-visible" : "is-fading"}`} role="status" aria-live="polite">{petLine}</div>}
-            {game.profile && <div className={`pet-nameplate ${showPetName ? "is-visible" : ""}`} aria-hidden={!showPetName}><span className="online-dot" /> {game.profile.name}</div>}
+            {petLine && <div ref={petSpeechElementRef} className={`pet-speech ${petSpeechVisible ? "is-visible" : "is-fading"}`} role="status" aria-live="polite">{petLine}</div>}
+            {game.profile && <div ref={petNameplateRef} className={`pet-nameplate ${showPetName ? "is-visible" : ""}`} aria-hidden={!showPetName}><span className="online-dot" /> {game.profile.name}</div>}
             <div className="stage-hint"><Sparkles size={14} /> {pendingDecoration ? "Toque no cenário para colocar o item" : selectedDecorationId ? "Arraste para ajustar · toque em Fixar ao terminar" : "Toque no cenário para passear · toque no pet para carinho"}</div>
-            <button className="pet-tap-area" onClick={petTap} aria-label={`Fazer carinho em ${petName}`} />
+            <button ref={petTapAreaRef} className="pet-tap-area" onClick={petTap} aria-label={`Fazer carinho em ${petName}`} />
           </section>
 
           <aside className="side-column side-right">
@@ -537,6 +644,11 @@ export default function Home() {
       </div>
 
       {toast && <div className="toast-message" role="status"><Sparkles size={16} />{toast}</div>}
+      {giftReveal && <div className="gift-reveal-layer" aria-live="polite" role="status"><div key={giftReveal.key} className="gift-reveal-card">
+        <span className="gift-reveal-spark"><Sparkles size={18} /></span>
+        {giftReveal.kind === "coins" ? <span className="gift-reveal-art coins-art"><Coins size={35} fill="currentColor" /></span> : <span className="gift-reveal-art"><img src={giftReveal.image} alt="" /></span>}
+        <span className="gift-reveal-copy"><small>PRESENTE ABERTO</small><strong>{giftReveal.kind === "coins" ? `+${giftReveal.amount} moedas` : giftReveal.name}</strong><span>{giftReveal.kind === "coins" ? "Moedas adicionadas ao saldo" : "Adicionado à sua mochila"}</span></span>
+      </div></div>}
 
       {!game.profile && <OnboardingFlow profile={game.profile} onComplete={handleProfile} onHearIntro={() => { if (voiceOn) playPetVoice("intro"); }} onHearPet={(gender) => { if (voiceOn) playPetVoice("welcome", gender); }} />}
       {tutorialOpen && game.profile && <TutorialOverlay onComplete={completeTutorial} onClose={completeTutorial} />}

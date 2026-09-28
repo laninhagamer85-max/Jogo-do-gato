@@ -31,6 +31,10 @@ import onboardingIntroVoice from "../assets/onboarding-intro.mp3?url";
 import welcomeBoyVoice from "../assets/welcome-boy.mp3?url";
 import welcomeGirlVoice from "../assets/welcome-girl.mp3?url";
 import careVoice from "../assets/voz-cuidado.mp3?url";
+import careBoyVoice from "../assets/pet-care-boy.mp3?url";
+import careGirlVoice from "../assets/pet-care-girl.mp3?url";
+import tapBoyVoice from "../assets/pet-tap-boy.mp3?url";
+import tapGirlVoice from "../assets/pet-tap-girl.mp3?url";
 import levelVoice from "../assets/voz-nivel.mp3?url";
 import levelBoyVoice from "../assets/level-boy.mp3?url";
 import levelGirlVoice from "../assets/level-girl.mp3?url";
@@ -76,6 +80,10 @@ export const GAME_ASSETS = {
     welcomeBoy: welcomeBoyVoice,
     welcomeGirl: welcomeGirlVoice,
     care: careVoice,
+    careBoy: careBoyVoice,
+    careGirl: careGirlVoice,
+    tapBoy: tapBoyVoice,
+    tapGirl: tapGirlVoice,
     level: levelVoice,
     levelBoy: levelBoyVoice,
     levelGirl: levelGirlVoice,

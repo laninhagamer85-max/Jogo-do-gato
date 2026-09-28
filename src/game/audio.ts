@@ -1,9 +1,8 @@
 import { GAME_ASSETS } from "./assets";
 import type { CompanionId, PetGender } from "./PetGame";
 
-export type PetVoiceCue = "intro" | "welcome" | "care" | "level";
+export type PetVoiceCue = "intro" | "welcome" | "care" | "level" | "tap";
 let currentVoice: HTMLAudioElement | null = null;
-let currentUtterance: SpeechSynthesisUtterance | null = null;
 
 function playClip(source: string, onEnd?: () => void): void {
   if (!source || typeof window === "undefined") return;
@@ -31,7 +30,11 @@ export function playPetVoice(cue: PetVoiceCue, gender?: PetGender | null, onEnd?
     ? gender === "menina" ? GAME_ASSETS.voice.welcomeGirl : GAME_ASSETS.voice.welcomeBoy
     : cue === "level" && gender
       ? gender === "menina" ? GAME_ASSETS.voice.levelGirl : GAME_ASSETS.voice.levelBoy
-      : GAME_ASSETS.voice[cue];
+      : cue === "care" && gender
+        ? gender === "menina" ? GAME_ASSETS.voice.careGirl : GAME_ASSETS.voice.careBoy
+        : cue === "tap"
+          ? gender === "menina" ? GAME_ASSETS.voice.tapGirl : gender === "menino" ? GAME_ASSETS.voice.tapBoy : GAME_ASSETS.voice.care
+          : GAME_ASSETS.voice[cue];
   playClip(source, onEnd);
 }
 
@@ -43,45 +46,7 @@ export function playMatchSound(): void {
   playClip(GAME_ASSETS.sounds.match);
 }
 
-export function speakPetText(text: string, gender?: PetGender | null, onEnd?: () => void): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window) || !text.trim()) return;
-  try {
-    const voices = window.speechSynthesis.getVoices();
-    const portugueseVoice = voices.find((voice) => voice.lang.toLowerCase().startsWith("pt-br"))
-      ?? voices.find((voice) => voice.lang.toLowerCase().startsWith("pt"));
-    if (!portugueseVoice) return;
-    if (currentUtterance) {
-      currentUtterance.onend = null;
-      currentUtterance.onerror = null;
-      currentUtterance = null;
-    }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "pt-BR";
-    utterance.rate = 0.94;
-    utterance.pitch = gender === "menina" ? 1.35 : 0.94;
-    utterance.voice = portugueseVoice;
-    const finish = () => {
-      if (currentUtterance !== utterance) return;
-      currentUtterance = null;
-      onEnd?.();
-    };
-    currentUtterance = utterance;
-    utterance.onend = finish;
-    utterance.onerror = finish;
-    window.speechSynthesis.speak(utterance);
-  } catch {
-    // Speech synthesis is not available in every browser/device.
-  }
-}
-
 export function stopPetVoice(): void {
   currentVoice?.pause();
   currentVoice = null;
-  if (currentUtterance) {
-    currentUtterance.onend = null;
-    currentUtterance.onerror = null;
-    currentUtterance = null;
-  }
-  if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
 }

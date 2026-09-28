@@ -8,7 +8,7 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
-import { CURRENT_SAVE_KEY, type CompanionId, type PetCharacterId, type PetGender } from "./PetGame";
+import { CURRENT_SAVE_KEY, type CompanionId, type DecorationPlacement, type PetCharacterId, type PetGender } from "./PetGame";
 import { GAME_ASSETS } from "./assets";
 
 type PetActionEvent = CustomEvent<{ action?: string; sleeping?: boolean }>;
@@ -19,6 +19,7 @@ type PetCompanionEvent = CustomEvent<{ companionId?: CompanionId | null }>;
 type PetRoomEvent = CustomEvent<{ room?: number }>;
 type PetMoveEvent = CustomEvent<{ x?: number; y?: number }>;
 type PetBlinkEvent = CustomEvent<Record<string, never>>;
+type PetDecorationsEvent = CustomEvent<{ placements?: DecorationPlacement[] }>;
 
 export type GameHandle = { scene: Scene; dispose: () => void };
 export type ScenePetState = { level: number; room?: number; skin: string; sleeping: boolean; gender: PetGender | null; characterId?: PetCharacterId | null; companion: CompanionId | null };
@@ -63,7 +64,7 @@ function imageSprite(scene: Scene, name: string, url: string, width: number, hei
   return { mesh, material, texture };
 }
 
-export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement, initialState?: ScenePetState): Promise<GameHandle> {
+export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement, initialState?: ScenePetState): Promise<GameHandle> {
   const saved = initialState ?? readSave();
   let currentRoom = saved.room ?? saved.level;
   const scene = new Scene(engine);
@@ -122,6 +123,26 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   let petWidth = 3.35;
   let sceneAspect = 0;
   const viewHeight = 8.2;
+  let backgroundWidth = 14;
+  let backgroundHeight = 8;
+  const decorationSprites = new Map<string, { placement: DecorationPlacement; sprite: ReturnType<typeof imageSprite> }>();
+  const updateDecorationSprite = (entry: { placement: DecorationPlacement; sprite: ReturnType<typeof imageSprite> }) => {
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const viewWidth = viewHeight * sceneAspect;
+    const displaySize = Math.min(100, Math.max(50, window.innerWidth * 0.075));
+    const worldSize = (viewWidth * displaySize) / rect.width;
+    const { placement, sprite } = entry;
+    sprite.mesh.scaling.set(worldSize, worldSize, 1);
+    sprite.mesh.position.set(
+      (placement.x / 100 - 0.5) * backgroundWidth,
+      (0.5 - placement.y / 100) * backgroundHeight,
+      1.55 - (placement.y / 100) * 0.45,
+    );
+    sprite.mesh.rotation.z = (placement.rotation * Math.PI) / 180;
+    sprite.mesh.isPickable = true;
+    sprite.mesh.metadata = { decorationId: placement.id };
+  };
   const resizeScene = () => {
     const width = Math.max(1, engine.getRenderWidth());
     const height = Math.max(1, engine.getRenderHeight());
@@ -135,7 +156,10 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
     const roomRatio = 16 / 9;
     const bgHeight = Math.max(viewHeight, viewWidth / roomRatio);
     const bgWidth = Math.max(viewWidth, viewHeight * roomRatio);
+    backgroundWidth = bgWidth;
+    backgroundHeight = bgHeight;
     background.scaling.set(bgWidth / 14, bgHeight / 8, 1);
+    decorationSprites.forEach(updateDecorationSprite);
 
     baseY = aspect < 0.7 ? 1.18 : aspect < 1.15 ? -0.35 : -1.12;
     petWidth = aspect < 0.7 ? Math.min(2.2, viewWidth * 0.60) : Math.min(3.35, viewWidth * 0.48);
@@ -181,6 +205,19 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
     old.dispose();
   };
   const onRoom = (event: Event) => setRoom((event as PetRoomEvent).detail?.room ?? currentRoom);
+  const onDecorations = (event: Event) => {
+    const placements = (event as PetDecorationsEvent).detail?.placements ?? [];
+    decorationSprites.forEach((entry) => entry.sprite.mesh.dispose(false, true));
+    decorationSprites.clear();
+    for (const placement of placements.slice(0, 40)) {
+      const url = GAME_ASSETS.decorations[placement.itemId];
+      if (!url) continue;
+      const sprite = imageSprite(scene, `room-decoration-${placement.id}`, url, 1, 1);
+      const entry = { placement, sprite };
+      decorationSprites.set(placement.id, entry);
+      updateDecorationSprite(entry);
+    }
+  };
   const onMove = (event: Event) => {
     const detail = (event as PetMoveEvent).detail;
     const xPct = Math.max(5, Math.min(95, Number(detail?.x ?? 50))) / 100;
@@ -224,9 +261,11 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   window.addEventListener("pet:profile", onProfile);
   window.addEventListener("pet:companion", onCompanion);
   window.addEventListener("pet:room", onRoom);
+  window.addEventListener("pet:decorations", onDecorations);
   window.addEventListener("pet:move", onMove);
   window.addEventListener("pet:blink", onPetBlink as EventListener);
 
+  let lastHitbox: { x: number; y: number; width: number; height: number } | null = null;
   const renderObserver = scene.onBeforeRenderObservable.add(() => {
     const aspect = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight());
     if (Math.abs(aspect - sceneAspect) > 0.01) resizeScene();
@@ -261,6 +300,20 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
       }
     }
     kitten.position.set(positionX + moveX, positionY + wave + jump, 0);
+    const canvasRect = canvas.getBoundingClientRect();
+    const viewWidth = viewHeight * sceneAspect;
+    if (canvasRect.width && canvasRect.height && viewWidth) {
+      const hitbox = {
+        x: canvasRect.left + ((positionX + moveX + viewWidth / 2) / viewWidth) * canvasRect.width,
+        y: canvasRect.top + (0.5 - (positionY + wave + jump) / viewHeight) * canvasRect.height,
+        width: (petWidth * 0.88 / viewWidth) * canvasRect.width,
+        height: (petWidth * 0.98 / viewHeight) * canvasRect.height,
+      };
+      if (!lastHitbox || Math.abs(hitbox.x - lastHitbox.x) > 1.5 || Math.abs(hitbox.y - lastHitbox.y) > 1.5 || Math.abs(hitbox.width - lastHitbox.width) > 1 || Math.abs(hitbox.height - lastHitbox.height) > 1) {
+        lastHitbox = hitbox;
+        window.dispatchEvent(new CustomEvent("pet:hitbox", { detail: hitbox }));
+      }
+    }
     kitten.rotation.z = (walking ? (targetX < positionX ? 1 : -1) * 0.13 : 0) + Math.sin(now / 1450) * (sleeping ? 0.012 : 0.028) + (reactionKind === "level" && elapsed < 1250 ? Math.sin(now / 58) * 0.045 : 0);
     const pulse = 1 + Math.max(0, 1 - elapsed / 650) * (reactionKind === "level" ? 0.045 : 0.02);
     const scale = (petWidth / 3.35) * pulse;
@@ -290,6 +343,7 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
       window.removeEventListener("pet:profile", onProfile);
       window.removeEventListener("pet:companion", onCompanion);
       window.removeEventListener("pet:room", onRoom);
+      window.removeEventListener("pet:decorations", onDecorations);
       window.removeEventListener("pet:move", onMove);
       window.removeEventListener("pet:blink", onPetBlink as EventListener);
       scene.onBeforeRenderObservable.remove(renderObserver);
