@@ -1,3 +1,8 @@
+import { DECORATIONS, getDecorationLockReason, type DecorationId } from "./decorations";
+
+export { DECORATIONS, getDecorationLockReason } from "./decorations";
+export type { DecorationDefinition, DecorationId } from "./decorations";
+
 export type PetStats = {
   felicidade: number;
   fome: number;
@@ -12,8 +17,7 @@ export type CompanionId = "mimi" | "tico";
 export type SkinId = "tigrinho" | "laranja" | "pretinho" | "fantasia";
 export type CareAction = "food" | "bath" | "love" | "sleep";
 export type StoreItemId = "sardinha" | "novelo" | "banho" | "caminha";
-export type DecorationId = "tower" | "bed" | "plant" | "lamp";
-export type DecorationPlacement = { id: string; itemId: DecorationId; x: number; y: number; rotation: number };
+export type DecorationPlacement = { id: string; itemId: DecorationId; x: number; y: number; rotation: number; anchor?: "background" | "viewport" };
 export type SurpriseGift = {
   id: string;
   room: number;
@@ -33,6 +37,7 @@ export type GameState = {
   coins: number;
   missionProgress: number;
   missionClaimed: boolean;
+  missionsCompleted: number;
   gamesPlayed: number;
   stats: PetStats;
   sleeping: boolean;
@@ -52,7 +57,8 @@ export const MAX_LEVEL = 10;
 export const CURRENT_SAVE_KEY = "meu-pet-virtual-save-v2";
 export const LEGACY_SAVE_KEYS = ["meu-pet-virtual-save-v1", "pet_estado"] as const;
 
-const EMPTY_DECOR: Record<DecorationId, number> = { tower: 0, bed: 1, plant: 1, lamp: 0 };
+const EMPTY_DECOR: Record<DecorationId, number> = Object.fromEntries(DECORATIONS.map((item) => [item.id, 0])) as Record<DecorationId, number>;
+const INITIAL_DECOR: Record<DecorationId, number> = { ...EMPTY_DECOR, bed: 1, plant: 1 };
 
 export const INITIAL_GAME_STATE: GameState = {
   level: 1,
@@ -62,6 +68,7 @@ export const INITIAL_GAME_STATE: GameState = {
   coins: 350,
   missionProgress: 0,
   missionClaimed: false,
+  missionsCompleted: 0,
   gamesPlayed: 0,
   stats: { felicidade: 82, fome: 76, higiene: 90, energia: 88 },
   sleeping: false,
@@ -72,7 +79,7 @@ export const INITIAL_GAME_STATE: GameState = {
   inventory: { sardinha: 1, novelo: 0, banho: 0, caminha: 0 },
   ownedCompanions: [],
   activeCompanionId: null,
-  decorInventory: { ...EMPTY_DECOR },
+  decorInventory: { ...INITIAL_DECOR },
   roomDecorations: {},
   gifts: [],
 };
@@ -115,13 +122,6 @@ export const STORE_ITEMS: Array<{
   { id: "caminha", name: "Caminha de estrelas", price: 135, icon: "🛏️", description: "Recupera bastante energia", stat: "energia", boost: 32 },
 ];
 
-export const DECORATIONS: Array<{ id: DecorationId; name: string; icon: string; price: number; description: string }> = [
-  { id: "tower", name: "Torre de escalada", icon: "🪵", price: 360, description: "Um cantinho alto para observar" },
-  { id: "bed", name: "Caminha estrela", icon: "🛏️", price: 220, description: "Um lugar macio para sonhar" },
-  { id: "plant", name: "Vaso de catnip", icon: "🌿", price: 120, description: "Verde e divertido para a casa" },
-  { id: "lamp", name: "Luminária lunar", icon: "🌙", price: 280, description: "Uma luz quentinha para a noite" },
-];
-
 const clamp = (value: number, min = 0, max = 100) => Math.max(min, Math.min(max, value));
 const validCharacter = (value: unknown): value is PetCharacterId => PET_CHARACTERS.some((item) => item.id === value);
 const isSkinId = (value: unknown): value is SkinId => SKINS.some((item) => item.id === value);
@@ -139,9 +139,10 @@ function normalizePlacement(value: unknown): DecorationPlacement | null {
   return {
     id: item.id.slice(0, 80),
     itemId: item.itemId,
-    x: clamp(Number(item.x) || 50, 5, 95),
-    y: clamp(Number(item.y) || 72, 12, 88),
+    x: clamp(Number.isFinite(Number(item.x)) ? Number(item.x) : 50, 0, 100),
+    y: clamp(Number.isFinite(Number(item.y)) ? Number(item.y) : 72, 0, 100),
     rotation: ((Math.round(Number(item.rotation) || 0) % 360) + 360) % 360,
+    anchor: item.anchor === "background" ? "background" : "viewport",
   };
 }
 
@@ -152,7 +153,7 @@ export function createInitialGameState(): GameState {
     inventory: { ...INITIAL_GAME_STATE.inventory },
     ownedSkins: [...INITIAL_GAME_STATE.ownedSkins],
     ownedCompanions: [],
-    decorInventory: { ...EMPTY_DECOR },
+    decorInventory: { ...INITIAL_DECOR },
     roomDecorations: {},
     gifts: [],
   };
@@ -212,6 +213,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     coins: Math.round(numeric(parsed.coins, base.coins, 0, 9999999)),
     missionProgress: Math.round(numeric(parsed.missionProgress, 0, 0, 3)),
     missionClaimed: parsed.missionClaimed === true,
+    missionsCompleted: Math.round(numeric(parsed.missionsCompleted, Math.max(0, level - 1 + (parsed.missionClaimed === true ? 1 : 0)), 0, 9999)),
     gamesPlayed: Math.round(numeric(parsed.gamesPlayed, 0, 0, 999999)),
     stats: {
       felicidade: numeric(parsed.stats?.felicidade, base.stats.felicidade, 0, 100),
@@ -232,12 +234,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     },
     ownedCompanions,
     activeCompanionId: active,
-    decorInventory: {
-      tower: Math.round(numeric(decorInventoryRaw.tower, EMPTY_DECOR.tower, 0, 999)),
-      bed: Math.round(numeric(decorInventoryRaw.bed, EMPTY_DECOR.bed, 0, 999)),
-      plant: Math.round(numeric(decorInventoryRaw.plant, EMPTY_DECOR.plant, 0, 999)),
-      lamp: Math.round(numeric(decorInventoryRaw.lamp, EMPTY_DECOR.lamp, 0, 999)),
-    },
+    decorInventory: Object.fromEntries(DECORATIONS.map((item) => [item.id, Math.round(numeric(decorInventoryRaw[item.id], base.decorInventory[item.id], 0, 999))])) as Record<DecorationId, number>,
     roomDecorations,
     gifts,
   };
@@ -267,7 +264,12 @@ function awardXp(state: GameState, amount: number): GameState {
       ownedCompanions.push(unlocked);
       if (!activeCompanionId) activeCompanionId = unlocked;
     }
-    const rewardDecor: Partial<Record<number, DecorationId>> = { 2: "plant", 4: "lamp", 6: "tower", 8: "bed" };
+    const rewardDecor: Partial<Record<number, DecorationId>> = {
+      2: "jardim-vaso-margaridas",
+      4: "terraco-luzes-varal",
+      6: "bosque-luminaria-vagalume",
+      8: "biblioteca-nicho-livros",
+    };
     const decor = rewardDecor[level];
     if (decor) decorInventory[decor] += 1;
     activeRoom = level;
@@ -328,6 +330,7 @@ export function completeMinigame(state: GameState): GameState {
   let next: GameState = {
     ...state,
     missionProgress: nextProgress,
+    missionsCompleted: state.missionsCompleted + (!state.missionClaimed && nextProgress >= 3 ? 1 : 0),
     gamesPlayed: state.gamesPlayed + 1,
     coins: state.coins + 60 + (!state.missionClaimed && nextProgress >= 3 ? 200 : 0),
     missionClaimed: state.missionClaimed || nextProgress >= 3,
@@ -371,6 +374,8 @@ export function useStoreItem(state: GameState, itemId: StoreItemId): { state: Ga
 export function buyDecoration(state: GameState, itemId: DecorationId): { state: GameState; message: string; ok: boolean } {
   const item = DECORATIONS.find((entry) => entry.id === itemId);
   if (!item) return { state, message: "Essa decoração não está disponível.", ok: false };
+  const locked = getDecorationLockReason(item, state.level, state.missionsCompleted);
+  if (locked) return { state, message: `${item.name}: ${locked.toLowerCase()}.`, ok: false };
   if (state.coins < item.price) return { state, message: "Ainda faltam algumas moedas.", ok: false };
   return { state: { ...state, coins: state.coins - item.price, decorInventory: { ...state.decorInventory, [itemId]: state.decorInventory[itemId] + 1 } }, message: `${item.name} foi para sua mochila de decoração!`, ok: true };
 }
@@ -381,7 +386,10 @@ export function selectRoom(state: GameState, room: number): GameState {
 }
 
 export function placeDecoration(state: GameState, placement: DecorationPlacement): { state: GameState; ok: boolean; message: string } {
-  if (!isDecorationId(placement.itemId) || state.decorInventory[placement.itemId] < 1) return { state, ok: false, message: "Esse item não está na mochila." };
+  const item = DECORATIONS.find((entry) => entry.id === placement.itemId);
+  if (!item || state.decorInventory[placement.itemId] < 1) return { state, ok: false, message: "Esse item não está na mochila." };
+  const locked = getDecorationLockReason(item, state.level, state.missionsCompleted);
+  if (locked) return { state, ok: false, message: `${item.name}: ${locked.toLowerCase()}.` };
   const roomKey = String(state.activeRoom);
   const items = state.roomDecorations[roomKey] ?? [];
   if (items.length >= 20) return { state, ok: false, message: "Esta casa já está cheia de mimos." };
@@ -390,15 +398,15 @@ export function placeDecoration(state: GameState, placement: DecorationPlacement
   return {
     state: { ...state, decorInventory: { ...state.decorInventory, [placement.itemId]: state.decorInventory[placement.itemId] - 1 }, roomDecorations: { ...state.roomDecorations, [roomKey]: [...items, safePlacement] } },
     ok: true,
-    message: "Decoração colocada! Arraste para mudar de lugar.",
+    message: "Decoração colocada! Ela fica presa ao cenário; toque nela para ajustar.",
   };
 }
 
-export function updateDecoration(state: GameState, id: string, patch: Partial<Pick<DecorationPlacement, "x" | "y" | "rotation">>): GameState {
+export function updateDecoration(state: GameState, id: string, patch: Partial<Pick<DecorationPlacement, "x" | "y" | "rotation" | "anchor">>): GameState {
   const roomKey = String(state.activeRoom);
   const items = state.roomDecorations[roomKey] ?? [];
   if (!items.some((item) => item.id === id)) return state;
-  return { ...state, roomDecorations: { ...state.roomDecorations, [roomKey]: items.map((item) => item.id === id ? { ...item, ...patch, x: clamp(patch.x ?? item.x, 5, 95), y: clamp(patch.y ?? item.y, 12, 88), rotation: ((Math.round(patch.rotation ?? item.rotation) % 360) + 360) % 360 } : item) } };
+  return { ...state, roomDecorations: { ...state.roomDecorations, [roomKey]: items.map((item) => item.id === id ? { ...item, ...patch, anchor: patch.anchor ?? item.anchor ?? "viewport", x: clamp(patch.x ?? item.x, 0, 100), y: clamp(patch.y ?? item.y, 0, 100), rotation: ((Math.round(patch.rotation ?? item.rotation) % 360) + 360) % 360 } : item) } };
 }
 
 export function removeDecoration(state: GameState, id: string): GameState {
@@ -413,7 +421,7 @@ export function spawnSurpriseGift(state: GameState, id: string, now = Date.now()
   const live = state.gifts.filter((gift) => gift.expiresAt > now);
   if (live.length >= 2) return { ...state, gifts: live };
   const reward = random() < 0.56 ? "coins" : "decoration";
-  const decorChoices: DecorationId[] = ["tower", "bed", "plant", "lamp"];
+  const decorChoices = DECORATIONS.filter((item) => !getDecorationLockReason(item, state.level, state.missionsCompleted));
   const gift: SurpriseGift = {
     id,
     room: state.activeRoom,
@@ -421,7 +429,7 @@ export function spawnSurpriseGift(state: GameState, id: string, now = Date.now()
     spawnedAt: now,
     expiresAt: now + 90000,
     reward,
-    ...(reward === "coins" ? { coins: 70 + Math.floor(random() * 71) } : { decorationId: decorChoices[Math.floor(random() * decorChoices.length)] }),
+    ...(reward === "coins" ? { coins: 70 + Math.floor(random() * 71) } : { decorationId: decorChoices[Math.floor(random() * decorChoices.length)]?.id ?? "plant" }),
   };
   return { ...state, gifts: [...live, gift] };
 }

@@ -3,14 +3,21 @@ import type { CompanionId, PetGender } from "./PetGame";
 
 export type PetVoiceCue = "intro" | "welcome" | "care" | "level";
 let currentVoice: HTMLAudioElement | null = null;
+let currentUtterance: SpeechSynthesisUtterance | null = null;
 
-function playClip(source: string): void {
+function playClip(source: string, onEnd?: () => void): void {
   if (!source || typeof window === "undefined") return;
   try {
     currentVoice?.pause();
     const audio = new Audio(source);
     audio.volume = 0.88;
     currentVoice = audio;
+    const finish = () => {
+      if (currentVoice === audio) currentVoice = null;
+      onEnd?.();
+    };
+    audio.addEventListener("ended", finish, { once: true });
+    audio.addEventListener("error", finish, { once: true });
     void audio.play().catch(() => {
       // Browser autoplay is blocked until a user gesture; the next user action can retry.
     });
@@ -19,36 +26,49 @@ function playClip(source: string): void {
   }
 }
 
-export function playPetVoice(cue: PetVoiceCue, gender?: PetGender | null): void {
+export function playPetVoice(cue: PetVoiceCue, gender?: PetGender | null, onEnd?: () => void): void {
   const source = cue === "welcome" && gender
     ? gender === "menina" ? GAME_ASSETS.voice.welcomeGirl : GAME_ASSETS.voice.welcomeBoy
     : cue === "level" && gender
       ? gender === "menina" ? GAME_ASSETS.voice.levelGirl : GAME_ASSETS.voice.levelBoy
       : GAME_ASSETS.voice[cue];
-  playClip(source);
+  playClip(source, onEnd);
 }
 
-export function playCompanionVoice(id: CompanionId): void {
-  playClip(GAME_ASSETS.voice[id]);
+export function playCompanionVoice(id: CompanionId, onEnd?: () => void): void {
+  playClip(GAME_ASSETS.voice[id], onEnd);
 }
 
 export function playMatchSound(): void {
   playClip(GAME_ASSETS.sounds.match);
 }
 
-export function speakPetText(text: string, gender?: PetGender | null): void {
+export function speakPetText(text: string, gender?: PetGender | null, onEnd?: () => void): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window) || !text.trim()) return;
   try {
     const voices = window.speechSynthesis.getVoices();
     const portugueseVoice = voices.find((voice) => voice.lang.toLowerCase().startsWith("pt-br"))
       ?? voices.find((voice) => voice.lang.toLowerCase().startsWith("pt"));
     if (!portugueseVoice) return;
+    if (currentUtterance) {
+      currentUtterance.onend = null;
+      currentUtterance.onerror = null;
+      currentUtterance = null;
+    }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "pt-BR";
     utterance.rate = 0.94;
     utterance.pitch = gender === "menina" ? 1.35 : 0.94;
     utterance.voice = portugueseVoice;
+    const finish = () => {
+      if (currentUtterance !== utterance) return;
+      currentUtterance = null;
+      onEnd?.();
+    };
+    currentUtterance = utterance;
+    utterance.onend = finish;
+    utterance.onerror = finish;
     window.speechSynthesis.speak(utterance);
   } catch {
     // Speech synthesis is not available in every browser/device.
@@ -58,5 +78,10 @@ export function speakPetText(text: string, gender?: PetGender | null): void {
 export function stopPetVoice(): void {
   currentVoice?.pause();
   currentVoice = null;
+  if (currentUtterance) {
+    currentUtterance.onend = null;
+    currentUtterance.onerror = null;
+    currentUtterance = null;
+  }
   if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
 }

@@ -18,6 +18,7 @@ type PetProfileEvent = CustomEvent<{ gender?: PetGender }>;
 type PetCompanionEvent = CustomEvent<{ companionId?: CompanionId | null }>;
 type PetRoomEvent = CustomEvent<{ room?: number }>;
 type PetMoveEvent = CustomEvent<{ x?: number; y?: number }>;
+type PetBlinkEvent = CustomEvent<Record<string, never>>;
 
 export type GameHandle = { scene: Scene; dispose: () => void };
 export type ScenePetState = { level: number; room?: number; skin: string; sleeping: boolean; gender: PetGender | null; characterId?: PetCharacterId | null; companion: CompanionId | null };
@@ -156,6 +157,7 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
 
   let sleeping = saved.sleeping;
   let reactionStart = performance.now();
+  let blinkTriggerStart = Number.NEGATIVE_INFINITY;
   let reactionKind = "idle";
   const onAction = (event: Event) => {
     const detail = (event as PetActionEvent).detail;
@@ -215,6 +217,7 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
     reactionStart = performance.now();
   };
   const onCompanion = (event: Event) => setCompanion((event as PetCompanionEvent).detail?.companionId ?? null);
+  const onPetBlink = (_event: PetBlinkEvent) => { blinkTriggerStart = performance.now(); };
   window.addEventListener("pet:action", onAction);
   window.addEventListener("pet:skin", onSkin);
   window.addEventListener("pet:level", onLevel);
@@ -222,6 +225,7 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   window.addEventListener("pet:companion", onCompanion);
   window.addEventListener("pet:room", onRoom);
   window.addEventListener("pet:move", onMove);
+  window.addEventListener("pet:blink", onPetBlink as EventListener);
 
   const renderObserver = scene.onBeforeRenderObservable.add(() => {
     const aspect = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight());
@@ -261,7 +265,10 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
     const pulse = 1 + Math.max(0, 1 - elapsed / 650) * (reactionKind === "level" ? 0.045 : 0.02);
     const scale = (petWidth / 3.35) * pulse;
     const blinkPhase = (now % 4100);
-    const blink = blinkPhase > 1750 && blinkPhase < 1850 ? Math.sin(((blinkPhase - 1750) / 100) * Math.PI) : 0;
+    const idleBlink = blinkPhase > 1750 && blinkPhase < 1850 ? Math.sin(((blinkPhase - 1750) / 100) * Math.PI) : 0;
+    const requestedBlinkElapsed = now - blinkTriggerStart;
+    const requestedBlink = requestedBlinkElapsed >= 0 && requestedBlinkElapsed < 260 ? Math.sin((requestedBlinkElapsed / 260) * Math.PI) : 0;
+    const blink = Math.max(idleBlink, requestedBlink);
     kitten.scaling.set(scale * (1 + blink * 0.07), scale * (1 - blink * 0.055), 1);
     const accessoryScale = petWidth / 3.35;
     boyHat.mesh.position.set(positionX + moveX - 0.12 * accessoryScale, positionY + wave + jump + 1.42 * accessoryScale, -0.22);
@@ -284,6 +291,7 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
       window.removeEventListener("pet:companion", onCompanion);
       window.removeEventListener("pet:room", onRoom);
       window.removeEventListener("pet:move", onMove);
+      window.removeEventListener("pet:blink", onPetBlink as EventListener);
       scene.onBeforeRenderObservable.remove(renderObserver);
       scene.dispose();
     },

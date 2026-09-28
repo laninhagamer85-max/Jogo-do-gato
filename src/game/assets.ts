@@ -37,6 +37,21 @@ import levelGirlVoice from "../assets/level-girl.mp3?url";
 import mimiVoice from "../assets/voice-mimi.mp3?url";
 import ticoVoice from "../assets/voice-tico.mp3?url";
 import matchSound from "../assets/match-combo.mp3?url";
+import { DECORATIONS } from "./decorations";
+
+const generatedDecorationAssets = import.meta.glob("../assets/decorations/*.webp", {
+  eager: true,
+  import: "default",
+  query: "?url",
+}) as Record<string, string>;
+const legacyDecorations: Partial<Record<DecorationId, string>> = { tower, bed, plant, lamp };
+const decorations = Object.fromEntries(
+  DECORATIONS.map((item) => [
+    item.id,
+    legacyDecorations[item.id] ?? generatedDecorationAssets[`../assets/decorations/${item.id}.webp`],
+  ]),
+) as Record<DecorationId, string>;
+if (Object.values(decorations).some((url) => !url)) throw new Error("Faltam sprites de decoração no bundle local.");
 
 export const GAME_ASSETS = {
   room: level01,
@@ -52,7 +67,7 @@ export const GAME_ASSETS = {
     "menina-azul": girlBlue,
   } satisfies Record<PetCharacterId, string>,
   companions: { mimi, tico },
-  decorations: { tower, bed, plant, lamp } satisfies Record<DecorationId, string>,
+  decorations,
   gift,
   icon: appIcon,
   voice: {

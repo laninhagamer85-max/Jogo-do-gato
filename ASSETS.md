@@ -31,6 +31,25 @@
 | Ícone de arte | `app-icon.webp` | fonte visual do ícone do app |
 | Ícones PWA | `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` | instalação compatível |
 
+### Coleção de decoração
+
+O catálogo tem **100 props únicos**, dez para cada casa: os quatro sprites legados e 96 novas artes transparentes WebP de 384×384 px. O conjunto completo ocupa 3.346.716 bytes (13–62 KB por item). Os 96 arquivos novos ficam em `src/assets/decorations/`; `src/game/assets.ts` os carrega por `import.meta.glob`, sem dependência do storage do WebDev. Itens de nível avançado ou de missão permanecem bloqueados até cumprir o requisito, tanto na loja quanto na regra de compra do domínio.
+
+| Nível | Casa | Itens |
+|---:|---|---:|
+| 1 | Casa do Começo | 10 |
+| 2 | Estufa das Flores | 10 |
+| 3 | Mercado dos Bigodes | 10 |
+| 4 | Terraço do Sol | 10 |
+| 5 | Praia do Ronrom | 10 |
+| 6 | Bosque do Novelo | 10 |
+| 7 | Montanha do Tico | 10 |
+| 8 | Biblioteca Secreta | 10 |
+| 9 | Domo das Estrelas | 10 |
+| 10 | Casa das Novas Histórias | 10 |
+
+`docs/decoration-catalog.json` registra IDs, nomes, preços, casa, requisitos e referências correspondentes ao storage WebDev.
+
 ## Áudio
 
 | Asset | Arquivo | Uso |
