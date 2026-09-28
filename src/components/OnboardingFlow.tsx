@@ -6,10 +6,11 @@ import { GAME_ASSETS } from "@/game/assets";
 type Props = {
   profile: PetProfile | null;
   onComplete: (profile: PetProfile) => void;
+  onHearIntro: () => void;
   onHearPet: (gender: PetGender | null) => void;
 };
 
-export default function OnboardingFlow({ profile, onComplete, onHearPet }: Props) {
+export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHearPet }: Props) {
   const [step, setStep] = useState(0);
   const [gender, setGender] = useState<PetGender | null>(profile?.gender ?? null);
   const [characterId, setCharacterId] = useState<PetProfile["characterId"] | null>(profile?.characterId ?? null);
@@ -55,6 +56,7 @@ export default function OnboardingFlow({ profile, onComplete, onHearPet }: Props
           {step === 0 && <>
             <h1 id="intro-title">Quem vai ser seu pet?</h1>
             <p className="intro-copy">Primeiro escolha se seu companheiro é menino ou menina. Depois você escolhe entre três gatinhos únicos.</p>
+            <button className="intro-hear" type="button" onClick={onHearIntro}><Volume2 size={15} /> Ouvir a apresentação</button>
             <div className="onboarding-gender-grid" role="group" aria-label="Escolha o sexo do pet">
               <button className={`onboarding-gender-card boy ${gender === "menino" ? "selected" : ""}`} type="button" onClick={() => chooseGender("menino")} aria-pressed={gender === "menino"}><span>🧢</span><strong>Menino</strong><small>Com boné e três personagens</small></button>
               <button className={`onboarding-gender-card girl ${gender === "menina" ? "selected" : ""}`} type="button" onClick={() => chooseGender("menina")} aria-pressed={gender === "menina"}><span>🎀</span><strong>Menina</strong><small>Com lacinho e três personagens</small></button>
@@ -64,7 +66,7 @@ export default function OnboardingFlow({ profile, onComplete, onHearPet }: Props
             <h1 id="intro-title">Escolha seu personagem</h1>
             <p className="intro-copy">Cada gatinho tem uma carinha própria. O acessório combina com a escolha de {gender === "menina" ? "menina" : "menino"}.</p>
             <div className="character-picker" role="group" aria-label="Escolha um personagem">
-              {choices.map((character) => <button key={character.id} type="button" className={`character-choice ${characterId === character.id ? "selected" : ""}`} aria-pressed={characterId === character.id} onClick={() => { setCharacterId(character.id); setError(""); }}><span className="character-art"><img src={GAME_ASSETS.characters[character.id]} alt="" /></span><strong>{character.name}</strong><small>{character.description}</small><i>{characterId === character.id ? <Check size={13} /> : <PawPrint size={13} />}</i></button>)}
+              {choices.map((character) => <button key={character.id} type="button" className={`character-choice ${characterId === character.id ? "selected" : ""}`} aria-pressed={characterId === character.id} onClick={() => { setCharacterId(character.id); setError(""); if (gender) onHearPet(gender); }}><span className="character-art"><img src={GAME_ASSETS.characters[character.id]} alt="" /></span><strong>{character.name}</strong><small>{character.description}</small><i>{characterId === character.id ? <Check size={13} /> : <PawPrint size={13} />}</i></button>)}
             </div>
           </>}
           {step === 2 && <>

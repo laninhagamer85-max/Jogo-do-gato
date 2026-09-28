@@ -24,6 +24,7 @@ Levar a campanha de dez casas a um pet game mais expressivo, móvel e jogável s
 - Preview: onboarding de três passos, dez cenários e tabuleiro; troca por arrasto válida consome um movimento e atualiza a meta; modo decorar move prop; presente entrega moedas; mapa lista casas desbloqueadas.
 - Save real conferido invariável ao testar presente, casas, decoração e cadastro não submetido na demo.
 - Capturas desktop e mobile; o cenário em retrato foi ajustado para manter o pet inteiro visível.
+- Onboarding: introdução e saudações menino/menina transcritas em PT-BR; cliques no browser confirmam os três MP3 corretos e não salvam perfil; check/build passam nas versões WebDev e Vite.
 
 ## Continuidade
 A versão do app fica em `src/`; assets locais ficam em `src/assets/`; preservar `legacy.html`. Desenvolver neste branch/PR aberto e não mesclar automaticamente em `main`.

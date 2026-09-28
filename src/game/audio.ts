@@ -1,7 +1,7 @@
 import { GAME_ASSETS } from "./assets";
 import type { CompanionId, PetGender } from "./PetGame";
 
-export type PetVoiceCue = "welcome" | "care" | "level";
+export type PetVoiceCue = "intro" | "welcome" | "care" | "level";
 let currentVoice: HTMLAudioElement | null = null;
 
 function playClip(source: string): void {
@@ -20,9 +20,11 @@ function playClip(source: string): void {
 }
 
 export function playPetVoice(cue: PetVoiceCue, gender?: PetGender | null): void {
-  const source = cue === "level" && gender
-    ? gender === "menina" ? GAME_ASSETS.voice.levelGirl : GAME_ASSETS.voice.levelBoy
-    : GAME_ASSETS.voice[cue];
+  const source = cue === "welcome" && gender
+    ? gender === "menina" ? GAME_ASSETS.voice.welcomeGirl : GAME_ASSETS.voice.welcomeBoy
+    : cue === "level" && gender
+      ? gender === "menina" ? GAME_ASSETS.voice.levelGirl : GAME_ASSETS.voice.levelBoy
+      : GAME_ASSETS.voice[cue];
   playClip(source);
 }
 

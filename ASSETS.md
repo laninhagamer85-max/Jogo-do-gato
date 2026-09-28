@@ -37,6 +37,7 @@
 |---|---|---|
 | Boas-vindas, cuidado e level-up base | `voz-boas-vindas.mp3`, `voz-cuidado.mp3`, `voz-nivel.mp3` | falas curtas em PT-BR |
 | Level-up por perfil | `level-boy.mp3`, `level-girl.mp3` | timbres distintos |
+| Abertura do onboarding e saudações do pet | `onboarding-intro.mp3`, `welcome-boy.mp3`, `welcome-girl.mp3` | introdução PT-BR e cumprimento masculino/feminino ao selecionar o personagem |
 | Companheiros | `voice-mimi.mp3`, `voice-tico.mp3` | frases divertidas ao toque |
 | Combinação match-3 | `match-combo.mp3` | chime curto para combos/cascatas |
 

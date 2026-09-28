@@ -27,6 +27,9 @@ import lamp from "../assets/decor-lamp.webp?url";
 import gift from "../assets/gift-surprise.webp?url";
 import appIcon from "../assets/app-icon.webp?url";
 import welcomeVoice from "../assets/voz-boas-vindas.mp3?url";
+import onboardingIntroVoice from "../assets/onboarding-intro.mp3?url";
+import welcomeBoyVoice from "../assets/welcome-boy.mp3?url";
+import welcomeGirlVoice from "../assets/welcome-girl.mp3?url";
 import careVoice from "../assets/voz-cuidado.mp3?url";
 import levelVoice from "../assets/voz-nivel.mp3?url";
 import levelBoyVoice from "../assets/level-boy.mp3?url";
@@ -53,7 +56,10 @@ export const GAME_ASSETS = {
   gift,
   icon: appIcon,
   voice: {
+    intro: onboardingIntroVoice,
     welcome: welcomeVoice,
+    welcomeBoy: welcomeBoyVoice,
+    welcomeGirl: welcomeGirlVoice,
     care: careVoice,
     level: levelVoice,
     levelBoy: levelBoyVoice,
