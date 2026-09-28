@@ -1,35 +1,35 @@
-# Meu Pet Virtual — Referência Visual Máxima
+# Meu Pet Virtual — Pudim
 
-Projeto HTML/CSS/JavaScript Vanilla preparado para GitHub Pages.
+Uma versão responsiva e jogável de **Meu Pet Virtual**, criada a partir da referência visual enviada. A cena usa Babylon.js para compor um quarto ensolarado e um gatinho original; a interface traz necessidades, progressão, missão, loja e controles em português do Brasil.
 
-## Visual
-Interface construída para seguir a referência visual enviada:
-- HUD superior com nível, XP, moedas, configurações, música e pausa.
-- Painel escuro de necessidades à esquerda.
-- Cena principal ampla com o gatinho como protagonista.
-- Missão e loja à direita.
-- Barra inferior Cuidar / Minijogos / Loja.
-- Área inferior com 11 minijogos, loja e telas de pausa/missão/nível.
-- Modais completos para loja, missão concluída, mudança de nível e configurações.
-- Layout responsivo para celular.
+## O que dá para jogar
 
-A cena principal usa um recorte da referência enviada como arte visual do ambiente.
+- Alimente, dê banho, faça carinho e coloque o Pudim para dormir; acompanhe felicidade, fome, higiene e energia.
+- Ganhe XP e moedas em minijogos de toques, memória e bolhas; complete uma missão de três brincadeiras para receber a recompensa.
+- Desbloqueie e equipe skins ou compre boosts para as necessidades do pet.
+- Pause, ligue/desligue efeitos sonoros e salve o progresso localmente no navegador.
+- Use a interface no desktop ou no celular; o sprite, a cena e os painéis se reorganizam para telas verticais.
 
-## Funcionalidades
-Fome, higiene, energia, felicidade, cuidados, moedas, XP, níveis, capítulos, missões, recompensas, skins, loja, boost, música, efeitos, 11 minijogos, pausa, missão concluída, mudança de nível, configurações, localStorage, teclado e prefers-reduced-motion.
+A implementação vanilla anterior foi mantida como [`legacy.html`](./legacy.html), com a arte de ambiente correspondente em [`file_000000001784820eb6982e449ac9f0ad.jpg`](./file_000000001784820eb6982e449ac9f0ad.jpg).
 
-## Publicar no GitHub Pages
-1. Extraia este ZIP.
-2. Abra o repositório `Jogo-do-gato`.
-3. Substitua o `index.html` atual pelo novo.
-4. Mantenha a pasta `assets` ao lado do `index.html`.
-5. Faça Commit changes.
-6. Em Settings > Pages, selecione `Deploy from a branch`, branch `main` e `/ (root)`.
-7. Aguarde a publicação.
+## Executar localmente
 
-Estrutura:
-/
-├── index.html
-├── README.md
-└── assets/
-    └── scene_main.png
+Requer Node.js 22+ e pnpm. Na raiz do repositório:
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Abra a URL local informada pelo Vite. Valide a checagem de tipos e o build de produção com:
+
+```bash
+pnpm check
+pnpm build
+```
+
+O build estático sai em `dist/`. Os dados do pet ficam no `localStorage` deste navegador; limpar os dados do site reinicia a demonstração.
+
+## Tecnologia e assets
+
+React 19 + TypeScript + Vite, Babylon.js e Lucide. Os dois assets originais em WebP ficam em `src/assets/` e são importados no build — não dependem de storage externo. Consulte [`ASSETS.md`](./ASSETS.md) para a direção visual e dimensões.
