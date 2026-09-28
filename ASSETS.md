@@ -1,12 +1,10 @@
 # Assets do jogo
 
-**Direção de arte:** aventura felina ilustrada em perspectiva de livro infantil; madeira quente, tecidos macios, luz de fim de tarde, marinho e ciano, com acentos rosa, violeta e dourado. A interface acompanha a hierarquia da referência enviada sem copiar seus pixels.
+**Direção de arte:** aventura felina ilustrada como livro 3D infantil; luz de fim de tarde, marinho/ciano, madeira quente, tecidos macios e expressões legíveis. Personagens, objetos e ícone são arte original criada para o jogo; as imagens e falas ficam locais no clone Vite e são incorporadas ao build.
 
-O runtime independente importa estes arquivos locais por `src/game/assets.ts`. No WebDev, as mesmas mídias são servidas por storage gerenciado para manter leve o bundle do site.
+## Casas da campanha
 
-## Cenários da campanha
-
-| Nível | Casa/capítulo | Arquivo |
+| Nível | Cenário | Arquivo |
 |---:|---|---|
 | 1 | Casa do Começo | `src/assets/nivel-01-lar.webp` |
 | 2 | Estufa das Flores | `src/assets/nivel-02-jardim.webp` |
@@ -19,18 +17,27 @@ O runtime independente importa estes arquivos locais por `src/game/assets.ts`. N
 | 9 | Domo das Estrelas | `src/assets/nivel-09-observatorio.webp` |
 | 10 | Casa das Novas Histórias | `src/assets/nivel-10-festival.webp` |
 
-## Personagens e fala
+## Personagens, decoração e instalação
 
-| Recurso | Arquivo |
-|---|---|
-| Pudim — sprite transparente | `src/assets/meu-pet-gatinho.webp` |
-| Quarto preservado da primeira versão | `src/assets/meu-pet-quarto.webp` |
-| Boné — apresentação menino | `src/assets/acessorio-bone.webp` |
-| Lacinho — apresentação menina | `src/assets/acessorio-laco.webp` |
-| Mimi — gatinha companheira | `src/assets/companheira-mimi.webp` |
-| Tico — cão companheiro | `src/assets/companheiro-tico.webp` |
-| Voz PT-BR — boas-vindas | `src/assets/voz-boas-vindas.mp3` |
-| Voz PT-BR — cuidado | `src/assets/voz-cuidado.mp3` |
-| Voz PT-BR — mudança de nível | `src/assets/voz-nivel.mp3` |
+| Asset | Arquivo | Uso |
+|---|---|---|
+| Pudim de referência | `src/assets/meu-pet-gatinho.webp` | fallback/arte de abertura |
+| Três meninos | `boy-prata.webp`, `boy-laranja.webp`, `boy-preto.webp` | escolha inicial masculina |
+| Três meninas | `girl-creme.webp`, `girl-calico.webp`, `girl-azul.webp` | escolha inicial feminina |
+| Boné e lacinho | `acessorio-bone.webp`, `acessorio-laco.webp` | acessórios visuais de perfil/fallback |
+| Mimi e Tico | `companheira-mimi.webp`, `companheiro-tico.webp` | companheiros clicáveis |
+| Árvore, caminha, planta, luminária | `decor-tower.webp`, `decor-bed.webp`, `decor-plant.webp`, `decor-lamp.webp` | decoração persistente por casa |
+| Presente surpresa | `gift-surprise.webp` | recompensa temporária coletável |
+| Ícone de arte | `app-icon.webp` | fonte visual do ícone do app |
+| Ícones PWA | `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` | instalação compatível |
 
-Os dez cenários e personagens são originais. Cenários, acessórios e companheiros são WebP otimizados; os clipes de voz são MP3 curtos gerados em português brasileiro. A fala dinâmica do navegador só é usada se houver uma voz `pt-*`, evitando pronúncia em inglês.
+## Áudio
+
+| Asset | Arquivo | Uso |
+|---|---|---|
+| Boas-vindas, cuidado e level-up base | `voz-boas-vindas.mp3`, `voz-cuidado.mp3`, `voz-nivel.mp3` | falas curtas em PT-BR |
+| Level-up por perfil | `level-boy.mp3`, `level-girl.mp3` | timbres distintos |
+| Companheiros | `voice-mimi.mp3`, `voice-tico.mp3` | frases divertidas ao toque |
+| Combinação match-3 | `match-combo.mp3` | chime curto para combos/cascatas |
+
+Vite importa os arquivos por `src/game/assets.ts`; os assets não dependem do storage do WebDev. O modo `?demo=1` usa sprites de demonstração e nunca persiste no save ativo.

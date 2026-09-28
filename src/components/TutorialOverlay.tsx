@@ -5,8 +5,8 @@ const STEPS = [
   { icon: <Heart size={24} />, kicker: "PASSO 1 DE 5 · CONHEÇA", title: "Como seu pet está?", copy: "As quatro barras mostram felicidade, fome, higiene e energia. Elas mudam um pouquinho com o tempo; cuide para manter seu amigo bem." },
   { icon: <PawPrintIcon />, kicker: "PASSO 2 DE 5 · CUIDADOS", title: "Carinho faz diferença", copy: "Use Alimentar, Banho, Carinho e Dormir. Cada cuidado custa algumas moedas ou é gratuito; o pet se move e responde ao que você faz." },
   { icon: <GamepadIcon />, kicker: "PASSO 3 DE 5 · BRINCADEIRAS", title: "Escolha um minijogo", copy: "O hub tem 11 jogos jogáveis: memória, reflexo, ritmo, busca e outros. Cada partida dá moedas e XP para avançar." },
-  { icon: <Sparkles size={24} />, kicker: "PASSO 4 DE 5 · DESTAQUE", title: "Combine petiscos", copy: "No Colheita de Petiscos, toque em duas peças vizinhas para trocar. Faça linhas de 3 ou mais, cumpra os pedidos antes de acabar os movimentos e aproveite as cascatas." },
-  { icon: <ShoppingBag size={24} />, kicker: "PASSO 5 DE 5 · SUA HISTÓRIA", title: "Explore cada nova casa", copy: "A missão do nível rende moedas, a loja troca moedas virtuais por itens e companheiros. A cada nível, um novo cenário e capítulo da história; o primeiro arco tem dez níveis." },
+  { icon: <Sparkles size={24} />, kicker: "PASSO 4 DE 5 · DESTAQUE", title: "Arraste e combine petiscos", copy: "No Colheita de Petiscos, arraste uma peça até uma vizinha (ou toque em duas) para trocar. Faça linhas de 3 ou mais, planeje cascatas e cumpra os três pedidos antes de acabarem as jogadas." },
+  { icon: <ShoppingBag size={24} />, kicker: "PASSO 5 DE 5 · SUA HISTÓRIA", title: "Volte, decore e descubra", copy: "A missão rende moedas; use a loja para comprar decoração e arraste/gire os itens no cenário. Volte às casas conquistadas pelo mapa. Presentes surpresa ficam por pouco tempo — toque para abrir antes que desapareçam." },
 ];
 
 function PawPrintIcon() { return <span className="guide-emoji">🐾</span>; }

@@ -1,9 +1,9 @@
 # Memória de continuidade
 
-- Repositório-base: `laninhagamer85-max/Jogo-do-gato`; a versão vanilla antiga foi preservada em `legacy.html`.
-- PR de implementação: https://github.com/laninhagamer85-max/Jogo-do-gato/pull/2 — branch `feature/meu-pet-virtual-refresh`; manter revisão por PR, sem mesclar `main` automaticamente.
-- WebDev `meu-pet-virtual` é o preview de trabalho. O GitHub tem cópia Vite independente, assets WebP/MP3 locais e imports por `?url`; WebDev usa storage gerenciado.
-- O jogo começa no nível 1 com cadastro nome/idade/menino ou menina; boné/lacinho muda junto do perfil. Guia inicial reabrível, dez capítulos e onze minijogos.
-- Saves anteriores não devem ser apagados. `?demo=1` deve continuar sem persistir no save.
-- QA nesta versão: onboarding e cinco passos do tutorial; reabertura do tutorial; voz de boas-vindas solicita o MP3 PT-BR; quatro painéis minimizam/restauram; todos os 11 jogos abriram; Eco de Miados, labirinto por WASD, Caça aos Brinquedos, Pescaria e uma troca match-3 válida foram exercitados. Dados fictícios do browser devem ser removidos/restaurados antes da entrega.
-- A voz dinâmica do navegador só deve tentar síntese se houver voz `pt-*`; clipes gerados cobrem boas-vindas, cuidado e nível.
+- Repositório-base: `laninhagamer85-max/Jogo-do-gato`. A versão vanilla permanece em `legacy.html`; a experiência atual está em React/Vite/Babylon sob `src/`.
+- Branch de trabalho: `feature/meu-pet-virtual-refresh`; PR #2 fica aberto para revisão, sem merge automático em `main`.
+- O projeto WebDev `meu-pet-virtual` mantém preview iterável. O clone GitHub usa mídia local em `src/assets/` e não depende de `/manus-storage/`.
+- Escopo atual: dez capítulos/casas; onze minijogos; seis gatos; seleção em três passos; fala e som em PT-BR; match-3 com drag-to-swap 8×8; movimento de pet; mapa de casas desbloqueadas; decoração móvel por casa; presente com expiração; PWA com ícone.
+- O progresso fica local neste navegador. O modo `?demo=1` é em memória, não salva no storage e agora mostra móveis/presente fictícios para demonstração.
+- QA final: builds e typechecks passaram no WebDev e no clone; smoke tests cobriram perfil, curva de XP, casas, decoração, coleta/expiração; no browser, o drag válido do match-3 consome uma jogada e o arrasto de decoração muda a posição sem alterar o save real.
+- Ao sincronizar: copiar frontend em `client/src/` para `src/` (sem backend), manter `src/game/assets.ts` com imports locais e adicionar assets de geração/ícones; executar `pnpm check`, `pnpm build` e `git diff --check` antes do push.

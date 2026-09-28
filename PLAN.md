@@ -1,25 +1,29 @@
-# Plano — Meu Pet Virtual: Uma Casa de Cada Vez
+# Game Plan — Meu Pet Virtual: Uma Casa de Cada Vez
 
-## Visão
-Um jogo de navegador em português brasileiro sobre cuidar de um pet, fazer amigos e explorar uma primeira campanha narrativa de dez casas. React organiza a experiência; Babylon.js compõe cenários e pet; regras de jogo permanecem em TypeScript puro.
+## Objetivo da expansão
+Levar a campanha de dez casas a um pet game mais expressivo, móvel e jogável sem perder o save já existente. A sessão inicia com escolha de menino/menina, personagem entre três opções, idade e nome; segue por cuidados, capítulos, loja, missões, casas, amigos e desafios.
 
-## Escopo implementado
-- Onboarding de nome, idade e apresentação visual menino/boné ou menina/lacinho; tutorial de cinco passos que também pode ser reaberto.
-- Necessidades e cuidados; inventário, moedas, loja, skins, boosts, missão por nível e progresso por XP.
-- Dez capítulos com cenário próprio, história e liberação gradual de Mimi e Tico.
-- Onze jogos completos, incluindo o match-3 de coleta, além de reflexo, memória, pesca, labirinto, sequência, organização, observação, timing e busca.
-- Animação/reação do pet, vozes gravadas em PT-BR, opção de som/voz, pausa e painéis minimizáveis.
-- Modo `?demo=1` em memória, sem sobrescrever o save do jogador.
+## Sistemas principais
+- **Progressão:** XP por jogo e cuidado, limiar de nível mais demorado, 10 cenários e mapa que permite revisitar apenas casas desbloqueadas sem regredir o nível atual.
+- **Personagens e fala:** seis gatos, animação de idle/caminhada/reação/level-up, interações por toque e vozes PT-BR por perfil; Mimi e Tico têm fala própria.
+- **Match-3:** 8×8, troca por arrasto adjacente ou dois toques, metas crescentes, limite de jogadas, cascatas, efeito visual e áudio de combinação.
+- **Decoração:** compra e guarda de itens, posições percentuais por casa, modo de mover/girar/devolver à mochila.
+- **Presentes:** até duas recompensas temporizadas no quarto; expiram sem prêmio se o jogador não coletar.
+- **UI:** preservar personagem e amigos livres de texto; ajustar cenário para retrato; painéis recolhíveis e controles para toque/teclado.
 
-## Riscos e tratamento
-1. **Babylon + React:** inicialização única, render loop e listeners limpos no unmount; resize desktop/mobile e carregamento lazy.
-2. **Progresso antigo:** nova campanha inicia no nível 1; migração/reinício arquiva cópias em vez de apagar saves.
-3. **Tabuleiros:** lógica match-3 separada; cascata/gravity e objetivo por itens; partidas completadas concedem recompensa uma vez.
-4. **Áudio do navegador:** clipes gerados são disparados por ação do jogador; fala dinâmica só usa voz identificada como português.
-5. **Portabilidade:** o GitHub inclui assets compactados localmente; o WebDev aponta para storage gerenciado.
+## Riscos e decisões
+1. **Estado legado:** migração aditiva, com valores padrão e cópias antes de reinicialização.
+2. **Pointer/touch:** testar input tanto em tabuleiro como em props de cenário; impedir propagação para o clique de caminhada.
+3. **Temporizadores:** expirar presentes também ao voltar de uma aba e nunca entregar recompensa a item vencido.
+4. **Áudio:** respeitar preferência do usuário e gesto de ativação do browser; sem falas automáticas bloqueadas.
+5. **Build:** Vite precisa empacotar assets locais para que o clone não dependa do WebDev.
 
-## Verificação
-- `pnpm check` e `pnpm build` neste repositório e no projeto WebDev.
-- Testar primeiro acesso, perfil menino/menina, passos/reabertura do tutorial, painel minimizável, voz, e modo demo sem persistência.
-- Lançar cada um dos onze jogos; completar puzzles representativos e conferir feedback/recompensa.
-- Capturar visualmente o onboarding, cenário desktop/mobile e tabuleiro; testar HTTP dos assets e preservar `legacy.html`.
+## Verificação executada
+- `pnpm check` e `pnpm build` nos projetos WebDev e Vite standalone.
+- Smoke tests puros de perfil/seleção, 6 jogos até o segundo nível, desbloqueio/seleção de casa, compra/movimento/rotação/retorno de decoração e coleta/expiração de presente.
+- Preview: onboarding de três passos, dez cenários e tabuleiro; troca por arrasto válida consome um movimento e atualiza a meta; modo decorar move prop; presente entrega moedas; mapa lista casas desbloqueadas.
+- Save real conferido invariável ao testar presente, casas, decoração e cadastro não submetido na demo.
+- Capturas desktop e mobile; o cenário em retrato foi ajustado para manter o pet inteiro visível.
+
+## Continuidade
+A versão do app fica em `src/`; assets locais ficam em `src/assets/`; preservar `legacy.html`. Desenvolver neste branch/PR aberto e não mesclar automaticamente em `main`.

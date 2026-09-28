@@ -8,7 +8,7 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
-import { CURRENT_SAVE_KEY, type CompanionId, type PetGender } from "./PetGame";
+import { CURRENT_SAVE_KEY, type CompanionId, type PetCharacterId, type PetGender } from "./PetGame";
 import { GAME_ASSETS } from "./assets";
 
 type PetActionEvent = CustomEvent<{ action?: string; sleeping?: boolean }>;
@@ -16,9 +16,11 @@ type PetSkinEvent = CustomEvent<{ skinId?: string }>;
 type PetLevelEvent = CustomEvent<{ level?: number }>;
 type PetProfileEvent = CustomEvent<{ gender?: PetGender }>;
 type PetCompanionEvent = CustomEvent<{ companionId?: CompanionId | null }>;
+type PetRoomEvent = CustomEvent<{ room?: number }>;
+type PetMoveEvent = CustomEvent<{ x?: number; y?: number }>;
 
 export type GameHandle = { scene: Scene; dispose: () => void };
-export type ScenePetState = { level: number; skin: string; sleeping: boolean; gender: PetGender | null; companion: CompanionId | null };
+export type ScenePetState = { level: number; room?: number; skin: string; sleeping: boolean; gender: PetGender | null; characterId?: PetCharacterId | null; companion: CompanionId | null };
 
 const SKIN_TINTS: Record<string, string> = {
   tigrinho: "#ffffff",
@@ -30,17 +32,19 @@ const SKIN_TINTS: Record<string, string> = {
 function readSave(): ScenePetState {
   try {
     const saved = localStorage.getItem(CURRENT_SAVE_KEY);
-    if (!saved) return { level: 1, skin: "tigrinho", sleeping: false, gender: null, companion: null };
-    const parsed = JSON.parse(saved) as { level?: number; skin?: string; sleeping?: boolean; profile?: { gender?: PetGender } | null; activeCompanionId?: CompanionId | null };
+    if (!saved) return { level: 1, room: 1, skin: "tigrinho", sleeping: false, gender: null, companion: null };
+    const parsed = JSON.parse(saved) as { level?: number; activeRoom?: number; skin?: string; sleeping?: boolean; profile?: { gender?: PetGender; characterId?: PetCharacterId } | null; activeCompanionId?: CompanionId | null };
     return {
       level: Math.max(1, Math.min(10, Math.round(parsed.level ?? 1))),
+      room: Math.max(1, Math.min(10, Math.round(parsed.activeRoom ?? parsed.level ?? 1))),
       skin: parsed.skin ?? "tigrinho",
       sleeping: parsed.sleeping === true,
       gender: parsed.profile?.gender === "menino" || parsed.profile?.gender === "menina" ? parsed.profile.gender : null,
+      characterId: parsed.profile?.characterId ?? null,
       companion: parsed.activeCompanionId === "mimi" || parsed.activeCompanionId === "tico" ? parsed.activeCompanionId : null,
     };
   } catch {
-    return { level: 1, skin: "tigrinho", sleeping: false, gender: null, companion: null };
+    return { level: 1, room: 1, skin: "tigrinho", sleeping: false, gender: null, companion: null };
   }
 }
 
@@ -60,6 +64,7 @@ function imageSprite(scene: Scene, name: string, url: string, width: number, hei
 
 export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement, initialState?: ScenePetState): Promise<GameHandle> {
   const saved = initialState ?? readSave();
+  let currentRoom = saved.room ?? saved.level;
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.06, 0.09, 0.17, 1);
   const camera = new FreeCamera("home-adventure-camera", new Vector3(0, 0, -12), scene);
@@ -75,10 +80,12 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   backgroundMaterial.disableLighting = true;
   backgroundMaterial.backFaceCulling = false;
   background.material = backgroundMaterial;
-  let backgroundTexture = new Texture(GAME_ASSETS.levels[saved.level - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
+  let backgroundTexture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   backgroundMaterial.emissiveTexture = backgroundTexture;
 
-  const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", GAME_ASSETS.kitten, 3.35, 3.35);
+  const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
+  const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
+  let characterTexture = kittenMaterial.diffuseTexture as Texture;
   kitten.position.set(0, -1.12, 0);
   kittenMaterial.diffuseColor = Color3.FromHexString(SKIN_TINTS[saved.skin] ?? "#ffffff");
 
@@ -86,8 +93,8 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   const girlBow = imageSprite(scene, "girl-pet-bow", GAME_ASSETS.accessories.girl, 0.8, 0.8);
   boyHat.mesh.position.z = -0.22;
   girlBow.mesh.position.z = -0.22;
-  boyHat.mesh.isVisible = saved.gender === "menino";
-  girlBow.mesh.isVisible = saved.gender === "menina";
+  boyHat.mesh.isVisible = saved.gender === "menino" && !saved.characterId;
+  girlBow.mesh.isVisible = saved.gender === "menina" && !saved.characterId;
 
   let companionSprite: ReturnType<typeof imageSprite> | null = null;
   let companionId: CompanionId | null = null;
@@ -105,6 +112,12 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   setCompanion(saved.companion);
 
   let baseY = -1.12;
+  let positionX = 0;
+  let positionY = baseY;
+  let targetX = positionX;
+  let targetY = positionY;
+  let walking = false;
+  let lastFrame = performance.now();
   let petWidth = 3.35;
   let sceneAspect = 0;
   const viewHeight = 8.2;
@@ -123,8 +136,8 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
     const bgWidth = Math.max(viewWidth, viewHeight * roomRatio);
     background.scaling.set(bgWidth / 14, bgHeight / 8, 1);
 
-    baseY = aspect < 0.7 ? 0.55 : aspect < 1.15 ? -0.35 : -1.12;
-    petWidth = aspect < 0.7 ? Math.min(2.45, viewWidth * 0.65) : Math.min(3.35, viewWidth * 0.48);
+    baseY = aspect < 0.7 ? 1.18 : aspect < 1.15 ? -0.35 : -1.12;
+    petWidth = aspect < 0.7 ? Math.min(2.2, viewWidth * 0.60) : Math.min(3.35, viewWidth * 0.48);
     kitten.position.y = baseY;
     const scale = petWidth / 3.35;
     kitten.scaling.set(scale, scale, 1);
@@ -157,20 +170,47 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
     reactionKind = "happy";
     reactionStart = performance.now();
   };
-  const onLevel = (event: Event) => {
-    const level = Math.max(1, Math.min(10, Math.round((event as PetLevelEvent).detail?.level ?? 1)));
-    const texture = new Texture(GAME_ASSETS.levels[level - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
+  const setRoom = (room: number) => {
+    currentRoom = Math.max(1, Math.min(10, Math.round(room)));
+    const texture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
     backgroundMaterial.emissiveTexture = texture;
     const old = backgroundTexture;
     backgroundTexture = texture;
     old.dispose();
+  };
+  const onRoom = (event: Event) => setRoom((event as PetRoomEvent).detail?.room ?? currentRoom);
+  const onMove = (event: Event) => {
+    const detail = (event as PetMoveEvent).detail;
+    const xPct = Math.max(5, Math.min(95, Number(detail?.x ?? 50))) / 100;
+    const yPct = Math.max(15, Math.min(86, Number(detail?.y ?? 70))) / 100;
+    const viewWidth = viewHeight * sceneAspect;
+    targetX = (xPct - 0.5) * (viewWidth - petWidth * 0.55);
+    targetY = Math.max(-2.2, Math.min(1.25, (0.5 - yPct) * viewHeight));
+    walking = true;
+    sleeping = false;
+    reactionKind = "walk";
+    reactionStart = performance.now();
+  };
+  const onLevel = (event: Event) => {
+    const level = Math.max(1, Math.min(10, Math.round((event as PetLevelEvent).detail?.level ?? 1)));
+    setRoom(level);
     reactionKind = "level";
     reactionStart = performance.now();
   };
   const onProfile = (event: Event) => {
-    const gender = (event as PetProfileEvent).detail?.gender;
-    boyHat.mesh.isVisible = gender === "menino";
-    girlBow.mesh.isVisible = gender === "menina";
+    const profile = (event as CustomEvent<{ gender?: PetGender; characterId?: PetCharacterId | null }>).detail;
+    const gender = profile?.gender;
+    const characterId = profile?.characterId;
+    if (characterId && GAME_ASSETS.characters[characterId]) {
+      const texture = new Texture(GAME_ASSETS.characters[characterId], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
+      texture.hasAlpha = true;
+      kittenMaterial.diffuseTexture = texture;
+      kittenMaterial.emissiveTexture = texture;
+      characterTexture.dispose();
+      characterTexture = texture;
+    }
+    boyHat.mesh.isVisible = gender === "menino" && !characterId;
+    girlBow.mesh.isVisible = gender === "menina" && !characterId;
     reactionKind = "happy";
     reactionStart = performance.now();
   };
@@ -180,13 +220,30 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
   window.addEventListener("pet:level", onLevel);
   window.addEventListener("pet:profile", onProfile);
   window.addEventListener("pet:companion", onCompanion);
+  window.addEventListener("pet:room", onRoom);
+  window.addEventListener("pet:move", onMove);
 
   const renderObserver = scene.onBeforeRenderObservable.add(() => {
     const aspect = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight());
     if (Math.abs(aspect - sceneAspect) > 0.01) resizeScene();
     const now = performance.now();
+    const delta = Math.min(40, Math.max(0, now - lastFrame));
+    lastFrame = now;
+    const dx = targetX - positionX;
+    const dy = targetY - positionY;
+    const distance = Math.hypot(dx, dy);
+    if (!sleeping && distance > 0.045) {
+      const step = Math.min(distance, delta * 0.00215);
+      positionX += (dx / distance) * step;
+      positionY += (dy / distance) * step;
+      walking = true;
+    } else {
+      positionX = targetX;
+      positionY = targetY;
+      walking = false;
+    }
     const elapsed = now - reactionStart;
-    const wave = Math.sin(now / (sleeping ? 1200 : 520)) * (sleeping ? 0.026 : 0.075);
+    const wave = Math.sin(now / (sleeping ? 1200 : walking ? 145 : 520)) * (sleeping ? 0.026 : walking ? 0.045 : 0.075);
     let jump = 0;
     let moveX = 0;
     if (!sleeping && elapsed >= 0 && elapsed < 1000) {
@@ -199,19 +256,21 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
         moveX = Math.sin(progress * Math.PI * 2) * 0.13;
       }
     }
-    kitten.position.set(moveX, baseY + wave + jump, 0);
-    kitten.rotation.z = Math.sin(now / 1450) * (sleeping ? 0.012 : 0.028) + (reactionKind === "level" && elapsed < 950 ? Math.sin(now / 58) * 0.045 : 0);
+    kitten.position.set(positionX + moveX, positionY + wave + jump, 0);
+    kitten.rotation.z = (walking ? (targetX < positionX ? 1 : -1) * 0.13 : 0) + Math.sin(now / 1450) * (sleeping ? 0.012 : 0.028) + (reactionKind === "level" && elapsed < 1250 ? Math.sin(now / 58) * 0.045 : 0);
     const pulse = 1 + Math.max(0, 1 - elapsed / 650) * (reactionKind === "level" ? 0.045 : 0.02);
     const scale = (petWidth / 3.35) * pulse;
-    kitten.scaling.set(scale, scale, 1);
+    const blinkPhase = (now % 4100);
+    const blink = blinkPhase > 1750 && blinkPhase < 1850 ? Math.sin(((blinkPhase - 1750) / 100) * Math.PI) : 0;
+    kitten.scaling.set(scale * (1 + blink * 0.07), scale * (1 - blink * 0.055), 1);
     const accessoryScale = petWidth / 3.35;
-    boyHat.mesh.position.set(moveX - 0.12 * accessoryScale, baseY + wave + jump + 1.42 * accessoryScale, -0.22);
+    boyHat.mesh.position.set(positionX + moveX - 0.12 * accessoryScale, positionY + wave + jump + 1.42 * accessoryScale, -0.22);
     boyHat.mesh.rotation.z = kitten.rotation.z * 0.65;
-    girlBow.mesh.position.set(moveX + 0.62 * accessoryScale, baseY + wave + jump + 1.40 * accessoryScale, -0.22);
+    girlBow.mesh.position.set(positionX + moveX + 0.62 * accessoryScale, positionY + wave + jump + 1.40 * accessoryScale, -0.22);
     girlBow.mesh.rotation.z = kitten.rotation.z * 0.6;
     if (companionSprite) {
-      companionSprite.mesh.position.x = companionBaseX + Math.sin(now / 820 + 1.2) * 0.07;
-      companionSprite.mesh.position.y = baseY - 0.55 * (petWidth / 3.35) + Math.sin(now / 640 + 1.4) * 0.045;
+      companionSprite.mesh.position.x = positionX + companionBaseX + Math.sin(now / 820 + 1.2) * 0.07;
+      companionSprite.mesh.position.y = positionY - 0.55 * (petWidth / 3.35) + Math.sin(now / 640 + 1.4) * 0.045;
     }
   });
 
@@ -223,6 +282,8 @@ export async function createGameScene(engine: Engine, _canvas: HTMLCanvasElement
       window.removeEventListener("pet:level", onLevel);
       window.removeEventListener("pet:profile", onProfile);
       window.removeEventListener("pet:companion", onCompanion);
+      window.removeEventListener("pet:room", onRoom);
+      window.removeEventListener("pet:move", onMove);
       scene.onBeforeRenderObservable.remove(renderObserver);
       scene.dispose();
     },

@@ -16,9 +16,9 @@ const SORT_ITEMS = [
 const MAZE = ["...#.", "##.#.", "...#.", ".###.", "....."];
 const shuffle = <T,>(items: T[]) => [...items].sort(() => Math.random() - 0.5);
 
-type Props = { id: MiniGameId; petName: string; onWin: () => void; onExit: () => void };
+type Props = { id: MiniGameId; petName: string; onWin: () => void; onExit: () => void; soundOn?: boolean; difficulty?: number };
 
-export default function MiniGameBoard({ id, petName, onWin, onExit }: Props) {
+export default function MiniGameBoard({ id, petName, onWin, onExit, soundOn = true, difficulty = 1 }: Props) {
   const definition = MINI_GAMES.find((game) => game.id === id)!;
   const completionRef = useRef(false);
   const [message, setMessage] = useState("Vamos brincar!");
@@ -107,9 +107,9 @@ export default function MiniGameBoard({ id, petName, onWin, onExit }: Props) {
 
   const memoryDone = Math.floor(memoryMatched.length / 2);
   const gameArea = useMemo(() => {
-    if (definition.mode === "match3") return <MatchThreeBoard onWin={finish} />;
+    if (definition.mode === "match3") return <MatchThreeBoard onWin={finish} soundOn={soundOn} difficulty={difficulty} />;
     if (definition.mode === "tap") {
-      const goal = id === "bolhas" ? 6 : 7;
+      const goal = (id === "bolhas" ? 7 : 8) + Math.floor(Math.max(1, difficulty - 1) / 3);
       const icon = id === "bolhas" ? "🫧" : "🐾";
       const tap = () => {
         const next = taps + 1;

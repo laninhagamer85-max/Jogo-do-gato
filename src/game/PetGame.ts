@@ -6,14 +6,28 @@ export type PetStats = {
 };
 
 export type PetGender = "menino" | "menina";
-export type PetProfile = { name: string; age: number; gender: PetGender };
+export type PetCharacterId = "menino-prata" | "menino-laranja" | "menino-preto" | "menina-creme" | "menina-calico" | "menina-azul";
+export type PetProfile = { name: string; age: number; gender: PetGender; characterId: PetCharacterId };
 export type CompanionId = "mimi" | "tico";
 export type SkinId = "tigrinho" | "laranja" | "pretinho" | "fantasia";
 export type CareAction = "food" | "bath" | "love" | "sleep";
 export type StoreItemId = "sardinha" | "novelo" | "banho" | "caminha";
+export type DecorationId = "tower" | "bed" | "plant" | "lamp";
+export type DecorationPlacement = { id: string; itemId: DecorationId; x: number; y: number; rotation: number };
+export type SurpriseGift = {
+  id: string;
+  room: number;
+  x: number;
+  spawnedAt: number;
+  expiresAt: number;
+  reward: "coins" | "decoration";
+  coins?: number;
+  decorationId?: DecorationId;
+};
 
 export type GameState = {
   level: number;
+  activeRoom: number;
   xp: number;
   xpMax: number;
   coins: number;
@@ -29,14 +43,20 @@ export type GameState = {
   inventory: Record<StoreItemId, number>;
   ownedCompanions: CompanionId[];
   activeCompanionId: CompanionId | null;
+  decorInventory: Record<DecorationId, number>;
+  roomDecorations: Record<string, DecorationPlacement[]>;
+  gifts: SurpriseGift[];
 };
 
 export const MAX_LEVEL = 10;
 export const CURRENT_SAVE_KEY = "meu-pet-virtual-save-v2";
 export const LEGACY_SAVE_KEYS = ["meu-pet-virtual-save-v1", "pet_estado"] as const;
 
+const EMPTY_DECOR: Record<DecorationId, number> = { tower: 0, bed: 1, plant: 1, lamp: 0 };
+
 export const INITIAL_GAME_STATE: GameState = {
   level: 1,
+  activeRoom: 1,
   xp: 0,
   xpMax: 260,
   coins: 350,
@@ -52,7 +72,19 @@ export const INITIAL_GAME_STATE: GameState = {
   inventory: { sardinha: 1, novelo: 0, banho: 0, caminha: 0 },
   ownedCompanions: [],
   activeCompanionId: null,
+  decorInventory: { ...EMPTY_DECOR },
+  roomDecorations: {},
+  gifts: [],
 };
+
+export const PET_CHARACTERS: Array<{ id: PetCharacterId; gender: PetGender; name: string; description: string; icon: string }> = [
+  { id: "menino-prata", gender: "menino", name: "Pratinha", description: "Tabby cinza de olhos verdes", icon: "🐈" },
+  { id: "menino-laranja", gender: "menino", name: "Pipoca", description: "Laranjinha cheio de energia", icon: "🐈" },
+  { id: "menino-preto", gender: "menino", name: "Nino", description: "Tuxedo elegante e brincalhão", icon: "🐈‍⬛" },
+  { id: "menina-creme", gender: "menina", name: "Luna", description: "Creme fofinha de olhos azuis", icon: "🐈" },
+  { id: "menina-calico", gender: "menina", name: "Pintadinha", description: "Calico curiosa e colorida", icon: "🐈" },
+  { id: "menina-azul", gender: "menina", name: "Íris", description: "Azul-acinzentada e sonhadora", icon: "🐈" },
+];
 
 export const SKINS: Array<{
   id: SkinId;
@@ -83,9 +115,35 @@ export const STORE_ITEMS: Array<{
   { id: "caminha", name: "Caminha de estrelas", price: 135, icon: "🛏️", description: "Recupera bastante energia", stat: "energia", boost: 32 },
 ];
 
+export const DECORATIONS: Array<{ id: DecorationId; name: string; icon: string; price: number; description: string }> = [
+  { id: "tower", name: "Torre de escalada", icon: "🪵", price: 360, description: "Um cantinho alto para observar" },
+  { id: "bed", name: "Caminha estrela", icon: "🛏️", price: 220, description: "Um lugar macio para sonhar" },
+  { id: "plant", name: "Vaso de catnip", icon: "🌿", price: 120, description: "Verde e divertido para a casa" },
+  { id: "lamp", name: "Luminária lunar", icon: "🌙", price: 280, description: "Uma luz quentinha para a noite" },
+];
+
 const clamp = (value: number, min = 0, max = 100) => Math.max(min, Math.min(max, value));
+const validCharacter = (value: unknown): value is PetCharacterId => PET_CHARACTERS.some((item) => item.id === value);
 const isSkinId = (value: unknown): value is SkinId => SKINS.some((item) => item.id === value);
 const isCompanionId = (value: unknown): value is CompanionId => value === "mimi" || value === "tico";
+const isDecorationId = (value: unknown): value is DecorationId => DECORATIONS.some((item) => item.id === value);
+
+export function defaultCharacter(gender: PetGender): PetCharacterId {
+  return gender === "menina" ? "menina-creme" : "menino-prata";
+}
+
+function normalizePlacement(value: unknown): DecorationPlacement | null {
+  if (!value || typeof value !== "object") return null;
+  const item = value as Partial<DecorationPlacement>;
+  if (typeof item.id !== "string" || !item.id || !isDecorationId(item.itemId)) return null;
+  return {
+    id: item.id.slice(0, 80),
+    itemId: item.itemId,
+    x: clamp(Number(item.x) || 50, 5, 95),
+    y: clamp(Number(item.y) || 72, 12, 88),
+    rotation: ((Math.round(Number(item.rotation) || 0) % 360) + 360) % 360,
+  };
+}
 
 export function createInitialGameState(): GameState {
   return {
@@ -94,33 +152,61 @@ export function createInitialGameState(): GameState {
     inventory: { ...INITIAL_GAME_STATE.inventory },
     ownedSkins: [...INITIAL_GAME_STATE.ownedSkins],
     ownedCompanions: [],
+    decorInventory: { ...EMPTY_DECOR },
+    roomDecorations: {},
+    gifts: [],
   };
 }
 
-/** Normalize current and older browser saves without deleting the legacy copy. */
-export function migrateGameState(value: unknown): GameState {
+/** Normalize current and older browser saves without deleting their original copy. */
+export function migrateGameState(value: unknown, now = Date.now()): GameState {
   if (!value || typeof value !== "object") return createInitialGameState();
   const parsed = value as Partial<GameState> & Record<string, unknown>;
   const base = createInitialGameState();
-  const rawProfile = parsed.profile as Partial<PetProfile> | null | undefined;
-  const profile = rawProfile && typeof rawProfile.name === "string" && (rawProfile.gender === "menino" || rawProfile.gender === "menina")
-    ? { name: rawProfile.name.trim().slice(0, 18) || "Pudim", age: clamp(Number(rawProfile.age) || 1, 1, 25), gender: rawProfile.gender }
+  const rawProfile = parsed.profile as (Partial<PetProfile> & Record<string, unknown>) | null | undefined;
+  const gender: PetGender | null = rawProfile?.gender === "menina" ? "menina" : rawProfile?.gender === "menino" ? "menino" : null;
+  const selectedCharacter = validCharacter(rawProfile?.characterId) ? rawProfile.characterId : gender ? defaultCharacter(gender) : null;
+  const profile = rawProfile && typeof rawProfile.name === "string" && gender && selectedCharacter
+    ? { name: rawProfile.name.trim().slice(0, 18) || "Pudim", age: clamp(Number(rawProfile.age) || 1, 1, 25), gender, characterId: PET_CHARACTERS.find((item) => item.id === selectedCharacter)?.gender === gender ? selectedCharacter : defaultCharacter(gender) }
     : null;
   const ownedSkins = Array.isArray(parsed.ownedSkins) ? parsed.ownedSkins.filter(isSkinId) : base.ownedSkins;
   const ownedCompanions = Array.isArray(parsed.ownedCompanions) ? parsed.ownedCompanions.filter(isCompanionId) : [];
   const level = Math.round(clamp(Number(parsed.level) || 1, 1, MAX_LEVEL));
-  const inventory = parsed.inventory && typeof parsed.inventory === "object" ? parsed.inventory : {};
+  const inventory = parsed.inventory && typeof parsed.inventory === "object" ? parsed.inventory as Record<string, unknown> : {};
+  const decorInventoryRaw = parsed.decorInventory && typeof parsed.decorInventory === "object" ? parsed.decorInventory as Record<string, unknown> : {};
   const validSkin = isSkinId(parsed.skin) && ownedSkins.includes(parsed.skin) ? parsed.skin : "tigrinho";
   const numeric = (input: unknown, fallback: number, min: number, max: number) => {
     const number = Number(input);
     return Number.isFinite(number) ? clamp(number, min, max) : fallback;
   };
   const active = isCompanionId(parsed.activeCompanionId) && ownedCompanions.includes(parsed.activeCompanionId) ? parsed.activeCompanionId : null;
+  const rawRooms = parsed.roomDecorations && typeof parsed.roomDecorations === "object" ? parsed.roomDecorations as Record<string, unknown> : {};
+  const roomDecorations: Record<string, DecorationPlacement[]> = {};
+  Object.entries(rawRooms).forEach(([roomKey, rawItems]) => {
+    const room = Number(roomKey);
+    if (!Number.isInteger(room) || room < 1 || room > level || !Array.isArray(rawItems)) return;
+    const placements = rawItems.map(normalizePlacement).filter((item): item is DecorationPlacement => item !== null).slice(0, 40);
+    if (placements.length) roomDecorations[String(room)] = placements;
+  });
+  const activeRoom = Math.round(numeric(parsed.activeRoom, level, 1, level));
+  const gifts: SurpriseGift[] = [];
+  if (Array.isArray(parsed.gifts)) {
+    parsed.gifts.forEach((raw) => {
+      if (!raw || typeof raw !== "object" || gifts.length >= 2) return;
+      const gift = raw as Partial<SurpriseGift>;
+      if (typeof gift.id !== "string" || !gift.id || !Number.isFinite(Number(gift.expiresAt)) || Number(gift.expiresAt) <= now) return;
+      const room = Math.round(numeric(gift.room, activeRoom, 1, level));
+      const common = { id: gift.id.slice(0, 80), room, x: numeric(gift.x, 0.82, 0.12, 0.88), spawnedAt: numeric(gift.spawnedAt, now, 0, now + 1000), expiresAt: numeric(gift.expiresAt, now, now, now + 180000) };
+      if (gift.reward === "coins") gifts.push({ ...common, reward: "coins", coins: Math.round(numeric(gift.coins, 80, 20, 500)) });
+      else if (gift.reward === "decoration" && isDecorationId(gift.decorationId)) gifts.push({ ...common, reward: "decoration", decorationId: gift.decorationId });
+    });
+  }
 
   return {
     ...base,
     ...parsed,
     level,
+    activeRoom,
     xp: numeric(parsed.xp, 0, 0, 999999),
     xpMax: numeric(parsed.xpMax, 260, 1, 99999),
     coins: Math.round(numeric(parsed.coins, base.coins, 0, 9999999)),
@@ -139,18 +225,27 @@ export function migrateGameState(value: unknown): GameState {
     profile,
     tutorialComplete: parsed.tutorialComplete === true,
     inventory: {
-      sardinha: Math.round(numeric((inventory as Record<string, unknown>).sardinha, base.inventory.sardinha, 0, 999)),
-      novelo: Math.round(numeric((inventory as Record<string, unknown>).novelo, 0, 0, 999)),
-      banho: Math.round(numeric((inventory as Record<string, unknown>).banho, 0, 0, 999)),
-      caminha: Math.round(numeric((inventory as Record<string, unknown>).caminha, 0, 0, 999)),
+      sardinha: Math.round(numeric(inventory.sardinha, base.inventory.sardinha, 0, 999)),
+      novelo: Math.round(numeric(inventory.novelo, 0, 0, 999)),
+      banho: Math.round(numeric(inventory.banho, 0, 0, 999)),
+      caminha: Math.round(numeric(inventory.caminha, 0, 0, 999)),
     },
     ownedCompanions,
     activeCompanionId: active,
+    decorInventory: {
+      tower: Math.round(numeric(decorInventoryRaw.tower, EMPTY_DECOR.tower, 0, 999)),
+      bed: Math.round(numeric(decorInventoryRaw.bed, EMPTY_DECOR.bed, 0, 999)),
+      plant: Math.round(numeric(decorInventoryRaw.plant, EMPTY_DECOR.plant, 0, 999)),
+      lamp: Math.round(numeric(decorInventoryRaw.lamp, EMPTY_DECOR.lamp, 0, 999)),
+    },
+    roomDecorations,
+    gifts,
   };
 }
 
 function awardXp(state: GameState, amount: number): GameState {
   let level = state.level;
+  let activeRoom = state.activeRoom;
   let xp = state.xp + amount;
   let xpMax = state.xpMax;
   let coins = state.coins;
@@ -158,11 +253,12 @@ function awardXp(state: GameState, amount: number): GameState {
   let missionClaimed = state.missionClaimed;
   const ownedCompanions = [...state.ownedCompanions];
   let activeCompanionId = state.activeCompanionId;
+  const decorInventory = { ...state.decorInventory };
 
   while (level < MAX_LEVEL && xp >= xpMax) {
     xp -= xpMax;
     level += 1;
-    xpMax = Math.round(xpMax * 1.14);
+    xpMax = Math.round(xpMax * 1.27);
     coins += 75;
     missionProgress = 0;
     missionClaimed = false;
@@ -171,20 +267,25 @@ function awardXp(state: GameState, amount: number): GameState {
       ownedCompanions.push(unlocked);
       if (!activeCompanionId) activeCompanionId = unlocked;
     }
+    const rewardDecor: Partial<Record<number, DecorationId>> = { 2: "plant", 4: "lamp", 6: "tower", 8: "bed" };
+    const decor = rewardDecor[level];
+    if (decor) decorInventory[decor] += 1;
+    activeRoom = level;
   }
   if (level === MAX_LEVEL) xp = Math.min(xp, xpMax);
 
-  return { ...state, level, xp, xpMax, coins, missionProgress, missionClaimed, ownedCompanions, activeCompanionId };
+  return { ...state, level, activeRoom, xp, xpMax, coins, missionProgress, missionClaimed, ownedCompanions, activeCompanionId, decorInventory };
 }
 
+/** One care tick occurs every 30 seconds while the player is active. */
 export function tickPet(state: GameState): GameState {
-  const rate = state.sleeping ? 0.35 : 1;
+  const rate = state.sleeping ? 0.42 : 1;
   return {
     ...state,
     stats: {
-      felicidade: clamp(state.stats.felicidade - 0.35 * rate),
-      fome: clamp(state.stats.fome - 0.7 * rate),
-      higiene: clamp(state.stats.higiene - 0.45 * rate),
+      felicidade: clamp(state.stats.felicidade - 0.36 * rate),
+      fome: clamp(state.stats.fome - 0.72 * rate),
+      higiene: clamp(state.stats.higiene - 0.48 * rate),
       energia: clamp(state.stats.energia + (state.sleeping ? 1.1 : -0.35)),
     },
   };
@@ -214,12 +315,12 @@ export function performCare(state: GameState, action: CareAction): { state: Game
     stats.felicidade = clamp(stats.felicidade + 18);
     stats.energia = clamp(stats.energia - 2);
     next = { ...next, stats };
-    return { state: next, message: "Miau! Adoro receber carinho!", ok: true };
+    return { state: next, message: "Miau! Um carinho deixa meus bigodes em festa!", ok: true };
   }
 
   stats.energia = clamp(stats.energia + (state.sleeping ? 10 : 20));
   next = { ...next, stats };
-  return { state: next, message: state.sleeping ? `Acordei renovadinh${suffix}! Vamos brincar?` : "Zzz… um soninho vai fazer bem.", ok: true };
+  return { state: next, message: state.sleeping ? `Acordei renovadinh${suffix}! Vamos brincar?` : "Zzz… só mais cinco minutinhos…", ok: true };
 }
 
 export function completeMinigame(state: GameState): GameState {
@@ -231,7 +332,7 @@ export function completeMinigame(state: GameState): GameState {
     coins: state.coins + 60 + (!state.missionClaimed && nextProgress >= 3 ? 200 : 0),
     missionClaimed: state.missionClaimed || nextProgress >= 3,
   };
-  next = awardXp(next, 80);
+  next = awardXp(next, 50);
   return next;
 }
 
@@ -240,52 +341,111 @@ export function buySkin(state: GameState, skinId: SkinId): { state: GameState; m
   if (!skin) return { state, message: "Esse visual não está disponível.", ok: false };
   if (state.ownedSkins.includes(skinId)) return { state: { ...state, skin: skinId }, message: `${skin.name} equipado!`, ok: true };
   if (state.coins < skin.price) return { state, message: "Ainda faltam algumas moedas.", ok: false };
-  return {
-    state: { ...state, coins: state.coins - skin.price, skin: skinId, ownedSkins: [...state.ownedSkins, skinId] },
-    message: `${skin.name} desbloqueado!`,
-    ok: true,
-  };
+  return { state: { ...state, coins: state.coins - skin.price, skin: skinId, ownedSkins: [...state.ownedSkins, skinId] }, message: `${skin.name} desbloqueado!`, ok: true };
 }
 
 export function buyBoost(state: GameState, stat: keyof PetStats): { state: GameState; message: string; ok: boolean } {
   const price = 100;
   if (state.coins < price) return { state, message: "Ainda faltam algumas moedas.", ok: false };
   const labels: Record<keyof PetStats, string> = { felicidade: "felicidade", fome: "fome", higiene: "higiene", energia: "energia" };
-  return {
-    state: { ...state, coins: state.coins - price, stats: { ...state.stats, [stat]: clamp(state.stats[stat] + 30) } },
-    message: `Boost de ${labels[stat]} ativado!`,
-    ok: true,
-  };
+  return { state: { ...state, coins: state.coins - price, stats: { ...state.stats, [stat]: clamp(state.stats[stat] + 30) } }, message: `Boost de ${labels[stat]} ativado!`, ok: true };
 }
 
 export function buyStoreItem(state: GameState, itemId: StoreItemId): { state: GameState; message: string; ok: boolean } {
   const item = STORE_ITEMS.find((entry) => entry.id === itemId);
   if (!item) return { state, message: "Esse mimo não está disponível.", ok: false };
   if (state.coins < item.price) return { state, message: "Ainda faltam algumas moedas.", ok: false };
-  return {
-    state: { ...state, coins: state.coins - item.price, inventory: { ...state.inventory, [itemId]: state.inventory[itemId] + 1 } },
-    message: `${item.name} foi para a mochila!`,
-    ok: true,
-  };
+  return { state: { ...state, coins: state.coins - item.price, inventory: { ...state.inventory, [itemId]: state.inventory[itemId] + 1 } }, message: `${item.name} foi para a mochila!`, ok: true };
 }
 
 export function useStoreItem(state: GameState, itemId: StoreItemId): { state: GameState; message: string; ok: boolean } {
   const item = STORE_ITEMS.find((entry) => entry.id === itemId);
   if (!item || state.inventory[itemId] < 1) return { state, message: "Esse item não está na mochila.", ok: false };
   return {
-    state: {
-      ...state,
-      inventory: { ...state.inventory, [itemId]: state.inventory[itemId] - 1 },
-      stats: { ...state.stats, [item.stat]: clamp(state.stats[item.stat] + item.boost) },
-      sleeping: itemId === "caminha" ? true : state.sleeping,
-    },
+    state: { ...state, inventory: { ...state.inventory, [itemId]: state.inventory[itemId] - 1 }, stats: { ...state.stats, [item.stat]: clamp(state.stats[item.stat] + item.boost) }, sleeping: itemId === "caminha" ? true : state.sleeping },
     message: `${item.icon} ${item.name}: ${item.description.toLowerCase()}!`,
     ok: true,
   };
 }
 
+export function buyDecoration(state: GameState, itemId: DecorationId): { state: GameState; message: string; ok: boolean } {
+  const item = DECORATIONS.find((entry) => entry.id === itemId);
+  if (!item) return { state, message: "Essa decoração não está disponível.", ok: false };
+  if (state.coins < item.price) return { state, message: "Ainda faltam algumas moedas.", ok: false };
+  return { state: { ...state, coins: state.coins - item.price, decorInventory: { ...state.decorInventory, [itemId]: state.decorInventory[itemId] + 1 } }, message: `${item.name} foi para sua mochila de decoração!`, ok: true };
+}
+
+export function selectRoom(state: GameState, room: number): GameState {
+  if (!Number.isInteger(room) || room < 1 || room > state.level) return state;
+  return { ...state, activeRoom: room };
+}
+
+export function placeDecoration(state: GameState, placement: DecorationPlacement): { state: GameState; ok: boolean; message: string } {
+  if (!isDecorationId(placement.itemId) || state.decorInventory[placement.itemId] < 1) return { state, ok: false, message: "Esse item não está na mochila." };
+  const roomKey = String(state.activeRoom);
+  const items = state.roomDecorations[roomKey] ?? [];
+  if (items.length >= 20) return { state, ok: false, message: "Esta casa já está cheia de mimos." };
+  const safePlacement = normalizePlacement(placement);
+  if (!safePlacement) return { state, ok: false, message: "Não consegui posicionar esse item." };
+  return {
+    state: { ...state, decorInventory: { ...state.decorInventory, [placement.itemId]: state.decorInventory[placement.itemId] - 1 }, roomDecorations: { ...state.roomDecorations, [roomKey]: [...items, safePlacement] } },
+    ok: true,
+    message: "Decoração colocada! Arraste para mudar de lugar.",
+  };
+}
+
+export function updateDecoration(state: GameState, id: string, patch: Partial<Pick<DecorationPlacement, "x" | "y" | "rotation">>): GameState {
+  const roomKey = String(state.activeRoom);
+  const items = state.roomDecorations[roomKey] ?? [];
+  if (!items.some((item) => item.id === id)) return state;
+  return { ...state, roomDecorations: { ...state.roomDecorations, [roomKey]: items.map((item) => item.id === id ? { ...item, ...patch, x: clamp(patch.x ?? item.x, 5, 95), y: clamp(patch.y ?? item.y, 12, 88), rotation: ((Math.round(patch.rotation ?? item.rotation) % 360) + 360) % 360 } : item) } };
+}
+
+export function removeDecoration(state: GameState, id: string): GameState {
+  const roomKey = String(state.activeRoom);
+  const items = state.roomDecorations[roomKey] ?? [];
+  const item = items.find((candidate) => candidate.id === id);
+  if (!item) return state;
+  return { ...state, decorInventory: { ...state.decorInventory, [item.itemId]: state.decorInventory[item.itemId] + 1 }, roomDecorations: { ...state.roomDecorations, [roomKey]: items.filter((candidate) => candidate.id !== id) } };
+}
+
+export function spawnSurpriseGift(state: GameState, id: string, now = Date.now(), random: () => number = Math.random): GameState {
+  const live = state.gifts.filter((gift) => gift.expiresAt > now);
+  if (live.length >= 2) return { ...state, gifts: live };
+  const reward = random() < 0.56 ? "coins" : "decoration";
+  const decorChoices: DecorationId[] = ["tower", "bed", "plant", "lamp"];
+  const gift: SurpriseGift = {
+    id,
+    room: state.activeRoom,
+    x: random() < 0.5 ? 0.18 : 0.82,
+    spawnedAt: now,
+    expiresAt: now + 90000,
+    reward,
+    ...(reward === "coins" ? { coins: 70 + Math.floor(random() * 71) } : { decorationId: decorChoices[Math.floor(random() * decorChoices.length)] }),
+  };
+  return { ...state, gifts: [...live, gift] };
+}
+
+export function expireGifts(state: GameState, now = Date.now()): GameState {
+  const gifts = state.gifts.filter((gift) => gift.expiresAt > now);
+  return gifts.length === state.gifts.length ? state : { ...state, gifts };
+}
+
+export function collectSurpriseGift(state: GameState, id: string, now = Date.now()): { state: GameState; ok: boolean; message: string } {
+  const gift = state.gifts.find((candidate) => candidate.id === id);
+  if (!gift) return { state, ok: false, message: "Esse presente já não está mais aqui." };
+  const withoutGift = { ...state, gifts: state.gifts.filter((candidate) => candidate.id !== id) };
+  if (gift.expiresAt <= now) return { state: withoutGift, ok: false, message: "O presente expirou; outro pode aparecer logo." };
+  if (gift.reward === "coins") return { state: { ...withoutGift, coins: withoutGift.coins + (gift.coins ?? 80) }, ok: true, message: `Presente surpresa! +${gift.coins ?? 80} moedas.` };
+  const decorationId = gift.decorationId ?? "plant";
+  const item = DECORATIONS.find((entry) => entry.id === decorationId)!;
+  return { state: { ...withoutGift, decorInventory: { ...withoutGift.decorInventory, [decorationId]: withoutGift.decorInventory[decorationId] + 1 } }, ok: true, message: `Presente surpresa: ${item.name} para decorar!` };
+}
+
 export function setPetProfile(state: GameState, profile: PetProfile): GameState {
-  return { ...state, profile: { name: profile.name.trim().slice(0, 18) || "Pudim", age: clamp(Math.round(profile.age), 1, 25), gender: profile.gender } };
+  const gender: PetGender = profile.gender === "menina" ? "menina" : "menino";
+  const characterId = validCharacter(profile.characterId) && PET_CHARACTERS.find((item) => item.id === profile.characterId)?.gender === gender ? profile.characterId : defaultCharacter(gender);
+  return { ...state, profile: { name: profile.name.trim().slice(0, 18) || "Pudim", age: clamp(Math.round(profile.age), 1, 25), gender, characterId } };
 }
 
 export function chooseCompanion(state: GameState, id: CompanionId | null): { state: GameState; ok: boolean; message: string } {
