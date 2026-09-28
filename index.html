@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meu Pet Virtual - Edição Suprema de Minijogos</title>
   <style>
     @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -204,7 +204,7 @@
   <div id="start-screen" class="overlay-screen">
     <div class="hero-card" style="width: min(100%, 320px);">
       <h1 style="font-size: 22px; margin-bottom: 8px;">🐾 Meu Pet Virtual</h1>
-      <p style="font-size: 13px; color: #bdc3c7; line-height: 1.4;">Cuide do pet, divirta-se nos 10 minijogos e ganhe curiosidades a cada nível!</p>
+      <p style="font-size: 13px; color: #bdc3c7; line-height: 1.4;">Cuide do pet, divirta-se nos 11 minijogos e ganhe curiosidades a cada nível!</p>
       <div class="theme-picker" aria-label="Escolha de tema">
         <button type="button" class="theme-choice active" data-theme="cyber">Ciber</button>
         <button type="button" class="theme-choice" data-theme="sunset">Pôr do sol</button>
@@ -232,7 +232,7 @@
     <div class="header-right">
       <span class="moedas" id="moedas-txt">💰 50</span>
       <button class="btn-icon music-btn" onclick="alternarMusica()" aria-label="Alternar música">🎵</button>
-      <button class="btn-icon" onclick="alternarPause()">⏸️</button>
+      <button class="btn-icon" onclick="alternarPause()" aria-label="Pausar ou continuar o jogo">⏸️</button>
     </div>
   </div>
 
@@ -306,7 +306,7 @@
     </div>
   </div>
 
-  <span class="section-title">🎮 Todos os Minijogos (10)</span>
+  <span class="section-title">🎮 Todos os Minijogos (11)</span>
   <div class="minigames-grid">
     <button style="background: linear-gradient(135deg, #e67e22, #d35400); box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(230, 126, 34, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(230, 126, 34, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('memoria')">🧠 Memória</button>
     <button style="background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);" onmouseover="this.style.boxShadow='0 6px 16px rgba(231, 76, 60, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.3)'; this.style.transform='translateY(0)';" onclick="abrirMinijogo('rato')">🐭 Pega Rato</button>
@@ -538,9 +538,23 @@
     moedas: parseInt(localStorage.getItem('pet_moedas')) || 50,
     desafiosConcluidos: parseInt(localStorage.getItem('pet_desafios')) || 0,
     capitulo: parseInt(localStorage.getItem('pet_capitulo')) || 1,
-    desafioDiario: parseInt(localStorage.getItem('pet_desafio_diario')) || 0
+    desafioDiario: parseInt(localStorage.getItem('pet_desafio_diario')) || 0,
+    missaoConcluidaNivel: parseInt(localStorage.getItem('pet_missao_nivel')) || 0,
+    skin: localStorage.getItem('pet_skin') || 'ciber'
   };
-  const pet = { fome: 80, higiene: 80, energia: 80, felicidade: 80, dormindo: false };
+  let estadoPetSalvo = {};
+  try {
+    estadoPetSalvo = JSON.parse(localStorage.getItem('pet_estado') || '{}') || {};
+  } catch {
+    estadoPetSalvo = {};
+  }
+  const pet = {
+    fome: Number.isFinite(estadoPetSalvo.fome) ? Math.max(0, Math.min(100, estadoPetSalvo.fome)) : 80,
+    higiene: Number.isFinite(estadoPetSalvo.higiene) ? Math.max(0, Math.min(100, estadoPetSalvo.higiene)) : 80,
+    energia: Number.isFinite(estadoPetSalvo.energia) ? Math.max(0, Math.min(100, estadoPetSalvo.energia)) : 80,
+    felicidade: Number.isFinite(estadoPetSalvo.felicidade) ? Math.max(0, Math.min(100, estadoPetSalvo.felicidade)) : 80,
+    dormindo: estadoPetSalvo.dormindo === true
+  };
 
   const elLvl = document.getElementById('lvl-txt'), elMoedas = document.getElementById('moedas-txt'), elXpNum = document.getElementById('xp-num'), elBarXp = document.getElementById('bar-xp'), elAvatar = document.getElementById('pet-avatar'), elDialog = document.getElementById('pet-dialog');
 
@@ -551,6 +565,9 @@
     localStorage.setItem('pet_desafios', game.desafiosConcluidos);
     localStorage.setItem('pet_capitulo', game.capitulo);
     localStorage.setItem('pet_desafio_diario', game.desafioDiario);
+    localStorage.setItem('pet_missao_nivel', game.missaoConcluidaNivel);
+    localStorage.setItem('pet_skin', game.skin);
+    localStorage.setItem('pet_estado', JSON.stringify(pet));
   }
 
   function animarPet() {
@@ -638,29 +655,39 @@
   }
 
   function atualizarMissao() {
-    const metas = [
-      'Cuidar do pet até a felicidade chegar a 90% e completar 1 desafio.',
-      'Ajudar o mascote a comer, tomar banho e descansar em sequência.',
-      'Jogar 3 minijogos e acumular XP para avançar de nível.',
-      'Desbloquear a rotina de aventura e manter o pet muito feliz.'
-    ];
     const capitulos = [
       'Cidade neon, parques luminosos e aventuras de mascote em ritmo turbo.',
       'Praia holográfica com lanchonetes, energia de verão e desafios rápidos.',
       'Floresta digital com ruínas do futuro e quests escondidas.',
       'Torre celestial, céu estrelado e pet em missão de nível elite.'
     ];
-    const indice = (game.nivel - 1) % metas.length;
     const capIdx = (game.nivel - 1) % capitulos.length;
     const recompensa = 15 + game.nivel * 5;
-    if (missaoText) missaoText.innerText = metas[indice];
-    if (missaoPoints) missaoPoints.innerText = `+${recompensa} XP`;
+    const missaoConcluida = game.missaoConcluidaNivel >= game.nivel;
+    if (missaoText) missaoText.innerText = missaoConcluida ? 'Missão concluída! Suba de nível para liberar a próxima.' : 'Conclua um minijogo com pelo menos 30 pontos para completar a missão deste nível.';
+    if (missaoPoints) missaoPoints.innerText = missaoConcluida ? 'Concluída' : `+${recompensa} XP`;
     if (capituloAtualEl) capituloAtualEl.innerText = `Cap. ${capIdx + 1}`;
     if (capituloTextEl) capituloTextEl.innerText = capitulos[capIdx];
+    const progressoCapitulo = document.getElementById('capitulo-progress');
+    if (progressoCapitulo) progressoCapitulo.style.width = `${(((game.nivel - 1) % 4) + 1) * 25}%`;
+    if (petSkinNameEl) petSkinNameEl.innerText = (petSkins[game.skin] || petSkins.ciber).nome;
+  }
+
+  function concluirMissao() {
+    if (game.missaoConcluidaNivel >= game.nivel) return;
+    const recompensa = 15 + game.nivel * 5;
+    game.missaoConcluidaNivel = game.nivel;
+    game.desafiosConcluidos++;
+    game.moedas += 20;
+    salvarEstado();
+    ganharXP(recompensa);
+    dispararFeedback(`Missão concluída! +20 moedas e +${recompensa} XP`, '#4ade80');
+    atualizarUI();
   }
 
   function aplicarSkin(chave) {
     const skin = petSkins[chave] || petSkins.ciber;
+    game.skin = petSkins[chave] ? chave : 'ciber';
     const avatar = document.getElementById('pet-avatar');
     if (avatar) {
       avatar.innerText = skin.emoji;
@@ -669,6 +696,7 @@
     if (petSkinNameEl) petSkinNameEl.innerText = skin.nome;
     mostrarFala('neutra');
     elDialog.innerText = `Nova skin ativa: ${skin.nome}. Estou pronto para mais aventuras!`;
+    salvarEstado();
   }
 
   function ativarBoost() {
@@ -713,7 +741,7 @@
     else if (pet.energia < 30) { elAvatar.innerText = '🙀'; mostrarFala('cansado'); }
     else if (pet.felicidade < 40) { elAvatar.innerText = '😾'; elDialog.innerText = 'Estou animado para brincar, mas acho que faltou um desafio!'; }
     else {
-      elAvatar.innerText = '😸';
+      elAvatar.innerText = (petSkins[game.skin] || petSkins.ciber).emoji;
       const sugestoes = [
         'Que tal testar a Cobrinha agora?',
         'Vamos jogar Pet Run e mostrar nossos reflexos!',
@@ -747,6 +775,7 @@
     document.getElementById('btn-racao').disabled = pet.dormindo || game.moedas < 10;
     document.getElementById('btn-banho').disabled = pet.dormindo || game.moedas < 5;
     document.getElementById('btn-carinho').disabled = pet.dormindo;
+    salvarEstado();
   }
 
   function loopAtributos() {

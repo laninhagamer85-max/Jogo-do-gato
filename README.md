@@ -4,7 +4,7 @@ Um jogo interativo completo em HTML5 onde você cuida de um pet virtual, partici
 
 ## 🎮 Sobre o Jogo
 
-**Meu Pet Virtual** é um projeto lúdico que combina cuidados com um pet estilo Tamagotchi com 10 minijogos diferentes. A cada nível alcançado, você desbloqueia curiosidades fascinantes sobre animais, tecnologia, espaço e muito mais!
+**Meu Pet Virtual** é um projeto lúdico que combina cuidados com um pet estilo Tamagotchi com 11 minijogos diferentes. A cada nível alcançado, você desbloqueia curiosidades fascinantes sobre animais, tecnologia, espaço e muito mais!
 
 ### 📊 Sistema de Atributos
 
@@ -22,7 +22,7 @@ O seu pet possui 4 atributos principais que precisam ser gerenciados:
 - **Níveis**: A cada nível atingido, receba bônus de moedas e desbloqueie curiosidades educativas
 - **Armazenamento**: Seu progresso é salvo automaticamente no navegador (localStorage)
 
-## 🎯 Os 10 Minijogos
+## 🎯 Os 11 Minijogos
 
 | Minijogo | Descrição | Objetivo |
 |----------|-----------|----------|
