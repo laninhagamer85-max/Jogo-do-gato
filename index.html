@@ -76,6 +76,8 @@
     .btn-icon { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3); transition: all 0.3s ease; }
     .btn-icon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5); }
     .btn-icon:active { transform: translateY(0); }
+    .music-btn { background: linear-gradient(135deg, #60a5fa, #2563eb); box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+    .music-btn:hover { box-shadow: 0 6px 16px rgba(59,130,246,0.5); }
 
     .xp-container { background: linear-gradient(135deg, #f8f9f9, #ecf0f1); padding: 10px 12px; border-radius: 12px; border: 2px solid #e8eaed; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
     .xp-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #5a6c7d; margin-bottom: 5px; }
@@ -131,9 +133,27 @@
     .mission-content {
       color: #e2e8f0; font-size: 12px; line-height: 1.45; background: rgba(255,255,255,0.03); border-radius: 10px; padding: 8px 10px;
     }
+    .mission-progress {
+      height: 9px; background: rgba(148,163,184,0.2); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
+    }
+    .mission-progress > span {
+      display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #38bdf8, #34d399); border-radius: inherit; transition: width 0.3s ease;
+    }
+    .boost-panel {
+      background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(14,116,144,0.12)); border: 1px solid rgba(96,165,250,0.28); border-radius: 16px; padding: 10px 12px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    }
     .shop-btn {
       background: linear-gradient(135deg, #f59e0b, #f97316); color: #fff; border-radius: 10px; border: none; padding: 9px 12px; font-size: 11px; font-weight: 800; cursor: pointer;
     }
+    .shop-grid, .skin-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+    }
+    .shop-item, .skin-item {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 8px; font-size: 10px; color: #e2e8f0; display: flex; flex-direction: column; gap: 4px; align-items: center; text-align: center;
+    }
+    .shop-item button, .skin-item button {
+      width: 100%; padding: 7px 6px; font-size: 9px; border-radius: 8px; }
     .pet-avatar:hover { transform: scale(1.1); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
     .pet-avatar:active { transform: scale(1.2); animation: none; }
     .pet-stage-decor {
@@ -211,6 +231,7 @@
     <span class="theme-chip">Tema Ciber</span>
     <div class="header-right">
       <span class="moedas" id="moedas-txt">💰 50</span>
+      <button class="btn-icon music-btn" onclick="alternarMusica()" aria-label="Alternar música">🎵</button>
       <button class="btn-icon" onclick="alternarPause()">⏸️</button>
     </div>
   </div>
@@ -242,6 +263,14 @@
     <button id="btn-carinho" onclick="fazerCarinho()">❤️ Carinho</button>
   </div>
 
+  <div class="boost-panel">
+    <div>
+      <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #cbd5e1; font-weight: 800;">Boost premium</div>
+      <div id="daily-challenge" style="font-size: 12px; color: #e2e8f0; margin-top: 4px;">Desafio do dia: brincar com o pet.</div>
+    </div>
+    <button id="btn-boost" style="background: linear-gradient(135deg, #22c55e, #16a34a); padding: 9px 12px; font-size: 11px;" onclick="ativarBoost()">⚡ Boost</button>
+  </div>
+
   <div class="mission-panel">
     <div class="mission-title">
       <span>Missão ativa</span>
@@ -253,6 +282,28 @@
     </div>
     <div class="mission-content" id="mission-text">Cuidar do pet, jogar 3 minijogos e subir de nível para desbloquear mais emoções.</div>
     <button class="shop-btn" onclick="abrirLoja()">🛍️ Loja rápida</button>
+  </div>
+
+  <div class="mission-panel" style="margin-top: 8px;">
+    <div class="mission-title">
+      <span>Capítulos</span>
+      <span id="capitulo-atual">Cap. 1</span>
+    </div>
+    <div class="mission-content" id="capitulo-text">Cidade neon, parques luminosos e aventuras de mascote em ritmo turbo.</div>
+    <div class="mission-progress"><span id="capitulo-progress"></span></div>
+  </div>
+
+  <div class="mission-panel" style="margin-top: 8px;">
+    <div class="mission-title">
+      <span>Loja & skins</span>
+      <span id="pet-skin-name">Ciber</span>
+    </div>
+    <div class="skin-grid">
+      <div class="skin-item"><span>🐱 Ciber</span><button onclick="aplicarSkin('ciber')">Usar</button></div>
+      <div class="skin-item"><span>🌙 Lunar</span><button onclick="aplicarSkin('lunar')">Usar</button></div>
+      <div class="skin-item"><span>🦊 Aurora</span><button onclick="aplicarSkin('aurora')">Usar</button></div>
+      <div class="skin-item"><span>🧊 Frost</span><button onclick="aplicarSkin('frost')">Usar</button></div>
+    </div>
   </div>
 
   <span class="section-title">🎮 Todos os Minijogos (10)</span>
@@ -291,6 +342,17 @@
   const petStage = document.getElementById('pet-stage');
   const missaoText = document.getElementById('mission-text');
   const missaoPoints = document.getElementById('mission-points');
+  const capituloAtualEl = document.getElementById('capitulo-atual');
+  const capituloTextEl = document.getElementById('capitulo-text');
+  const petSkinNameEl = document.getElementById('pet-skin-name');
+
+  let musicaAtiva = true;
+  const petSkins = {
+    ciber: { nome: 'Ciber', emoji: '🐱', brilho: 'rgba(96,165,250,0.7)' },
+    lunar: { nome: 'Lunar', emoji: '🌙', brilho: 'rgba(196,181,253,0.7)' },
+    aurora: { nome: 'Aurora', emoji: '🦊', brilho: 'rgba(45,212,191,0.7)' },
+    frost: { nome: 'Frost', emoji: '❄️', brilho: 'rgba(186,230,253,0.7)' }
+  };
 
   window.addEventListener('pointermove', (event) => {
     if (!petStage) return;
@@ -407,20 +469,47 @@
   inicializarDecoracoes();
 
   function tocarSom(tipo) {
+    if (!musicaAtiva) return;
     if (AudioCTX.state === 'suspended') AudioCTX.resume();
     const osc = AudioCTX.createOscillator();
     const gain = AudioCTX.createGain();
     osc.connect(gain); gain.connect(AudioCTX.destination);
 
     if (tipo === 'click') {
-      osc.frequency.setValueAtTime(400, AudioCTX.currentTime); gain.gain.setValueAtTime(0.1, AudioCTX.currentTime);
+      osc.frequency.setValueAtTime(400, AudioCTX.currentTime); gain.gain.setValueAtTime(0.08, AudioCTX.currentTime);
       osc.start(); osc.stop(AudioCTX.currentTime + 0.05);
     } else if (tipo === 'coin') {
       osc.frequency.setValueAtTime(800, AudioCTX.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, AudioCTX.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.15, AudioCTX.currentTime); osc.start(); osc.stop(AudioCTX.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.12, AudioCTX.currentTime); osc.start(); osc.stop(AudioCTX.currentTime + 0.1);
     } else if (tipo === 'levelup') {
       osc.frequency.setValueAtTime(300, AudioCTX.currentTime); osc.frequency.linearRampToValueAtTime(600, AudioCTX.currentTime + 0.3);
-      gain.gain.setValueAtTime(0.2, AudioCTX.currentTime); osc.start(); osc.stop(AudioCTX.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.18, AudioCTX.currentTime); osc.start(); osc.stop(AudioCTX.currentTime + 0.3);
+    }
+  }
+
+  function tocarTrilha() {
+    if (!musicaAtiva || !AudioCTX) return;
+    const notas = [220, 277, 330, 392, 330, 277, 247, 196];
+    notas.forEach((nota, index) => {
+      const osc = AudioCTX.createOscillator();
+      const gain = AudioCTX.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(nota, AudioCTX.currentTime + index * 0.18);
+      gain.gain.setValueAtTime(0.016, AudioCTX.currentTime + index * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.0001, AudioCTX.currentTime + index * 0.18 + 0.12);
+      osc.connect(gain); gain.connect(AudioCTX.destination);
+      osc.start(AudioCTX.currentTime + index * 0.18);
+      osc.stop(AudioCTX.currentTime + index * 0.18 + 0.12);
+    });
+  }
+
+  function alternarMusica() {
+    musicaAtiva = !musicaAtiva;
+    if (musicaAtiva) {
+      tocarTrilha();
+      dispararFeedback('Música ligada', '#67e8f9');
+    } else {
+      dispararFeedback('Música desligada', '#fca5a5');
     }
   }
 
@@ -442,12 +531,27 @@
   }));
 
   let gamePausado = false, jogoIniciado = false;
-  const game = { nivel: parseInt(localStorage.getItem('pet_lvl')) || 1, xp: parseInt(localStorage.getItem('pet_xp')) || 0, xpMax: 100, moedas: parseInt(localStorage.getItem('pet_moedas')) || 50 };
+  const game = {
+    nivel: parseInt(localStorage.getItem('pet_lvl')) || 1,
+    xp: parseInt(localStorage.getItem('pet_xp')) || 0,
+    xpMax: 100,
+    moedas: parseInt(localStorage.getItem('pet_moedas')) || 50,
+    desafiosConcluidos: parseInt(localStorage.getItem('pet_desafios')) || 0,
+    capitulo: parseInt(localStorage.getItem('pet_capitulo')) || 1,
+    desafioDiario: parseInt(localStorage.getItem('pet_desafio_diario')) || 0
+  };
   const pet = { fome: 80, higiene: 80, energia: 80, felicidade: 80, dormindo: false };
 
   const elLvl = document.getElementById('lvl-txt'), elMoedas = document.getElementById('moedas-txt'), elXpNum = document.getElementById('xp-num'), elBarXp = document.getElementById('bar-xp'), elAvatar = document.getElementById('pet-avatar'), elDialog = document.getElementById('pet-dialog');
 
-  function salvarEstado() { localStorage.setItem('pet_lvl', game.nivel); localStorage.setItem('pet_xp', game.xp); localStorage.setItem('pet_moedas', game.moedas); }
+  function salvarEstado() {
+    localStorage.setItem('pet_lvl', game.nivel);
+    localStorage.setItem('pet_xp', game.xp);
+    localStorage.setItem('pet_moedas', game.moedas);
+    localStorage.setItem('pet_desafios', game.desafiosConcluidos);
+    localStorage.setItem('pet_capitulo', game.capitulo);
+    localStorage.setItem('pet_desafio_diario', game.desafioDiario);
+  }
 
   function animarPet() {
     const stage = document.getElementById('pet-stage');
@@ -535,15 +639,49 @@
 
   function atualizarMissao() {
     const metas = [
-      `Cuidar do pet até a felicidade chegar a 90% e completar 1 desafio.`,
-      `Ajudar o mascote a comer, tomar banho e descansar em sequência.`,
-      `Jogar 3 minijogos e acumular XP para avançar de nível.`,
-      `Desbloquear a rotina de aventura e manter o pet muito feliz.`
+      'Cuidar do pet até a felicidade chegar a 90% e completar 1 desafio.',
+      'Ajudar o mascote a comer, tomar banho e descansar em sequência.',
+      'Jogar 3 minijogos e acumular XP para avançar de nível.',
+      'Desbloquear a rotina de aventura e manter o pet muito feliz.'
+    ];
+    const capitulos = [
+      'Cidade neon, parques luminosos e aventuras de mascote em ritmo turbo.',
+      'Praia holográfica com lanchonetes, energia de verão e desafios rápidos.',
+      'Floresta digital com ruínas do futuro e quests escondidas.',
+      'Torre celestial, céu estrelado e pet em missão de nível elite.'
     ];
     const indice = (game.nivel - 1) % metas.length;
+    const capIdx = (game.nivel - 1) % capitulos.length;
     const recompensa = 15 + game.nivel * 5;
     if (missaoText) missaoText.innerText = metas[indice];
     if (missaoPoints) missaoPoints.innerText = `+${recompensa} XP`;
+    if (capituloAtualEl) capituloAtualEl.innerText = `Cap. ${capIdx + 1}`;
+    if (capituloTextEl) capituloTextEl.innerText = capitulos[capIdx];
+  }
+
+  function aplicarSkin(chave) {
+    const skin = petSkins[chave] || petSkins.ciber;
+    const avatar = document.getElementById('pet-avatar');
+    if (avatar) {
+      avatar.innerText = skin.emoji;
+      avatar.style.filter = `drop-shadow(0 0 18px ${skin.brilho})`;
+    }
+    if (petSkinNameEl) petSkinNameEl.innerText = skin.nome;
+    mostrarFala('neutra');
+    elDialog.innerText = `Nova skin ativa: ${skin.nome}. Estou pronto para mais aventuras!`;
+  }
+
+  function ativarBoost() {
+    if (game.moedas < 8) {
+      elDialog.innerText = 'Você precisa de 8 moedas para ativar o boost premium.';
+      return;
+    }
+    game.moedas -= 8;
+    pet.energia = Math.min(100, pet.energia + 25);
+    pet.felicidade = Math.min(100, pet.felicidade + 20);
+    tocarSom('coin');
+    dispararFeedback('Boost ativado!', '#4ade80');
+    atualizarUI();
   }
 
   function abrirLoja() {
@@ -664,7 +802,9 @@
   function encerrarMinijogo() {
     clearInterval(minijogoLoop); document.getElementById('modal-minijogo').style.display = 'none';
     const moedasGanhas = Math.floor(pontosMinijogo / 2); game.moedas += moedasGanhas;
-    ganharXP(Math.floor(pontosMinijogo / 2)); pet.felicidade = Math.min(100, pet.felicidade + 20); atualizarUI();
+    ganharXP(Math.floor(pontosMinijogo / 2)); pet.felicidade = Math.min(100, pet.felicidade + 20);
+    if (pontosMinijogo >= 30) concluirMissao();
+    atualizarUI();
   }
 
   /* IMPLEMENTAÇÃO DOS MINIJOGOS */
