@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Engine } from "@babylonjs/core/Engines/engine";
-import { createGameScene, type GameHandle } from "@/game/scene";
+import { createGameScene, type GameHandle, type ScenePetState } from "@/game/scene";
 
-export default function GameCanvas() {
+export default function GameCanvas({ initialState }: { initialState?: ScenePetState }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const startedRef = useRef(false);
 
@@ -19,7 +19,7 @@ export default function GameCanvas() {
     let handle: GameHandle | null = null;
     let cancelled = false;
 
-    createGameScene(engine, canvas).then((nextHandle) => {
+    createGameScene(engine, canvas, initialState).then((nextHandle) => {
       if (cancelled) {
         nextHandle.dispose();
         return;
