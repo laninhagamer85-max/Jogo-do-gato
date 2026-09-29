@@ -44,3 +44,12 @@ Validação final 2026-09-28: `pnpm check`, `pnpm build` e `git diff --check` pa
 - A abertura do presente leva 1,55 s; depois, moedas ou item, miniatura, casa de origem e ação “Usar” ficam visíveis por até 15,5 s e somem com fade. O item vem da mesma casa do presente.
 - Regras do catálogo: 18 peças ainda exigem missão mesmo no nível 10; no nível 1, 93/100 indisponíveis contam também as casas futuras.
 - Moldura clicável usa retrato autorizado em todas as casas, legenda HTML do nome e modal com homenagem. Foi reposicionada por breakpoint para não cobrir etiquetas no mobile.
+
+
+## Campanha principal de plataforma — status (2026-09-29)
+- Implementado o mapa com **10 mundos × 10 fases**, usando os temas e a narrativa das dez casas existentes. O canvas 2D tem corrida/salto, gravidade, plataformas e vãos com colisão, moedas, inimigos/obstáculos, checkpoint, três corações, HUD, portal, pausa/retry e controles por teclado e toque.
+- A campanha abre após o onboarding. As fases futuras e seus prêmios mostram cadeados; primeira conclusão concede uma peça única da casa temática e moedas. Replay mantém o melhor resultado sem repetir decoração/moedas. Progresso novo em `platformProgress` migra aditivamente no save v2.
+- **Minha Casa** continua disponível como modo secundário: cuidados, loja, missões, dez casas decoráveis e 11 minijogos seguem funcionando e concedem XP/moedas para evolução do pet. Os saves continuam locais em `localStorage`; não há sincronização de progresso do jogador com GitHub.
+- O quadro/homenagem de Allana permanece interativo no cabeçalho permanente da aventura e na cena da casa, com retrato hospedado e texto autorizado; a foto não foi adicionada ao repositório.
+- QA da branch: typecheck + Vite build aprovados; regra de domínio verificou 100 fases/100 prêmios únicos, bloqueio sequencial, migração, unlock na primeira vitória e replay sem duplicação. Browser: mapa desktop/mobile (375×812), canvas real da fase 1, corrida, salto sobre o primeiro vão e retorno a Minha Casa.
+- `?demo=platformer` abre a aventura com perfil fictício em memória e preserva o save real; `?demo=1` continua demonstrando Minha Casa/minijogos. PWA mantém manifesto/ícones, mas não tem service worker/cache offline. Branch de trabalho `feature/meu-pet-virtual-refresh`; PR #2 deve permanecer aberto, sem merge nem publicação do site.

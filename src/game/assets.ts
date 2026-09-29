@@ -41,6 +41,8 @@ import levelGirlVoice from "../assets/level-girl.mp3?url";
 import mimiVoice from "../assets/voice-mimi.mp3?url";
 import ticoVoice from "../assets/voice-tico.mp3?url";
 import matchSound from "../assets/match-combo.mp3?url";
+import platformGrass from "../assets/platform-grass.webp?url";
+import goalPortal from "../assets/goal-portal.webp?url";
 import { DECORATIONS } from "./decorations";
 
 const generatedDecorationAssets = import.meta.glob("../assets/decorations/*.webp", {
@@ -74,6 +76,7 @@ export const GAME_ASSETS = {
   creatorPlaque: "https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp",
   decorations,
   gift,
+  platformer: { grass: platformGrass, portal: goalPortal },
   icon: appIcon,
   voice: {
     intro: onboardingIntroVoice,

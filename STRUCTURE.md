@@ -45,3 +45,14 @@ O clone é uma aplicação Vite estática: não tem backend/API ou autenticaçã
 - `src/game/scene.ts` — renderiza o retrato hospedado em todas as casas, mantém a placa alinhada no resize e aplica reações de troca de personagem/skin sem interferir com level-up.
 - `src/pages/Home.tsx` — modal informativo, prévia de personagem e revelação temporizada de presente.
 - A fotografia não é copiada ao repositório; é obtida do storage gerenciado.
+
+
+## Campanha lateral e modos (2026-09-29)
+- `src/components/PlatformAdventure.tsx` — mapa 10×10, seleção de mundo/fase, tutorial, HUD, controles, vitória/retry, cadeados e modo Minha Casa.
+- `src/components/PlatformAdventure.css` — layout arcade responsivo para desktop e celular.
+- `src/game/PlatformerEngine.ts` — motor Canvas 2D sem acoplamento React: delta-time, input, física, colisões, moedas, inimigos, checkpoints, vidas e goal.
+- `src/game/platformerLevels.ts` — 100 fases determinísticas, paletas por casa, história, dificuldade e associação 1:1 à decoração existente.
+- `src/game/PetGame.ts` — `platformProgress` persistido/migrado e recompensa de primeira conclusão sem farming em replay.
+- `src/pages/Home.tsx` — aventura como entrada após onboarding; Minha Casa continua como modo secundário e mantém os sistemas de cuidado/minijogos.
+- `src/game/assets.ts` — duas imagens do motor importadas de `src/assets/platform-grass.webp` e `src/assets/goal-portal.webp`; portrait de Allana permanece em storage gerenciado.
+- `/?demo=platformer` permite QA do mapa sem gravar save; `/?demo=1` permanece a demonstração da casa.

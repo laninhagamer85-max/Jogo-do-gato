@@ -1,0 +1,251 @@
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Coins, Gamepad2, Heart, Home as HomeIcon,
+  LockKeyhole, Map, Pause, PawPrint, Play, RotateCcw, Sparkles, Star, Trophy, Volume2, VolumeX, X,
+} from "lucide-react";
+import { GAME_ASSETS } from "@/game/assets";
+import { completePlatformStage, type GameState } from "@/game/PetGame";
+import { PlatformerEngine, type PlatformerHud } from "@/game/PlatformerEngine";
+import { getPlatformStage, getPlatformWorld } from "@/game/platformerLevels";
+import "./PlatformAdventure.css";
+
+type Phase = "map" | "playing" | "paused" | "failed" | "won";
+type Completion = ReturnType<typeof completePlatformStage>;
+
+type Props = {
+  state: GameState;
+  soundOn: boolean;
+  onToggleSound: () => void;
+  onGoToHouse: () => void;
+  onCompleteTutorial: () => void;
+  onCompleteStage: (stageId: number, stars: number, coins: number) => Completion;
+};
+
+const START_HUD: PlatformerHud = { hearts: 3, coins: 0, totalCoins: 0, progress: 0, checkpoint: false };
+const CREATOR_COPY = <>Este jogo foi idealizado e criado com muito carinho e criatividade pela jovem desenvolvedora <strong>Allana Gabriela</strong>, de apenas <strong>11 Anos</strong>, no ano de <strong>2026</strong>. Ela provou que não há limite de idade para transformar imaginação em arte e código!</>;
+
+function starsForRun(hud: PlatformerHud) {
+  const ratio = hud.totalCoins ? hud.coins / hud.totalCoins : 0;
+  if (ratio >= 0.72 && hud.hearts === 3) return 3;
+  if (ratio >= 0.36 || hud.hearts === 3) return 2;
+  return 1;
+}
+
+function formatStars(stars: number) {
+  return `${"★".repeat(stars)}${"☆".repeat(Math.max(0, 3 - stars))}`;
+}
+
+export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage }: Props) {
+  const initialWorld = Math.min(10, Math.max(1, Math.ceil(state.platformProgress.unlockedStage / 10)));
+  const [world, setWorld] = useState(initialWorld);
+  const [stageId, setStageId] = useState(state.platformProgress.unlockedStage <= 100 ? state.platformProgress.unlockedStage : 100);
+  const [phase, setPhase] = useState<Phase>("map");
+  const [hud, setHud] = useState<PlatformerHud>(START_HUD);
+  const [attempt, setAttempt] = useState(0);
+  const [reward, setReward] = useState<Completion | null>(null);
+  const [helpOpen, setHelpOpen] = useState(!state.tutorialComplete);
+  const [creatorOpen, setCreatorOpen] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const engineRef = useRef<PlatformerEngine | null>(null);
+  const completeStageRef = useRef(onCompleteStage);
+  const currentStage = useMemo(() => getPlatformStage(stageId)!, [stageId]);
+  const chapter = getPlatformWorld(world)!;
+  const completed = state.platformProgress.completedStages;
+  const currentWorldStages = Array.from({ length: 10 }, (_, index) => (world - 1) * 10 + index + 1);
+  const worldDone = currentWorldStages.filter((id) => completed.includes(id)).length;
+  const totalDone = completed.length;
+  const availableWorld = Math.min(10, Math.max(1, Math.ceil(state.platformProgress.unlockedStage / 10)));
+
+  useEffect(() => { completeStageRef.current = onCompleteStage; }, [onCompleteStage]);
+
+  useEffect(() => {
+    const stageData = getPlatformStage(stageId);
+    const canvas = canvasRef.current;
+    if ((phase === "playing" || phase === "paused") && canvas && stageData && state.profile) {
+      if (!engineRef.current) {
+        engineRef.current = new PlatformerEngine(canvas, stageId, state.profile, {
+          onHud: setHud,
+          onWin: (coins, hearts, totalCoins) => {
+            const ratio = totalCoins ? coins / totalCoins : 0;
+            const stars = ratio >= 0.72 && hearts === 3 ? 3 : ratio >= 0.36 || hearts === 3 ? 2 : 1;
+            const outcome = completeStageRef.current(stageId, stars, coins);
+            setReward(outcome);
+            setPhase("won");
+          },
+          onLose: () => setPhase("failed"),
+        });
+      }
+      engineRef.current.setSoundEnabled(soundOn);
+      engineRef.current.setPaused(phase === "paused");
+    } else if (engineRef.current) {
+      engineRef.current.dispose();
+      engineRef.current = null;
+    }
+  }, [phase, stageId, attempt, state.profile, soundOn]);
+
+  useEffect(() => () => {
+    engineRef.current?.dispose();
+    engineRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (creatorOpen) { setCreatorOpen(false); return; }
+      if (helpOpen) { setHelpOpen(false); return; }
+      if (phase === "playing") setPhase("paused");
+      else if (phase === "paused") setPhase("playing");
+      else if (phase === "failed" || phase === "won") { setPhase("map"); setReward(null); }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [phase, helpOpen, creatorOpen]);
+
+  useEffect(() => {
+    if (phase !== "playing") return;
+    setHud(START_HUD);
+  }, [phase, stageId, attempt]);
+
+  function beginStage(id: number) {
+    if (id > state.platformProgress.unlockedStage) return;
+    setStageId(id);
+    setWorld(Math.ceil(id / 10));
+    setHud(START_HUD);
+    setReward(null);
+    setPhase("playing");
+  }
+
+  function replayStage() {
+    setReward(null);
+    setHud(START_HUD);
+    setAttempt((value) => value + 1);
+    setPhase("playing");
+  }
+
+  function finishGuide() {
+    setHelpOpen(false);
+    if (!state.tutorialComplete) onCompleteTutorial();
+  }
+
+  function setControl(action: "left" | "right" | "jump", pressed: boolean, event?: ReactPointerEvent<HTMLButtonElement>) {
+    if (event) {
+      event.preventDefault();
+      if (pressed) event.currentTarget.setPointerCapture(event.pointerId);
+      else if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    engineRef.current?.setInput(action, pressed);
+  }
+
+  function stageTile(stage: number) {
+    const data = getPlatformStage(stage)!;
+    const isComplete = completed.includes(stage);
+    const isLocked = stage > state.platformProgress.unlockedStage;
+    const rewardEarned = isComplete || state.decorInventory[data.reward.id] > 0;
+    const stars = state.platformProgress.starsByStage[String(stage)] ?? 0;
+    return <button
+      className={`pa-stage-tile ${isComplete ? "is-complete" : ""} ${isLocked ? "is-locked" : "is-open"} ${stage === state.platformProgress.unlockedStage ? "is-current" : ""}`}
+      key={stage}
+      type="button"
+      disabled={isLocked}
+      onClick={() => beginStage(stage)}
+      aria-label={`Fase ${stage}, ${data.subtitle}${isLocked ? ", bloqueada" : isComplete ? ", concluída" : ", disponível"}`}
+    >
+      <span className="pa-stage-number">{String(data.stageInWorld).padStart(2, "0")}</span>
+      <span className={`pa-reward-art ${rewardEarned ? "is-earned" : ""}`}>
+        <img src={GAME_ASSETS.decorations[data.reward.id]} alt="" loading="lazy" />
+        {!rewardEarned && <span className="pa-lock-badge"><LockKeyhole size={14} /></span>}
+      </span>
+      <strong>{rewardEarned ? data.reward.name : data.subtitle}</strong>
+      <small>{isLocked ? "Conclua a fase anterior" : isComplete ? "Rejogar · prêmio recebido" : rewardEarned ? "Já está na mochila" : "Prêmio ao vencer"}</small>
+      {isComplete && <span className="pa-stage-stars" aria-label={`${stars} estrelas`}>{formatStars(stars)}</span>}
+      {stage === state.platformProgress.unlockedStage && <span className="pa-ready-pill">JOGAR</span>}
+      {isLocked && <span className="pa-tile-lock"><LockKeyhole size={16} /></span>}
+      {isComplete && <span className="pa-complete-check"><Check size={12} /></span>}
+    </button>;
+  }
+
+  return <div className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
+    <header className="pa-topbar">
+      <div className="pa-brand"><span><PawPrint size={24} fill="currentColor" /></span><div><strong>Meu Pet Virtual</strong><small>AVENTURA DA TURMA</small></div></div>
+      <div className="pa-mode-switch" aria-label="Modo do jogo"><span className="pa-mode-active"><Gamepad2 size={15} /> Aventura <b>100</b></span><button type="button" onClick={onGoToHouse}><HomeIcon size={15} /> Minha Casa</button></div>
+      <button className="pa-creator-badge" type="button" onClick={() => setCreatorOpen(true)} aria-label="Conheça Allana Gabriela, idealizadora do Meu Pet Virtual">
+        <img src={GAME_ASSETS.creatorPlaque} alt="" /><span><small>IDEIA QUE VIROU JOGO</small><strong>Allana Gabriela</strong></span><ChevronRight size={15} />
+      </button>
+      <div className="pa-top-actions">
+        <div className="pa-pet-level"><Star size={16} fill="currentColor" /><span>Nível {state.level}</span><small>{state.xp}/{state.xpMax} XP</small></div>
+        <div className="pa-wallet"><Coins size={17} fill="currentColor" /><strong>{state.coins.toLocaleString("pt-BR")}</strong></div>
+        <button className="pa-icon-button" type="button" onClick={onToggleSound} aria-label={soundOn ? "Desligar som" : "Ligar som"}>{soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
+        <button className="pa-icon-button" type="button" onClick={() => setHelpOpen(true)} aria-label="Como jogar"><BookOpen size={18} /></button>
+      </div>
+    </header>
+
+    {phase === "map" ? <main className="pa-map-layout">
+      <aside className="pa-world-story" style={{ "--pa-accent": PLATFORM_PALETTE(world).accent } as React.CSSProperties}>
+        <span className="pa-kicker"><Map size={13} /> MAPA DA AVENTURA</span>
+        <div className="pa-story-pet"><img src={GAME_ASSETS.characters[state.profile?.characterId ?? "menino-prata"]} alt={state.profile?.name ?? "Seu gatinho"} /><span><b>{state.profile?.name ?? "Seu pet"}</b><small>pronto para explorar</small></span></div>
+        <span className="pa-world-number">MUNDO {String(world).padStart(2, "0")} <i>·</i> 10</span>
+        <h1>{chapter.location}</h1>
+        <p className="pa-world-story-copy">{chapter.story}</p>
+        <div className="pa-current-objective"><span><Sparkles size={15} /></span><div><small>DESAFIO DA VEZ</small><strong>{state.platformProgress.unlockedStage <= 100 ? (getPlatformStage(state.platformProgress.unlockedStage)?.subtitle ?? "Todos os mundos celebram!") : "A jornada completa!"}</strong></div></div>
+        <div className="pa-world-progress"><div><span>Fases deste mundo</span><strong>{worldDone}/10</strong></div><div className="pa-progress-track"><i style={{ width: `${worldDone * 10}%` }} /></div></div>
+        <div className="pa-campaign-progress"><Trophy size={16} /><span><strong>{totalDone} / 100</strong><small>aventuras concluídas</small></span><i>{Math.round(totalDone)}%</i></div>
+        <div className="pa-house-link"><Gamepad2 size={15} /><span>Minijogos e cuidados na casa ainda dão <b>XP e moedas</b> para ajudar seu pet a evoluir.</span></div>
+      </aside>
+
+      <section className="pa-map-card" aria-label="Mapa de fases">
+        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin">✦</span> Moedas pelo caminho</span></div>
+        <div className="pa-world-tabs" role="tablist" aria-label="Mundos da campanha">
+          {Array.from({ length: 10 }, (_, index) => index + 1).map((worldId) => {
+            const worldData = getPlatformWorld(worldId)!;
+            const locked = worldId > availableWorld;
+            const done = currentWorldStages.filter((id) => id <= totalDone && Math.ceil(id / 10) === worldId).length;
+            return <button className={`${world === worldId ? "active" : ""} ${locked ? "locked" : ""}`} type="button" role="tab" aria-selected={world === worldId} disabled={locked} key={worldId} onClick={() => setWorld(worldId)} title={worldData.location}>
+              <span>{locked ? <LockKeyhole size={13} /> : String(worldId).padStart(2, "0")}</span><small>{worldData.location.split(" ").slice(-1)[0]}</small>
+            </button>;
+          })}
+        </div>
+        <div className="pa-map-world-caption"><div><span>CASA {world}</span><strong>{chapter.title}</strong></div><span className="pa-map-story-step">{worldDone === 10 ? "MUNDO CONCLUÍDO" : `${worldDone} de 10 fases`}</span></div>
+        <div className="pa-stage-grid">{currentWorldStages.map(stageTile)}</div>
+        <div className="pa-map-foot"><span><i className="pa-foot-current" /> Sua próxima fase</span><span><LockKeyhole size={12} /> Prêmio bloqueado até vencer</span><button type="button" onClick={onGoToHouse}>Ir para Minha Casa <ChevronRight size={14} /></button></div>
+      </section>
+    </main> : <main className="pa-play-layout">
+      <div className="pa-game-heading"><div><button type="button" className="pa-back-map" onClick={() => { setPhase("map"); setReward(null); }}><ArrowLeft size={15} /> Mapa</button><span className="pa-game-stage">MUNDO {currentStage.world} · FASE {currentStage.stageInWorld}</span><h1>{currentStage.title}</h1><p>{currentStage.objective}</p></div>
+        <div className="pa-game-status"><div className="pa-heart-row" aria-label={`${hud.hearts} vidas restantes`}>{Array.from({ length: 3 }, (_, index) => <Heart key={index} size={19} fill={index < hud.hearts ? "currentColor" : "transparent"} className={index < hud.hearts ? "heart-on" : "heart-off"} />)}</div><span className="pa-live-coins"><Coins size={15} fill="currentColor" /> {hud.coins}<small>/{hud.totalCoins}</small></span><button type="button" className="pa-pause-button" onClick={() => setPhase(phase === "paused" ? "playing" : "paused")} aria-label={phase === "paused" ? "Continuar" : "Pausar fase"}>{phase === "paused" ? <Play size={16} /> : <Pause size={16} />}</button></div>
+      </div>
+      <section className="pa-playfield" aria-label={`Fase ${stageId}: ${currentStage.subtitle}`}>
+        <canvas ref={canvasRef} className="pa-canvas" aria-label="Jogo de plataforma: use as setas para correr, espaço para pular e alcance o portal dourado" />
+        <div className="pa-canvas-vignette" aria-hidden="true" />
+        <div className="pa-level-progress"><span>{hud.checkpoint ? "MARCO ATIVADO" : "RUMO AO PORTAL"}</span><div><i style={{ width: `${hud.progress}%` }} /></div><small>{hud.progress}%</small></div>
+        <div className="pa-touch-controls" aria-label="Controles de toque">
+          <div className="pa-direction-controls">
+            <button type="button" aria-label="Mover para a esquerda" onPointerDown={(event) => setControl("left", true, event)} onPointerUp={(event) => setControl("left", false, event)} onPointerCancel={(event) => setControl("left", false, event)} onLostPointerCapture={() => setControl("left", false)}><ArrowLeft size={26} /></button>
+            <button type="button" aria-label="Mover para a direita" onPointerDown={(event) => setControl("right", true, event)} onPointerUp={(event) => setControl("right", false, event)} onPointerCancel={(event) => setControl("right", false, event)} onLostPointerCapture={() => setControl("right", false)}><ArrowRight size={26} /></button>
+          </div>
+          <button type="button" className="pa-jump-control" aria-label="Pular" onPointerDown={(event) => setControl("jump", true, event)} onPointerUp={(event) => setControl("jump", false, event)} onPointerCancel={(event) => setControl("jump", false, event)} onLostPointerCapture={() => setControl("jump", false)}><span>↑</span><small>PULAR</small></button>
+        </div>
+        {(phase === "paused" || phase === "failed" || phase === "won") && <div className={`pa-game-overlay ${phase}`} role="dialog" aria-modal="true">
+          {phase === "paused" && <div className="pa-end-card"><span className="pa-overlay-icon pause"><Pause size={26} fill="currentColor" /></span><small>FASE {currentStage.id} · PAUSADA</small><h2>Respire um pouquinho</h2><p>Seu progresso e as moedas deste caminho ficam guardados durante a pausa.</p><button className="pa-primary-action" type="button" onClick={() => setPhase("playing")}><Play size={16} fill="currentColor" /> Continuar</button><button className="pa-secondary-action" type="button" onClick={() => setPhase("map")}><Map size={15} /> Voltar ao mapa</button></div>}
+          {phase === "failed" && <div className="pa-end-card"><span className="pa-overlay-icon retry"><Heart size={26} /></span><small>AS PATINHAS PRECISAM DE UM DESCANSO</small><h2>Vamos tentar de novo?</h2><p>Você chega mais longe a cada tentativa. O marco ativado ajuda a recomeçar do meio do caminho.</p><button className="pa-primary-action" type="button" onClick={replayStage}><RotateCcw size={16} /> Tentar novamente</button><button className="pa-secondary-action" type="button" onClick={() => setPhase("map")}><Map size={15} /> Escolher outra fase</button></div>}
+          {phase === "won" && <div className="pa-end-card pa-reward-card"><span className="pa-overlay-icon win"><Trophy size={27} fill="currentColor" /></span><small>{reward?.firstClear ? "FASE CONCLUÍDA · PRÊMIO DESBLOQUEADO" : "FASE CONCLUÍDA · REVISITA"}</small><h2>{reward?.firstClear ? "Que salto incrível!" : "Mandou bem de novo!"}</h2><div className="pa-win-stars" aria-label={`${state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud)} estrelas`}>{formatStars(state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud))}</div>
+            {reward?.firstClear && <div className="pa-stage-reward"><img src={GAME_ASSETS.decorations[currentStage.reward.id]} alt={currentStage.reward.name} /><div><small>DECORAÇÃO DO MUNDO {currentStage.world}</small><strong>{currentStage.reward.name}</strong><span>Já está na mochila para usar em Minha Casa.</span></div></div>}
+            <div className="pa-earned-coins"><Coins size={19} fill="currentColor" /><strong>+{reward?.coins ?? 0}</strong><span>moedas</span></div>
+            {currentStage.id < 100 && reward?.firstClear && <button className="pa-primary-action" type="button" onClick={() => beginStage(currentStage.id + 1)}>Próxima fase <ChevronRight size={16} /></button>}
+            <button className="pa-secondary-action" type="button" onClick={() => { setPhase("map"); setReward(null); }}><Map size={15} /> Voltar ao mapa</button>
+          </div>}
+        </div>}
+      </section>
+      <div className="pa-play-footer"><span><kbd>←</kbd><kbd>→</kbd> mover <kbd>ESPAÇO</kbd> pular</span><span>Alcance o portal e pegue moedas pelo caminho</span><button type="button" onClick={onGoToHouse}><HomeIcon size={14} /> Minha Casa</button></div>
+    </main>}
+
+    {helpOpen && <div className="pa-modal-backdrop" onClick={finishGuide}><section className="pa-guide-modal" role="dialog" aria-modal="true" aria-labelledby="pa-guide-title" onClick={(event) => event.stopPropagation()}>
+      <button className="pa-modal-close" type="button" onClick={finishGuide} aria-label="Fechar guia"><X size={18} /></button><span className="pa-guide-art"><BookOpen size={25} /></span><small>UM GUIA DE PATINHAS</small><h2 id="pa-guide-title">Como jogar a aventura</h2><div className="pa-guide-steps"><p><b>1</b><span><strong>Escolha uma fase aberta</strong><small>O mapa mostra 10 mundos e 100 etapas. Vença a próxima para abrir o caminho.</small></span></p><p><b>2</b><span><strong>Corra e pule</strong><small>No teclado: setas ou A/D para mover e Espaço, W ou ↑ para pular. No celular: use as setas e o botão PULAR.</small></span></p><p><b>3</b><span><strong>Desvie e colete</strong><small>Evite os guardiões e espinhos, pegue moedas e ative o marco no meio do caminho.</small></span></p><p><b>4</b><span><strong>Entre no portal dourado</strong><small>Ganhe estrelas, moedas e uma decoração nova para a casa deste mundo. Replay não duplica prêmio.</small></span></p></div><div className="pa-guide-note"><Gamepad2 size={16} /><span>Os minijogos e cuidados continuam em Minha Casa e ajudam seu pet a evoluir com XP.</span></div><button className="pa-primary-action" type="button" onClick={finishGuide}>Entendi · vamos brincar <ChevronRight size={16} /></button>
+    </section></div>}
+
+    {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><img src={GAME_ASSETS.creatorPlaque} alt="Foto de Allana Gabriela, idealizadora do Meu Pet Virtual" /><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}
+  </div>;
+}
+
+function PLATFORM_PALETTE(world: number) {
+  const palettes = ["#ffd45e", "#83d982", "#f18b62", "#ffd46a", "#ff9871", "#8fda77", "#8edcf1", "#e4bb8d", "#b8a0ff", "#ff97b8"];
+  return { accent: palettes[world - 1] ?? palettes[0] };
+}

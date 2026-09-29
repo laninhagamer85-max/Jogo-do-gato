@@ -72,3 +72,13 @@ Vite importa os arquivos por `src/game/assets.ts`; os assets não dependem do st
 | Foto otimizada de Allana Gabriela | Moldura permanente da cena e modal de homenagem; retrato sem texto embutido | 1000×1407 px, WebP (~212 KB) | `https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp` |
 
 A foto não é armazenada neste repositório. A moldura, legenda e texto são elementos acessíveis da interface e são exibidos no jogo conforme autorização da autora/responsável.
+
+
+## Aventura lateral (2026-09-29)
+
+| Asset | Uso | Arquivo local | Dimensões | Peso WebP |
+|---|---|---|---:|---:|
+| Plataforma de grama | Tile de colisão/plataforma do canvas | `src/assets/platform-grass.webp` | 2560×1440 | 382.810 bytes |
+| Portal dourado | Goal das fases | `src/assets/goal-portal.webp` | 1920×1920 | 349.324 bytes |
+
+As imagens são carregadas por imports Vite `?url`; os PNGs-fonte foram preservados fora do repositório WebDev. O retrato da idealizadora continua somente no storage gerenciado, não é copiado ao GitHub.

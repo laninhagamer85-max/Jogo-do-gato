@@ -6,11 +6,12 @@ import {
 } from "lucide-react";
 import MiniGameBoard from "@/components/MiniGameBoard";
 import OnboardingFlow from "@/components/OnboardingFlow";
+import PlatformAdventure from "@/components/PlatformAdventure";
 import { SceneDecoration, SceneDecorationPicker, SceneGift } from "@/components/SceneDecoration";
 import CreatorPlaquePicker from "@/components/CreatorPlaquePicker";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import {
-  buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame,
+  buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame, completePlatformStage,
   createInitialGameState, CURRENT_SAVE_KEY, DECORATIONS, PET_CHARACTERS, expireGifts, LEGACY_SAVE_KEYS,
   getDecorationLockReason, migrateGameState, performCare, placeDecoration, removeDecoration, selectRoom, setPetProfile,
   SKINS, spawnSurpriseGift, STORE_ITEMS, tickPet, updateDecoration, useStoreItem,
@@ -114,9 +115,11 @@ function CollapseButton({ collapsed, onClick, label }: { collapsed: boolean; onC
 }
 
 export default function Home() {
-  const demoMode = useMemo(() => new URLSearchParams(window.location.search).get("demo") === "1", []);
+  const demoMode = useMemo(() => ["1", "platformer"].includes(new URLSearchParams(window.location.search).get("demo") ?? ""), []);
+  const platformerDemoMode = useMemo(() => new URLSearchParams(window.location.search).get("demo") === "platformer", []);
   const demoMiniGame = useMemo(() => demoMode ? getRequestedDemoGame() : null, [demoMode]);
   const [game, setGame] = useState<GameState>(() => demoMode ? createDemoGameState() : loadGame());
+  const [adventureOpen, setAdventureOpen] = useState(() => !demoMode || platformerDemoMode);
   const [activeTab, setActiveTab] = useState<"care" | "games" | "shop">(demoMiniGame ? "games" : "care");
   const [gamesOpen, setGamesOpen] = useState(Boolean(demoMiniGame));
   const [shopOpen, setShopOpen] = useState(false);
@@ -151,6 +154,7 @@ export default function Home() {
   const petNameTimerRef = useRef<number | null>(null);
   const giftRevealTimerRef = useRef<number | null>(null);
   const photoBusyRef = useRef(false);
+  const adventureEnteredAtRef = useRef<number | null>(!demoMode ? Date.now() : null);
   const petTapAreaRef = useRef<HTMLButtonElement>(null);
   const petSpeechElementRef = useRef<HTMLDivElement>(null);
   const petNameplateRef = useRef<HTMLDivElement>(null);
@@ -247,13 +251,13 @@ export default function Home() {
   useEffect(() => {
     if (!game.profile) return;
     const timer = window.setInterval(() => {
-      if (!paused && !gamesOpen && !shopOpen && !settingsOpen && !tutorialOpen && storyLevel === null) setGame((current) => tickPet(current));
+      if (!adventureOpen && !paused && !gamesOpen && !shopOpen && !settingsOpen && !tutorialOpen && storyLevel === null) setGame((current) => tickPet(current));
     }, 45000);
     return () => window.clearInterval(timer);
-  }, [game.profile, paused, gamesOpen, shopOpen, settingsOpen, tutorialOpen, storyLevel]);
+  }, [game.profile, adventureOpen, paused, gamesOpen, shopOpen, settingsOpen, tutorialOpen, storyLevel]);
 
   useEffect(() => {
-    if (!game.profile || demoMode || paused || gamesOpen || shopOpen || settingsOpen || tutorialOpen || storyLevel !== null) return;
+    if (!game.profile || demoMode || adventureOpen || paused || gamesOpen || shopOpen || settingsOpen || tutorialOpen || storyLevel !== null) return;
     const timer = window.setInterval(() => {
       const now = Date.now();
       setGiftClock(now);
@@ -265,16 +269,16 @@ export default function Home() {
       if (now >= giftNextSpawnAt) setGiftNextSpawnAt(now + 270_000 + Math.floor(Math.random() * 180_000));
     }, 15000);
     return () => window.clearInterval(timer);
-  }, [game.profile, demoMode, paused, gamesOpen, shopOpen, settingsOpen, tutorialOpen, storyLevel, giftNextSpawnAt]);
+  }, [game.profile, demoMode, adventureOpen, paused, gamesOpen, shopOpen, settingsOpen, tutorialOpen, storyLevel, giftNextSpawnAt]);
 
   useEffect(() => {
-    if (!game.gifts.length) return;
+    if (!game.gifts.length || adventureOpen) return;
     const timer = window.setInterval(() => {
       setGiftClock(Date.now());
       setGame((current) => expireGifts(current));
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [game.gifts.length]);
+  }, [game.gifts.length, adventureOpen]);
 
   useEffect(() => {
     const syncScene = () => {
@@ -511,6 +515,8 @@ export default function Home() {
   function handleProfile(profile: PetProfile) {
     setPreviewCharacter(null);
     setGame((current) => setPetProfile(current, profile));
+    adventureEnteredAtRef.current = Date.now();
+    setAdventureOpen(true);
     showPetSpeech(`Miau! Oi, ${profile.name}! Eu adorei esse nome!`, 8000);
     dispatchPetEvent("pet:profile", { gender: profile.gender, characterId: profile.characterId });
     dispatchPetEvent("pet:action", { action: "love" });
@@ -522,7 +528,28 @@ export default function Home() {
     showToast("Pronto! A aventura começa no primeiro capítulo.");
   }
 
+  function completeAdventureTutorial() {
+    setGame((current) => ({ ...current, tutorialComplete: true }));
+    setTutorialOpen(false);
+  }
+
+  function completeAdventureStage(stageId: number, stars: number, coins: number) {
+    const result = completePlatformStage(game, stageId, stars, coins);
+    if (result.ok) setGame(result.state);
+    return result;
+  }
+
   function openMiniHub() { setActiveTab("games"); setGamesOpen(true); setMiniId(null); }
+  function openAdventure() { adventureEnteredAtRef.current = Date.now(); setAdventureOpen(true); }
+  function closeAdventure() {
+    const enteredAt = adventureEnteredAtRef.current;
+    if (enteredAt !== null) {
+      const awayFor = Math.max(0, Date.now() - enteredAt);
+      if (awayFor > 0) setGame((current) => ({ ...current, gifts: current.gifts.map((gift) => ({ ...gift, spawnedAt: gift.spawnedAt + awayFor, expiresAt: gift.expiresAt + awayFor })) }));
+    }
+    adventureEnteredAtRef.current = null;
+    setAdventureOpen(false);
+  }
   function openShop(tab: ShopTab = shopTab) { setActiveTab("shop"); setShopTab(tab); setShopOpen(true); }
   function selectCareTab() { setActiveTab("care"); setGamesOpen(false); setShopOpen(false); }
   function startMinigame(id: MiniGameId) { setMiniId(id); playTone(); }
@@ -578,6 +605,8 @@ export default function Home() {
     const current = localStorage.getItem(CURRENT_SAVE_KEY);
     if (current) localStorage.setItem(`meu-pet-virtual-save-v2-archive-${Date.now()}`, current);
     setGame(createInitialGameState());
+    adventureEnteredAtRef.current = null;
+    setAdventureOpen(false);
     setTutorialOpen(false);
     setStoryLevel(null);
     setSelectedDecorationId(null); setPendingDecoration(null); setProfileOpen(false);
@@ -587,6 +616,17 @@ export default function Home() {
   }
 
   const closeGames = () => { setGamesOpen(false); setMiniId(null); };
+
+  if (adventureOpen && game.profile) {
+    return <PlatformAdventure
+      state={game}
+      soundOn={soundOn}
+      onToggleSound={() => setSoundOn((value) => !value)}
+      onGoToHouse={closeAdventure}
+      onCompleteTutorial={completeAdventureTutorial}
+      onCompleteStage={completeAdventureStage}
+    />;
+  }
 
   return (
     <div className={`game-root ${focusMode ? "focus-mode" : ""}`}>
@@ -601,6 +641,7 @@ export default function Home() {
             <button className="level-location room-map-button" onClick={() => setRoomsOpen(true)} aria-label="Abrir mapa das casas conquistadas"><MapPin size={11} /> {currentChapter.location}<span>{game.level}/10</span></button>
           </div>
           <div className="top-actions">
+            <button className="adventure-home-button" type="button" onClick={openAdventure} aria-label="Voltar à aventura de 100 fases"><Gamepad2 size={17} /><span>Aventura</span></button>
             <button className="coin-pill" onClick={() => openShop("items")} aria-label="Abrir a loja de itens"><Coins size={21} fill="currentColor" /><strong>{game.coins.toLocaleString("pt-BR")}</strong><span className="coin-plus"><Plus size={15} /></span></button>
             <button className="icon-button" onClick={() => setSettingsOpen(true)} aria-label="Configurações"><Settings size={19} /></button>
             <button className="icon-button sound-toggle" onClick={() => setSoundOn((value) => !value)} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>

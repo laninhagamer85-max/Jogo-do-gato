@@ -18,3 +18,7 @@
 
 - Follow-up 2026-09-29: moldura da idealizadora adicionada a todos os cenários com legenda acessível, modal do texto autorizado e âncora responsiva; foto permanece no storage e não é copiada ao repo. Prévia/skin do pet agora têm reação visual; sequência de level-up não é sobrescrita por eventos de aparência.
 - Presentes: 1,55 s para abrir; prêmio legível por 15,5 s, com origem/casa, miniatura e ação “Usar”; o item recebido pertence à casa que originou o presente. Catálogo: 18 peças com missão pendente mesmo no nível 10, zero missões contadas.
+
+
+- Campanha principal de plataforma (2026-09-29): `PlatformerEngine.ts` e `platformerLevels.ts` implementam 100 fases em dez mundos; `platformProgress` migra no save v2. Cada primeira vitória premia a decoração da sala e moedas; replay não duplica. Cuidado/minijogos continuam no modo Minha Casa e mantêm a evolução XP/moedas do pet. O jogo não envia saves ao GitHub/cloud.
+- QA no clone da branch: `tsc --noEmit`/Vite build passaram; smoke test puro contou 100 IDs únicos, fase futura bloqueada, progressão 1→2, migração e replay idempotente. Browser verificou mapa em desktop e 375×812, corrida/salto no canvas e a alternância Minha Casa. `?demo=platformer` preserva o save. PR #2 segue em `feature/meu-pet-virtual-refresh`, sem merge/publicação.

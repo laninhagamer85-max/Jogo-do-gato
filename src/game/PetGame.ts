@@ -29,6 +29,13 @@ export type SurpriseGift = {
   decorationId?: DecorationId;
 };
 
+export type PlatformProgress = {
+  /** First uncleared stage (101 means the full 100-stage campaign is complete). */
+  unlockedStage: number;
+  completedStages: number[];
+  starsByStage: Record<string, number>;
+};
+
 export type GameState = {
   level: number;
   activeRoom: number;
@@ -51,9 +58,12 @@ export type GameState = {
   decorInventory: Record<DecorationId, number>;
   roomDecorations: Record<string, DecorationPlacement[]>;
   gifts: SurpriseGift[];
+  platformProgress: PlatformProgress;
 };
 
 export const MAX_LEVEL = 10;
+export const MAX_PLATFORM_STAGE = 100;
+const INITIAL_PLATFORM_PROGRESS: PlatformProgress = { unlockedStage: 1, completedStages: [], starsByStage: {} };
 export const CURRENT_SAVE_KEY = "meu-pet-virtual-save-v2";
 export const LEGACY_SAVE_KEYS = ["meu-pet-virtual-save-v1", "pet_estado"] as const;
 
@@ -82,6 +92,7 @@ export const INITIAL_GAME_STATE: GameState = {
   decorInventory: { ...INITIAL_DECOR },
   roomDecorations: {},
   gifts: [],
+  platformProgress: { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} },
 };
 
 export const PET_CHARACTERS: Array<{ id: PetCharacterId; gender: PetGender; name: string; description: string; icon: string }> = [
@@ -146,6 +157,27 @@ function normalizePlacement(value: unknown): DecorationPlacement | null {
   };
 }
 
+function normalizePlatformProgress(value: unknown): PlatformProgress {
+  if (!value || typeof value !== "object") return { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} };
+  const raw = value as Partial<PlatformProgress> & Record<string, unknown>;
+  const completedStages = Array.isArray(raw.completedStages)
+    ? Array.from(new Set(raw.completedStages.map(Number).filter((stage) => Number.isInteger(stage) && stage >= 1 && stage <= MAX_PLATFORM_STAGE))).sort((a, b) => a - b)
+    : [];
+  const completed = new Set(completedStages);
+  let contiguous = 0;
+  while (completed.has(contiguous + 1)) contiguous += 1;
+  const requested = Number(raw.unlockedStage);
+  const unlockedStage = Math.max(1, Math.min(MAX_PLATFORM_STAGE + 1, Number.isFinite(requested) ? Math.round(requested) : 1, contiguous + 1));
+  const sourceStars = raw.starsByStage && typeof raw.starsByStage === "object" ? raw.starsByStage : {};
+  const starsByStage: Record<string, number> = {};
+  Object.entries(sourceStars).forEach(([key, value]) => {
+    const stage = Number(key);
+    const stars = Number(value);
+    if (completed.has(stage) && Number.isInteger(stars) && stars >= 0 && stars <= 3) starsByStage[String(stage)] = stars;
+  });
+  return { unlockedStage, completedStages: completedStages.filter((stage) => stage < unlockedStage), starsByStage };
+}
+
 export function createInitialGameState(): GameState {
   return {
     ...INITIAL_GAME_STATE,
@@ -156,6 +188,7 @@ export function createInitialGameState(): GameState {
     decorInventory: { ...INITIAL_DECOR },
     roomDecorations: {},
     gifts: [],
+    platformProgress: { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} },
   };
 }
 
@@ -237,6 +270,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     decorInventory: Object.fromEntries(DECORATIONS.map((item) => [item.id, Math.round(numeric(decorInventoryRaw[item.id], base.decorInventory[item.id], 0, 999))])) as Record<DecorationId, number>,
     roomDecorations,
     gifts,
+    platformProgress: normalizePlatformProgress(parsed.platformProgress),
   };
 }
 
@@ -337,6 +371,57 @@ export function completeMinigame(state: GameState): GameState {
   };
   next = awardXp(next, 50);
   return next;
+}
+
+export function getPlatformStageDecoration(stageId: number): typeof DECORATIONS[number] | undefined {
+  if (!Number.isInteger(stageId) || stageId < 1 || stageId > MAX_PLATFORM_STAGE) return undefined;
+  const room = Math.ceil(stageId / 10);
+  return DECORATIONS.filter((item) => item.room === room)[(stageId - 1) % 10];
+}
+
+export function completePlatformStage(
+  state: GameState,
+  stageId: number,
+  starsEarned: number,
+  coinsCollected: number,
+): { state: GameState; ok: boolean; firstClear: boolean; coins: number; decorationId: DecorationId | null; message: string } {
+  const item = getPlatformStageDecoration(stageId);
+  if (!item) return { state, ok: false, firstClear: false, coins: 0, decorationId: null, message: "Essa fase não existe." };
+  const progress = state.platformProgress ?? INITIAL_PLATFORM_PROGRESS;
+  const alreadyComplete = progress.completedStages.includes(stageId);
+  if (!alreadyComplete && stageId !== progress.unlockedStage) {
+    return { state, ok: false, firstClear: false, coins: 0, decorationId: null, message: "Conclua a fase anterior para abrir esta aventura." };
+  }
+  const stars = Math.round(clamp(Number(starsEarned) || 1, 1, 3));
+  const starsByStage = { ...progress.starsByStage, [String(stageId)]: Math.max(progress.starsByStage[String(stageId)] ?? 0, stars) };
+  if (alreadyComplete) {
+    return {
+      state: { ...state, platformProgress: { ...progress, starsByStage } },
+      ok: true,
+      firstClear: false,
+      coins: 0,
+      decorationId: item.id,
+      message: `Revisita concluída! Seu melhor resultado: ${starsByStage[String(stageId)]} estrelas.`,
+    };
+  }
+  const collected = Math.round(clamp(Number(coinsCollected) || 0, 0, 60));
+  const world = Math.ceil(stageId / 10);
+  const stageCoins = 65 + (world - 1) * 8 + ((stageId - 1) % 10) * 4 + collected * 10;
+  const completedStages = [...progress.completedStages, stageId].sort((a, b) => a - b);
+  const unlockedStage = Math.min(MAX_PLATFORM_STAGE + 1, stageId + 1);
+  return {
+    state: {
+      ...state,
+      coins: state.coins + stageCoins,
+      decorInventory: { ...state.decorInventory, [item.id]: state.decorInventory[item.id] + 1 },
+      platformProgress: { unlockedStage, completedStages, starsByStage },
+    },
+    ok: true,
+    firstClear: true,
+    coins: stageCoins,
+    decorationId: item.id,
+    message: `${item.name} desbloqueado! +${stageCoins} moedas.`,
+  };
 }
 
 export function buySkin(state: GameState, skinId: SkinId): { state: GameState; message: string; ok: boolean } {

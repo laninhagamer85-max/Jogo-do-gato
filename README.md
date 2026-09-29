@@ -1,15 +1,17 @@
 # Meu Pet Virtual — Uma Casa de Cada Vez
 
-Uma aventura felina de navegador, em português do Brasil, baseada na arte de referência do projeto. Escolha um gatinho, cuide dele, faça amigos, combine petiscos e explore uma campanha de dez casas com histórias e ambientes próprios.
+Uma aventura felina de navegador, em português do Brasil, baseada na arte de referência do projeto. A campanha principal é um platformer lateral 2D com 100 fases em dez mundos; cuidados, minijogos, loja e decoração continuam como modo secundário para evoluir o pet e ganhar XP/moedas.
 
 ## Comece a jogar
 
-O primeiro acesso guia o jogador por três passos: escolha menino ou menina, selecione um entre três personagens daquele grupo e informe nome e idade. O tutorial interativo explica cuidados, cenário, missões, casas, decoração, presentes, loja e minijogos. A aventura começa no nível 1; o perfil e progresso ficam no `localStorage` deste navegador.
+O primeiro acesso guia o jogador por três passos: escolha menino ou menina, selecione um entre três personagens daquele grupo e informe nome e idade. Depois, a aventura começa no mapa de fases. O tutorial explica controles, objetivos e recompensas; o botão **Minha Casa** mantém os cuidados, minijogos e loja acessíveis. Perfil e progresso ficam no `localStorage` deste navegador.
 
 ## O que está incluído
 
-- **10 níveis/casas** com cenários ilustrados, capítulos de história, XP e desbloqueios graduais. Casas conquistadas podem ser visitadas e mantêm sua própria decoração.
-- **11 minijogos jogáveis**: Colheita de Petiscos (match-3), Patas Velozes, Memória Felina, Bolhas de Peixe, Pescaria do Pudim, Labirinto do Novelo, Eco de Miados, Arruma a Caminha, Esconde-esconde, Salto de Patinhas e Caça aos Brinquedos.
+- **Aventura principal:** 100 fases de plataforma lateral 2D, distribuídas por dez mundos temáticos e dez etapas por mundo, com história, dificuldade crescente, vidas, moedas, inimigos, obstáculos, checkpoints e portal de chegada. Teclado e controles touch são aceitos.
+- **100 decorações como recompensas:** cada etapa desbloqueia uma peça única da casa temática; itens ainda não ganhos aparecem com cadeado. A progressão é salva, fases futuras ficam bloqueadas e revisitas não concedem o mesmo prêmio novamente.
+- **Modo Minha Casa:** dez cenários ilustrados e revisáveis, cuidados, loja, missões, decoração móvel e presentes temporizados continuam apoiando a evolução do pet.
+- **11 minijogos jogáveis**: Colheita de Petiscos (match-3), Patas Velozes, Memória Felina, Bolhas de Peixe, Pescaria do Pudim, Labirinto do Novelo, Eco de Miados, Arruma a Caminha, Esconde-esconde, Salto de Patinhas e Caça aos Brinquedos. Os minijogos ajudam a ganhar XP e moedas.
 - **Match-3 de destaque** com tabuleiro 8×8, arrastar/soltar ou selecionar com dois toques, objetivos de coleta, jogadas limitadas, cascatas, efeitos animados e som de combinação. A dificuldade aumenta com o nível.
 - **Seis gatos selecionáveis** (três meninas e três meninos), acessórios temáticos, personagens companheiros e falas curtas engraçadas ativadas por toque.
 - **Interação e animação**: o pet caminha até o ponto tocado, reage a carinho e cuidados, pisca e se movimenta; falas em português e vozes de subida de nível variam conforme o perfil.
@@ -17,8 +19,8 @@ O primeiro acesso guia o jogador por três passos: escolha menino ou menina, sel
 - **Presentes surpresa temporizados** aparecem no cenário, podem dar moedas ou itens e desaparecem se não forem coletados a tempo.
 - Cuidados de felicidade, fome, higiene e energia; alimentação, banho, carinho, sono, mochila, missões, moedas, loja de itens/skins/boosts e configurações.
 - Painéis laterais minimizáveis, salvamento local, opção de sons, layout responsivo e controles de teclado/toque. No labirinto, use setas ou WASD.
-- Modo de demonstração isolado que **não sobrescreve o save**: `/?demo=1`. Para iniciar um jogo específico, use `/?demo=1&play=colheita`.
-- Manifesto PWA e ícones próprios para instalação em dispositivos compatíveis.
+- Modos de demonstração isolados que **não sobrescrevem o save**: `/?demo=1` para Minha Casa e `/?demo=platformer` para a aventura. Para abrir um minijogo específico, use `/?demo=1&play=colheita`.
+- Manifesto PWA e ícones próprios para instalação em dispositivos compatíveis; esta versão ainda não tem service worker/cache offline, portanto a instalação não garante funcionamento sem rede.
 
 A versão HTML vanilla anterior foi preservada em [`legacy.html`](./legacy.html). Este repositório inclui imagens e áudio localmente; não depende do storage do WebDev.
 
