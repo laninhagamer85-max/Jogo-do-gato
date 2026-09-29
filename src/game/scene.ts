@@ -1,5 +1,7 @@
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
+import "@babylonjs/core/Shaders/default.vertex.js";
+import "@babylonjs/core/Shaders/default.fragment.js";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
@@ -79,10 +81,6 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   background.material = backgroundMaterial;
   let backgroundTexture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   backgroundMaterial.emissiveTexture = backgroundTexture;
-
-  const creatorPlaque = imageSprite(scene, "creator-plaque", GAME_ASSETS.creatorPlaque, 0.7105, 1).mesh;
-  creatorPlaque.isPickable = false;
-  creatorPlaque.position.z = 1.78;
 
   const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
   const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
@@ -167,11 +165,6 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     backgroundWidth = bgWidth;
     backgroundHeight = bgHeight;
     background.scaling.set(bgWidth / 14, bgHeight / 8, 1);
-    const plaqueDisplaySize = Math.min(126, Math.max(68, window.innerWidth * 0.09));
-    const plaqueWorldSize = (viewWidth * plaqueDisplaySize) / Math.max(1, canvas.getBoundingClientRect().width);
-    creatorPlaque.scaling.set(plaqueWorldSize, plaqueWorldSize, 1);
-    const plaqueX = window.innerWidth < 600 ? 0.44 : 0.59;
-    creatorPlaque.position.set((plaqueX - 0.5) * bgWidth, (0.5 - 0.25) * bgHeight, 1.78);
     decorationSprites.forEach(updateDecorationSprite);
 
     baseY = aspect < 0.7 ? 1.18 : aspect < 1.15 ? -0.35 : -1.12;

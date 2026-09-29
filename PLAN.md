@@ -53,3 +53,13 @@ Validação final 2026-09-28: `pnpm check`, `pnpm build` e `git diff --check` pa
 - O quadro/homenagem de Allana permanece interativo no cabeçalho permanente da aventura e na cena da casa, com retrato hospedado e texto autorizado; a foto não foi adicionada ao repositório.
 - QA da branch: typecheck + Vite build aprovados; regra de domínio verificou 100 fases/100 prêmios únicos, bloqueio sequencial, migração, unlock na primeira vitória e replay sem duplicação. Browser: mapa desktop/mobile (375×812), canvas real da fase 1, corrida, salto sobre o primeiro vão e retorno a Minha Casa.
 - `?demo=platformer` abre a aventura com perfil fictício em memória e preserva o save real; `?demo=1` continua demonstrando Minha Casa/minijogos. PWA mantém manifesto/ícones, mas não tem service worker/cache offline. Branch de trabalho `feature/meu-pet-virtual-refresh`; PR #2 deve permanecer aberto, sem merge nem publicação do site.
+
+
+## Correções pós-QA (2026-09-29)
+Esta nota atualiza os bullets anteriores: a entrada normal após onboarding abre Minha Casa; a campanha lateral continua como modo principal de desafios e é acessível pelo seletor. A placa de Allana é um pequeno ornamento clicável sem foto, e a homenagem não contém imagem.
+
+- Piso/colisor alinhados; topo de grama e laterais do chão legíveis, vãos delimitados, fundo da sala fixo, mundo/obstáculos em movimento e gato com animação lateral de corrida/pulo.
+- As fases aparecem em carrossel horizontal, com cadeados nos prêmios não recebidos; retrato 375×812 e paisagem 812×375 verificados.
+- Decorações são obtidas apenas ao vencer sua fase 1:1 e só podem ser aplicadas depois; level-up de cuidados/minijogos não dá decoração. Limite de uma peça por ID e dez itens por sala; replay não duplica moedas.
+- QA real com AutoPilot DEV completou cinco fases seguidas: 5/100, fase 6 disponível e fase 5 premiada com três estrelas. Smoke tests validaram geometria 1–5, bloqueio antes da vitória, sequência, replay, migração sem duplicatas e level-up sem móveis.
+- Import explícito dos shaders padrão GLSL corrigiu a sala Babylon escura; após retirar a instrumentação, evento `pet:scene-ready`, WebGL2 e pixels de cena válidos foram confirmados. Build/TypeScript passaram; apenas aviso informativo de chunk grande. Sem merge/publicação.

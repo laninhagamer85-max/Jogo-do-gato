@@ -36,6 +36,11 @@ function formatStars(stars: number) {
 }
 
 export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage }: Props) {
+  const qaAutoPilot = useMemo(() => import.meta.env.DEV && new URLSearchParams(window.location.search).get("autoplay") === "1", []);
+  const qaStageLimit = useMemo(() => {
+    const requested = Number(new URLSearchParams(window.location.search).get("qa-stages"));
+    return Math.max(1, Math.min(100, Number.isFinite(requested) && requested > 0 ? Math.round(requested) : 5));
+  }, []);
   const initialWorld = Math.min(10, Math.max(1, Math.ceil(state.platformProgress.unlockedStage / 10)));
   const [world, setWorld] = useState(initialWorld);
   const [stageId, setStageId] = useState(state.platformProgress.unlockedStage <= 100 ? state.platformProgress.unlockedStage : 100);
@@ -46,6 +51,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
   const [helpOpen, setHelpOpen] = useState(!state.tutorialComplete);
   const [creatorOpen, setCreatorOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageCarouselRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<PlatformerEngine | null>(null);
   const completeStageRef = useRef(onCompleteStage);
   const currentStage = useMemo(() => getPlatformStage(stageId)!, [stageId]);
@@ -55,8 +61,22 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
   const worldDone = currentWorldStages.filter((id) => completed.includes(id)).length;
   const totalDone = completed.length;
   const availableWorld = Math.min(10, Math.max(1, Math.ceil(state.platformProgress.unlockedStage / 10)));
+  const focusStage = state.platformProgress.unlockedStage > (world - 1) * 10 && state.platformProgress.unlockedStage <= world * 10
+    ? state.platformProgress.unlockedStage
+    : world * 10;
 
   useEffect(() => { completeStageRef.current = onCompleteStage; }, [onCompleteStage]);
+
+  useEffect(() => {
+    if (phase !== "map") return;
+    document.getElementById(`pa-stage-${focusStage}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [phase, world, focusStage]);
+
+  useEffect(() => {
+    if (!qaAutoPilot || phase !== "map" || state.platformProgress.unlockedStage > qaStageLimit) return;
+    const timer = window.setTimeout(() => beginStage(state.platformProgress.unlockedStage), 500);
+    return () => window.clearTimeout(timer);
+  }, [qaAutoPilot, qaStageLimit, phase, state.platformProgress.unlockedStage]);
 
   useEffect(() => {
     const stageData = getPlatformStage(stageId);
@@ -106,6 +126,44 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
     setHud(START_HUD);
   }, [phase, stageId, attempt]);
 
+  useEffect(() => {
+    if (!qaAutoPilot || phase !== "playing") return;
+    let jumpReleaseTimer: number | null = null;
+    const interval = window.setInterval(() => {
+      const engine = engineRef.current;
+      if (!engine) return;
+      const snapshot = engine.getAutoPilotSnapshot();
+      if (snapshot.hearts <= 0) return;
+      engine.setInput("right", true);
+      const centerX = snapshot.x + snapshot.playerWidth / 2;
+      const surfaceIndex = snapshot.surfaces.findIndex((surface) => centerX >= surface.x && centerX <= surface.x + surface.width);
+      const current = surfaceIndex >= 0 ? snapshot.surfaces[surfaceIndex] : undefined;
+      const next = surfaceIndex >= 0 ? snapshot.surfaces[surfaceIndex + 1] : undefined;
+      const edgeDistance = current && next ? current.x + current.width - (snapshot.x + snapshot.playerWidth) : Infinity;
+      const jumpForGap = Boolean(next && edgeDistance < 115);
+      if (snapshot.grounded && jumpForGap) {
+        engine.setInput("jump", true);
+        if (jumpReleaseTimer !== null) window.clearTimeout(jumpReleaseTimer);
+        jumpReleaseTimer = window.setTimeout(() => {
+          engineRef.current?.setInput("jump", false);
+          jumpReleaseTimer = null;
+        }, 100);
+      }
+    }, 35);
+    return () => {
+      window.clearInterval(interval);
+      if (jumpReleaseTimer !== null) window.clearTimeout(jumpReleaseTimer);
+      engineRef.current?.setInput("right", false);
+      engineRef.current?.setInput("jump", false);
+    };
+  }, [qaAutoPilot, phase, stageId, attempt]);
+
+  useEffect(() => {
+    if (!qaAutoPilot || phase !== "won" || stageId >= qaStageLimit || state.platformProgress.unlockedStage <= stageId) return;
+    const timer = window.setTimeout(() => beginStage(stageId + 1), 1800);
+    return () => window.clearTimeout(timer);
+  }, [qaAutoPilot, qaStageLimit, phase, stageId, state.platformProgress.unlockedStage]);
+
   function beginStage(id: number) {
     if (id > state.platformProgress.unlockedStage) return;
     setStageId(id);
@@ -140,9 +198,10 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
     const data = getPlatformStage(stage)!;
     const isComplete = completed.includes(stage);
     const isLocked = stage > state.platformProgress.unlockedStage;
-    const rewardEarned = isComplete || state.decorInventory[data.reward.id] > 0;
+    const rewardEarned = isComplete;
     const stars = state.platformProgress.starsByStage[String(stage)] ?? 0;
     return <button
+      id={`pa-stage-${stage}`}
       className={`pa-stage-tile ${isComplete ? "is-complete" : ""} ${isLocked ? "is-locked" : "is-open"} ${stage === state.platformProgress.unlockedStage ? "is-current" : ""}`}
       key={stage}
       type="button"
@@ -169,7 +228,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
       <div className="pa-brand"><span><PawPrint size={24} fill="currentColor" /></span><div><strong>Meu Pet Virtual</strong><small>AVENTURA DA TURMA</small></div></div>
       <div className="pa-mode-switch" aria-label="Modo do jogo"><span className="pa-mode-active"><Gamepad2 size={15} /> Aventura <b>100</b></span><button type="button" onClick={onGoToHouse}><HomeIcon size={15} /> Minha Casa</button></div>
       <button className="pa-creator-badge" type="button" onClick={() => setCreatorOpen(true)} aria-label="Conheça Allana Gabriela, idealizadora do Meu Pet Virtual">
-        <img src={GAME_ASSETS.creatorPlaque} alt="" /><span><small>IDEIA QUE VIROU JOGO</small><strong>Allana Gabriela</strong></span><ChevronRight size={15} />
+        <span className="pa-creator-emblem" aria-hidden="true">✦</span><span><small>IDEIA QUE VIROU JOGO</small><strong>Allana Gabriela</strong></span><ChevronRight size={15} />
       </button>
       <div className="pa-top-actions">
         <div className="pa-pet-level"><Star size={16} fill="currentColor" /><span>Nível {state.level}</span><small>{state.xp}/{state.xpMax} XP</small></div>
@@ -205,7 +264,14 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
           })}
         </div>
         <div className="pa-map-world-caption"><div><span>CASA {world}</span><strong>{chapter.title}</strong></div><span className="pa-map-story-step">{worldDone === 10 ? "MUNDO CONCLUÍDO" : `${worldDone} de 10 fases`}</span></div>
-        <div className="pa-stage-grid">{currentWorldStages.map(stageTile)}</div>
+        <div className="pa-stage-carousel-shell">
+          <button className="pa-carousel-arrow" type="button" aria-label="Ver fases anteriores" onClick={() => stageCarouselRef.current?.scrollBy({ left: -260, behavior: "smooth" })}><ArrowLeft size={17} /></button>
+          <div ref={stageCarouselRef} className="pa-stage-carousel" tabIndex={0} aria-label={`Fases da Casa ${world}; deslize para ver os próximos prêmios`}>
+            {currentWorldStages.map(stageTile)}
+          </div>
+          <button className="pa-carousel-arrow" type="button" aria-label="Ver próximas fases e prêmios bloqueados" onClick={() => stageCarouselRef.current?.scrollBy({ left: 260, behavior: "smooth" })}><ArrowRight size={17} /></button>
+        </div>
+        <p className="pa-swipe-hint"><ArrowLeft size={11} /> Deslize para conhecer as próximas fases e ver qual decoração será conquistada <ArrowRight size={11} /></p>
         <div className="pa-map-foot"><span><i className="pa-foot-current" /> Sua próxima fase</span><span><LockKeyhole size={12} /> Prêmio bloqueado até vencer</span><button type="button" onClick={onGoToHouse}>Ir para Minha Casa <ChevronRight size={14} /></button></div>
       </section>
     </main> : <main className="pa-play-layout">
@@ -241,7 +307,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
       <button className="pa-modal-close" type="button" onClick={finishGuide} aria-label="Fechar guia"><X size={18} /></button><span className="pa-guide-art"><BookOpen size={25} /></span><small>UM GUIA DE PATINHAS</small><h2 id="pa-guide-title">Como jogar a aventura</h2><div className="pa-guide-steps"><p><b>1</b><span><strong>Escolha uma fase aberta</strong><small>O mapa mostra 10 mundos e 100 etapas. Vença a próxima para abrir o caminho.</small></span></p><p><b>2</b><span><strong>Corra e pule</strong><small>No teclado: setas ou A/D para mover e Espaço, W ou ↑ para pular. No celular: use as setas e o botão PULAR.</small></span></p><p><b>3</b><span><strong>Desvie e colete</strong><small>Evite os guardiões e espinhos, pegue moedas e ative o marco no meio do caminho.</small></span></p><p><b>4</b><span><strong>Entre no portal dourado</strong><small>Ganhe estrelas, moedas e uma decoração nova para a casa deste mundo. Replay não duplica prêmio.</small></span></p></div><div className="pa-guide-note"><Gamepad2 size={16} /><span>Os minijogos e cuidados continuam em Minha Casa e ajudam seu pet a evoluir com XP.</span></div><button className="pa-primary-action" type="button" onClick={finishGuide}>Entendi · vamos brincar <ChevronRight size={16} /></button>
     </section></div>}
 
-    {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><img src={GAME_ASSETS.creatorPlaque} alt="Foto de Allana Gabriela, idealizadora do Meu Pet Virtual" /><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}
+    {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><span className="pa-creator-modal-emblem" aria-hidden="true">✦</span><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}
   </div>;
 }
 

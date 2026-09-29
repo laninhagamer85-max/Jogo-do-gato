@@ -22,3 +22,10 @@
 
 - Campanha principal de plataforma (2026-09-29): `PlatformerEngine.ts` e `platformerLevels.ts` implementam 100 fases em dez mundos; `platformProgress` migra no save v2. Cada primeira vitória premia a decoração da sala e moedas; replay não duplica. Cuidado/minijogos continuam no modo Minha Casa e mantêm a evolução XP/moedas do pet. O jogo não envia saves ao GitHub/cloud.
 - QA no clone da branch: `tsc --noEmit`/Vite build passaram; smoke test puro contou 100 IDs únicos, fase futura bloqueada, progressão 1→2, migração e replay idempotente. Browser verificou mapa em desktop e 375×812, corrida/salto no canvas e a alternância Minha Casa. `?demo=platformer` preserva o save. PR #2 segue em `feature/meu-pet-virtual-refresh`, sem merge/publicação.
+
+
+- Follow-up pós-QA (2026-09-29): sem foto no quadro/modal de Allana; ornamento nativo clicável afastado do pet. Minha Casa abre na entrada normal; campanha permanece acessível pelo seletor.
+- Shader Babylon corrigido por imports explícitos default GLSL em `scene.ts`; debug removido depois de confirmar `pet:scene-ready`, WebGL2 e pixel opaco na sala.
+- AutoPilot em desenvolvimento completou cinco fases reais; mapa mostrou 5/100 e fase 6 liberada, e a vitória da fase 5 exibiu três estrelas, decoração e moedas. Carrossel confirmado em retrato 375×812 e paisagem 812×375; demo não gravou save.
+- Decoração só é aplicada depois da vitória da fase correspondente, uma por ID e até dez por casa. Level-up do pet não mais concede móveis. Testes puros cobrem 100 itens, fases 1–5, bloqueio/sequência, recompensa, replay sem farming, migração sem duplicatas e level-up sem móveis.
+- Build/TypeScript/diff-check passaram; aviso de chunk Babylon é informativo. Assets locais `src/assets/` foram preservados. PR #2 continua aberto, sem merge ou publicação.

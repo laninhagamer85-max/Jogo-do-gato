@@ -352,3 +352,171 @@
 @media (prefers-reduced-motion: reduce) {
   .platform-adventure *, .platform-adventure *::before, .platform-adventure *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+
+/* Homenagem simples: emblema/plaquinha nativa, sem retrato. */
+.pa-creator-badge img,
+.pa-creator-modal > img { display: none; }
+.pa-creator-emblem { display: grid !important; width: 31px; height: 31px; flex: 0 0 auto; place-items: center; border: 1px solid rgb(255 226 154 / 58%); border-radius: 9px; background: linear-gradient(145deg,#fff0bd,#dba846); color: #78501c; font-size: 17px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 75%),0 3px 8px rgb(0 0 0 / 19%); animation: pa-plaque-glow 2.4s ease-in-out infinite; }
+.pa-creator-modal-emblem { display: grid; width: 50px; height: 50px; place-items: center; margin: 14px auto 11px; border: 1px solid #f0cc72; border-radius: 15px; background: linear-gradient(145deg,#fff2c5,#e4b75c); color: #82571b; font-size: 25px; box-shadow: inset 0 1px 0 white,0 7px 17px rgb(32 54 77 / 13%); }
+@keyframes pa-plaque-glow { 50% { filter: brightness(1.12); box-shadow: inset 0 1px 0 white,0 0 12px rgb(255 220 114 / 28%); } }
+
+/* Levels are a horizontal, touch-scrollable reel: current stage plus a preview of what comes next. */
+.pa-world-tabs { display: flex; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #9cb9ce transparent; }
+.pa-world-tabs button { flex: 0 0 54px; }
+.pa-stage-carousel-shell { display: flex; min-width: 0; align-items: center; gap: 8px; margin-top: 3px; }
+.pa-stage-carousel { display: flex; min-width: 0; flex: 1; gap: 11px; overflow-x: auto; overscroll-behavior-x: contain; padding: 12px 4px 16px; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-color: #88a9bf #e0edf3; scrollbar-width: thin; }
+.pa-stage-tile { flex: 0 0 clamp(178px,22vw,216px); min-height: 162px; scroll-snap-align: center; }
+.pa-carousel-arrow { display: grid; width: 34px; height: 46px; flex: 0 0 auto; place-items: center; border: 1px solid rgb(49 92 127 / 14%); border-radius: 12px; background: linear-gradient(145deg,#fff,#dceef5); color: #3c7597 !important; box-shadow: 0 4px 12px rgb(37 79 109 / 12%); }
+.pa-carousel-arrow:hover { background: #d9f3f3; }
+.pa-swipe-hint { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 1px 0 0; color: #6a8398; font-size: 7px; font-weight: 850; text-align: center; }
+.pa-swipe-hint svg { flex: 0 0 auto; color: #3289a7; }
+
+@media (max-width: 850px) {
+  .pa-map-layout { grid-template-columns: 1fr; gap: 9px; padding-top: 9px; }
+  .pa-world-story { padding: 11px 13px; }
+  .pa-story-pet,.pa-world-story-copy,.pa-current-objective,.pa-campaign-progress,.pa-house-link { display: none; }
+  .pa-world-story h1 { margin: 4px 0 0; font-size: 21px; }
+  .pa-world-number { font-size: 7px; }
+  .pa-world-progress { margin-top: 7px; }
+  .pa-progress-track { margin-top: 4px; }
+  .pa-world-tabs { margin-top: 8px; }
+  .pa-map-card { padding: 12px 12px 10px; }
+  .pa-map-heading h2 { font-size: 18px; }
+  .pa-map-world-caption { margin: 8px 0 4px; }
+  .pa-stage-carousel-shell { gap: 5px; }
+  .pa-carousel-arrow { width: 29px; height: 40px; border-radius: 10px; }
+  .pa-stage-carousel { gap: 8px; padding: 9px 3px 12px; }
+  .pa-stage-tile { flex-basis: 190px; min-height: 160px; }
+  .pa-swipe-hint { font-size: 6px; }
+}
+
+@media (max-width: 620px) {
+  .pa-topbar { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "brand actions" "modes modes"; gap: 5px 7px; min-height: 0; padding: 7px 9px; }
+  .pa-creator-badge { display: none; }
+  .pa-brand strong { font-size: 15px; }
+  .pa-mode-switch { justify-self: start; }
+  .pa-map-layout { gap: 7px; padding: 7px 8px 12px; }
+  .pa-world-story { padding: 9px 11px; border-radius: 14px; }
+  .pa-world-story h1 { max-width: 100%; font-size: 18px; }
+  .pa-world-progress { display: none; }
+  .pa-map-card { padding: 10px 8px 9px; border-radius: 15px; }
+  .pa-map-heading { align-items: center; }
+  .pa-map-heading h2 { font-size: 15px; }
+  .pa-collectible-key { font-size: 6px; }
+  .pa-key-coin { width: 16px; height: 16px; }
+  .pa-world-tabs { gap: 3px; margin-top: 8px; padding: 3px; }
+  .pa-world-tabs button { flex-basis: 43px; min-height: 34px; }
+  .pa-world-tabs button span { font-size: 7px; }
+  .pa-world-tabs button small { font-size: 5px; }
+  .pa-map-world-caption { margin: 7px 0 3px; }
+  .pa-map-world-caption > div strong { font-size: 11px; }
+  .pa-map-world-caption > div span,.pa-map-story-step { font-size: 6px; }
+  .pa-stage-carousel-shell { gap: 3px; }
+  .pa-carousel-arrow { width: 24px; height: 36px; }
+  .pa-stage-carousel { gap: 7px; padding: 8px 2px 10px; }
+  .pa-stage-tile { display: flex; min-width: 0; min-height: 154px; flex: 0 0 176px; flex-direction: column; align-items: center; justify-items: unset; padding: 7px 6px; border-radius: 12px; text-align: center; }
+  .pa-stage-number { top: 5px; left: 5px; width: 18px; height: 18px; font-size: 7px; }
+  .pa-reward-art { width: 49px; height: 49px; margin: 7px 0 0; }
+  .pa-stage-tile > strong { display: -webkit-box; min-height: 22px; grid-column: auto; grid-row: auto; align-self: center; margin: 6px 0 0; padding-top: 0; font-size: 7px; }
+  .pa-stage-tile > small { grid-column: auto; grid-row: auto; align-self: center; margin-top: 4px; font-size: 5px; }
+  .pa-stage-stars { margin-top: auto; }
+  .pa-ready-pill { top: 5px; right: 5px; padding: 3px 4px; font-size: 5px; }
+  .pa-tile-lock { top: auto; right: 5px; bottom: 5px; width: 17px; height: 17px; }
+  .pa-map-foot { flex-wrap: wrap; gap: 6px 9px; margin-top: 6px; padding-top: 7px; font-size: 6px; }
+  .pa-map-foot > span:nth-child(2) { display: none; }
+  .pa-map-foot > button { font-size: 6px; }
+  .pa-play-layout { min-height: 0; padding: 5px 7px 8px; }
+  .pa-game-heading { min-height: 61px; gap: 5px; }
+  .pa-game-heading h1 { font-size: 15px; }
+  .pa-game-heading p { max-width: 180px; font-size: 6px; }
+  .pa-playfield { min-height: 270px; }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .platform-adventure { height: 100dvh; min-height: 100dvh; overflow-y: hidden; }
+  .pa-topbar { grid-template-columns: minmax(115px,1fr) auto auto; grid-template-areas: "brand modes actions"; gap: 9px; min-height: 49px; padding: 4px 11px; }
+  .pa-brand > span { width: 31px; height: 31px; border-radius: 9px; }
+  .pa-brand > span svg { width: 18px; }
+  .pa-brand strong { font-size: 14px; }
+  .pa-brand small { display: none; }
+  .pa-creator-badge { display: none; }
+  .pa-mode-switch { padding: 2px; }
+  .pa-mode-switch > span,.pa-mode-switch > button { min-height: 29px; padding: 0 8px; font-size: 8px; }
+  .pa-top-actions { gap: 4px; }
+  .pa-pet-level,.pa-wallet,.pa-icon-button { min-height: 29px; }
+  .pa-pet-level span { font-size: 7px; }
+  .pa-pet-level small { font-size: 6px; }
+  .pa-wallet { padding: 0 6px; }
+  .pa-wallet strong { font-size: 9px; }
+  .pa-icon-button { width: 30px; }
+  .pa-map-layout { display: grid; min-height: 0; flex: 1; grid-template-columns: minmax(145px,.55fr) minmax(0,1.65fr); align-items: stretch; gap: 7px; padding: 6px 9px; }
+  .pa-world-story { min-height: 0; padding: 9px; border-radius: 14px; }
+  .pa-world-story > .pa-kicker { font-size: 6px; }
+  .pa-story-pet,.pa-world-story-copy,.pa-current-objective,.pa-campaign-progress,.pa-house-link { display: none; }
+  .pa-world-story h1 { max-width: 100%; margin: 4px 0; font-size: 18px; }
+  .pa-world-number { font-size: 6px; }
+  .pa-world-progress { display: block; margin-top: 7px; }
+  .pa-world-progress > div:first-child { font-size: 7px; }
+  .pa-progress-track { height: 5px; margin-top: 4px; }
+  .pa-map-card { min-height: 0; align-self: stretch; overflow: hidden; padding: 7px 8px 5px; border-radius: 14px; }
+  .pa-map-heading { min-height: 24px; align-items: center; }
+  .pa-map-heading .pa-kicker { font-size: 5px; }
+  .pa-map-heading h2 { font-size: 13px; }
+  .pa-collectible-key { font-size: 5px; }
+  .pa-key-coin { width: 14px; height: 14px; }
+  .pa-world-tabs { gap: 2px; margin-top: 4px; padding: 2px; }
+  .pa-world-tabs button { flex-basis: 40px; min-height: 28px; }
+  .pa-world-tabs button span { height: 11px; font-size: 6px; }
+  .pa-world-tabs button small { font-size: 4px; }
+  .pa-map-world-caption { margin: 4px 0 1px; }
+  .pa-map-world-caption > div { gap: 1px; }
+  .pa-map-world-caption > div span,.pa-map-story-step { font-size: 5px; }
+  .pa-map-world-caption > div strong { font-size: 10px; }
+  .pa-stage-carousel-shell { gap: 3px; margin-top: 0; }
+  .pa-carousel-arrow { width: 22px; height: 32px; border-radius: 8px; }
+  .pa-stage-carousel { gap: 6px; padding: 4px 2px 6px; }
+  .pa-stage-tile { display: flex; min-height: 112px; flex: 0 0 137px; flex-direction: column; align-items: center; padding: 5px; border-radius: 9px; }
+  .pa-stage-number { top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 5px; font-size: 6px; }
+  .pa-reward-art { width: 37px; height: 37px; margin: 2px 0 0; border-radius: 10px; }
+  .pa-stage-tile > strong { min-height: 16px; margin: 3px 0 0; padding-top: 0; font-size: 6px; }
+  .pa-stage-tile > small { margin-top: 2px; font-size: 4px; }
+  .pa-ready-pill { top: 3px; right: 3px; padding: 2px 3px; font-size: 4px; }
+  .pa-tile-lock { right: 3px; bottom: 3px; width: 14px; height: 14px; }
+  .pa-tile-lock svg { width: 10px; }
+  .pa-stage-stars { font-size: 6px; }
+  .pa-swipe-hint { margin: 0; font-size: 5px; }
+  .pa-map-foot { gap: 7px; margin-top: 3px; padding-top: 4px; font-size: 5px; }
+  .pa-map-foot > button { font-size: 5px; }
+  .pa-play-layout { min-height: 0; padding: 2px 8px 4px; }
+  .pa-game-heading { min-height: 43px; gap: 7px; }
+  .pa-game-heading > div:first-child { column-gap: 6px; }
+  .pa-back-map { min-height: 27px; padding: 0 6px; font-size: 6px; }
+  .pa-game-stage { font-size: 5px; }
+  .pa-game-heading h1 { font-size: 13px; }
+  .pa-game-heading p { max-width: 280px; margin-top: 2px; font-size: 6px; }
+  .pa-game-status { gap: 6px; padding: 4px 6px; border-radius: 9px; }
+  .pa-heart-row { gap: 1px; }
+  .pa-heart-row svg { width: 13px; }
+  .pa-live-coins { font-size: 8px; }
+  .pa-live-coins svg { width: 12px; }
+  .pa-pause-button { width: 24px; height: 24px; }
+  .pa-playfield { min-height: 0; flex: 1; border-radius: 12px; }
+  .pa-level-progress { top: 5px; width: min(260px,45%); gap: 5px; padding: 4px 6px; }
+  .pa-level-progress > span { font-size: 4px; }
+  .pa-level-progress > div { height: 4px; }
+  .pa-level-progress > small { font-size: 5px; }
+  .pa-touch-controls { right: 9px; bottom: 6px; left: 9px; }
+  .pa-direction-controls { gap: 5px; }
+  .pa-direction-controls button { width: 42px; height: 42px; border-radius: 12px; }
+  .pa-direction-controls svg { width: 18px; }
+  .pa-jump-control { width: 48px; height: 48px; border-radius: 14px !important; }
+  .pa-jump-control span { font-size: 22px; }
+  .pa-jump-control small { font-size: 5px; }
+  .pa-play-footer { min-height: 20px; gap: 4px; padding-top: 3px; font-size: 5px; }
+  .pa-play-footer kbd { min-width: 14px; height: 14px; font-size: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-creator-emblem { animation: none; }
+}

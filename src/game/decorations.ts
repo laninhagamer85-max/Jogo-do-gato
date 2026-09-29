@@ -171,6 +171,15 @@ export const DECORATIONS: DecorationDefinition[] = [
   ...buildRoom(10, ROOM_SEEDS[10]),
 ];
 
+/** Stable 1:1 mapping: each of ten room pieces is earned by the matching stage in its world. */
+export function getDecorationStageId(id: DecorationId): number | null {
+  const item = DECORATIONS.find((entry) => entry.id === id);
+  if (!item) return null;
+  const inRoom = DECORATIONS.filter((entry) => entry.room === item.room);
+  const stageInWorld = inRoom.findIndex((entry) => entry.id === id);
+  return stageInWorld < 0 ? null : (item.room - 1) * 10 + stageInWorld + 1;
+}
+
 export function getDecorationLockReason(
   item: DecorationDefinition,
   level: number,

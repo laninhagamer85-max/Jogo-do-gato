@@ -63,7 +63,7 @@ export class PlatformerEngine {
   private input: Record<InputAction, boolean> = { left: false, right: false, jump: false };
   private platformImage = new Image();
   private portalImage = new Image();
-  private heroImage = new Image();
+  private roomImage = new Image();
   private observer: ResizeObserver | null = null;
   private resizeFallback: () => void;
   private keyDown: (event: KeyboardEvent) => void;
@@ -79,12 +79,12 @@ export class PlatformerEngine {
     this.stage = getPlatformStage(stageId) ?? getPlatformStage(1)!;
     this.profile = profile;
     this.callbacks = callbacks;
-    this.layout = createPlatformLayout(stageId, Math.max(420, canvas.clientHeight));
+    this.layout = createPlatformLayout(stageId, Math.max(180, canvas.clientHeight));
     this.player.x = this.layout.start.x;
     this.player.y = this.layout.start.y;
     this.platformImage.src = GAME_ASSETS.platformer.grass;
     this.portalImage.src = GAME_ASSETS.platformer.portal;
-    this.heroImage.src = GAME_ASSETS.characters[profile.characterId];
+    this.roomImage.src = GAME_ASSETS.levels[this.stage.world - 1] ?? GAME_ASSETS.levels[0];
     this.resizeFallback = () => this.resize(canvas);
     this.keyDown = (event) => this.handleKey(event, true);
     this.keyUp = (event) => this.handleKey(event, false);
@@ -117,6 +117,19 @@ export class PlatformerEngine {
     this.soundEnabled = enabled;
   }
 
+  getAutoPilotSnapshot() {
+    return {
+      x: this.player.x,
+      grounded: this.player.grounded,
+      hearts: this.hearts,
+      playerWidth: PLAYER_WIDTH,
+      goalX: this.layout.goalX,
+      surfaces: this.layout.surfaces.map(({ x, y, width }) => ({ x, y, width })),
+      hazards: this.layout.hazards.map(({ x, width }) => ({ x, width })),
+      enemies: this.layout.enemies.map(({ x }) => ({ x })),
+    };
+  }
+
   dispose() {
     this.running = false;
     window.cancelAnimationFrame(this.raf);
@@ -130,6 +143,7 @@ export class PlatformerEngine {
 
   private resize(canvas: HTMLCanvasElement) {
     const oldHeight = this.height;
+    const isFirstResize = oldHeight <= 1;
     const wasGrounded = this.player.grounded;
     const rect = canvas.getBoundingClientRect();
     this.width = Math.max(1, rect.width);
@@ -140,8 +154,14 @@ export class PlatformerEngine {
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.layout = createPlatformLayout(this.stage.id, this.height);
     this.layout.coins.forEach((coin) => { coin.collected = this.collectedCoinIds.has(coin.id); });
-    if (oldHeight > 1 && !wasGrounded) this.player.y *= this.height / oldHeight;
-    if (wasGrounded) {
+    if (isFirstResize) {
+      this.player.x = this.layout.start.x;
+      this.player.y = this.layout.start.y;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.player.grounded = false;
+    } else if (!wasGrounded) this.player.y *= this.height / oldHeight;
+    if (!isFirstResize && wasGrounded) {
       const surface = this.findSurfaceAt(this.player.x + PLAYER_WIDTH / 2);
       if (surface) this.player.y = surface.y - PLAYER_HEIGHT;
     }
@@ -295,49 +315,79 @@ export class PlatformerEngine {
     const ctx = this.ctx;
     const width = this.width;
     const height = this.height;
-    const palette = this.stage.palette;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    const sky = ctx.createLinearGradient(0, 0, 0, height);
-    sky.addColorStop(0, palette.skyTop);
-    sky.addColorStop(1, palette.skyBottom);
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.save();
-    ctx.globalAlpha = 0.26;
-    ctx.fillStyle = palette.star;
-    for (let index = 0; index < 20; index += 1) {
-      const worldX = (index * 149 + 37) % Math.max(1, this.layout.worldWidth);
-      const sx = ((worldX - this.cameraX * 0.12) % (width + 90) + width + 90) % (width + 90) - 45;
-      const sy = 42 + ((index * 73) % Math.max(80, height * 0.39));
-      ctx.beginPath();
-      ctx.arc(sx, sy + Math.sin(this.elapsed * 0.8 + index) * 3, index % 4 === 0 ? 2.5 : 1.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-
-    const sunX = width * 0.78 - this.cameraX * 0.055;
-    const sunY = height * 0.22;
-    const glow = ctx.createRadialGradient(sunX, sunY, 8, sunX, sunY, Math.max(70, width * 0.12));
-    glow.addColorStop(0, `${palette.accent}aa`);
-    glow.addColorStop(1, `${palette.accent}00`);
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(sunX, sunY, Math.max(70, width * 0.12), 0, Math.PI * 2);
-    ctx.fill();
-
-    this.drawHills(ctx, width, height, palette.farHill, 0.12, height * 0.64, 0.17);
-    this.drawHills(ctx, width, height, palette.nearHill, 0.24, height * 0.76, 0.12);
-    this.drawClouds(ctx, width, height);
-
-    for (const hazard of this.layout.hazards) this.drawHazard(ctx, hazard);
+    this.drawRoomBackground(ctx, width, height);
+    this.drawGapWarnings(ctx, height);
     for (const surface of this.layout.surfaces) this.drawPlatform(ctx, surface);
+    for (const hazard of this.layout.hazards) this.drawHazard(ctx, hazard);
     this.drawCheckpoint(ctx);
     for (const coin of this.layout.coins) if (!coin.collected) this.drawCoin(ctx, coin.x, coin.y);
     for (const enemy of this.layout.enemies) this.drawEnemy(ctx, enemy.x, enemy.y, enemy.direction);
     this.drawGoal(ctx);
     this.drawPlayer(ctx);
-    this.drawForeground(ctx, width, height, palette.accent);
+  }
+
+  private drawRoomBackground(ctx: CanvasRenderingContext2D, width: number, height: number) {
+    const image = this.roomImage;
+    if (image.complete && image.naturalWidth > 0) {
+      const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+      const drawWidth = image.naturalWidth * scale;
+      const drawHeight = image.naturalHeight * scale;
+      ctx.drawImage(image, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
+    } else {
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, this.stage.palette.skyTop);
+      gradient.addColorStop(1, this.stage.palette.skyBottom);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    }
+    ctx.fillStyle = "rgba(16, 29, 45, .035)";
+    ctx.fillRect(0, 0, width, height);
+    const floorFade = ctx.createLinearGradient(0, height * 0.52, 0, height);
+    floorFade.addColorStop(0, "rgba(18, 30, 45, 0)");
+    floorFade.addColorStop(1, "rgba(18, 30, 45, .16)");
+    ctx.fillStyle = floorFade;
+    ctx.fillRect(0, height * 0.52, width, height * 0.48);
+  }
+
+  private drawGapWarnings(ctx: CanvasRenderingContext2D, height: number) {
+    const surfaces = this.layout.surfaces;
+    ctx.save();
+    for (let index = 0; index < surfaces.length - 1; index += 1) {
+      const left = surfaces[index];
+      const right = surfaces[index + 1];
+      const gapLeft = left.x + left.width - this.cameraX;
+      const gapRight = right.x - this.cameraX;
+      if (gapRight <= 0 || gapLeft >= this.width || gapRight <= gapLeft) continue;
+      ctx.beginPath();
+      ctx.moveTo(gapLeft, left.y - 1);
+      ctx.lineTo(gapRight, right.y - 1);
+      ctx.lineTo(gapRight, height + 4);
+      ctx.lineTo(gapLeft, height + 4);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(22, 30, 47, .48)";
+      ctx.fill();
+      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(255, 117, 104, .88)";
+      ctx.beginPath();
+      ctx.moveTo(gapLeft + 2, left.y + 1);
+      ctx.lineTo(gapLeft + 2, Math.min(height, left.y + 24));
+      ctx.moveTo(gapRight - 2, right.y + 1);
+      ctx.lineTo(gapRight - 2, Math.min(height, right.y + 24));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      for (const edge of [{ x: gapLeft, y: left.y }, { x: gapRight, y: right.y }]) {
+        ctx.fillStyle = "#ffb15c";
+        ctx.beginPath();
+        ctx.moveTo(edge.x - 6, edge.y + 1);
+        ctx.lineTo(edge.x + 6, edge.y + 1);
+        ctx.lineTo(edge.x, edge.y + 10);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+    ctx.restore();
   }
 
   private drawHills(ctx: CanvasRenderingContext2D, width: number, height: number, color: string, speed: number, baseY: number, amplitude: number) {
@@ -373,20 +423,40 @@ export class PlatformerEngine {
   }
 
   private drawPlatform(ctx: CanvasRenderingContext2D, surface: PlatformSurface) {
-    const x = surface.x - this.cameraX - 38;
-    const width = surface.width + 76;
-    const height = Math.max(64, width * 0.27);
-    if (x > this.width + 80 || x + width < -80) return;
+    const x = surface.x - this.cameraX;
+    const width = surface.width;
+    const height = Math.min(108, Math.max(76, width * 0.32));
+    if (x > this.width + 20 || x + width < -20) return;
+    roundedRect(ctx, x, surface.y - 16, width, height + 16, 15);
+    const dirt = ctx.createLinearGradient(0, surface.y, 0, surface.y + height);
+    dirt.addColorStop(0, "#bb7b45");
+    dirt.addColorStop(1, "#875234");
+    ctx.fillStyle = dirt;
+    ctx.fill();
     if (this.platformImage.complete && this.platformImage.naturalWidth) {
-      ctx.drawImage(this.platformImage, 58, 250, 1440, 390, x, surface.y - 12, width, height);
-      return;
+      const cropWidth = Math.min(900, this.platformImage.naturalWidth);
+      const maxCropX = Math.max(0, this.platformImage.naturalWidth - cropWidth);
+      const cropX = maxCropX ? Math.floor((Math.floor(surface.x / 280) * 619) % maxCropX) : 0;
+      const cropY = Math.min(250, Math.max(0, this.platformImage.naturalHeight - 390));
+      ctx.save();
+      roundedRect(ctx, x, surface.y - 20, width, height + 20, 15);
+      ctx.clip();
+      ctx.drawImage(this.platformImage, cropX, cropY, cropWidth, Math.min(390, this.platformImage.naturalHeight - cropY), x, surface.y - 22, width, height + 26);
+      ctx.restore();
     }
-    roundedRect(ctx, x, surface.y - 4, width, height, 17);
-    ctx.fillStyle = "#8d5737";
+    roundedRect(ctx, x + 2, surface.y - 4, width - 4, 8, 4);
+    ctx.fillStyle = "#79ca4e";
     ctx.fill();
-    roundedRect(ctx, x, surface.y - 9, width, 20, 11);
-    ctx.fillStyle = "#73c94f";
+    ctx.fillStyle = "rgba(220, 255, 164, .82)";
+    roundedRect(ctx, x + 9, surface.y - 3, Math.max(22, width - 18), 2, 1);
     ctx.fill();
+    ctx.fillStyle = "rgba(255, 222, 128, .58)";
+    for (let index = 0; index < Math.floor(width / 42); index += 1) {
+      const chipX = x + 18 + index * 42;
+      ctx.beginPath();
+      ctx.ellipse(chipX, surface.y + 24 + (index % 2) * 8, 3, 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   private drawCoin(ctx: CanvasRenderingContext2D, worldX: number, y: number) {
@@ -486,21 +556,22 @@ export class PlatformerEngine {
   private drawGoal(ctx: CanvasRenderingContext2D) {
     const surface = this.findSurfaceAt(this.layout.goalX + 30) ?? this.layout.surfaces[this.layout.surfaces.length - 1];
     const x = this.layout.goalX - this.cameraX - 55;
-    const y = surface.y - 145;
+    const drawHeight = Math.min(130, Math.max(88, this.height * 0.52));
+    const y = surface.y - drawHeight - 10;
     if (x < -130 || x > this.width + 50) return;
     const pulse = 1 + Math.sin(this.elapsed * 3.7) * 0.025;
-    const drawWidth = 112 * pulse;
-    const drawHeight = 130 * pulse;
+    const drawWidth = drawHeight * 0.86 * pulse;
+    const pulsedHeight = drawHeight * pulse;
     ctx.save();
     ctx.shadowColor = "rgba(255,220,74,.56)";
     ctx.shadowBlur = 18;
     if (this.portalImage.complete && this.portalImage.naturalWidth) {
-      ctx.drawImage(this.portalImage, 260, 55, 1400, 1380, x - drawWidth / 2, y, drawWidth, drawHeight);
+      ctx.drawImage(this.portalImage, 260, 55, 1400, 1380, x - drawWidth / 2, y, drawWidth, pulsedHeight);
     } else {
       ctx.strokeStyle = "#ffdf5e";
-      ctx.lineWidth = 10;
+      ctx.lineWidth = Math.max(7, drawWidth * 0.09);
       ctx.beginPath();
-      ctx.ellipse(x, y + 65, 37, 58, 0, 0, Math.PI * 2);
+      ctx.ellipse(x, y + pulsedHeight / 2, drawWidth * 0.34, pulsedHeight * 0.43, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.fillStyle = "rgba(255,226,101,.35)";
       ctx.fill();
@@ -510,25 +581,165 @@ export class PlatformerEngine {
 
   private drawPlayer(ctx: CanvasRenderingContext2D) {
     const x = this.player.x - this.cameraX;
-    const bounce = this.player.grounded ? Math.abs(Math.sin(this.elapsed * (Math.abs(this.player.vx) > 0 ? 15 : 2))) * (Math.abs(this.player.vx) > 0 ? 2.3 : 0.5) : 0;
-    const y = this.player.y + bounce;
+    const moving = this.player.grounded && Math.abs(this.player.vx) > 0;
+    const runCycle = this.elapsed * 17;
+    const bounce = moving ? Math.abs(Math.sin(runCycle)) * 2.2 : this.player.grounded ? Math.sin(this.elapsed * 2.1) * 0.7 : 0;
+    const bodyLean = moving ? -0.045 : this.player.grounded ? 0 : this.player.vy < 0 ? -0.13 : 0.1;
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
     ctx.save();
     ctx.fillStyle = "rgba(26,37,48,.18)";
     ctx.beginPath();
-    ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, 25, 7, 0, 0, Math.PI * 2);
+    ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, Math.max(14, 25 - Math.max(0, -this.player.vy) * 0.012), 6, 0, 0, Math.PI * 2);
     ctx.fill();
-    if (this.heroImage.complete && this.heroImage.naturalWidth) {
-      const drawX = this.player.facing < 0 ? x + PLAYER_WIDTH + 14 : x - 14;
-      ctx.translate(drawX, y - 18);
-      if (this.player.facing < 0) ctx.scale(-1, 1);
-      ctx.drawImage(this.heroImage, 0, 0, PLAYER_WIDTH + 28, PLAYER_HEIGHT + 30);
+    ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - bounce);
+    ctx.scale(this.player.facing < 0 ? -1 : 1, 1);
+    ctx.rotate(bodyLean);
+    const appearance = this.catAppearance();
+    const stride = moving ? Math.sin(runCycle) * 7 : this.player.grounded ? Math.sin(this.elapsed * 2.1) * 1.4 : -4;
+
+    // Tail, behind the body. The wave reads as a run cycle rather than a seated portrait.
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = appearance.shadow;
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.moveTo(-15, -24);
+    ctx.bezierCurveTo(-32, -22 - Math.sin(runCycle * 0.55) * 5, -35, -43 + Math.sin(runCycle * 0.55) * 6, -22, -47);
+    ctx.stroke();
+    ctx.strokeStyle = appearance.furLight;
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    const legStroke = (startX: number, swing: number, color: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.moveTo(startX, -14);
+      ctx.lineTo(startX + swing, -6);
+      ctx.lineTo(startX + swing * 1.22, -1.5);
+      ctx.stroke();
+      ctx.fillStyle = appearance.paw;
+      ctx.beginPath();
+      ctx.ellipse(startX + swing * 1.22 + 2, -1.8, 5, 3.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    legStroke(-12, -stride, appearance.shadow);
+    legStroke(10, stride, appearance.fur);
+
+    const body = ctx.createLinearGradient(-18, -37, 20, -10);
+    body.addColorStop(0, appearance.furLight);
+    body.addColorStop(1, appearance.fur);
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.ellipse(0, -25, 22, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+    if (appearance.pattern === "tabby") {
+      ctx.strokeStyle = appearance.shadow;
+      ctx.lineWidth = 2.4;
+      for (let index = 0; index < 3; index += 1) {
+        ctx.beginPath();
+        ctx.moveTo(-11 + index * 8, -36);
+        ctx.lineTo(-6 + index * 8, -28);
+        ctx.stroke();
+      }
+    } else if (appearance.pattern === "calico") {
+      ctx.fillStyle = "#dc7945";
+      ctx.beginPath();
+      ctx.ellipse(-9, -29, 7, 5, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#414052";
+      ctx.beginPath();
+      ctx.ellipse(3, -20, 6, 5, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Running side-profile head, ears, face, and whiskers.
+    ctx.fillStyle = appearance.fur;
+    ctx.beginPath();
+    ctx.moveTo(8, -44); ctx.lineTo(7, -58); ctx.lineTo(18, -49);
+    ctx.quadraticCurveTo(28, -53, 31, -42);
+    ctx.quadraticCurveTo(34, -28, 22, -20);
+    ctx.quadraticCurveTo(9, -23, 7, -34);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = appearance.ear;
+    ctx.beginPath();
+    ctx.moveTo(11, -51); ctx.lineTo(10, -55); ctx.lineTo(16, -50); ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = appearance.muzzle;
+    ctx.beginPath();
+    ctx.ellipse(26, -33, 7, 5, 0.08, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = appearance.eye;
+    ctx.beginPath();
+    ctx.ellipse(22, -42, 3.4, 4.1, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#21313a";
+    ctx.beginPath();
+    ctx.arc(23, -42, 1.7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(23.7, -43.5, 1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#ee8a9e";
+    ctx.beginPath();
+    ctx.moveTo(31, -36); ctx.lineTo(35, -34); ctx.lineTo(31, -32); ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = appearance.whisker;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(29, -31); ctx.lineTo(39, -29);
+    ctx.moveTo(29, -33); ctx.lineTo(40, -34);
+    ctx.stroke();
+
+    // Gender accessory mirrors the existing cap/bow choice in the home scene.
+    if (this.profile.gender === "menino") {
+      ctx.fillStyle = "#2f8ca4";
+      ctx.beginPath();
+      ctx.ellipse(20, -52, 12, 4, -0.12, Math.PI, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#24758f";
+      ctx.beginPath();
+      ctx.ellipse(24, -49, 12, 2.5, -0.08, 0, Math.PI * 2);
+      ctx.fill();
     } else {
-      ctx.font = "54px serif";
-      ctx.textAlign = "center";
-      ctx.fillText("🐈", x + PLAYER_WIDTH / 2, y + PLAYER_HEIGHT - 4);
+      ctx.fillStyle = "#ef91b5";
+      ctx.beginPath();
+      ctx.ellipse(11, -55, 4, 3.3, -0.45, 0, Math.PI * 2);
+      ctx.ellipse(17, -55, 4, 3.3, 0.45, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#ffd7e6";
+      ctx.beginPath();
+      ctx.arc(14, -55, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (moving) {
+      ctx.globalAlpha = 0.42;
+      ctx.strokeStyle = "#fff2be";
+      ctx.lineWidth = 2;
+      for (let index = 0; index < 2; index += 1) {
+        const dashY = -13 + index * 7 + Math.sin(runCycle + index) * 2;
+        ctx.beginPath();
+        ctx.moveTo(-34 - index * 5, dashY);
+        ctx.lineTo(-26 - index * 5, dashY);
+        ctx.stroke();
+      }
     }
     ctx.restore();
+  }
+
+  private catAppearance() {
+    const palettes: Record<string, { fur: string; furLight: string; shadow: string; paw: string; ear: string; muzzle: string; eye: string; whisker: string; pattern: "tabby" | "calico" | "plain" }> = {
+      "menino-prata": { fur: "#9caab7", furLight: "#e5e9eb", shadow: "#586979", paw: "#f1e9df", ear: "#ef9b9c", muzzle: "#f3e8df", eye: "#79c864", whisker: "#e8edf0", pattern: "tabby" },
+      "menino-laranja": { fur: "#e9873f", furLight: "#ffc276", shadow: "#a94c24", paw: "#ffe4c7", ear: "#ee8a91", muzzle: "#ffe7d2", eye: "#75bd56", whisker: "#fff2df", pattern: "tabby" },
+      "menino-preto": { fur: "#41404e", furLight: "#7b778c", shadow: "#252633", paw: "#f2e9e6", ear: "#c67b88", muzzle: "#ede0df", eye: "#dcbd59", whisker: "#f2ebee", pattern: "plain" },
+      "menina-creme": { fur: "#e8cda5", furLight: "#fff0cf", shadow: "#a78a67", paw: "#fff5e7", ear: "#ed9ba1", muzzle: "#fff1df", eye: "#6aa9df", whisker: "#fff7e9", pattern: "plain" },
+      "menina-calico": { fur: "#e9d6bc", furLight: "#fff0d8", shadow: "#6d5c59", paw: "#fff3df", ear: "#eb9ba1", muzzle: "#fff2e5", eye: "#79b85a", whisker: "#fff6e8", pattern: "calico" },
+      "menina-azul": { fur: "#8496b8", furLight: "#c6d1e5", shadow: "#515c7c", paw: "#f1e9ea", ear: "#df9eb6", muzzle: "#f3e8ed", eye: "#73bddd", whisker: "#f4f1f8", pattern: "plain" },
+    };
+    return palettes[this.profile.characterId] ?? palettes["menino-prata"];
   }
 
   private drawForeground(ctx: CanvasRenderingContext2D, width: number, height: number, accent: string) {

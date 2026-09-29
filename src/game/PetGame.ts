@@ -1,6 +1,6 @@
-import { DECORATIONS, getDecorationLockReason, type DecorationId } from "./decorations";
+import { DECORATIONS, getDecorationLockReason, getDecorationStageId, type DecorationId } from "./decorations";
 
-export { DECORATIONS, getDecorationLockReason } from "./decorations";
+export { DECORATIONS, getDecorationLockReason, getDecorationStageId } from "./decorations";
 export type { DecorationDefinition, DecorationId } from "./decorations";
 
 export type PetStats = {
@@ -68,7 +68,7 @@ export const CURRENT_SAVE_KEY = "meu-pet-virtual-save-v2";
 export const LEGACY_SAVE_KEYS = ["meu-pet-virtual-save-v1", "pet_estado"] as const;
 
 const EMPTY_DECOR: Record<DecorationId, number> = Object.fromEntries(DECORATIONS.map((item) => [item.id, 0])) as Record<DecorationId, number>;
-const INITIAL_DECOR: Record<DecorationId, number> = { ...EMPTY_DECOR, bed: 1, plant: 1 };
+const INITIAL_DECOR: Record<DecorationId, number> = { ...EMPTY_DECOR };
 
 export const INITIAL_GAME_STATE: GameState = {
   level: 1,
@@ -214,12 +214,22 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     return Number.isFinite(number) ? clamp(number, min, max) : fallback;
   };
   const active = isCompanionId(parsed.activeCompanionId) && ownedCompanions.includes(parsed.activeCompanionId) ? parsed.activeCompanionId : null;
+  const platformProgress = normalizePlatformProgress(parsed.platformProgress);
   const rawRooms = parsed.roomDecorations && typeof parsed.roomDecorations === "object" ? parsed.roomDecorations as Record<string, unknown> : {};
   const roomDecorations: Record<string, DecorationPlacement[]> = {};
+  const placedDecorationIds = new Set<DecorationId>();
+  const placedPlacementIds = new Set<string>();
   Object.entries(rawRooms).forEach(([roomKey, rawItems]) => {
     const room = Number(roomKey);
     if (!Number.isInteger(room) || room < 1 || room > level || !Array.isArray(rawItems)) return;
-    const placements = rawItems.map(normalizePlacement).filter((item): item is DecorationPlacement => item !== null).slice(0, 40);
+    const roomItems = new Set<DecorationId>();
+    const placements = rawItems.map(normalizePlacement).filter((item): item is DecorationPlacement => {
+      if (!item || placedPlacementIds.has(item.id) || placedDecorationIds.has(item.itemId) || roomItems.has(item.itemId)) return false;
+      if (DECORATIONS.find((definition) => definition.id === item.itemId)?.room !== room) return false;
+      roomItems.add(item.itemId);
+      return true;
+    }).slice(0, 10);
+    placements.forEach((item) => { placedDecorationIds.add(item.itemId); placedPlacementIds.add(item.id); });
     if (placements.length) roomDecorations[String(room)] = placements;
   });
   const activeRoom = Math.round(numeric(parsed.activeRoom, level, 1, level));
@@ -267,10 +277,10 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     },
     ownedCompanions,
     activeCompanionId: active,
-    decorInventory: Object.fromEntries(DECORATIONS.map((item) => [item.id, Math.round(numeric(decorInventoryRaw[item.id], base.decorInventory[item.id], 0, 999))])) as Record<DecorationId, number>,
+    decorInventory: Object.fromEntries(DECORATIONS.map((item) => [item.id, placedDecorationIds.has(item.id) ? 0 : Math.round(numeric(decorInventoryRaw[item.id], base.decorInventory[item.id], 0, 1))])) as Record<DecorationId, number>,
     roomDecorations,
     gifts,
-    platformProgress: normalizePlatformProgress(parsed.platformProgress),
+    platformProgress,
   };
 }
 
@@ -284,7 +294,6 @@ function awardXp(state: GameState, amount: number): GameState {
   let missionClaimed = state.missionClaimed;
   const ownedCompanions = [...state.ownedCompanions];
   let activeCompanionId = state.activeCompanionId;
-  const decorInventory = { ...state.decorInventory };
 
   while (level < MAX_LEVEL && xp >= xpMax) {
     xp -= xpMax;
@@ -298,19 +307,11 @@ function awardXp(state: GameState, amount: number): GameState {
       ownedCompanions.push(unlocked);
       if (!activeCompanionId) activeCompanionId = unlocked;
     }
-    const rewardDecor: Partial<Record<number, DecorationId>> = {
-      2: "jardim-vaso-margaridas",
-      4: "terraco-luzes-varal",
-      6: "bosque-luminaria-vagalume",
-      8: "biblioteca-nicho-livros",
-    };
-    const decor = rewardDecor[level];
-    if (decor) decorInventory[decor] += 1;
     activeRoom = level;
   }
   if (level === MAX_LEVEL) xp = Math.min(xp, xpMax);
 
-  return { ...state, level, activeRoom, xp, xpMax, coins, missionProgress, missionClaimed, ownedCompanions, activeCompanionId, decorInventory };
+  return { ...state, level, activeRoom, xp, xpMax, coins, missionProgress, missionClaimed, ownedCompanions, activeCompanionId };
 }
 
 /** One care tick occurs every 30 seconds while the player is active. */
@@ -413,7 +414,10 @@ export function completePlatformStage(
     state: {
       ...state,
       coins: state.coins + stageCoins,
-      decorInventory: { ...state.decorInventory, [item.id]: state.decorInventory[item.id] + 1 },
+      decorInventory: {
+        ...state.decorInventory,
+        [item.id]: Object.values(state.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id)) ? 0 : 1,
+      },
       platformProgress: { unlockedStage, completedStages, starsByStage },
     },
     ok: true,
@@ -459,10 +463,12 @@ export function useStoreItem(state: GameState, itemId: StoreItemId): { state: Ga
 export function buyDecoration(state: GameState, itemId: DecorationId): { state: GameState; message: string; ok: boolean } {
   const item = DECORATIONS.find((entry) => entry.id === itemId);
   if (!item) return { state, message: "Essa decoração não está disponível.", ok: false };
-  const locked = getDecorationLockReason(item, state.level, state.missionsCompleted);
-  if (locked) return { state, message: `${item.name}: ${locked.toLowerCase()}.`, ok: false };
-  if (state.coins < item.price) return { state, message: "Ainda faltam algumas moedas.", ok: false };
-  return { state: { ...state, coins: state.coins - item.price, decorInventory: { ...state.decorInventory, [itemId]: state.decorInventory[itemId] + 1 } }, message: `${item.name} foi para sua mochila de decoração!`, ok: true };
+  const stageId = getDecorationStageId(itemId);
+  if (!stageId || !state.platformProgress.completedStages.includes(stageId)) return { state, message: `${item.name}: vença a fase ${stageId ?? "correspondente"} da aventura para desbloquear.`, ok: false };
+  if (state.decorInventory[itemId] > 0 || Object.values(state.roomDecorations).some((items) => items.some((placement) => placement.itemId === itemId))) {
+    return { state, message: `${item.name} já foi conquistado nesta fase.`, ok: false };
+  }
+  return { state: { ...state, decorInventory: { ...state.decorInventory, [itemId]: 1 } }, message: `${item.name} recuperado para a mochila.`, ok: true };
 }
 
 export function selectRoom(state: GameState, room: number): GameState {
@@ -472,12 +478,15 @@ export function selectRoom(state: GameState, room: number): GameState {
 
 export function placeDecoration(state: GameState, placement: DecorationPlacement): { state: GameState; ok: boolean; message: string } {
   const item = DECORATIONS.find((entry) => entry.id === placement.itemId);
-  if (!item || state.decorInventory[placement.itemId] < 1) return { state, ok: false, message: "Esse item não está na mochila." };
-  const locked = getDecorationLockReason(item, state.level, state.missionsCompleted);
-  if (locked) return { state, ok: false, message: `${item.name}: ${locked.toLowerCase()}.` };
+  if (!item) return { state, ok: false, message: "Esse item não está disponível." };
+  const stageId = getDecorationStageId(placement.itemId);
+  if (!stageId || !state.platformProgress.completedStages.includes(stageId)) return { state, ok: false, message: `${item.name}: vença a fase ${stageId ?? "correspondente"} da aventura primeiro.` };
+  if (item.room !== state.activeRoom) return { state, ok: false, message: `${item.name} pertence à Casa ${item.room}.` };
+  if (Object.values(state.roomDecorations).some((placements) => placements.some((placed) => placed.itemId === placement.itemId))) return { state, ok: false, message: `${item.name} já está fixado em uma casa; um mimo único não pode ser repetido.` };
+  if (state.decorInventory[placement.itemId] < 1) return { state, ok: false, message: "Esse item não está na mochila." };
   const roomKey = String(state.activeRoom);
   const items = state.roomDecorations[roomKey] ?? [];
-  if (items.length >= 20) return { state, ok: false, message: "Esta casa já está cheia de mimos." };
+  if (items.length >= 10) return { state, ok: false, message: "Esta casa já recebeu suas 10 decorações de aventura." };
   const safePlacement = normalizePlacement(placement);
   if (!safePlacement) return { state, ok: false, message: "Não consegui posicionar esse item." };
   return {
@@ -499,15 +508,22 @@ export function removeDecoration(state: GameState, id: string): GameState {
   const items = state.roomDecorations[roomKey] ?? [];
   const item = items.find((candidate) => candidate.id === id);
   if (!item) return state;
-  return { ...state, decorInventory: { ...state.decorInventory, [item.itemId]: state.decorInventory[item.itemId] + 1 }, roomDecorations: { ...state.roomDecorations, [roomKey]: items.filter((candidate) => candidate.id !== id) } };
+  const roomDecorations = { ...state.roomDecorations, [roomKey]: items.filter((candidate) => candidate.id !== id) };
+  const stageId = getDecorationStageId(item.itemId);
+  const stageCleared = Boolean(stageId && state.platformProgress.completedStages.includes(stageId));
+  const placedElsewhere = Object.values(roomDecorations).some((placements) => placements.some((candidate) => candidate.itemId === item.itemId));
+  const stock = stageCleared && !placedElsewhere ? 1 : state.decorInventory[item.itemId] ?? 0;
+  return { ...state, decorInventory: { ...state.decorInventory, [item.itemId]: stock }, roomDecorations };
 }
 
 export function spawnSurpriseGift(state: GameState, id: string, now = Date.now(), random: () => number = Math.random): GameState {
   const live = state.gifts.filter((gift) => gift.expiresAt > now);
   if (live.length >= 2) return { ...state, gifts: live };
-  const reward = random() < 0.56 ? "coins" : "decoration";
-  const roomChoices = DECORATIONS.filter((item) => item.room === state.activeRoom && !getDecorationLockReason(item, state.level, state.missionsCompleted));
-  const decorChoices = roomChoices.length ? roomChoices : DECORATIONS.filter((item) => item.room === state.activeRoom);
+  const placed = new Set(Object.values(state.roomDecorations).flat().map((placement) => placement.itemId));
+  const decorChoices = DECORATIONS.filter((item) => item.room === state.activeRoom
+    && Boolean(getDecorationStageId(item.id) && state.platformProgress.completedStages.includes(getDecorationStageId(item.id)!))
+    && state.decorInventory[item.id] === 0 && !placed.has(item.id));
+  const reward = decorChoices.length && random() >= 0.56 ? "decoration" : "coins";
   const gift: SurpriseGift = {
     id,
     room: state.activeRoom,
@@ -532,8 +548,13 @@ export function collectSurpriseGift(state: GameState, id: string, now = Date.now
   if (gift.expiresAt <= now) return { state: withoutGift, ok: false, message: "O presente expirou; outro pode aparecer logo." };
   if (gift.reward === "coins") return { state: { ...withoutGift, coins: withoutGift.coins + (gift.coins ?? 80) }, ok: true, message: `Presente surpresa! +${gift.coins ?? 80} moedas.` };
   const decorationId = gift.decorationId ?? "plant";
-  const item = DECORATIONS.find((entry) => entry.id === decorationId)!;
-  return { state: { ...withoutGift, decorInventory: { ...withoutGift.decorInventory, [decorationId]: withoutGift.decorInventory[decorationId] + 1 } }, ok: true, message: `Presente surpresa: ${item.name} para decorar!` };
+  const item = DECORATIONS.find((entry) => entry.id === decorationId);
+  const stageId = item ? getDecorationStageId(item.id) : null;
+  const alreadyPlaced = Object.values(state.roomDecorations).some((items) => items.some((placement) => placement.itemId === decorationId));
+  if (!item || !stageId || !state.platformProgress.completedStages.includes(stageId) || state.decorInventory[decorationId] > 0 || alreadyPlaced) {
+    return { state: { ...withoutGift, coins: withoutGift.coins + 100 }, ok: true, message: "Presente surpresa! +100 moedas." };
+  }
+  return { state: { ...withoutGift, decorInventory: { ...withoutGift.decorInventory, [decorationId]: 1 } }, ok: true, message: `Presente surpresa: ${item.name} para decorar!` };
 }
 
 export function setPetProfile(state: GameState, profile: PetProfile): GameState {

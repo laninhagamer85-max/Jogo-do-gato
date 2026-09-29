@@ -89,8 +89,8 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 /** Deterministic, hand-tuned platform spacing keeps each generated route beatable on keyboard and touch. */
 export function createPlatformLayout(stageId: number, viewportHeight: number): PlatformLayout {
   const stage = getPlatformStage(stageId) ?? getPlatformStage(1)!;
-  const height = Math.max(420, viewportHeight);
-  const groundY = height * 0.78;
+  const height = Math.max(180, viewportHeight);
+  const groundY = Math.max(96, Math.min(height - 62, height * 0.78));
   const world = stage.world;
   const surfaceCount = 9 + Math.min(3, Math.floor((stageId - 1) / 30));
   const surfaces: PlatformSurface[] = [{ x: 0, y: groundY, width: 410, height: 150 }];
@@ -119,12 +119,15 @@ export function createPlatformLayout(stageId: number, viewportHeight: number): P
         coins.push({ id: coins.length, x: surface.x + offset, y: surface.y - 63 - ((stageId + index + item) % 3) * 7, collected: false });
       }
     }
-    if (index >= 2 && index < surfaces.length - 1 && ((index + stageId) % 3 !== 0)) {
-      const midpoint = surface.x + surface.width * 0.66;
-      enemies.push({ id: enemies.length, x: midpoint, y: surface.y - 30, minX: surface.x + 38, maxX: surface.x + surface.width - 34, direction: (index + stageId) % 2 ? 1 : -1, speed: 38 + world * 4 + stage.stageInWorld * 2 });
+    const hasEnemy = index >= 2 && index < surfaces.length - 1 && ((index + stageId) % 3 !== 0);
+    if (hasEnemy) {
+      // Keep the landing zone clear; patrols occupy the run-up to the next gap.
+      const midpoint = surface.x + surface.width * 0.82;
+      enemies.push({ id: enemies.length, x: midpoint, y: surface.y - 30, minX: surface.x + surface.width * 0.78, maxX: surface.x + surface.width * 0.86, direction: (index + stageId) % 2 ? 1 : -1, speed: 38 + world * 4 + stage.stageInWorld * 2 });
     }
-    if (index >= 3 && stage.stageInWorld >= 4 && index < surfaces.length - 1 && ((index * 2 + stageId) % 4 === 0)) {
-      hazards.push({ x: surface.x + surface.width * 0.28, y: surface.y - 17, width: 46 + (world % 3) * 5, height: 18 });
+    if (!hasEnemy && index >= 3 && stage.stageInWorld >= 4 && index < surfaces.length - 1 && ((index * 2 + stageId) % 4 === 0)) {
+      // Spikes sit inside the gap-jump run-up, never under an enemy or at a landing point.
+      hazards.push({ x: surface.x + surface.width * 0.80, y: surface.y - 30, width: 46 + (world % 3) * 5, height: 30 });
     }
   });
 
@@ -136,7 +139,7 @@ export function createPlatformLayout(stageId: number, viewportHeight: number): P
     enemies,
     hazards,
     checkpoint: { x: checkpointSurface.x + checkpointSurface.width * 0.5, y: checkpointSurface.y },
-    start: { x: 66, y: surfaces[0].y - 68 },
+    start: { x: 66, y: surfaces[0].y - 60 },
     goalX: lastSurface.x + lastSurface.width - 76,
     worldWidth: lastSurface.x + lastSurface.width + 120,
     groundY,
