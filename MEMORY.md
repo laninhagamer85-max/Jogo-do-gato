@@ -2,7 +2,7 @@
 
 - Repositório-base: `laninhagamer85-max/Jogo-do-gato`. A versão vanilla permanece em `legacy.html`; a experiência atual está em React/Vite/Babylon sob `src/`.
 - Branch de trabalho: `feature/meu-pet-virtual-refresh`; PR #2 fica aberto para revisão, sem merge automático em `main`.
-- O projeto WebDev `meu-pet-virtual` mantém preview iterável. O clone GitHub usa mídia local em `src/assets/` e não depende de `/manus-storage/`.
+- O projeto WebDev `meu-pet-virtual` mantém preview iterável. O clone GitHub usa mídia local em `src/assets/`; a exceção é o retrato autorizado da idealizadora, referenciado por URL do storage gerenciado.
 - Escopo atual: dez capítulos/casas; onze minijogos; seis gatos; seleção em três passos; fala e som em PT-BR; match-3 com drag-to-swap 8×8; movimento de pet; mapa de casas desbloqueadas; decoração móvel por casa; presente com expiração; PWA com ícone.
 - O progresso fica local neste navegador. O modo `?demo=1` é em memória, não salva no storage e agora mostra móveis/presente fictícios para demonstração.
 - QA final: builds e typechecks passaram no WebDev e no clone; smoke tests cobriram perfil, curva de XP, casas, decoração, coleta/expiração; no browser, o drag válido do match-3 consome uma jogada e o arrasto de decoração muda a posição sem alterar o save real. Nesta fatia, o toque no pet emitiu `pet:blink`, mostrou o nome por 2,6 s e o balão desapareceu após a fala/fallback; a ficha do perfil mostrou idade, gênero, capítulo, progresso, companhia e quatro cuidados. Móveis não exibem ferramentas até seleção; arrasto, rotação e fixação foram exercitados em `?demo=1` sem salvar o progresso real.
@@ -15,3 +15,6 @@
 - Follow-up 2026-09-28: Home, GameCanvas, SceneDecoration, cena Babylon, áudio PT-BR e CSS sincronizados do WebDev; clipes de toque/cuidado para menino/menina são arquivos locais Vite. Atualizar `src/game/assets.ts` manualmente ao acrescentar mídias: preservar imports em `src/assets/` e o mapa local dos 100 props.
 - QA WebDev: clique vazio sem voz, toque aciona MP3 masculino, modo limpo esconde painéis, coleta exibe moedas e desaparece; captura do canvas retorna PNG de ~3–4 MB e fallback cria download com nome próprio sem gravar no teste. PR #2 segue aberto; não mesclar.
 - Segurança/build (2026-09-28): `pnpm audit` full/prod = 0 advisories conhecidos; Vite 7.3.6, React plugin 5.2.0, Tailwind 4.3.3. `pnpm check`, build e diff-check passaram. Bundle Babylon ainda tem alerta de tamanho (1,17 MB, ~287 KB gzip); é aviso de otimização, não falha. Preview estático local retorna HTTP 200.
+
+- Follow-up 2026-09-29: moldura da idealizadora adicionada a todos os cenários com legenda acessível, modal do texto autorizado e âncora responsiva; foto permanece no storage e não é copiada ao repo. Prévia/skin do pet agora têm reação visual; sequência de level-up não é sobrescrita por eventos de aparência.
+- Presentes: 1,55 s para abrir; prêmio legível por 15,5 s, com origem/casa, miniatura e ação “Usar”; o item recebido pertence à casa que originou o presente. Catálogo: 18 peças com missão pendente mesmo no nível 10, zero missões contadas.

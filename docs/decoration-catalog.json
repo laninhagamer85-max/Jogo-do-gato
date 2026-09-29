@@ -90,7 +90,7 @@
     "icon": "🍪",
     "price": 250,
     "description": "Um lugar especial para os lanchinhos",
-    "unlockLevel": 1,
+    "unlockLevel": 3,
     "storagePath": "/manus-storage/casa-mesa-petiscos_f22bd764.webp",
     "file": "casa-mesa-petiscos.webp",
     "bytes": 18214
@@ -227,7 +227,8 @@
     "unlockLevel": 2,
     "storagePath": "/manus-storage/jardim-regador-azul_88ba0c7b.webp",
     "file": "jardim-regador-azul.webp",
-    "bytes": 24956
+    "bytes": 24956,
+    "missionsRequired": 3
   },
   {
     "id": "jardim-ponte-musgo",
@@ -323,7 +324,8 @@
     "unlockLevel": 3,
     "storagePath": "/manus-storage/mercado-cesta-frutas_202e2b1c.webp",
     "file": "mercado-cesta-frutas.webp",
-    "bytes": 41204
+    "bytes": 41204,
+    "missionsRequired": 4
   },
   {
     "id": "mercado-placa-bigodes",
@@ -420,7 +422,8 @@
     "unlockLevel": 4,
     "storagePath": "/manus-storage/terraco-ninho-passaro_96927974.webp",
     "file": "terraco-ninho-passaro.webp",
-    "bytes": 27710
+    "bytes": 27710,
+    "missionsRequired": 5
   },
   {
     "id": "terraco-vaso-sol",
@@ -538,7 +541,7 @@
     "icon": "🛟",
     "price": 230,
     "description": "Flutue num mar de brincadeira",
-    "unlockLevel": 5,
+    "unlockLevel": 6,
     "storagePath": "/manus-storage/praia-boia-patinhas_838e9d8b.webp",
     "file": "praia-boia-patinhas.webp",
     "bytes": 20716
@@ -686,7 +689,8 @@
     "unlockLevel": 6,
     "storagePath": "/manus-storage/bosque-pinha-brinquedo_c815673b.webp",
     "file": "bosque-pinha-brinquedo.webp",
-    "bytes": 33900
+    "bytes": 33900,
+    "missionsRequired": 7
   },
   {
     "id": "bosque-lago-sapo",
@@ -771,7 +775,8 @@
     "unlockLevel": 7,
     "storagePath": "/manus-storage/neve-caneca-cacau_bf4d3052.webp",
     "file": "neve-caneca-cacau.webp",
-    "bytes": 41398
+    "bytes": 41398,
+    "missionsRequired": 8
   },
   {
     "id": "neve-tapete-luvas",
@@ -868,7 +873,8 @@
     "unlockLevel": 8,
     "storagePath": "/manus-storage/biblioteca-torre-livros_f96f14b7.webp",
     "file": "biblioteca-torre-livros.webp",
-    "bytes": 35214
+    "bytes": 35214,
+    "missionsRequired": 9
   },
   {
     "id": "biblioteca-globo-patinhas",
@@ -1074,7 +1080,8 @@
     "unlockLevel": 9,
     "storagePath": "/manus-storage/observatorio-cometa-brinquedo_d92ad6c7.webp",
     "file": "observatorio-cometa-brinquedo.webp",
-    "bytes": 39304
+    "bytes": 39304,
+    "missionsRequired": 10
   },
   {
     "id": "observatorio-vaso-lua",
@@ -1158,7 +1165,8 @@
     "unlockLevel": 10,
     "storagePath": "/manus-storage/festival-tambor-pata_c5bcebf7.webp",
     "file": "festival-tambor-pata.webp",
-    "bytes": 38562
+    "bytes": 38562,
+    "missionsRequired": 10
   },
   {
     "id": "festival-fonte-confetes",

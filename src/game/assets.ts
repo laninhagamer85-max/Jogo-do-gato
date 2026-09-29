@@ -71,6 +71,7 @@ export const GAME_ASSETS = {
     "menina-azul": girlBlue,
   } satisfies Record<PetCharacterId, string>,
   companions: { mimi, tico },
+  creatorPlaque: "https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp",
   decorations,
   gift,
   icon: appIcon,

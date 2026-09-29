@@ -19,7 +19,7 @@
 - `src/game/matchThree.ts` — geração do tabuleiro, swaps, matches, cascatas e gravidade.
 - `src/game/scene.ts` — cena Babylon, movimento por clique, fundos, personagem, companheiros e reações.
 - `src/game/audio.ts` — falas PT-BR por personagem, voice cues, efeitos, callbacks de término/cancelamento e respeito à preferência sonora.
-- `src/game/assets.ts` — imports locais de `src/assets/`, com descoberta dos 96 props por `import.meta.glob`; não depende de storage remoto.
+- `src/game/assets.ts` — imports locais de `src/assets/`, com descoberta dos 96 props por `import.meta.glob`; o único asset remoto é o retrato autorizado da idealizadora no storage gerenciado.
 - `src/assets/decorations/` — sprites WebP transparentes individuais dos 96 itens originais adicionais; `docs/decoration-catalog.json` acompanha metadados e referências do storage.
 - `public/manifest.webmanifest` e ícones `public/icon-*.png` — metadados instaláveis do PWA.
 
@@ -38,3 +38,10 @@
 
 ## PWA e privacidade
 O clone é uma aplicação Vite estática: não tem backend/API ou autenticação. O manifest e os ícones são instaláveis, mas não há service worker nem cache offline. O progresso fica no `localStorage` do navegador sem criptografia.
+
+
+## Moldura e escolha visual (2026-09-29)
+- `src/components/CreatorPlaquePicker.tsx` — hitbox acessível ancorada ao fundo com posição responsiva e legenda “Allana Gabriela”.
+- `src/game/scene.ts` — renderiza o retrato hospedado em todas as casas, mantém a placa alinhada no resize e aplica reações de troca de personagem/skin sem interferir com level-up.
+- `src/pages/Home.tsx` — modal informativo, prévia de personagem e revelação temporizada de presente.
+- A fotografia não é copiada ao repositório; é obtida do storage gerenciado.

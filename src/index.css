@@ -121,7 +121,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 .stage-hint { display: none; }
 .pet-tap-area { position: absolute; z-index: 2; top: 50%; left: 50%; width: 0; height: 0; transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: transparent; visibility: hidden; pointer-events: none; }
 .pet-tap-area[data-positioned="true"] { visibility: visible; pointer-events: auto; }
-.scene-decoration-picker { position: absolute; z-index: 1; width: clamp(50px,7.5vw,100px); height: clamp(50px,7.5vw,100px); transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: transparent; cursor: grab; }
+.scene-decoration-picker { position: absolute; z-index: 1; width: clamp(60px,10vw,132px); height: clamp(60px,10vw,132px); transform: translate(-50%,-50%); border: 0; border-radius: 50%; background: transparent; cursor: grab; }
 .scene-decoration-picker:focus-visible { outline: 2px solid #9be9ff; outline-offset: 3px; }
 .mission-card { padding: 17px; border: 1px solid rgb(154 141 255 / 40%); border-radius: 21px; background: linear-gradient(150deg,rgb(39 34 104 / 96%),rgb(28 36 91 / 95%)); box-shadow: 0 20px 48px rgb(22 18 76 / 32%), inset 0 1px 0 rgb(255 255 255 / 11%); }
 .mission-heading { display: flex; align-items: center; gap: 9px; }
@@ -782,7 +782,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 .scene-photo-button:active { transform: scale(.96); }
 .placement-nudge { position: absolute; top: 25%; left: 50%; z-index: 9; display: flex; align-items: center; gap: 6px; max-width: 85%; padding: 7px 10px; transform: translateX(-50%); border: 1px solid rgb(126 221 255 / 34%); border-radius: 99px; background: rgb(7 24 53 / 83%); color: #e4f8ff; font-size: 8px; font-weight: 900; pointer-events: none; }
 .placement-nudge svg { color: #ffdc67; }
-.scene-decoration { position: absolute; z-index: 3; display: grid; width: clamp(50px,7.5vw,100px); height: clamp(50px,7.5vw,100px); place-items: center; padding: 0; border: 0; border-radius: 14px; background: transparent; color: #fff; touch-action: none; user-select: none; cursor: pointer; }
+.scene-decoration { position: absolute; z-index: 3; display: grid; width: clamp(60px,10vw,132px); height: clamp(60px,10vw,132px); place-items: center; padding: 0; border: 0; border-radius: 14px; background: transparent; color: #fff; touch-action: none; user-select: none; cursor: pointer; }
 .scene-decoration img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 7px 7px rgb(4 13 32 / 33%)); }
 .scene-decoration.fixed:hover { filter: drop-shadow(0 0 8px rgb(124 220 255 / 64%)); }
 .scene-decoration.selected { z-index: 7; outline: 2px solid rgb(126 221 255 / 88%); outline-offset: 3px; background: rgb(8 22 48 / 20%); cursor: grab; }
@@ -850,7 +850,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .room-map-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .stage-toolbar { top: 17%; right: 1%; }
   .stage-toolbar button { min-height: 29px; padding: 0 7px; font-size: 7px; }
-  .scene-decoration { width: clamp(44px,11vw,78px); height: clamp(44px,11vw,78px); }
+  .scene-decoration, .scene-decoration-picker { width: clamp(60px,10vw,132px); height: clamp(60px,10vw,132px); }
   .decor-shop-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .character-art { width: 75px; height: 74px; }
   .intro-card { min-height: 560px; }
@@ -862,7 +862,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .stage-toolbar { top: 18%; right: 0; }
   .stage-toolbar button { min-height: 27px; border-radius: 9px; font-size: 6px; }
   .stage-toolbar svg { width: 12px; }
-  .scene-decoration { width: clamp(40px,14vw,64px); height: clamp(40px,14vw,64px); }
+  .scene-decoration, .scene-decoration-picker { width: clamp(60px,10vw,132px); height: clamp(60px,10vw,132px); }
   .scene-gift { bottom: 25%; width: 60px; }
   .match-board-8 { width: min(77vw,355px); gap: 3px; }
   .match-board-8 .treat-tile { border-radius: 7px; }
@@ -988,7 +988,9 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 
 /* Presente aberto: o ícone/recompensa sobe e desaparece, sem bloquear a cena. */
 .gift-reveal-layer { position: fixed; inset: 0; z-index: 35; display: flex; align-items: flex-end; justify-content: center; padding: 0 16px max(88px,calc(env(safe-area-inset-bottom) + 78px)); pointer-events: none; }
-.gift-reveal-card { position: relative; display: flex; align-items: center; gap: 12px; width: min(360px,92vw); min-height: 84px; padding: 12px 16px; transform: translateY(18px) scale(.96); border: 1px solid rgb(255 255 255 / 22%); border-radius: 20px; background: linear-gradient(135deg,rgb(18 43 84 / 97%),rgb(13 28 60 / 97%)); box-shadow: 0 18px 50px rgb(1 8 24 / 45%),inset 0 1px 0 rgb(255 255 255 / 12%); opacity: 0; animation: gift-reveal-rise 2.8s var(--ease-out) both; }
+.gift-reveal-card { position: relative; display: flex; align-items: flex-start; gap: 12px; width: min(390px,94vw); min-height: 104px; padding: 15px 16px; transform: translateY(18px) scale(.96); border: 1px solid rgb(255 255 255 / 22%); border-radius: 20px; background: linear-gradient(135deg,rgb(18 43 84 / 98%),rgb(13 28 60 / 98%)); box-shadow: 0 18px 50px rgb(1 8 24 / 45%),inset 0 1px 0 rgb(255 255 255 / 12%); opacity: 0; pointer-events: auto; }
+.gift-reveal-card.is-opening { animation: gift-reveal-open 1.55s var(--ease-out) both; }
+.gift-reveal-card.is-revealed { animation: gift-reveal-hold 15.5s var(--ease-out) both; }
 .gift-reveal-art { display: grid; flex: 0 0 56px; width: 56px; height: 56px; place-items: center; border: 1px solid rgb(255 255 255 / 14%); border-radius: 15px; background: radial-gradient(circle,#517bab,#24426f); }
 .gift-reveal-art img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 7px rgb(0 0 0 / 30%)); }
 .gift-reveal-art.coins-art { background: radial-gradient(circle,#8f702e,#544318); color: #ffdc54; }
@@ -996,13 +998,33 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 .gift-reveal-copy small { color: #83dfff; font-size: 8px; font-weight: 1000; letter-spacing: 1px; }
 .gift-reveal-copy strong { color: #fff; font-family: "Baloo 2", "Nunito", sans-serif; font-size: 17px; line-height: 1.05; }
 .gift-reveal-copy > span { color: #b4c8e7; font-size: 9px; font-weight: 800; }
+.gift-reveal-actions { display: flex; align-items: center; gap: 7px; margin-top: 8px; }
+.gift-reveal-actions button { min-height: 30px; padding: 0 10px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 9px; font-size: 8px; font-weight: 1000; pointer-events: auto; }
+.gift-use-button { background: linear-gradient(135deg,#25d488,#109b67); color: #fff; }
+.gift-close-button { display: inline-grid; min-width: 30px; place-items: center; background: rgb(255 255 255 / 8%); color: #d8e8ff; }
 .gift-reveal-spark { position: absolute; top: -9px; right: -8px; display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgb(255 255 255 / 22%); border-radius: 50%; background: #ffcf43; color: #603f00; }
-@keyframes gift-reveal-rise { 0% { transform: translateY(18px) scale(.96); opacity: 0; } 12% { transform: translateY(0) scale(1); opacity: 1; } 65% { transform: translateY(-10px) scale(1); opacity: 1; } 100% { transform: translateY(-42px) scale(.98); opacity: 0; } }
+@keyframes gift-reveal-open { 0% { transform: translateY(18px) scale(.96); opacity: 0; } 18% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-5px) scale(1); opacity: 1; } }
+@keyframes gift-reveal-hold { 0% { transform: translateY(0) scale(1); opacity: 0; } 8% { transform: translateY(-5px) scale(1); opacity: 1; } 92% { transform: translateY(-5px) scale(1); opacity: 1; } 100% { transform: translateY(-32px) scale(.98); opacity: 0; } }
+
+.creator-plaque-picker { position: absolute; z-index: 4; padding: 0 0 23px; transform: translateZ(0); border: 0; border-radius: 9px; background: transparent; cursor: pointer; }
+.creator-plaque-picker::before { position: absolute; inset: 0 0 23px; border: 3px solid #f2cc75; border-radius: 8px; box-shadow: 0 0 0 2px rgb(95 63 29 / 70%),0 6px 15px rgb(0 0 0 / 32%); content: ""; pointer-events: none; }
+.creator-plaque-picker:hover { filter: brightness(1.08); }
+.creator-plaque-caption { position: absolute; bottom: 0; left: -42.5%; display: grid; width: 185%; height: 20px; place-items: center; border: 1px solid #c18d42; border-radius: 7px; background: linear-gradient(180deg,#fff1c5,#e9c775); box-shadow: 0 3px 8px rgb(36 22 6 / 35%); color: #493018; font-family: "Baloo 2", "Nunito", sans-serif; font-size: 8px; font-weight: 1000; line-height: 1; white-space: nowrap; }
+.creator-plaque-picker:focus-visible { outline: 3px solid #9be9ff; outline-offset: 3px; }
+.creator-info-backdrop { z-index: 50; }
+.creator-info-card { width: min(430px,100%); text-align: center; }
+.creator-info-card h2 { margin: 8px 0 6px; color: #ffe29a; font-family: "Baloo 2", "Nunito", sans-serif; }
+.creator-info-card p { margin: 8px 0 16px; color: #d7e5fb; font-size: 12px; font-weight: 700; line-height: 1.7; }
+.creator-info-card p strong { color: #fff0b9; }
+.creator-info-portrait { display: block; width: min(188px,54vw); max-height: 245px; margin: 6px auto 10px; object-fit: contain; filter: drop-shadow(0 12px 18px rgb(0 0 0 / 30%)); }
+.creator-info-card .primary-action { width: 100%; }
 @media (max-width: 600px) {
   .game-root.focus-mode .topbar { top: max(9px,env(safe-area-inset-top)); right: 9px; }
   .game-root.focus-mode .icon-button { width: 38px; height: 38px; }
   .gift-reveal-layer { padding-bottom: max(76px,calc(env(safe-area-inset-bottom) + 68px)); }
-  .gift-reveal-card { min-height: 76px; padding: 10px 12px; }
+  .gift-reveal-card { min-height: 90px; padding: 10px 12px; }
   .gift-reveal-art { flex-basis: 50px; width: 50px; height: 50px; }
   .gift-reveal-copy strong { font-size: 15px; }
+  .gift-reveal-copy > span { font-size: 8px; line-height: 1.4; }
+  .creator-info-card p { font-size: 10px; }
 }

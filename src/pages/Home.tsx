@@ -7,6 +7,7 @@ import {
 import MiniGameBoard from "@/components/MiniGameBoard";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import { SceneDecoration, SceneDecorationPicker, SceneGift } from "@/components/SceneDecoration";
+import CreatorPlaquePicker from "@/components/CreatorPlaquePicker";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import {
   buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame,
@@ -23,7 +24,8 @@ import { legacyStagePercentToBackground, screenToBackgroundPercent } from "@/gam
 
 type ShopTab = "looks" | "items" | "boosts" | "friends" | "decor";
 type CollapsedPanels = { stats: boolean; care: boolean; mission: boolean; shop: boolean };
-type GiftReveal = { key: string; kind: "coins"; amount: number } | { key: string; kind: "decoration"; name: string; image: string };
+type GiftRevealBase = { key: string; sourceRoom: number; phase: "opening" | "revealed" };
+type GiftReveal = (GiftRevealBase & { kind: "coins"; amount: number }) | (GiftRevealBase & { kind: "decoration"; itemId: DecorationId; itemRoom: number; name: string; image: string });
 const PANEL_PREF_KEY = "meu-pet-panels-v2";
 const SOUND_PREF_KEY = "meu-pet-sound-v2";
 const VOICE_PREF_KEY = "meu-pet-voice-v2";
@@ -62,6 +64,8 @@ function createDemoGameState(): GameState {
   const demoNow = Date.now();
   return {
     ...base,
+    skin: "laranja",
+    ownedSkins: ["tigrinho", "laranja"],
     level: 3,
     xp: 160,
     xpMax: 338,
@@ -132,6 +136,8 @@ export default function Home() {
   const [giftClock, setGiftClock] = useState(Date.now());
   const [giftNextSpawnAt, setGiftNextSpawnAt] = useState(() => Date.now() + 150_000);
   const [giftReveal, setGiftReveal] = useState<GiftReveal | null>(null);
+  const [creatorInfoOpen, setCreatorInfoOpen] = useState(false);
+  const [previewCharacter, setPreviewCharacter] = useState<{ gender: PetGender; characterId: PetProfile["characterId"] } | null>(null);
   const [toast, setToast] = useState("");
   const [petLine, setPetLine] = useState("");
   const [petSpeechVisible, setPetSpeechVisible] = useState(false);
@@ -225,12 +231,9 @@ export default function Home() {
   }, [game.profile, game.tutorialComplete]);
 
   useEffect(() => {
-    dispatchPetEvent("pet:skin", { skinId: game.skin });
-    dispatchPetEvent("pet:level", { level: game.level });
-    dispatchPetEvent("pet:profile", { gender: game.profile?.gender ?? null, characterId: game.profile?.characterId ?? null });
-    dispatchPetEvent("pet:companion", { companionId: game.activeCompanionId });
     const prior = previousLevelRef.current;
     if (game.level > prior) {
+      dispatchPetEvent("pet:level", { level: game.level });
       setGamesOpen(false); setShopOpen(false); setSettingsOpen(false); setProfileOpen(false); setPaused(false); setTutorialOpen(false); setRoomsOpen(false);
       setMiniId(null); setSelectedDecorationId(null); setPendingDecoration(null); setActiveTab("care");
       setStoryLevel(game.level);
@@ -239,7 +242,7 @@ export default function Home() {
       if (voiceOnRef.current) playPetVoice("level", game.profile?.gender, dismissPetSpeech);
     }
     previousLevelRef.current = game.level;
-  }, [game.level, game.skin, game.profile?.gender, game.profile?.characterId, game.activeCompanionId, game.activeRoom]);
+  }, [game.level, game.profile?.gender]);
 
   useEffect(() => {
     if (!game.profile) return;
@@ -282,6 +285,18 @@ export default function Home() {
     syncScene();
     return () => window.removeEventListener("pet:scene-ready", syncScene);
   }, [game.activeRoom, game.roomDecorations, selectedDecorationId]);
+
+  useEffect(() => {
+    const syncPetAppearance = () => {
+      const currentProfile = game.profile ?? previewCharacter;
+      if (currentProfile) dispatchPetEvent("pet:profile", { gender: currentProfile.gender, characterId: currentProfile.characterId });
+      dispatchPetEvent("pet:skin", { skinId: game.skin });
+      dispatchPetEvent("pet:companion", { companionId: game.activeCompanionId });
+    };
+    window.addEventListener("pet:scene-ready", syncPetAppearance);
+    syncPetAppearance();
+    return () => window.removeEventListener("pet:scene-ready", syncPetAppearance);
+  }, [game.profile, previewCharacter, game.skin, game.activeCompanionId]);
 
   useEffect(() => () => {
     if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
@@ -451,16 +466,27 @@ export default function Home() {
     const result = collectSurpriseGift(game, id, giftClock);
     setGame(result.state);
     if (!result.ok) { showToast(result.message); return; }
+    const key = gift?.id ?? id;
+    const sourceRoom = gift?.room ?? game.activeRoom;
     if (gift?.reward === "decoration") {
       const itemId = gift.decorationId ?? "plant";
       const item = DECORATIONS.find((entry) => entry.id === itemId);
-      setGiftReveal({ key: gift.id, kind: "decoration", name: item?.name ?? "Novo mimo", image: GAME_ASSETS.decorations[itemId] ?? GAME_ASSETS.decorations.plant });
+      setGiftReveal({ key, kind: "decoration", itemId, itemRoom: item?.room ?? sourceRoom, sourceRoom, phase: "opening", name: item?.name ?? "Novo mimo", image: GAME_ASSETS.decorations[itemId] ?? GAME_ASSETS.decorations.plant });
     } else {
-      setGiftReveal({ key: gift?.id ?? id, kind: "coins", amount: gift?.coins ?? 80 });
+      setGiftReveal({ key, kind: "coins", sourceRoom, phase: "opening", amount: gift?.coins ?? 80 });
     }
     if (giftRevealTimerRef.current !== null) window.clearTimeout(giftRevealTimerRef.current);
-    giftRevealTimerRef.current = window.setTimeout(() => setGiftReveal(null), 2900);
+    giftRevealTimerRef.current = window.setTimeout(() => {
+      setGiftReveal((current) => current?.key === key ? { ...current, phase: "revealed" } : current);
+      giftRevealTimerRef.current = window.setTimeout(() => setGiftReveal((current) => current?.key === key ? null : current), 15_500);
+    }, 1_550);
     playTone("reward");
+  }
+
+  function closeGiftReveal() {
+    if (giftRevealTimerRef.current !== null) window.clearTimeout(giftRevealTimerRef.current);
+    giftRevealTimerRef.current = null;
+    setGiftReveal(null);
   }
 
   function tapCompanion(id: CompanionId) {
@@ -483,9 +509,10 @@ export default function Home() {
   }
 
   function handleProfile(profile: PetProfile) {
+    setPreviewCharacter(null);
     setGame((current) => setPetProfile(current, profile));
     showPetSpeech(`Miau! Oi, ${profile.name}! Eu adorei esse nome!`, 8000);
-    dispatchPetEvent("pet:profile", { gender: profile.gender });
+    dispatchPetEvent("pet:profile", { gender: profile.gender, characterId: profile.characterId });
     dispatchPetEvent("pet:action", { action: "love" });
   }
 
@@ -602,6 +629,7 @@ export default function Home() {
 
           <section className="center-stage" aria-label={`Cenário de ${activeChapter.location}`} onClick={handleStageClick}>
             <div className="stage-location-tag"><HomeIcon size={13} /><span>CASA {game.activeRoom}</span><i />{activeChapter.location}</div>
+            <CreatorPlaquePicker onOpen={() => setCreatorInfoOpen(true)} />
             {currentCompanion && <button className="stage-companion-tag" type="button" onClick={() => tapCompanion(currentCompanion.id)} aria-label={`Ouvir ${currentCompanion.name}`}><span>✦</span> {currentCompanion.name}: toque para ouvir</button>}
             {roomDecorations.filter((placement) => placement.id !== selectedDecorationId).map((placement) => <SceneDecorationPicker key={`picker-${placement.id}`} placement={placement} onSelect={() => setSelectedDecorationId(placement.id)} />)}
             {roomDecorations.filter((placement) => selectedDecorationId === placement.id).map((placement) => <SceneDecoration key={placement.id} placement={placement} image={GAME_ASSETS.decorations[placement.itemId]} selected onSelect={() => setSelectedDecorationId(placement.id)} onFix={() => setSelectedDecorationId(null)} onMove={moveDecoration} onRemove={(id) => { setSelectedDecorationId(null); setGame((current) => removeDecoration(current, id)); showToast("Item guardado novamente na mochila."); }} />)}
@@ -644,13 +672,23 @@ export default function Home() {
       </div>
 
       {toast && <div className="toast-message" role="status"><Sparkles size={16} />{toast}</div>}
-      {giftReveal && <div className="gift-reveal-layer" aria-live="polite" role="status"><div key={giftReveal.key} className="gift-reveal-card">
+      {giftReveal && <div className="gift-reveal-layer" aria-live="polite" role="status"><div key={giftReveal.key} className={`gift-reveal-card ${giftReveal.phase === "revealed" ? "is-revealed" : "is-opening"}`}>
         <span className="gift-reveal-spark"><Sparkles size={18} /></span>
         {giftReveal.kind === "coins" ? <span className="gift-reveal-art coins-art"><Coins size={35} fill="currentColor" /></span> : <span className="gift-reveal-art"><img src={giftReveal.image} alt="" /></span>}
-        <span className="gift-reveal-copy"><small>PRESENTE ABERTO</small><strong>{giftReveal.kind === "coins" ? `+${giftReveal.amount} moedas` : giftReveal.name}</strong><span>{giftReveal.kind === "coins" ? "Moedas adicionadas ao saldo" : "Adicionado à sua mochila"}</span></span>
+        <div className="gift-reveal-copy">
+          <small>{giftReveal.phase === "opening" ? "ABRINDO PRESENTE" : "PRESENTE ABERTO"}</small>
+          <strong>{giftReveal.phase === "opening" ? "Uma surpresa para você…" : giftReveal.kind === "coins" ? `+${giftReveal.amount} moedas` : giftReveal.name}</strong>
+          {giftReveal.phase === "opening" ? <span>Espere só um pouquinho…</span> : giftReveal.kind === "coins" ? <span>Encontrado na Casa {giftReveal.sourceRoom} · {getCampaignLevel(giftReveal.sourceRoom).location}. Moedas adicionadas!</span> : <span>Encontrado na Casa {giftReveal.sourceRoom} · {getCampaignLevel(giftReveal.sourceRoom).location}. Decoração da Casa {giftReveal.itemRoom} · {getCampaignLevel(giftReveal.itemRoom).location}.</span>}
+          {giftReveal.phase === "revealed" && <div className="gift-reveal-actions">
+            {giftReveal.kind === "decoration" && <button className="gift-use-button" type="button" onClick={() => { closeGiftReveal(); buyOrEquipDecoration(giftReveal.itemId); }}>Usar · colocar na casa</button>}
+            <button className="gift-close-button" type="button" onClick={closeGiftReveal} aria-label="Fechar recompensa">{giftReveal.kind === "decoration" ? "Depois" : <X size={14} />}</button>
+          </div>}
+        </div>
       </div></div>}
 
-      {!game.profile && <OnboardingFlow profile={game.profile} onComplete={handleProfile} onHearIntro={() => { if (voiceOn) playPetVoice("intro"); }} onHearPet={(gender) => { if (voiceOn) playPetVoice("welcome", gender); }} />}
+      {creatorInfoOpen && <div className="modal-backdrop creator-info-backdrop" onClick={() => setCreatorInfoOpen(false)}><section className="modal-card creator-info-card" role="dialog" aria-modal="true" aria-labelledby="creator-info-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" type="button" onClick={() => setCreatorInfoOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><span className="modal-kicker">UMA IDEIA QUE VIROU JOGO</span><img className="creator-info-portrait" src={GAME_ASSETS.creatorPlaque} alt="Foto de Allana Gabriela, idealizadora do Meu Pet Virtual" /><h2 id="creator-info-title">Allana Gabriela</h2><p>Este jogo foi idealizado e criado com muito carinho e criatividade pela jovem desenvolvedora <strong>Allana Gabriela</strong>, de apenas <strong>11 Anos</strong>, no ano de <strong>2026</strong>. Ela provou que não há limite de idade para transformar imaginação em arte e código!</p><button className="primary-action" type="button" onClick={() => setCreatorInfoOpen(false)}>Voltar ao jogo</button></section></div>}
+
+      {!game.profile && <OnboardingFlow profile={game.profile} onComplete={handleProfile} onHearIntro={() => { if (voiceOn) playPetVoice("intro"); }} onHearPet={(gender) => { if (voiceOn) playPetVoice("welcome", gender); }} onPreviewPet={(gender, characterId) => setPreviewCharacter({ gender, characterId })} />}
       {tutorialOpen && game.profile && <TutorialOverlay onComplete={completeTutorial} onClose={completeTutorial} />}
 
       {roomsOpen && <div className="modal-backdrop room-map-backdrop" onClick={() => setRoomsOpen(false)}><section className="modal-card room-map-card" role="dialog" aria-modal="true" aria-labelledby="room-map-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setRoomsOpen(false)} aria-label="Fechar mapa"><X size={18} /></button><span className="modal-kicker">CADA CASA GUARDA UMA HISTÓRIA</span><h2 id="room-map-title">Voltar para uma casa</h2><p className="modal-subtitle">As casas conquistadas continuam decoradas. A próxima será liberada ao subir de nível.</p><div className="room-map-grid">{CAMPAIGN_LEVELS.slice(0, game.level).map((chapter) => <button type="button" key={chapter.level} className={`room-map-item ${game.activeRoom === chapter.level ? "current" : ""}`} onClick={() => selectHouse(chapter.level)} style={{ backgroundImage: `linear-gradient(180deg,rgba(7,17,42,.18),rgba(7,17,42,.92)),url(${GAME_ASSETS.levels[chapter.level - 1]})` }}><span>CASA {chapter.level}</span><strong>{chapter.location}</strong><small>{chapter.title}</small>{game.activeRoom === chapter.level && <i>Você está aqui</i>}</button>)}</div><p className="room-map-note"><MapPin size={14} /> {game.level} de 10 casas desbloqueadas · progresso: nível {game.level}</p></section></div>}

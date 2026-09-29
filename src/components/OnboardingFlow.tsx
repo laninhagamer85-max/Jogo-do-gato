@@ -8,9 +8,10 @@ type Props = {
   onComplete: (profile: PetProfile) => void;
   onHearIntro: () => void;
   onHearPet: (gender: PetGender | null) => void;
+  onPreviewPet: (gender: PetGender, characterId: PetProfile["characterId"]) => void;
 };
 
-export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHearPet }: Props) {
+export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHearPet, onPreviewPet }: Props) {
   const [step, setStep] = useState(0);
   const [gender, setGender] = useState<PetGender | null>(profile?.gender ?? null);
   const [characterId, setCharacterId] = useState<PetProfile["characterId"] | null>(profile?.characterId ?? null);
@@ -23,6 +24,7 @@ export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHea
     setGender(value);
     setCharacterId(null);
     setError("");
+    onPreviewPet(value, defaultCharacter(value));
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -66,7 +68,7 @@ export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHea
             <h1 id="intro-title">Escolha seu personagem</h1>
             <p className="intro-copy">Cada gatinho tem uma carinha própria. O acessório combina com a escolha de {gender === "menina" ? "menina" : "menino"}.</p>
             <div className="character-picker" role="group" aria-label="Escolha um personagem">
-              {choices.map((character) => <button key={character.id} type="button" className={`character-choice ${characterId === character.id ? "selected" : ""}`} aria-pressed={characterId === character.id} onClick={() => { setCharacterId(character.id); setError(""); if (gender) onHearPet(gender); }}><span className="character-art"><img src={GAME_ASSETS.characters[character.id]} alt="" /></span><strong>{character.name}</strong><small>{character.description}</small><i>{characterId === character.id ? <Check size={13} /> : <PawPrint size={13} />}</i></button>)}
+              {choices.map((character) => <button key={character.id} type="button" className={`character-choice ${characterId === character.id ? "selected" : ""}`} aria-pressed={characterId === character.id} onClick={() => { setCharacterId(character.id); setError(""); if (gender) { onPreviewPet(gender, character.id); onHearPet(gender); } }}><span className="character-art"><img src={GAME_ASSETS.characters[character.id]} alt="" /></span><strong>{character.name}</strong><small>{character.description}</small><i>{characterId === character.id ? <Check size={13} /> : <PawPrint size={13} />}</i></button>)}
             </div>
           </>}
           {step === 2 && <>

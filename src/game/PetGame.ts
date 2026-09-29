@@ -102,9 +102,9 @@ export const SKINS: Array<{
   description: string;
 }> = [
   { id: "tigrinho", name: "Tigrinho", price: 0, icon: "🐱", tint: "#ffffff", description: "O clássico de olhos verdes" },
-  { id: "laranja", name: "Laranjinha", price: 500, icon: "🐈", tint: "#fff6ed", description: "Uma dose extra de alegria" },
-  { id: "pretinho", name: "Noir", price: 800, icon: "🐈‍⬛", tint: "#eef0ff", description: "Elegante e misterioso" },
-  { id: "fantasia", name: "Fantasia", price: 1000, icon: "😺", tint: "#f8efff", description: "Brilho de outro planeta" },
+  { id: "laranja", name: "Laranjinha", price: 500, icon: "🐈", tint: "#ff8124", description: "Uma dose extra de alegria" },
+  { id: "pretinho", name: "Noir", price: 800, icon: "🐈‍⬛", tint: "#59466f", description: "Elegante e misterioso" },
+  { id: "fantasia", name: "Fantasia", price: 1000, icon: "😺", tint: "#bd69ff", description: "Brilho de outro planeta" },
 ];
 
 export const STORE_ITEMS: Array<{
@@ -421,7 +421,8 @@ export function spawnSurpriseGift(state: GameState, id: string, now = Date.now()
   const live = state.gifts.filter((gift) => gift.expiresAt > now);
   if (live.length >= 2) return { ...state, gifts: live };
   const reward = random() < 0.56 ? "coins" : "decoration";
-  const decorChoices = DECORATIONS.filter((item) => !getDecorationLockReason(item, state.level, state.missionsCompleted));
+  const roomChoices = DECORATIONS.filter((item) => item.room === state.activeRoom && !getDecorationLockReason(item, state.level, state.missionsCompleted));
+  const decorChoices = roomChoices.length ? roomChoices : DECORATIONS.filter((item) => item.room === state.activeRoom);
   const gift: SurpriseGift = {
     id,
     room: state.activeRoom,

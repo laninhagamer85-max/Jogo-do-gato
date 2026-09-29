@@ -8,13 +8,13 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
-import { CURRENT_SAVE_KEY, type CompanionId, type DecorationPlacement, type PetCharacterId, type PetGender } from "./PetGame";
+import { CURRENT_SAVE_KEY, SKINS, type CompanionId, type DecorationPlacement, type PetCharacterId, type PetGender } from "./PetGame";
 import { GAME_ASSETS } from "./assets";
 
 type PetActionEvent = CustomEvent<{ action?: string; sleeping?: boolean }>;
 type PetSkinEvent = CustomEvent<{ skinId?: string }>;
 type PetLevelEvent = CustomEvent<{ level?: number }>;
-type PetProfileEvent = CustomEvent<{ gender?: PetGender }>;
+type PetProfileEvent = CustomEvent<{ gender?: PetGender; characterId?: PetCharacterId | null }>;
 type PetCompanionEvent = CustomEvent<{ companionId?: CompanionId | null }>;
 type PetRoomEvent = CustomEvent<{ room?: number }>;
 type PetMoveEvent = CustomEvent<{ x?: number; y?: number }>;
@@ -24,12 +24,7 @@ type PetDecorationsEvent = CustomEvent<{ placements?: DecorationPlacement[] }>;
 export type GameHandle = { scene: Scene; dispose: () => void };
 export type ScenePetState = { level: number; room?: number; skin: string; sleeping: boolean; gender: PetGender | null; characterId?: PetCharacterId | null; companion: CompanionId | null };
 
-const SKIN_TINTS: Record<string, string> = {
-  tigrinho: "#ffffff",
-  laranja: "#fff2e3",
-  pretinho: "#eef0ff",
-  fantasia: "#f8efff",
-};
+const skinTint = (id: string) => SKINS.find((skin) => skin.id === id)?.tint ?? "#ffffff";
 
 function readSave(): ScenePetState {
   try {
@@ -85,11 +80,22 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   let backgroundTexture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   backgroundMaterial.emissiveTexture = backgroundTexture;
 
+  const creatorPlaque = imageSprite(scene, "creator-plaque", GAME_ASSETS.creatorPlaque, 0.7105, 1).mesh;
+  creatorPlaque.isPickable = false;
+  creatorPlaque.position.z = 1.78;
+
   const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
   const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
   let characterTexture = kittenMaterial.diffuseTexture as Texture;
   kitten.position.set(0, -1.12, 0);
-  kittenMaterial.diffuseColor = Color3.FromHexString(SKIN_TINTS[saved.skin] ?? "#ffffff");
+  let currentSkin = saved.skin;
+  const applySkin = (skinId: string) => {
+    currentSkin = skinId;
+    const tint = Color3.FromHexString(skinTint(skinId));
+    kittenMaterial.diffuseColor = tint;
+    kittenMaterial.emissiveColor = tint.scale(skinId === "tigrinho" ? 0.06 : 0.34);
+  };
+  applySkin(saved.skin);
 
   const boyHat = imageSprite(scene, "boy-pet-cap", GAME_ASSETS.accessories.boy, 1.0, 1.0);
   const girlBow = imageSprite(scene, "girl-pet-bow", GAME_ASSETS.accessories.girl, 0.8, 0.8);
@@ -130,9 +136,11 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const rect = canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     const viewWidth = viewHeight * sceneAspect;
-    const displaySize = Math.min(100, Math.max(50, window.innerWidth * 0.075));
+    const displaySize = Math.min(132, Math.max(60, window.innerWidth * 0.1));
     const worldSize = (viewWidth * displaySize) / rect.width;
     const { placement, sprite } = entry;
+    sprite.material.diffuseColor = Color3.White();
+    sprite.material.emissiveColor = new Color3(0.14, 0.14, 0.14);
     sprite.mesh.scaling.set(worldSize, worldSize, 1);
     sprite.mesh.position.set(
       (placement.x / 100 - 0.5) * backgroundWidth,
@@ -159,6 +167,11 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     backgroundWidth = bgWidth;
     backgroundHeight = bgHeight;
     background.scaling.set(bgWidth / 14, bgHeight / 8, 1);
+    const plaqueDisplaySize = Math.min(126, Math.max(68, window.innerWidth * 0.09));
+    const plaqueWorldSize = (viewWidth * plaqueDisplaySize) / Math.max(1, canvas.getBoundingClientRect().width);
+    creatorPlaque.scaling.set(plaqueWorldSize, plaqueWorldSize, 1);
+    const plaqueX = window.innerWidth < 600 ? 0.44 : 0.59;
+    creatorPlaque.position.set((plaqueX - 0.5) * bgWidth, (0.5 - 0.25) * bgHeight, 1.78);
     decorationSprites.forEach(updateDecorationSprite);
 
     baseY = aspect < 0.7 ? 1.18 : aspect < 1.15 ? -0.35 : -1.12;
@@ -192,8 +205,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   };
   const onSkin = (event: Event) => {
     const skinId = (event as PetSkinEvent).detail?.skinId ?? "tigrinho";
-    kittenMaterial.diffuseColor = Color3.FromHexString(SKIN_TINTS[skinId] ?? "#ffffff");
-    reactionKind = "happy";
+    applySkin(skinId);
+    reactionKind = "select";
     reactionStart = performance.now();
   };
   const setRoom = (room: number) => {
@@ -237,7 +250,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     reactionStart = performance.now();
   };
   const onProfile = (event: Event) => {
-    const profile = (event as CustomEvent<{ gender?: PetGender; characterId?: PetCharacterId | null }>).detail;
+    const profile = (event as PetProfileEvent).detail;
     const gender = profile?.gender;
     const characterId = profile?.characterId;
     if (characterId && GAME_ASSETS.characters[characterId]) {
@@ -248,9 +261,10 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       characterTexture.dispose();
       characterTexture = texture;
     }
+    applySkin(currentSkin);
     boyHat.mesh.isVisible = gender === "menino" && !characterId;
     girlBow.mesh.isVisible = gender === "menina" && !characterId;
-    reactionKind = "happy";
+    reactionKind = "select";
     reactionStart = performance.now();
   };
   const onCompanion = (event: Event) => setCompanion((event as PetCompanionEvent).detail?.companionId ?? null);
@@ -289,11 +303,15 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const wave = Math.sin(now / (sleeping ? 1200 : walking ? 145 : 520)) * (sleeping ? 0.026 : walking ? 0.045 : 0.075);
     let jump = 0;
     let moveX = 0;
-    if (!sleeping && elapsed >= 0 && elapsed < 1000) {
-      const progress = elapsed / 1000;
+    const reactionDuration = reactionKind === "select" ? 1550 : 1000;
+    if (!sleeping && elapsed >= 0 && elapsed < reactionDuration) {
+      const progress = elapsed / reactionDuration;
       if (reactionKind === "level") {
         jump = Math.max(0, Math.sin(progress * Math.PI * 4)) * (1 - progress) * 0.52;
         moveX = Math.sin(progress * Math.PI * 2) * 0.34;
+      } else if (reactionKind === "select") {
+        jump = Math.abs(Math.sin(progress * Math.PI * 3)) * (1 - progress) * 0.48;
+        moveX = Math.sin(progress * Math.PI * 2) * 0.24;
       } else {
         jump = Math.sin(progress * Math.PI) * 0.24;
         moveX = Math.sin(progress * Math.PI * 2) * 0.13;
@@ -315,7 +333,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       }
     }
     kitten.rotation.z = (walking ? (targetX < positionX ? 1 : -1) * 0.13 : 0) + Math.sin(now / 1450) * (sleeping ? 0.012 : 0.028) + (reactionKind === "level" && elapsed < 1250 ? Math.sin(now / 58) * 0.045 : 0);
-    const pulse = 1 + Math.max(0, 1 - elapsed / 650) * (reactionKind === "level" ? 0.045 : 0.02);
+    const pulse = 1 + Math.max(0, 1 - elapsed / (reactionKind === "select" ? 1450 : 900)) * (reactionKind === "level" ? 0.045 : reactionKind === "select" ? 0.12 : 0.02);
     const scale = (petWidth / 3.35) * pulse;
     const blinkPhase = (now % 4100);
     const idleBlink = blinkPhase > 1750 && blinkPhase < 1850 ? Math.sin(((blinkPhase - 1750) / 100) * Math.PI) : 0;

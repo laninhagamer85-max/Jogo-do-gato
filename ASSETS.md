@@ -1,6 +1,6 @@
 # Assets do jogo
 
-**Direção de arte:** aventura felina ilustrada como livro 3D infantil; luz de fim de tarde, marinho/ciano, madeira quente, tecidos macios e expressões legíveis. Personagens, objetos e ícone são arte original criada para o jogo; as imagens e falas ficam locais no clone Vite e são incorporadas ao build.
+**Direção de arte:** aventura felina ilustrada como livro 3D infantil; luz de fim de tarde, marinho/ciano, madeira quente, tecidos macios e expressões legíveis. Personagens, cenários, decoração, áudio e ícone são incorporados pelo build Vite a partir de assets locais; a única exceção é o retrato autorizado da idealizadora, servido do storage gerenciado.
 
 ## Casas da campanha
 
@@ -63,3 +63,12 @@ O catálogo tem **100 props únicos**, dez para cada casa: os quatro sprites leg
 | Cuidado menino/menina | `pet-care-boy.mp3`, `pet-care-girl.mp3` | agradecimento natural PT-BR por gênero |
 
 Vite importa os arquivos por `src/game/assets.ts`; os assets não dependem do storage do WebDev. O modo `?demo=1` usa sprites de demonstração e nunca persiste no save ativo.
+
+
+## Retrato da idealizadora (2026-09-29)
+
+| Asset | Papel | Dimensões | URL do asset gerenciado |
+|---|---|---:|---|
+| Foto otimizada de Allana Gabriela | Moldura permanente da cena e modal de homenagem; retrato sem texto embutido | 1000×1407 px, WebP (~212 KB) | `https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp` |
+
+A foto não é armazenada neste repositório. A moldura, legenda e texto são elementos acessíveis da interface e são exibidos no jogo conforme autorização da autora/responsável.

@@ -36,3 +36,11 @@ A versão do app fica em `src/`; assets locais ficam em `src/assets/`; preservar
 O toque em área vazia apenas move o pet; a hitbox acompanha o personagem e clipes PT-BR nativos variam por gênero para toque e cuidado. O modo de tela limpa oculta os painéis, e a câmera exporta um PNG do canvas sem HUD (partilha do sistema em dispositivos compatíveis ou download). Itens de decoração fixos ficam atrás do pet e só sobem para primeiro plano durante edição. Presentes surgem a cada 4,5–7,5 minutos; ao abrir, mostram a recompensa (miniatura ou moedas) e somem em cerca de 2,9 s. O manifest/ícones permitem instalar, mas não há service worker ou cache offline nesta versão.
 
 Validação final 2026-09-28: `pnpm check`, `pnpm build` e `git diff --check` passaram; `pnpm audit` completo e `pnpm audit --prod` retornaram zero advisories conhecidos. Toolchain resolvida: Vite 7.3.6, @vitejs/plugin-react 5.2.0 e Tailwind 4.3.3. O build mantém um aviso informativo de chunk Babylon de 1,17 MB (~287 KB gzip). A prévia local responde HTTP 200; a verificação visual final foi feita no preview WebDev desktop/mobile.
+
+
+## Follow-up: aparência, presentes e moldura (2026-09-29)
+- A prévia de personagem no onboarding atualiza o sprite da cena; selecionar skin aplica matiz mais claro/distinto e reação breve. O evento de aparência não sobrescreve animação de level-up.
+- Decorações fixas mantêm cor natural, ganham escala levemente maior e ficam atrás do pet; a peça só sobe durante edição.
+- A abertura do presente leva 1,55 s; depois, moedas ou item, miniatura, casa de origem e ação “Usar” ficam visíveis por até 15,5 s e somem com fade. O item vem da mesma casa do presente.
+- Regras do catálogo: 18 peças ainda exigem missão mesmo no nível 10; no nível 1, 93/100 indisponíveis contam também as casas futuras.
+- Moldura clicável usa retrato autorizado em todas as casas, legenda HTML do nome e modal com homenagem. Foi reposicionada por breakpoint para não cobrir etiquetas no mobile.
