@@ -9,6 +9,7 @@ import OnboardingFlow from "@/components/OnboardingFlow";
 import PlatformAdventure from "@/components/PlatformAdventure";
 import { SceneDecoration, SceneDecorationPicker, SceneGift } from "@/components/SceneDecoration";
 import CreatorPlaquePicker from "@/components/CreatorPlaquePicker";
+import CreatorTributeModal from "@/components/CreatorTributeModal";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import {
   buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame, completePlatformStage,
@@ -738,7 +739,7 @@ export default function Home() {
         </div>
       </div></div>}
 
-      {creatorInfoOpen && <div className="modal-backdrop creator-info-backdrop" onClick={() => setCreatorInfoOpen(false)}><section className="modal-card creator-info-card" role="dialog" aria-modal="true" aria-labelledby="creator-info-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" type="button" onClick={() => setCreatorInfoOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><span className="modal-kicker">UMA IDEIA QUE VIROU JOGO</span><span className="creator-info-emblem" aria-hidden="true">✦</span><h2 id="creator-info-title">Allana Gabriela</h2><p>Este jogo foi idealizado e criado com muito carinho e criatividade pela jovem desenvolvedora <strong>Allana Gabriela</strong>, de apenas <strong>11 Anos</strong>, no ano de <strong>2026</strong>. Ela provou que não há limite de idade para transformar imaginação em arte e código!</p><button className="primary-action" type="button" onClick={() => setCreatorInfoOpen(false)}>Voltar ao jogo</button></section></div>}
+      {creatorInfoOpen && <CreatorTributeModal onClose={() => setCreatorInfoOpen(false)} />}
 
       {!game.profile && <OnboardingFlow profile={game.profile} onComplete={handleProfile} onHearIntro={() => { if (voiceOn) playPetVoice("intro"); }} onHearPet={(gender) => { if (voiceOn) playPetVoice("welcome", gender); }} onPreviewPet={(gender, characterId) => setPreviewCharacter({ gender, characterId })} />}
       {tutorialOpen && game.profile && <TutorialOverlay onComplete={completeTutorial} onClose={completeTutorial} />}

@@ -82,3 +82,13 @@ A foto não é armazenada neste repositório. A moldura, legenda e texto são el
 | Portal dourado | Goal das fases | `src/assets/goal-portal.webp` | 1920×1920 | 349.324 bytes |
 
 As imagens são carregadas por imports Vite `?url`; os PNGs-fonte foram preservados fora do repositório WebDev. O retrato da idealizadora continua somente no storage gerenciado, não é copiado ao GitHub.
+
+
+## Polimento lateral final (2026-09-29)
+
+| Asset | Uso | Arquivo local | Tamanho aproximado |
+|---|---|---|---:|
+| Piso grama/terra | Superfície walkable contínua e plataformas suspensas | `src/assets/grass-earth-side-tile.webp` | 248 KB |
+| Gato prata/laranja/preto e gatinha creme/calico/azul | Sprites laterais por personagem selecionado, com fallback procedural | `src/assets/*-run.webp` (6 variantes) | 128–172 KB cada |
+
+A aventura usa Web Audio API para salto, coleta de moeda, impacto/pisão, perda de vida e conclusão; não depende de arquivos externos de áudio para estes efeitos. Os PNGs-fonte das novas artes permanecem fora do repositório; apenas WebP otimizados são incluídos.

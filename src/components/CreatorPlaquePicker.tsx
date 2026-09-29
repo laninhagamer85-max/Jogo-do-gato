@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { GAME_ASSETS } from "@/game/assets";
 import { backgroundPercentToScreen } from "@/game/decorationCoordinates";
 
 type Point = { left: number; top: number; width: number; height: number };
 
-/** Native, fixed room decoration; its click target never covers the pet and contains no portrait. */
+/** Interactive portrait frame anchored to the room background like a native decoration. */
 export default function CreatorPlaquePicker({ onOpen }: { onOpen: () => void }) {
   const [point, setPoint] = useState<Point | null>(null);
 
@@ -13,9 +14,9 @@ export default function CreatorPlaquePicker({ onOpen }: { onOpen: () => void }) 
     const update = () => {
       const rect = stage.getBoundingClientRect();
       const mobile = window.innerWidth < 600;
-      const width = Math.max(94, Math.min(148, window.innerWidth * 0.12));
-      const height = width * 0.61;
-      const anchor = { x: mobile ? 63 : 69, y: mobile ? 12 : 17 };
+      const width = Math.max(78, Math.min(112, window.innerWidth * 0.09));
+      const height = width * 1.45;
+      const anchor = { x: mobile ? 64 : 69, y: mobile ? 19 : 21 };
       const screen = backgroundPercentToScreen(anchor);
       const margin = 8;
       setPoint({
@@ -42,13 +43,19 @@ export default function CreatorPlaquePicker({ onOpen }: { onOpen: () => void }) 
       type="button"
       style={{ left: `${point.left}px`, top: `${point.top}px`, width: `${point.width}px`, height: `${point.height}px` }}
       onClick={(event) => { event.stopPropagation(); onOpen(); }}
-      aria-label="Abrir a homenagem à idealizadora Allana Gabriela"
-      title="Toque para conhecer a idealizadora"
+      aria-label="Abrir o porta-retrato e conhecer a idealizadora Allana Gabriela"
+      title="Toque no porta-retrato para conhecer a idealizadora"
     >
-      <span className="creator-plaque-icon" aria-hidden="true">✦</span>
-      <strong>Allana Gabriela</strong>
-      <small>IDEALIZADORA · 2026</small>
-      <i aria-hidden="true" />
+      <span className="creator-plaque-photo-wrap" aria-hidden="true">
+        <img src={GAME_ASSETS.creatorPlaque} alt="" loading="eager" decoding="async" />
+        <i />
+      </span>
+      <span className="creator-plaque-nameplate">
+        <strong>Allana Gabriela</strong>
+        <small>IDEALIZADORA · 2026</small>
+      </span>
+      <b className="creator-plaque-nail creator-plaque-nail-left" aria-hidden="true" />
+      <b className="creator-plaque-nail creator-plaque-nail-right" aria-hidden="true" />
     </button>
   );
 }

@@ -63,3 +63,11 @@ Esta nota atualiza os bullets anteriores: a entrada normal após onboarding abre
 - Decorações são obtidas apenas ao vencer sua fase 1:1 e só podem ser aplicadas depois; level-up de cuidados/minijogos não dá decoração. Limite de uma peça por ID e dez itens por sala; replay não duplica moedas.
 - QA real com AutoPilot DEV completou cinco fases seguidas: 5/100, fase 6 disponível e fase 5 premiada com três estrelas. Smoke tests validaram geometria 1–5, bloqueio antes da vitória, sequência, replay, migração sem duplicatas e level-up sem móveis.
 - Import explícito dos shaders padrão GLSL corrigiu a sala Babylon escura; após retirar a instrumentação, evento `pet:scene-ready`, WebGL2 e pixels de cena válidos foram confirmados. Build/TypeScript passaram; apenas aviso informativo de chunk grande. Sem merge/publicação.
+
+
+## Polimento final após revisão visual (2026-09-29)
+- Esta atualização substitui a nota pós-QA acima sobre “placa sem foto”: a sala agora usa o porta-retrato flutuante com a imagem autorizada; ao tocar, abre modal com foto ampliada à esquerda e homenagem à direita, empilhado em telas estreitas.
+- Ao vencer, a recompensa aparece em três cartões separados: objetivo/estrelas → decoração única da casa/fase → moedas; o último apresenta Próxima fase e Voltar ao mapa. Replay não duplica prêmios.
+- O topo de grama/terra é a superfície real do percurso; há plataformas suspensas e rotas verticais, tema de sala fixo ao fundo e sprite lateral do gato selecionado. Web Audio cobre coleta de moeda, impacto/pisão, perda de vida e vitória.
+- QA real completou cinco fases consecutivas no perfil demo e confirmou a fase 6 liberada. Capturas de gameplay em retrato 390×844 e paisagem 844×390 mostram piso, pet, HUD e controles sem corte; a moldura e o modal também foram abertos no browser e a foto carregou.
+- TypeScript e build de produção do branch passaram; permanece apenas o aviso informativo de chunk grande do bundle Babylon. PR aberto; sem merge e sem publicação.

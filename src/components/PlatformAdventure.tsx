@@ -48,6 +48,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
   const [hud, setHud] = useState<PlatformerHud>(START_HUD);
   const [attempt, setAttempt] = useState(0);
   const [reward, setReward] = useState<Completion | null>(null);
+  const [rewardStep, setRewardStep] = useState(0);
   const [helpOpen, setHelpOpen] = useState(!state.tutorialComplete);
   const [creatorOpen, setCreatorOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,6 +91,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
             const stars = ratio >= 0.72 && hearts === 3 ? 3 : ratio >= 0.36 || hearts === 3 ? 2 : 1;
             const outcome = completeStageRef.current(stageId, stars, coins);
             setReward(outcome);
+            setRewardStep(0);
             setPhase("won");
           },
           onLose: () => setPhase("failed"),
@@ -115,11 +117,12 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
       if (helpOpen) { setHelpOpen(false); return; }
       if (phase === "playing") setPhase("paused");
       else if (phase === "paused") setPhase("playing");
-      else if (phase === "failed" || phase === "won") { setPhase("map"); setReward(null); }
+      else if (phase === "won" && rewardStep < 2) setRewardStep((step) => Math.min(2, step + 1));
+      else if (phase === "failed" || phase === "won") { setPhase("map"); setReward(null); setRewardStep(0); }
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [phase, helpOpen, creatorOpen]);
+  }, [phase, rewardStep, helpOpen, creatorOpen]);
 
   useEffect(() => {
     if (phase !== "playing") return;
@@ -135,21 +138,26 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
       const snapshot = engine.getAutoPilotSnapshot();
       if (snapshot.hearts <= 0) return;
       engine.setInput("right", true);
-      const centerX = snapshot.x + snapshot.playerWidth / 2;
-      const surfaceIndex = snapshot.surfaces.findIndex((surface) => centerX >= surface.x && centerX <= surface.x + surface.width);
-      const current = surfaceIndex >= 0 ? snapshot.surfaces[surfaceIndex] : undefined;
-      const next = surfaceIndex >= 0 ? snapshot.surfaces[surfaceIndex + 1] : undefined;
-      const edgeDistance = current && next ? current.x + current.width - (snapshot.x + snapshot.playerWidth) : Infinity;
-      const jumpForGap = Boolean(next && edgeDistance < 115);
-      if (snapshot.grounded && jumpForGap) {
+      const current = snapshot.currentSurface;
+      const next = current ? snapshot.surfaces
+        .filter((surface) => surface.x >= current.x + current.width - 2)
+        .sort((a, b) => a.x - b.x)[0] : undefined;
+      const edgeDistance = current ? current.x + current.width - (snapshot.x + snapshot.playerWidth) : Infinity;
+      const gapWidth = current && next ? next.x - (current.x + current.width) : Infinity;
+      const jumpWindow = current?.kind === "floating" ? 20 : 115;
+      const jumpForGap = Boolean(current && next && gapWidth < 250 && next.y >= current.y - 118 && edgeDistance < jumpWindow);
+      const frontX = snapshot.x + snapshot.playerWidth;
+      const enemyAhead = snapshot.enemies.some((enemy) => enemy.y - 20 < snapshot.y + snapshot.playerHeight + 24 && enemy.y + 7 > snapshot.y - 12 && enemy.x - 17 > frontX && enemy.x - 17 - frontX < 110);
+      const hazardAhead = snapshot.hazards.some((hazard) => hazard.y < snapshot.y + snapshot.playerHeight + 20 && hazard.y + hazard.height > snapshot.y - 10 && hazard.x > frontX && hazard.x - frontX < 120);
+      if (snapshot.grounded && (jumpForGap || enemyAhead || hazardAhead)) {
         engine.setInput("jump", true);
         if (jumpReleaseTimer !== null) window.clearTimeout(jumpReleaseTimer);
         jumpReleaseTimer = window.setTimeout(() => {
           engineRef.current?.setInput("jump", false);
           jumpReleaseTimer = null;
-        }, 100);
+        }, jumpForGap ? 240 : 90);
       }
-    }, 35);
+    }, 16);
     return () => {
       window.clearInterval(interval);
       if (jumpReleaseTimer !== null) window.clearTimeout(jumpReleaseTimer);
@@ -159,10 +167,18 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
   }, [qaAutoPilot, phase, stageId, attempt]);
 
   useEffect(() => {
-    if (!qaAutoPilot || phase !== "won" || stageId >= qaStageLimit || state.platformProgress.unlockedStage <= stageId) return;
-    const timer = window.setTimeout(() => beginStage(stageId + 1), 1800);
+    if (!qaAutoPilot || phase !== "won" || !reward) return;
+    const timer = window.setTimeout(() => {
+      if (rewardStep < 2) setRewardStep((step) => Math.min(2, step + 1));
+      else if (stageId < qaStageLimit && state.platformProgress.unlockedStage > stageId) beginStage(stageId + 1);
+      else if (stageId >= qaStageLimit) {
+        setReward(null);
+        setRewardStep(0);
+        setPhase("map");
+      }
+    }, 650);
     return () => window.clearTimeout(timer);
-  }, [qaAutoPilot, qaStageLimit, phase, stageId, state.platformProgress.unlockedStage]);
+  }, [qaAutoPilot, qaStageLimit, phase, reward, rewardStep, stageId, state.platformProgress.unlockedStage]);
 
   function beginStage(id: number) {
     if (id > state.platformProgress.unlockedStage) return;
@@ -170,11 +186,13 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
     setWorld(Math.ceil(id / 10));
     setHud(START_HUD);
     setReward(null);
+    setRewardStep(0);
     setPhase("playing");
   }
 
   function replayStage() {
     setReward(null);
+    setRewardStep(0);
     setHud(START_HUD);
     setAttempt((value) => value + 1);
     setPhase("playing");
@@ -292,11 +310,16 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
         {(phase === "paused" || phase === "failed" || phase === "won") && <div className={`pa-game-overlay ${phase}`} role="dialog" aria-modal="true">
           {phase === "paused" && <div className="pa-end-card"><span className="pa-overlay-icon pause"><Pause size={26} fill="currentColor" /></span><small>FASE {currentStage.id} · PAUSADA</small><h2>Respire um pouquinho</h2><p>Seu progresso e as moedas deste caminho ficam guardados durante a pausa.</p><button className="pa-primary-action" type="button" onClick={() => setPhase("playing")}><Play size={16} fill="currentColor" /> Continuar</button><button className="pa-secondary-action" type="button" onClick={() => setPhase("map")}><Map size={15} /> Voltar ao mapa</button></div>}
           {phase === "failed" && <div className="pa-end-card"><span className="pa-overlay-icon retry"><Heart size={26} /></span><small>AS PATINHAS PRECISAM DE UM DESCANSO</small><h2>Vamos tentar de novo?</h2><p>Você chega mais longe a cada tentativa. O marco ativado ajuda a recomeçar do meio do caminho.</p><button className="pa-primary-action" type="button" onClick={replayStage}><RotateCcw size={16} /> Tentar novamente</button><button className="pa-secondary-action" type="button" onClick={() => setPhase("map")}><Map size={15} /> Escolher outra fase</button></div>}
-          {phase === "won" && <div className="pa-end-card pa-reward-card"><span className="pa-overlay-icon win"><Trophy size={27} fill="currentColor" /></span><small>{reward?.firstClear ? "FASE CONCLUÍDA · PRÊMIO DESBLOQUEADO" : "FASE CONCLUÍDA · REVISITA"}</small><h2>{reward?.firstClear ? "Que salto incrível!" : "Mandou bem de novo!"}</h2><div className="pa-win-stars" aria-label={`${state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud)} estrelas`}>{formatStars(state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud))}</div>
-            {reward?.firstClear && <div className="pa-stage-reward"><img src={GAME_ASSETS.decorations[currentStage.reward.id]} alt={currentStage.reward.name} /><div><small>DECORAÇÃO DO MUNDO {currentStage.world}</small><strong>{currentStage.reward.name}</strong><span>Já está na mochila para usar em Minha Casa.</span></div></div>}
-            <div className="pa-earned-coins"><Coins size={19} fill="currentColor" /><strong>+{reward?.coins ?? 0}</strong><span>moedas</span></div>
-            {currentStage.id < 100 && reward?.firstClear && <button className="pa-primary-action" type="button" onClick={() => beginStage(currentStage.id + 1)}>Próxima fase <ChevronRight size={16} /></button>}
-            <button className="pa-secondary-action" type="button" onClick={() => { setPhase("map"); setReward(null); }}><Map size={15} /> Voltar ao mapa</button>
+          {phase === "won" && <div className="pa-end-card pa-reward-card" aria-live="polite">
+            <span className={`pa-overlay-icon win pa-reveal-icon step-${rewardStep}`}>{rewardStep === 0 ? <Trophy size={27} fill="currentColor" /> : rewardStep === 1 ? <Sparkles size={27} /> : <Coins size={27} fill="currentColor" />}</span>
+            <small>{rewardStep === 0 ? "OBJETIVO CONCLUÍDO" : rewardStep === 1 ? "RECOMPENSA DA FASE" : "MOEDAS CONQUISTADAS"}</small>
+            <h2>{rewardStep === 0 ? "Missão cumprida!" : rewardStep === 1 ? (reward?.firstClear ? "Decoração desbloqueada!" : "Decoração já conquistada") : "Olha só o que você ganhou!"}</h2>
+            {rewardStep === 0 && <div className="pa-reveal-panel"><div className="pa-win-stars" aria-label={`${state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud)} estrelas`}>{formatStars(state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud))}</div><p>Você chegou ao portal e concluiu <strong>{currentStage.title}</strong>.</p><small>Prepare as patinhas: sua recompensa está chegando.</small></div>}
+            {rewardStep === 1 && (reward?.firstClear ? <div className="pa-stage-reward pa-stage-reward-large"><img src={GAME_ASSETS.decorations[currentStage.reward.id]} alt={currentStage.reward.name} /><div><small>CASA {currentStage.world} · FASE {currentStage.stageInWorld}</small><strong>{currentStage.reward.name}</strong><span>Conquistada e guardada na mochila para decorar Minha Casa.</span></div></div> : <div className="pa-reveal-panel"><p><strong>{currentStage.reward.name}</strong> já tinha sido conquistada nesta fase.</p><small>O replay não duplica decorações.</small></div>)}
+            {rewardStep === 2 && <><div className="pa-earned-coins"><Coins size={25} fill="currentColor" /><strong>+{reward?.coins ?? 0}</strong><span>moedas</span></div><p className="pa-reward-caption">{reward?.firstClear ? "As moedas já foram adicionadas à sua carteira." : "Replay concluído: moedas e decoração não são duplicadas."}</p>
+              {currentStage.id < 100 && state.platformProgress.unlockedStage > currentStage.id && <button className="pa-primary-action" type="button" onClick={() => beginStage(currentStage.id + 1)}>Próxima fase <ChevronRight size={16} /></button>}
+              <button className="pa-secondary-action" type="button" onClick={() => { setPhase("map"); setReward(null); setRewardStep(0); }}><Map size={15} /> Voltar ao mapa</button></>}
+            {rewardStep < 2 && <button className="pa-primary-action" type="button" onClick={() => setRewardStep((step) => Math.min(2, step + 1))}>{rewardStep === 0 ? "Ver decoração conquistada" : "Ver moedas da fase"} <ChevronRight size={16} /></button>}
           </div>}
         </div>}
       </section>

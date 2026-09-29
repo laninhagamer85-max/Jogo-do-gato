@@ -51,6 +51,7 @@ export class PlatformerEngine {
   private hearts = 3;
   private coinsCollected = 0;
   private collectedCoinIds = new Set<number>();
+  private defeatedEnemyIds = new Set<number>();
   private checkpointReached = false;
   private invulnerableFor = 0;
   private paused = false;
@@ -62,8 +63,10 @@ export class PlatformerEngine {
   private raf = 0;
   private input: Record<InputAction, boolean> = { left: false, right: false, jump: false };
   private platformImage = new Image();
+  private terrainImage = new Image();
   private portalImage = new Image();
   private roomImage = new Image();
+  private playerImage = new Image();
   private observer: ResizeObserver | null = null;
   private resizeFallback: () => void;
   private keyDown: (event: KeyboardEvent) => void;
@@ -83,8 +86,10 @@ export class PlatformerEngine {
     this.player.x = this.layout.start.x;
     this.player.y = this.layout.start.y;
     this.platformImage.src = GAME_ASSETS.platformer.grass;
+    this.terrainImage.src = GAME_ASSETS.platformer.terrain;
     this.portalImage.src = GAME_ASSETS.platformer.portal;
     this.roomImage.src = GAME_ASSETS.levels[this.stage.world - 1] ?? GAME_ASSETS.levels[0];
+    this.playerImage.src = GAME_ASSETS.platformer.cats[profile.characterId] ?? GAME_ASSETS.platformer.cats["menino-prata"];
     this.resizeFallback = () => this.resize(canvas);
     this.keyDown = (event) => this.handleKey(event, true);
     this.keyUp = (event) => this.handleKey(event, false);
@@ -104,7 +109,10 @@ export class PlatformerEngine {
 
   setInput(action: InputAction, pressed: boolean) {
     this.input[action] = pressed;
-    if (action === "jump" && !pressed) this.jumpLatched = false;
+    if (action === "jump" && !pressed) {
+      this.jumpLatched = false;
+      if (this.player.vy < -360) this.player.vy = -360;
+    }
   }
 
   setPaused(paused: boolean) {
@@ -118,15 +126,25 @@ export class PlatformerEngine {
   }
 
   getAutoPilotSnapshot() {
+    const standingSurface = this.layout.surfaces.find((surface) =>
+      this.player.x + PLAYER_WIDTH - 7 > surface.x &&
+      this.player.x + 7 < surface.x + surface.width &&
+      Math.abs(this.player.y + PLAYER_HEIGHT - surface.y) < 2,
+    );
     return {
       x: this.player.x,
+      y: this.player.y,
       grounded: this.player.grounded,
+      groundedOnGround: standingSurface?.kind === "ground",
+      currentSurface: standingSurface ? { x: standingSurface.x, y: standingSurface.y, width: standingSurface.width, kind: standingSurface.kind } : null,
       hearts: this.hearts,
       playerWidth: PLAYER_WIDTH,
+      playerHeight: PLAYER_HEIGHT,
       goalX: this.layout.goalX,
       surfaces: this.layout.surfaces.map(({ x, y, width }) => ({ x, y, width })),
-      hazards: this.layout.hazards.map(({ x, width }) => ({ x, width })),
-      enemies: this.layout.enemies.map(({ x }) => ({ x })),
+      groundSurfaces: this.layout.groundSurfaces.map(({ x, y, width }) => ({ x, y, width })),
+      hazards: this.layout.hazards.map(({ x, y, width, height }) => ({ x, y, width, height })),
+      enemies: this.layout.enemies.filter(({ id }) => !this.defeatedEnemyIds.has(id)).map(({ x, y }) => ({ x, y })),
     };
   }
 
@@ -138,7 +156,11 @@ export class PlatformerEngine {
     window.removeEventListener("keydown", this.keyDown);
     window.removeEventListener("keyup", this.keyUp);
     document.removeEventListener("visibilitychange", this.visibilityChange);
-    if (this.soundContext) void this.soundContext.close();
+    if (this.soundContext) {
+      const context = this.soundContext;
+      this.soundContext = null;
+      window.setTimeout(() => { if (context.state !== "closed") void context.close(); }, 900);
+    }
   }
 
   private resize(canvas: HTMLCanvasElement) {
@@ -177,7 +199,7 @@ export class PlatformerEngine {
     this.setInput(action, pressed);
   }
 
-  private playTone(kind: "jump" | "coin" | "hurt" | "clear") {
+  private playTone(kind: "jump" | "coin" | "hurt" | "bump" | "clear") {
     if (!this.soundEnabled) return;
     try {
       const AudioContextClass = window.AudioContext;
@@ -185,20 +207,42 @@ export class PlatformerEngine {
       this.soundContext = this.soundContext ?? new AudioContextClass();
       if (this.soundContext.state === "suspended") void this.soundContext.resume();
       const context = this.soundContext;
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const settings = {
-        jump: [390, 550, 0.09], coin: [760, 1050, 0.12], hurt: [240, 120, 0.18], clear: [620, 1040, 0.28],
-      }[kind];
-      oscillator.type = kind === "hurt" ? "triangle" : "sine";
-      oscillator.frequency.setValueAtTime(settings[0], context.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(settings[1], context.currentTime + settings[2]);
-      gain.gain.setValueAtTime(0.035, context.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + settings[2]);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.start();
-      oscillator.stop(context.currentTime + settings[2]);
+      type Note = { from: number; to: number; at: number; duration: number; wave: OscillatorType; volume: number };
+      const notesByKind: Record<"jump" | "coin" | "hurt" | "bump" | "clear", Note[]> = {
+        jump: [{ from: 390, to: 650, at: 0, duration: .14, wave: "sine", volume: .045 }],
+        coin: [
+          { from: 820, to: 1120, at: 0, duration: .12, wave: "sine", volume: .055 },
+          { from: 1120, to: 1580, at: .07, duration: .15, wave: "triangle", volume: .035 },
+        ],
+        bump: [{ from: 190, to: 78, at: 0, duration: .12, wave: "square", volume: .035 }],
+        hurt: [
+          { from: 320, to: 115, at: 0, duration: .27, wave: "triangle", volume: .055 },
+          { from: 145, to: 72, at: .04, duration: .22, wave: "sine", volume: .026 },
+        ],
+        clear: [
+          { from: 523, to: 523, at: 0, duration: .31, wave: "sine", volume: .045 },
+          { from: 659, to: 659, at: .09, duration: .31, wave: "sine", volume: .045 },
+          { from: 784, to: 784, at: .18, duration: .34, wave: "sine", volume: .05 },
+          { from: 1047, to: 1047, at: .28, duration: .45, wave: "triangle", volume: .045 },
+        ],
+      };
+      const notes = notesByKind[kind];
+      const startAt = context.currentTime;
+      for (const note of notes) {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const noteStart = startAt + note.at;
+        oscillator.type = note.wave;
+        oscillator.frequency.setValueAtTime(note.from, noteStart);
+        if (note.from !== note.to) oscillator.frequency.exponentialRampToValueAtTime(note.to, noteStart + note.duration);
+        gain.gain.setValueAtTime(.0001, noteStart);
+        gain.gain.linearRampToValueAtTime(note.volume, noteStart + .012);
+        gain.gain.exponentialRampToValueAtTime(.0001, noteStart + note.duration);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start(noteStart);
+        oscillator.stop(noteStart + note.duration + .01);
+      }
     } catch { /* Audio is a progressive enhancement and follows the user's first input. */ }
   }
 
@@ -255,12 +299,21 @@ export class PlatformerEngine {
     }
 
     for (const enemy of this.layout.enemies) {
+      if (this.defeatedEnemyIds.has(enemy.id)) continue;
       enemy.x += enemy.direction * enemy.speed * dt;
       if (enemy.x < enemy.minX || enemy.x > enemy.maxX) {
         enemy.x = Math.max(enemy.minX, Math.min(enemy.maxX, enemy.x));
         enemy.direction *= -1;
       }
       if (this.invulnerableFor <= 0 && intersects(this.player.x + 6, this.player.y + 8, PLAYER_WIDTH - 12, PLAYER_HEIGHT - 10, enemy.x - 17, enemy.y - 20, 34, 27)) {
+        this.playTone("bump");
+        const enemyTop = enemy.y - 20;
+        if (this.player.vy > 0 && previousBottom <= enemyTop + 14) {
+          this.defeatedEnemyIds.add(enemy.id);
+          this.player.vy = -JUMP_SPEED * 0.52;
+          this.player.grounded = false;
+          continue;
+        }
         this.takeHit(now);
         break;
       }
@@ -322,7 +375,7 @@ export class PlatformerEngine {
     for (const hazard of this.layout.hazards) this.drawHazard(ctx, hazard);
     this.drawCheckpoint(ctx);
     for (const coin of this.layout.coins) if (!coin.collected) this.drawCoin(ctx, coin.x, coin.y);
-    for (const enemy of this.layout.enemies) this.drawEnemy(ctx, enemy.x, enemy.y, enemy.direction);
+    for (const enemy of this.layout.enemies) if (!this.defeatedEnemyIds.has(enemy.id)) this.drawEnemy(ctx, enemy.x, enemy.y, enemy.direction);
     this.drawGoal(ctx);
     this.drawPlayer(ctx);
   }
@@ -425,38 +478,49 @@ export class PlatformerEngine {
   private drawPlatform(ctx: CanvasRenderingContext2D, surface: PlatformSurface) {
     const x = surface.x - this.cameraX;
     const width = surface.width;
-    const height = Math.min(108, Math.max(76, width * 0.32));
+    const height = surface.height;
     if (x > this.width + 20 || x + width < -20) return;
-    roundedRect(ctx, x, surface.y - 16, width, height + 16, 15);
-    const dirt = ctx.createLinearGradient(0, surface.y, 0, surface.y + height);
-    dirt.addColorStop(0, "#bb7b45");
-    dirt.addColorStop(1, "#875234");
-    ctx.fillStyle = dirt;
-    ctx.fill();
-    if (this.platformImage.complete && this.platformImage.naturalWidth) {
-      const cropWidth = Math.min(900, this.platformImage.naturalWidth);
-      const maxCropX = Math.max(0, this.platformImage.naturalWidth - cropWidth);
-      const cropX = maxCropX ? Math.floor((Math.floor(surface.x / 280) * 619) % maxCropX) : 0;
-      const cropY = Math.min(250, Math.max(0, this.platformImage.naturalHeight - 390));
-      ctx.save();
-      roundedRect(ctx, x, surface.y - 20, width, height + 20, 15);
-      ctx.clip();
-      ctx.drawImage(this.platformImage, cropX, cropY, cropWidth, Math.min(390, this.platformImage.naturalHeight - cropY), x, surface.y - 22, width, height + 26);
-      ctx.restore();
+    ctx.save();
+    roundedRect(ctx, x, surface.y, width, height, 7);
+    ctx.clip();
+    const base = ctx.createLinearGradient(0, surface.y, 0, surface.y + height);
+    base.addColorStop(0, this.stage.palette.soil);
+    base.addColorStop(1, this.stage.palette.soilShadow);
+    ctx.fillStyle = base;
+    ctx.fillRect(x, surface.y, width, height);
+
+    if (this.terrainImage.complete && this.terrainImage.naturalWidth > 0) {
+      const tileWidth = 260;
+      const firstTile = Math.floor(surface.x / tileWidth) * tileWidth;
+      const grassHeight = Math.min(38, height);
+      for (let tileX = firstTile; tileX < surface.x + width; tileX += tileWidth) {
+        const screenX = tileX - this.cameraX;
+        ctx.drawImage(this.terrainImage, 0, 0, 1024, 190, screenX, surface.y, tileWidth + 1, grassHeight);
+        if (height > grassHeight) {
+          ctx.drawImage(this.terrainImage, 0, 165, 1024, 520, screenX, surface.y + grassHeight - 2, tileWidth + 1, height - grassHeight + 2);
+        }
+      }
+    } else if (this.platformImage.complete && this.platformImage.naturalWidth > 0) {
+      ctx.drawImage(this.platformImage, 0, 0, this.platformImage.naturalWidth, this.platformImage.naturalHeight, x, surface.y, width, Math.min(44, height));
     }
-    roundedRect(ctx, x + 2, surface.y - 4, width - 4, 8, 4);
-    ctx.fillStyle = "#79ca4e";
-    ctx.fill();
-    ctx.fillStyle = "rgba(220, 255, 164, .82)";
-    roundedRect(ctx, x + 9, surface.y - 3, Math.max(22, width - 18), 2, 1);
-    ctx.fill();
-    ctx.fillStyle = "rgba(255, 222, 128, .58)";
-    for (let index = 0; index < Math.floor(width / 42); index += 1) {
-      const chipX = x + 18 + index * 42;
+
+    ctx.globalAlpha = .1;
+    ctx.fillStyle = this.stage.palette.terrainTint;
+    ctx.fillRect(x, surface.y, width, height);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = this.stage.palette.grassLight;
+    ctx.fillRect(x, surface.y, width, 3);
+    ctx.fillStyle = this.stage.palette.grass;
+    for (let tuft = 0; tuft < Math.ceil(width / 36); tuft += 1) {
+      const tuftX = x + tuft * 36 + 12;
       ctx.beginPath();
-      ctx.ellipse(chipX, surface.y + 24 + (index % 2) * 8, 3, 2, 0, 0, Math.PI * 2);
+      ctx.moveTo(tuftX - 3, surface.y + 4);
+      ctx.lineTo(tuftX, surface.y - 1);
+      ctx.lineTo(tuftX + 3, surface.y + 4);
+      ctx.closePath();
       ctx.fill();
     }
+    ctx.restore();
   }
 
   private drawCoin(ctx: CanvasRenderingContext2D, worldX: number, y: number) {
@@ -586,6 +650,19 @@ export class PlatformerEngine {
     const bounce = moving ? Math.abs(Math.sin(runCycle)) * 2.2 : this.player.grounded ? Math.sin(this.elapsed * 2.1) * 0.7 : 0;
     const bodyLean = moving ? -0.045 : this.player.grounded ? 0 : this.player.vy < 0 ? -0.13 : 0.1;
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
+    if (this.playerImage.complete && this.playerImage.naturalWidth > 0) {
+      ctx.save();
+      ctx.fillStyle = "rgba(26,37,48,.2)";
+      ctx.beginPath();
+      ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, Math.max(14, 31 - Math.max(0, -this.player.vy) * .012), 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - bounce);
+      ctx.scale(this.player.facing < 0 ? -1 : 1, moving ? 1 + Math.sin(runCycle * 2) * .018 : 1);
+      ctx.rotate(bodyLean);
+      ctx.drawImage(this.playerImage, -55, -72, 110, 73);
+      ctx.restore();
+      return;
+    }
     ctx.save();
     ctx.fillStyle = "rgba(26,37,48,.18)";
     ctx.beginPath();

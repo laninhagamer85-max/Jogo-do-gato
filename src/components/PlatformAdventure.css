@@ -520,3 +520,23 @@
 @media (prefers-reduced-motion: reduce) {
   .pa-creator-emblem { animation: none; }
 }
+
+
+/* Vitória em três momentos curtos: objetivo, item novo e moedas. */
+.pa-reward-card { width: min(410px,94%); }
+.pa-reveal-icon { animation: pa-reward-pop 520ms cubic-bezier(.23,1,.32,1) both; }
+.pa-reveal-icon.step-1 { background: linear-gradient(145deg,#e3fae7,#bcebcf); color: #278b58; }
+.pa-reveal-icon.step-2 { background: linear-gradient(145deg,#fff3c8,#ffe39b); color: #d6971c; }
+@keyframes pa-reward-pop { 0% { opacity: 0; transform: translateY(7px) scale(.82) rotate(-6deg); } 65% { transform: translateY(-2px) scale(1.06) rotate(2deg); } 100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); } }
+.pa-reveal-panel { margin: 12px 0; padding: 12px; border: 1px solid rgb(67 133 165 / 13%); border-radius: 15px; background: linear-gradient(145deg,#f4faff,#e7f3f8); }
+.pa-reveal-panel p { margin: 5px 0; color: #486782; font-size: 10px; line-height: 1.45; }
+.pa-reveal-panel > small { display: block; margin-top: 4px; color: #7189a0; font-size: 8px; line-height: 1.4; }
+.pa-reveal-panel .pa-win-stars { margin: 0 0 5px; font-size: 26px; }
+.pa-stage-reward-large { min-height: 124px; flex-direction: column; gap: 3px; margin: 13px 0; padding: 12px; text-align: center; }
+.pa-stage-reward-large img { width: 84px; height: 84px; }
+.pa-stage-reward-large > div { align-items: center; }
+.pa-stage-reward-large small { font-size: 7px; }
+.pa-stage-reward-large strong { font-size: 13px; }
+.pa-stage-reward-large span { max-width: 270px; font-size: 8px; }
+.pa-reward-caption { margin: 2px 0 8px; color: #71869b; font-size: 8px; line-height: 1.4; }
+@media (prefers-reduced-motion: reduce) { .pa-reveal-icon { animation: none; } }

@@ -43,6 +43,13 @@ import ticoVoice from "../assets/voice-tico.mp3?url";
 import matchSound from "../assets/match-combo.mp3?url";
 import platformGrass from "../assets/platform-grass.webp?url";
 import goalPortal from "../assets/goal-portal.webp?url";
+import platformTerrain from "../assets/grass-earth-side-tile.webp?url";
+import runBoySilver from "../assets/menino-prata-run.webp?url";
+import runBoyOrange from "../assets/menino-laranja-run.webp?url";
+import runBoyBlack from "../assets/menino-preto-run.webp?url";
+import runGirlCream from "../assets/menina-creme-run.webp?url";
+import runGirlCalico from "../assets/menina-calico-run.webp?url";
+import runGirlBlue from "../assets/menina-azul-run.webp?url";
 import { DECORATIONS } from "./decorations";
 
 const generatedDecorationAssets = import.meta.glob("../assets/decorations/*.webp", {
@@ -76,7 +83,19 @@ export const GAME_ASSETS = {
   creatorPlaque: "https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp",
   decorations,
   gift,
-  platformer: { grass: platformGrass, portal: goalPortal },
+  platformer: {
+    grass: platformGrass,
+    terrain: platformTerrain,
+    portal: goalPortal,
+    cats: {
+      "menino-prata": runBoySilver,
+      "menino-laranja": runBoyOrange,
+      "menino-preto": runBoyBlack,
+      "menina-creme": runGirlCream,
+      "menina-calico": runGirlCalico,
+      "menina-azul": runGirlBlue,
+    } satisfies Record<PetCharacterId, string>,
+  },
   icon: appIcon,
   voice: {
     intro: onboardingIntroVoice,

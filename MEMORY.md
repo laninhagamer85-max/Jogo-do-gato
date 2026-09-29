@@ -29,3 +29,6 @@
 - AutoPilot em desenvolvimento completou cinco fases reais; mapa mostrou 5/100 e fase 6 liberada, e a vitória da fase 5 exibiu três estrelas, decoração e moedas. Carrossel confirmado em retrato 375×812 e paisagem 812×375; demo não gravou save.
 - Decoração só é aplicada depois da vitória da fase correspondente, uma por ID e até dez por casa. Level-up do pet não mais concede móveis. Testes puros cobrem 100 itens, fases 1–5, bloqueio/sequência, recompensa, replay sem farming, migração sem duplicatas e level-up sem móveis.
 - Build/TypeScript/diff-check passaram; aviso de chunk Babylon é informativo. Assets locais `src/assets/` foram preservados. PR #2 continua aberto, sem merge ou publicação.
+
+
+- Atualização visual posterior (2026-09-29): substitui a nota de “placa sem foto”; a sala mostra o retrato autorizado na moldura flutuante, que abre um modal com a foto ampliada à esquerda e o texto aprovado à direita. O PR contém a referência de imagem gerenciada, como documentado em ASSETS.md.
