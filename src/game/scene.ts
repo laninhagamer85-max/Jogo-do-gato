@@ -5,7 +5,6 @@ import "@babylonjs/core/Shaders/default.fragment.js";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
@@ -62,73 +61,6 @@ function imageSprite(scene: Scene, name: string, url: string, width: number, hei
   return { mesh, material, texture };
 }
 
-type PortraitRoomTextures = { fill: DynamicTexture; fit: DynamicTexture };
-let portraitTextureSequence = 0;
-
-function createPortraitRoomTextures(scene: Scene, imageUrl: string, onReady: (textures: PortraitRoomTextures) => void): () => void {
-  let cancelled = false;
-  const image = new Image();
-  image.crossOrigin = "anonymous";
-  image.onload = () => {
-    if (cancelled || !image.naturalWidth || !image.naturalHeight) return;
-    const width = 1024;
-    const height = 576;
-    const fillCanvas = document.createElement("canvas");
-    const fitCanvas = document.createElement("canvas");
-    fillCanvas.width = fitCanvas.width = width;
-    fillCanvas.height = fitCanvas.height = height;
-    const fillContext = fillCanvas.getContext("2d");
-    const fitContext = fitCanvas.getContext("2d");
-    if (!fillContext || !fitContext) return;
-
-    fillContext.fillStyle = "#14284c";
-    fillContext.fillRect(0, 0, width, height);
-    const coverScale = Math.max(width / image.naturalWidth, height / image.naturalHeight) * 1.16;
-    const coverWidth = image.naturalWidth * coverScale;
-    const coverHeight = image.naturalHeight * coverScale;
-    if ("filter" in fillContext) {
-      fillContext.filter = "blur(22px)";
-      fillContext.drawImage(image, (width - coverWidth) / 2, (height - coverHeight) / 2, coverWidth, coverHeight);
-      fillContext.filter = "none";
-    }
-    fillContext.fillStyle = "rgba(8, 17, 39, 0.18)";
-    fillContext.fillRect(0, 0, width, height);
-
-    const fitScale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
-    const fitWidth = image.naturalWidth * fitScale;
-    const fitHeight = image.naturalHeight * fitScale;
-    const fitX = (width - fitWidth) / 2;
-    const fitY = (height - fitHeight) / 2;
-    fitContext.drawImage(image, fitX, fitY, fitWidth, fitHeight);
-    const fadeRatio = Math.min(0.14, 60 / fitHeight);
-    const fadeMask = fitContext.createLinearGradient(0, fitY, 0, fitY + fitHeight);
-    fadeMask.addColorStop(0, "rgba(0, 0, 0, 0)");
-    fadeMask.addColorStop(fadeRatio, "rgba(0, 0, 0, 1)");
-    fadeMask.addColorStop(1 - fadeRatio, "rgba(0, 0, 0, 1)");
-    fadeMask.addColorStop(1, "rgba(0, 0, 0, 0)");
-    fitContext.globalCompositeOperation = "destination-in";
-    fitContext.fillStyle = fadeMask;
-    fitContext.fillRect(fitX, fitY, fitWidth, fitHeight);
-    fitContext.globalCompositeOperation = "source-over";
-
-    const id = ++portraitTextureSequence;
-    const fill = new DynamicTexture(`portrait-room-fill-${id}`, fillCanvas, scene, false, Texture.TRILINEAR_SAMPLINGMODE);
-    fill.hasAlpha = false;
-    fill.update(true);
-    const fit = new DynamicTexture(`portrait-room-fit-${id}`, fitCanvas, scene, false, Texture.TRILINEAR_SAMPLINGMODE);
-    fit.hasAlpha = true;
-    fit.update(true);
-    onReady({ fill, fit });
-  };
-  image.onerror = () => { cancelled = true; };
-  image.src = imageUrl;
-  return () => {
-    cancelled = true;
-    image.onload = null;
-    image.onerror = null;
-  };
-}
-
 export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement, initialState?: ScenePetState): Promise<GameHandle> {
   const saved = initialState ?? readSave();
   let currentRoom = saved.room ?? saved.level;
@@ -147,20 +79,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   backgroundMaterial.disableLighting = true;
   backgroundMaterial.backFaceCulling = false;
   background.material = backgroundMaterial;
-  const portraitBackground = MeshBuilder.CreatePlane("portrait-room-fit", { width: 14, height: 8 }, scene);
-  portraitBackground.position.z = 2.8;
-  portraitBackground.isVisible = false;
-  const portraitBackgroundMaterial = new StandardMaterial("portrait-room-fit-material", scene);
-  portraitBackgroundMaterial.disableLighting = true;
-  portraitBackgroundMaterial.backFaceCulling = false;
-  portraitBackgroundMaterial.useAlphaFromDiffuseTexture = true;
-  portraitBackground.material = portraitBackgroundMaterial;
   let backgroundTexture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   backgroundMaterial.diffuseTexture = backgroundTexture;
-  portraitBackgroundMaterial.diffuseTexture = backgroundTexture;
-  portraitBackgroundMaterial.diffuseColor = Color3.Black();
-  portraitBackgroundMaterial.emissiveTexture = backgroundTexture;
-  portraitBackgroundMaterial.emissiveColor = Color3.White();
 
   const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
   const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
@@ -206,37 +126,9 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   let lastFrame = performance.now();
   let petWidth = 3.35;
   let sceneAspect = 0;
-  let portraitRoomTextures: PortraitRoomTextures | null = null;
-  let portraitTextureRequest = 0;
-  let cancelPortraitTextureLoad: (() => void) | null = null;
   const viewHeight = 8.2;
   let backgroundWidth = 14;
   let backgroundHeight = 8;
-  const applyRoomBackground = () => {
-    const usePortraitFit = sceneAspect < 0.7;
-    background.isVisible = !usePortraitFit || Boolean(portraitRoomTextures);
-    portraitBackground.isVisible = usePortraitFit;
-    backgroundMaterial.diffuseTexture = usePortraitFit && portraitRoomTextures ? portraitRoomTextures.fill : backgroundTexture;
-    portraitBackgroundMaterial.diffuseTexture = usePortraitFit && portraitRoomTextures ? portraitRoomTextures.fit : backgroundTexture;
-    portraitBackgroundMaterial.emissiveTexture = usePortraitFit && portraitRoomTextures ? portraitRoomTextures.fit : backgroundTexture;
-  };
-  const requestPortraitRoomTextures = (imageUrl: string) => {
-    const request = ++portraitTextureRequest;
-    cancelPortraitTextureLoad?.();
-    portraitRoomTextures?.fill.dispose();
-    portraitRoomTextures?.fit.dispose();
-    portraitRoomTextures = null;
-    applyRoomBackground();
-    cancelPortraitTextureLoad = createPortraitRoomTextures(scene, imageUrl, (nextTextures) => {
-      if (request !== portraitTextureRequest) {
-        nextTextures.fill.dispose();
-        nextTextures.fit.dispose();
-        return;
-      }
-      portraitRoomTextures = nextTextures;
-      applyRoomBackground();
-    });
-  };
   const decorationSprites = new Map<string, { placement: DecorationPlacement; sprite: ReturnType<typeof imageSprite> }>();
   const updateDecorationSprite = (entry: { placement: DecorationPlacement; sprite: ReturnType<typeof imageSprite> }) => {
     const rect = canvas.getBoundingClientRect();
@@ -271,13 +163,9 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const bgHeight = Math.max(viewHeight, viewWidth / roomRatio);
     const bgWidth = Math.max(viewWidth, viewHeight * roomRatio);
     const usePortraitFit = aspect < 0.7;
-    const portraitWidth = viewWidth;
-    const portraitHeight = portraitWidth / roomRatio;
-    backgroundWidth = usePortraitFit ? portraitWidth : bgWidth;
-    backgroundHeight = usePortraitFit ? portraitHeight : bgHeight;
+    backgroundWidth = bgWidth;
+    backgroundHeight = bgHeight;
     background.scaling.set(bgWidth / 14, bgHeight / 8, 1);
-    portraitBackground.scaling.set(portraitWidth / 14, portraitHeight / 8, 1);
-    applyRoomBackground();
     backgroundMaterial.emissiveColor = Color3.White();
     decorationSprites.forEach(updateDecorationSprite);
 
@@ -298,7 +186,6 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     }
   };
   resizeScene();
-  requestPortraitRoomTextures(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0]);
 
   let sleeping = saved.sleeping;
   let reactionStart = performance.now();
@@ -323,9 +210,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const texture = new Texture(imageUrl, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
     const old = backgroundTexture;
     backgroundTexture = texture;
-    applyRoomBackground();
+    backgroundMaterial.diffuseTexture = texture;
     old.dispose();
-    requestPortraitRoomTextures(imageUrl);
   };
   const onRoom = (event: Event) => setRoom((event as PetRoomEvent).detail?.room ?? currentRoom);
   const onDecorations = (event: Event) => {
@@ -475,10 +361,6 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       window.removeEventListener("pet:move", onMove);
       window.removeEventListener("pet:blink", onPetBlink as EventListener);
       scene.onBeforeRenderObservable.remove(renderObserver);
-      portraitTextureRequest += 1;
-      cancelPortraitTextureLoad?.();
-      portraitRoomTextures?.fill.dispose();
-      portraitRoomTextures?.fit.dispose();
       scene.dispose();
     },
   };

@@ -150,3 +150,7 @@ Após a primeira QA, foi corrigida sobreposição de 4 px entre Missão/Minijogo
 - Causa: a tela alta do celular mostrava ao mesmo tempo o fundo 16:9 ampliado em cover e a sala completa em outra camada, aparentando faixas repetidas.
 - Correção: centralizar a arte completa sem cortar as laterais e usar preenchimento desfocado com feather nas bordas em retrato; paisagem/desktop mantêm o fundo original.
 - QA demo: 375×812, 844×390, 667×375, 1280×720 e rotação ao vivo sem reload retrato→paisagem→retrato. Asset e WebGL ativos, sem erro de navegador, save demo isolado. PR #2 permanece aberto; sem merge/publicação.
+
+
+## Requisito atualizado: fundo vertical em tela cheia — 2026-09-30
+O usuário esclareceu que a imagem deve preencher toda a tela em retrato. Isso substitui a versão portrait-fit com faixas desfocadas: a composição usa uma camada única em `cover`, preenchendo o canvas de cima a baixo; como a arte original é horizontal, as laterais são cortadas para manter a proporção. Paisagem/desktop mantêm o enquadramento original. QA demo em 375×812, 844×390, 667×375 e 1280×720, incluindo rotação sem reload; sem erro de runtime e sem alteração do save. PR #2 fica aberto, sem merge/publicação.
