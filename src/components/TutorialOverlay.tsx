@@ -23,22 +23,22 @@ const STEPS: TourStep[] = [
   {
     icon: <Heart size={24} />,
     kicker: "PASSO 2 DE 6 · CUIDADOS",
-    title: "Veja como ele está",
-    copy: "Acompanhe fome, energia, higiene e felicidade. Abra Cuidar para alimentar, dar banho, brincar com carinho ou colocar seu amigo para dormir.",
+    title: "Cuide dele com um toque",
+    copy: "Veja Felicidade, Fome, Higiene e Energia em Como estou?. Em Cuidar, escolha uma ação. Alimentar abre os petiscos: toque em um item para usar ou arraste até o pet.",
     target: '[data-room-tour="care"]',
   },
   {
     icon: <Star size={24} />,
     kicker: "PASSO 3 DE 6 · MISSÕES",
     title: "Jogue para evoluir",
-    copy: "Acompanhe a barrinha da missão no topo e toque em Minijogos para brincar, ganhar moedas e XP.",
+    copy: "No painel da direita, acompanhe a missão e toque em Ver minijogos para escolher uma brincadeira. Sua história também fica logo abaixo.",
     target: '[data-room-tour="minigames"]',
   },
   {
     icon: <Backpack size={24} />,
     kicker: "PASSO 4 DE 6 · ITENS",
     title: "Loja e mochila",
-    copy: "A Mochila guarda petiscos e decorações conquistadas. Loja e História também têm atalhos próprios na sala.",
+    copy: "No painel Loja, abra Mochila para ver petiscos e decorações conquistadas. As opções de compra ficam em Ver tudo.",
     target: '[data-room-tour="inventory"]',
   },
   {

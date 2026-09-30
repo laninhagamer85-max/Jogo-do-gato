@@ -1,6 +1,6 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type DragEvent, type MouseEvent } from "react";
 import {
-  Activity, Backpack, Bath, BookOpen, Camera, Check, ChevronRight, Coins, Gamepad2, Gift, Heart,
+  Activity, Backpack, Bath, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Gamepad2, Gift, Heart,
   Home as HomeIcon, LockKeyhole, MapPin, Moon, PawPrint, Plus, Settings, ShoppingBag,
   Eye, EyeOff, Sparkles, Star, Trophy, Utensils, Volume2, VolumeX, X,
 } from "lucide-react";
@@ -27,9 +27,12 @@ import { loadPlatformAudioMix, savePlatformAudioMix, setPlatformAudioMix, type P
 import { legacyStagePercentToBackground, screenToBackgroundPercent } from "@/game/decorationCoordinates";
 
 type ShopTab = "looks" | "items" | "boosts" | "friends" | "decor" | "inventory";
-type RoomMenuPanel = "care" | "feeding" | "missions" | "minigames" | "inventory" | "decor" | "rooms" | null;
+type RoomMenuPanel = "feeding" | "missions" | "minigames" | "inventory" | "decor" | "rooms" | null;
+type CollapsedPanels = { stats: boolean; care: boolean; mission: boolean; shop: boolean };
 type GiftRevealBase = { key: string; sourceRoom: number; phase: "opening" | "revealed" };
 type GiftReveal = (GiftRevealBase & { kind: "coins"; amount: number }) | (GiftRevealBase & { kind: "item"; itemId: StoreItemId; amount: number; name: string; icon: string }) | (GiftRevealBase & { kind: "decoration"; itemId: DecorationId; itemRoom: number; name: string; image: string });
+const PANEL_PREF_KEY = "meu-pet-panels-v2";
+const DEFAULT_PANELS: CollapsedPanels = { stats: false, care: false, mission: false, shop: false };
 const SOUND_PREF_KEY = "meu-pet-sound-v2";
 const VOICE_PREF_KEY = "meu-pet-voice-v2";
 const FOCUS_MODE_PREF_KEY = "meu-pet-focus-mode-v1";
@@ -97,8 +100,15 @@ const statMeta = [
   { key: "higiene", label: "Higiene", icon: "💧", color: "cyan" },
   { key: "energia", label: "Energia", icon: "⚡", color: "violet" },
 ] as const;
+const CARE_ACTION_STAT: Record<CareAction, keyof GameState["stats"]> = { food: "fome", bath: "higiene", love: "felicidade", sleep: "energia" };
+const STAT_CARE_ACTION: Record<keyof GameState["stats"], CareAction> = { fome: "food", higiene: "bath", felicidade: "love", energia: "sleep" };
+const CARE_ACTION_META: Record<CareAction, { label: string; prompt: string }> = {
+  food: { label: "Alimentar", prompt: "Escolha um petisco para o seu amigo." },
+  bath: { label: "Banho", prompt: "Um mimo de banho deixa o pelo limpinho." },
+  love: { label: "Carinho", prompt: "Um novelo pode render uma brincadeira gostosa." },
+  sleep: { label: "Dormir", prompt: "Uma caminha confortável ajuda a recuperar energia." },
+};
 const roomPanelCopy: Record<Exclude<RoomMenuPanel, null>, { kicker: string; title: string }> = {
-  care: { kicker: "ROTINA DO PET", title: "Cuidar" },
   feeding: { kicker: "PETISCOS DA MOCHILA", title: "Alimentar" },
   missions: { kicker: "NÍVEL E PROGRESSO", title: "Missões" },
   minigames: { kicker: "HORA DA DIVERSÃO", title: "Minijogos" },
@@ -111,6 +121,15 @@ const companionMeta: Array<{ id: CompanionId; name: string; species: string; unl
   { id: "tico", name: "Tico", species: "cachorrinho creme", unlock: 7, image: GAME_ASSETS.companions.tico, icon: "🐶" },
 ];
 
+function loadPanels(): CollapsedPanels {
+  try { return { ...DEFAULT_PANELS, ...(JSON.parse(localStorage.getItem(PANEL_PREF_KEY) || "{}") as Partial<CollapsedPanels>) }; }
+  catch { return DEFAULT_PANELS; }
+}
+
+function CollapseButton({ collapsed, onClick, label }: { collapsed: boolean; onClick: () => void; label: string }) {
+  return <button className="panel-collapse" type="button" onClick={onClick} aria-label={`${collapsed ? "Expandir" : "Minimizar"} ${label}`} aria-expanded={!collapsed}><ChevronDown size={16} /></button>;
+}
+
 function dispatchPetEvent(name: string, detail: Record<string, unknown>) {
   window.dispatchEvent(new CustomEvent(name, { detail }));
 }
@@ -120,6 +139,8 @@ export default function Home() {
   const platformerDemoMode = useMemo(() => new URLSearchParams(window.location.search).get("demo") === "platformer", []);
   const demoMiniGame = useMemo(() => demoMode ? getRequestedDemoGame() : null, [demoMode]);
   const [game, setGame] = useState<GameState>(() => demoMode ? createDemoGameState() : loadGame());
+  const [activeTab, setActiveTab] = useState<"care" | "games" | "shop">(demoMiniGame ? "games" : "care");
+  const [collapsed, setCollapsed] = useState<CollapsedPanels>(() => demoMode ? DEFAULT_PANELS : loadPanels());
   const [adventureOpen, setAdventureOpen] = useState(() => platformerDemoMode);
   const [gamesOpen, setGamesOpen] = useState(Boolean(demoMiniGame));
   const [shopOpen, setShopOpen] = useState(false);
@@ -133,11 +154,13 @@ export default function Home() {
   const [activeRoomMenu, setActiveRoomMenu] = useState<RoomMenuPanel>(() => {
     if (import.meta.env.DEV && demoMode) {
       const previewMenu = new URLSearchParams(window.location.search).get("roomMenu");
-      return previewMenu === "care" || previewMenu === "feeding" || previewMenu === "missions" || previewMenu === "minigames" || previewMenu === "inventory" || previewMenu === "decor" || previewMenu === "rooms" ? previewMenu : null;
+      return previewMenu === "feeding" || previewMenu === "missions" || previewMenu === "minigames" || previewMenu === "inventory" || previewMenu === "decor" || previewMenu === "rooms" ? previewMenu : null;
     }
     return null;
   });
-  const [focusMode, setFocusMode] = useState(() => localStorage.getItem(FOCUS_MODE_PREF_KEY) === "true");
+  const [activeCareAction, setActiveCareAction] = useState<CareAction | null>(() => import.meta.env.DEV && demoMode && new URLSearchParams(window.location.search).get("roomMenu") === "care" ? "food" : null);
+  const [petDropTarget, setPetDropTarget] = useState(false);
+  const [focusMode, setFocusMode] = useState(() => !demoMode && localStorage.getItem(FOCUS_MODE_PREF_KEY) === "true");
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [storyLevel, setStoryLevel] = useState<number | null>(null);
   const [roomsOpen, setRoomsOpen] = useState(false);
@@ -181,7 +204,6 @@ export default function Home() {
   const roomDecorations = game.roomDecorations[String(game.activeRoom)] ?? [];
   const roomDecorationCatalog = DECORATIONS.filter((item) => item.room === game.activeRoom);
   const roomGifts = game.gifts.filter((gift) => gift.room === game.activeRoom);
-  const immediateNeeds = useMemo(() => [...statMeta].sort((a, b) => game.stats[a.key] - game.stats[b.key]).slice(0, 2), [game.stats]);
 
   useEffect(() => { if (!demoMode) localStorage.setItem(CURRENT_SAVE_KEY, JSON.stringify(game)); }, [game, demoMode]);
   useEffect(() => {
@@ -203,10 +225,11 @@ export default function Home() {
       return changed ? { ...current, roomDecorations: migratedRooms } : current;
     });
   }, []);
+  useEffect(() => { if (!demoMode) localStorage.setItem(PANEL_PREF_KEY, JSON.stringify(collapsed)); }, [collapsed, demoMode]);
   useEffect(() => { localStorage.setItem(SOUND_PREF_KEY, String(soundOn)); }, [soundOn]);
   useEffect(() => { savePlatformAudioMix(audioMix); setPlatformAudioMix(audioMix); }, [audioMix]);
   useEffect(() => { localStorage.setItem(VOICE_PREF_KEY, String(voiceOn)); }, [voiceOn]);
-  useEffect(() => { localStorage.setItem(FOCUS_MODE_PREF_KEY, String(focusMode)); }, [focusMode]);
+  useEffect(() => { if (!demoMode) localStorage.setItem(FOCUS_MODE_PREF_KEY, String(focusMode)); }, [focusMode, demoMode]);
   useEffect(() => { voiceOnRef.current = voiceOn; }, [voiceOn]);
 
   useEffect(() => {
@@ -418,7 +441,81 @@ export default function Home() {
   }
 
   function speak(cue: PetVoiceCue, onEnd?: () => void) { if (voiceOn) playPetVoice(cue, game.profile?.gender, onEnd); }
-  function toggleRoomMenu(panel: Exclude<RoomMenuPanel, null>) { setActiveRoomMenu((current) => current === panel ? null : panel); }
+  function togglePanel(panel: keyof CollapsedPanels) { setCollapsed((value) => ({ ...value, [panel]: !value[panel] })); }
+
+  function scrollCarePanelIntoView() {
+    if (focusMode || !window.matchMedia("(max-width: 900px)").matches) return;
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.querySelector<HTMLElement>(".care-panel")?.scrollIntoView({ behavior: "smooth", block: "center" })));
+  }
+
+  function selectCareTab() {
+    setActiveTab("care"); setCollapsed((value) => ({ ...value, stats: false, care: false })); setActiveRoomMenu(null); setActiveCareAction(null);
+    scrollCarePanelIntoView();
+  }
+
+  function toggleRoomMenu(panel: Exclude<RoomMenuPanel, null>) {
+    setActiveCareAction(null);
+    setActiveRoomMenu((current) => current === panel ? null : panel);
+  }
+
+  function openCareAction(action: CareAction) {
+    const hasMatchingItem = STORE_ITEMS.some((item) => item.stat === CARE_ACTION_STAT[action] && (game.inventory[item.id] ?? 0) > 0);
+    if (action === "food" || (hasMatchingItem && !(action === "sleep" && game.sleeping))) {
+      setActiveRoomMenu(null);
+      setActiveCareAction((current) => current === action ? null : action);
+      scrollCarePanelIntoView();
+      return;
+    }
+    setActiveRoomMenu(null);
+    setActiveCareAction(null);
+    care(action);
+  }
+
+  function consumeCareItem(id: StoreItemId) {
+    if (!activeCareAction) return;
+    const item = STORE_ITEMS.find((entry) => entry.id === id);
+    if (!item || item.stat !== CARE_ACTION_STAT[activeCareAction] || (game.inventory[id] ?? 0) < 1) {
+      showToast("Esse item não está disponível para este cuidado.");
+      return;
+    }
+    consumeItem(id);
+    setActiveCareAction(null);
+  }
+
+  function dropCareItemOnPet(event: DragEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setPetDropTarget(false);
+    const id = event.dataTransfer.getData("text/plain") as StoreItemId;
+    if (!STORE_ITEMS.some((item) => item.id === id)) return;
+    consumeCareItem(id);
+  }
+
+  function renderCareActionTray(className = "") {
+    if (!activeCareAction) return null;
+    const action = activeCareAction;
+    const meta = CARE_ACTION_META[action];
+    const items = STORE_ITEMS.filter((item) => item.stat === CARE_ACTION_STAT[action] && (game.inventory[item.id] ?? 0) > 0);
+    return (
+      <section className={`care-action-tray ${className}`} role="region" aria-label={`Itens para ${meta.label.toLowerCase()}`} aria-live="polite">
+        <div className="care-action-tray-heading">
+          <span><strong>{meta.label}</strong><small>{meta.prompt} Toque para usar ou arraste até {petName}.</small></span>
+          <button type="button" className="care-tray-close" onClick={() => setActiveCareAction(null)} aria-label={`Fechar opções de ${meta.label.toLowerCase()}`}><X size={15} /></button>
+        </div>
+        {items.length > 0 ? <div className="care-item-options">{items.map((item) => (
+          <button key={item.id} type="button" className="care-item-option" draggable
+            aria-label={`Usar ${item.name}, quantidade ${game.inventory[item.id]}; também pode arrastar até ${petName}`}
+            onDragStart={(event) => { event.dataTransfer.setData("text/plain", item.id); event.dataTransfer.effectAllowed = "move"; }}
+            onClick={() => consumeCareItem(item.id)}>
+            <span className="care-item-option-icon" aria-hidden="true">{item.icon}</span>
+            <span className="care-item-option-copy"><strong>{item.name}</strong><small>{item.description}</small></span>
+            <span className="care-item-count">×{game.inventory[item.id]}</span>
+            <span className="care-item-use">Usar</span>
+          </button>
+        ))}</div> : <div className="care-empty-state"><span aria-hidden="true">🍽️</span><div><strong>Sem petiscos na mochila</strong><small>Escolha um mimo na loja para alimentar {petName}.</small></div><button type="button" className="care-empty-feed" onClick={() => openShop("items")}>Ver petiscos na loja</button></div>}
+      </section>
+    );
+  }
 
   function placeDecorationAt(clientX: number, clientY: number) {
     if (!pendingDecoration) return;
@@ -453,7 +550,7 @@ export default function Home() {
 
   function selectHouse(room: number) {
     setGame((current) => selectRoom(current, room));
-    setActiveRoomMenu(null); setRoomsOpen(false); setShopOpen(false); setGamesOpen(false); setMiniId(null); setSelectedDecorationId(null); setPendingDecoration(null);
+    setActiveRoomMenu(null); setActiveCareAction(null); setRoomsOpen(false); setShopOpen(false); setGamesOpen(false); setMiniId(null); setSelectedDecorationId(null); setPendingDecoration(null);
     showPetSpeech(`Vamos passear de volta para ${getCampaignLevel(room).location}!`);
     dispatchPetEvent("pet:room", { room });
   }
@@ -585,8 +682,8 @@ export default function Home() {
     return result;
   }
 
-  function openMiniHub() { setGamesOpen(false); setMiniId(null); toggleRoomMenu("minigames"); }
-  function openAdventure() { setActiveRoomMenu(null); adventureEnteredAtRef.current = Date.now(); setAdventureOpen(true); }
+  function openMiniHub() { setActiveTab("games"); setActiveRoomMenu(null); setActiveCareAction(null); setMiniId(null); setGamesOpen(true); }
+  function openAdventure() { setActiveRoomMenu(null); setActiveCareAction(null); adventureEnteredAtRef.current = Date.now(); setAdventureOpen(true); }
   function closeAdventure() {
     const enteredAt = adventureEnteredAtRef.current;
     if (enteredAt !== null) {
@@ -596,8 +693,8 @@ export default function Home() {
     adventureEnteredAtRef.current = null;
     setAdventureOpen(false);
   }
-  function openShop(tab: ShopTab = shopTab) { setActiveRoomMenu(null); setShopTab(tab); setShopOpen(true); }
-  function startMinigame(id: MiniGameId) { setActiveRoomMenu(null); setGamesOpen(true); setMiniId(id); playTone(); }
+  function openShop(tab: ShopTab = shopTab) { setActiveTab("shop"); setActiveRoomMenu(null); setActiveCareAction(null); setShopTab(tab); setShopOpen(true); }
+  function startMinigame(id: MiniGameId) { setActiveTab("games"); setActiveRoomMenu(null); setActiveCareAction(null); setGamesOpen(true); setMiniId(id); playTone(); }
 
   function finishMinigame() {
     setGame((current) => {
@@ -633,7 +730,8 @@ export default function Home() {
     const result = useStoreItem(game, id);
     if (result.ok) {
       setGame(result.state); showPetSpeech(result.message, 6800); showToast(result.message);
-      dispatchPetEvent("pet:action", { action: id === "caminha" ? "sleep" : "love", sleeping: result.state.sleeping });
+      const item = STORE_ITEMS.find((entry) => entry.id === id);
+      dispatchPetEvent("pet:action", { action: item ? STAT_CARE_ACTION[item.stat] : "love", sleeping: result.state.sleeping });
       speak("care", dismissPetSpeech); playTone("reward");
     } else showToast(result.message);
   }
@@ -676,111 +774,91 @@ export default function Home() {
   }
 
   return (
-    <div className={`game-root ${focusMode ? "focus-mode" : ""}`}>
+    <div className={`game-root classic-two-column-layout ${focusMode ? "focus-mode" : ""}`}>
       <Suspense fallback={<div className="scene-loading" aria-label="Carregando cenário do pet" />}><GameCanvas initialState={{ level: game.level, room: game.activeRoom, skin: game.skin, sleeping: game.sleeping, gender: game.profile?.gender ?? null, characterId: game.profile?.characterId ?? null, companion: game.activeCompanionId }} /></Suspense>
       <div className="room-overlay" aria-hidden="true" />
       <div className="screen-ui">
         <header className="topbar">
-          <div className="brand-column">
-            <div className="brand-lockup"><span className="brand-paw"><PawPrint size={28} fill="currentColor" /></span><div><strong>Meu Pet</strong><small>UMA CASA DE CADA VEZ</small>{demoMode && <small className="demo-state">DEMO · SAVE PRESERVADO</small>}</div></div>
-            <button className="care-glance" type="button" onClick={() => toggleRoomMenu("care")} aria-label={`Ver cuidados. Mais atenção: ${immediateNeeds.map((item) => `${item.label} ${Math.round(game.stats[item.key])}%`).join(" e ")}`}>
-              <span className="care-glance-heading"><PawPrint size={12} /> O que precisa?</span>
-              <span className="care-glance-needs">{immediateNeeds.map((item) => <span className={`care-glance-need ${item.color}`} key={item.key}><i>{item.icon}</i><b>{item.label}</b><strong>{Math.round(game.stats[item.key])}%</strong></span>)}</span>
-            </button>
-          </div>
-          <div className="progress-hud">
-            <div className="level-card" aria-label={`Nível ${game.level}, ${game.xp} de ${game.xpMax} XP`}>
-              <div className="level-heading"><span className="level-star"><Star size={23} fill="currentColor" /></span><strong>Nível {game.level}</strong><span className="xp-copy">{game.xp} / {game.xpMax} XP</span></div>
-              <div className="xp-track"><span style={{ width: `${xpPercent}%` }} /></div>
-              <button className="level-location room-map-button" type="button" onClick={() => toggleRoomMenu("rooms")} aria-expanded={activeRoomMenu === "rooms"} aria-label="Abrir mapa das casas conquistadas"><MapPin size={12} /> {currentChapter.location}<span>{game.level}/10</span></button>
-            </div>
-            <div className="mission-hud">
-              <button className="mission-hud-summary" type="button" onClick={() => toggleRoomMenu("missions")} aria-expanded={activeRoomMenu === "missions"} data-room-tour="missions" aria-label={`Abrir missões, ${Math.min(game.missionProgress, 3)} de 3 partidas`}>
-                <span><Star size={14} fill="currentColor" /> Missão</span><strong>{Math.min(game.missionProgress, 3)}/3</strong>
-              </button>
-              <div className="mission-track mission-hud-track" role="progressbar" aria-label="Progresso da missão" aria-valuemin={0} aria-valuemax={3} aria-valuenow={Math.min(game.missionProgress, 3)}><span style={{ width: `${missionPercent}%` }} /></div>
-              <button className="mini-games-trigger" type="button" onClick={() => toggleRoomMenu("minigames")} aria-expanded={activeRoomMenu === "minigames"} data-room-tour="minigames" aria-label="Abrir minijogos"><Gamepad2 size={17} /><span>Minijogos</span><ChevronRight size={14} /></button>
-            </div>
+          <div className="brand-lockup"><span className="brand-paw"><PawPrint size={28} fill="currentColor" /></span><div><strong>Meu Pet</strong><small>UMA CASA DE CADA VEZ</small>{demoMode && <small className="demo-state">DEMO · SAVE PRESERVADO</small>}</div></div>
+          <div className="level-card" aria-label={`Nível ${game.level}, ${game.xp} de ${game.xpMax} XP`}>
+            <div className="level-heading"><span className="level-star"><Star size={23} fill="currentColor" /></span><strong>Nível {game.level}</strong><span className="xp-copy">{game.xp} / {game.xpMax} XP</span></div>
+            <div className="xp-track"><span style={{ width: `${xpPercent}%` }} /></div>
+          <div className="level-location" aria-label={`Casa ${game.activeRoom}: ${activeChapter.location}`}><MapPin size={11} aria-hidden="true" /> {activeChapter.location}<span>Casa {game.activeRoom}/10</span></div>
           </div>
           <div className="top-actions">
+            <button className="adventure-home-button" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Voltar à aventura de 100 fases"><Gamepad2 size={17} /><span>Aventura</span></button>
             <button className="coin-pill" onClick={() => openShop("items")} aria-label="Abrir a loja de itens"><Coins size={21} fill="currentColor" /><strong>{game.coins.toLocaleString("pt-BR")}</strong><span className="coin-plus"><Plus size={15} /></span></button>
             <button className="icon-button" onClick={() => setSettingsOpen(true)} aria-label="Configurações"><Settings size={19} /></button>
             <button className="icon-button sound-toggle" onClick={() => setSoundOn((value) => !value)} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
             <button className="icon-button pause-toggle" onClick={() => setPaused(true)} aria-label="Pausar jogo"><span className="pause-symbol">Ⅱ</span></button>
-            <button className="icon-button focus-mode-toggle" type="button" onClick={() => { setFocusMode((value) => !value); setActiveRoomMenu(null); }} aria-pressed={focusMode} aria-label={focusMode ? "Mostrar cabeçalho e detalhes" : "Ocultar detalhes e manter atalhos"} title={focusMode ? "Mostrar interface completa" : "Ocultar detalhes · atalhos continuam disponíveis"}>{focusMode ? <Eye size={19} /> : <EyeOff size={19} />}</button>
+            <button className="icon-button focus-mode-toggle" type="button" onClick={() => { setFocusMode((value) => !value); setActiveCareAction(null); }} aria-pressed={focusMode} aria-label={focusMode ? "Mostrar todas as informações" : "Ativar tela limpa"} title={focusMode ? "Mostrar interface completa" : "Tela limpa"}>{focusMode ? <Eye size={19} /> : <EyeOff size={19} />}</button>
           </div>
         </header>
 
-        <main className={`dashboard-grid ${activeRoomMenu ? "has-room-panel" : ""}`}>
-          <nav className={`side-column side-left room-control-panel ${activeRoomMenu ? "has-open-panel" : ""}`} aria-label="Atalhos principais da sala">
-            <button className="room-adventure-entry" type="button" onClick={() => { setActiveRoomMenu(null); openAdventure(); }} aria-label="Jogar aventura principal de 100 fases" title="Jogar aventura principal" data-room-tour="adventure">
-              <span className="room-adventure-icon"><Gamepad2 size={18} /></span>
-              <span className="room-adventure-copy"><strong>Aventura</strong><small>Jogar 100 fases</small></span>
-              <ChevronRight size={17} aria-hidden="true" />
-            </button>
-            <div className="room-control-grid" role="group" data-room-tour="room-tools" aria-label="Atalhos da sala, dos cuidados e dos itens">
-              <button className="room-action-card room-action-home" type="button" onClick={() => toggleRoomMenu("rooms")} aria-expanded={activeRoomMenu === "rooms"} aria-label="Escolher uma casa" title="Escolher casa">
-                <span className="room-action-illustration"><HomeIcon size={19} /></span><span className="room-action-copy"><strong>Casas</strong><small>Trocar sala</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className="room-action-card room-action-decor" type="button" onClick={() => { setSelectedDecorationId(null); setPendingDecoration(null); toggleRoomMenu("decor"); }} aria-expanded={activeRoomMenu === "decor"} aria-label="Ver decorações desta casa" title="Decorar esta casa">
-                <span className="room-action-illustration"><Sparkles size={19} /></span><span className="room-action-copy"><strong>Decorar</strong><small>Peças da casa</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className={`room-action-card room-action-care ${activeRoomMenu === "care" ? "is-active" : ""}`} type="button" onClick={() => toggleRoomMenu("care")} aria-expanded={activeRoomMenu === "care"} title="Cuidar e ver necessidades" data-room-tour="care">
-                <span className="room-action-illustration"><PawPrint size={18} /></span><span className="room-action-copy"><strong>Cuidar</strong><small>Como ele está?</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className={`room-action-card room-action-feed ${activeRoomMenu === "feeding" ? "is-active" : ""}`} type="button" onClick={() => toggleRoomMenu("feeding")} aria-expanded={activeRoomMenu === "feeding"} aria-label="Ver itens para alimentar o pet" title="Petiscos e alimentação" data-room-tour="feeding">
-                <span className="room-action-illustration"><Utensils size={18} /></span><span className="room-action-copy"><strong>Petiscos</strong><small>Alimentar</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className={`room-action-card room-action-missions ${activeRoomMenu === "missions" ? "is-active" : ""}`} type="button" onClick={() => toggleRoomMenu("missions")} aria-expanded={activeRoomMenu === "missions"} aria-label="Ver missões e recompensas" title="Ver missões">
-                <span className="room-action-illustration"><Star size={18} fill="currentColor" /></span><span className="room-action-copy"><strong>Missões</strong><small>{Math.min(game.missionProgress, 3)}/3 completas</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className={`room-action-card room-action-inventory ${activeRoomMenu === "inventory" ? "is-active" : ""}`} type="button" onClick={() => toggleRoomMenu("inventory")} aria-expanded={activeRoomMenu === "inventory"} aria-label="Abrir mochila e ver itens" title="Abrir mochila" data-room-tour="inventory">
-                <span className="room-action-illustration"><Backpack size={18} /></span><span className="room-action-copy"><strong>Mochila</strong><small>Itens e prêmios</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className="room-action-card room-action-shop" type="button" onClick={() => openShop("items")} aria-label="Abrir loja de itens" title="Loja">
-                <span className="room-action-illustration"><ShoppingBag size={18} /></span><span className="room-action-copy"><strong>Loja</strong><small>Comprar itens</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-              <button className="room-action-card room-action-story" type="button" onClick={() => { setActiveRoomMenu(null); setStoryLevel(game.level); }} aria-label="Ler história do capítulo atual" title="História">
-                <span className="room-action-illustration"><BookOpen size={18} /></span><span className="room-action-copy"><strong>História</strong><small>Capítulo atual</small></span><ChevronRight size={14} aria-hidden="true" />
-              </button>
-            </div>
-          </nav>
+        <main className="dashboard-grid">
+          <aside className="side-column side-left">
+            <section className={`glass-panel stats-panel ${collapsed.stats ? "panel-is-collapsed" : ""}`}>
+              <div className="panel-heading"><h2>Como estou?</h2><div className="panel-heading-actions"><span className="status-dot" /><CollapseButton collapsed={collapsed.stats} onClick={() => togglePanel("stats")} label="status" /></div></div>
+              {!collapsed.stats && <div className="stats-list">{statMeta.map((item) => <div className="stat-row" key={item.key}><div className="stat-icon">{item.icon}</div><div className="stat-main"><div className="stat-label"><strong>{item.label}</strong><span>{Math.round(game.stats[item.key])}%</span></div><div className={`stat-track ${item.color}`}><span style={{ width: `${game.stats[item.key]}%` }} /></div></div></div>)}</div>}
+            </section>
+            <section className={`glass-panel care-panel ${collapsed.care ? "panel-is-collapsed" : ""}`} data-room-tour="care">
+              <div className="panel-heading"><h2>Cuidar</h2><div className="panel-heading-actions"><span className="panel-caption">um gesto de carinho</span><CollapseButton collapsed={collapsed.care} onClick={() => { if (!collapsed.care) setActiveCareAction(null); togglePanel("care"); }} label="cuidados" /></div></div>
+              {!collapsed.care && <div className="care-grid">
+                <button className={`care-button feed ${activeCareAction === "food" ? "is-active" : ""}`} aria-expanded={activeCareAction === "food"} onClick={() => openCareAction("food")}><span>🍎</span><b>Alimentar</b><small>{game.inventory.sardinha > 0 ? `${game.inventory.sardinha} na mochila` : "ver petiscos"}</small></button>
+                <button className={`care-button bath ${activeCareAction === "bath" ? "is-active" : ""}`} aria-expanded={activeCareAction === "bath"} onClick={() => openCareAction("bath")}><span><Bath size={22} /></span><b>Banho</b><small>{game.inventory.banho > 0 ? `${game.inventory.banho} na mochila` : "12 moedas"}</small></button>
+                <button className={`care-button love ${activeCareAction === "love" ? "is-active" : ""}`} aria-expanded={activeCareAction === "love"} onClick={() => openCareAction("love")}><span><Heart size={22} fill="currentColor" /></span><b>Carinho</b><small>{game.inventory.novelo > 0 ? `${game.inventory.novelo} na mochila` : "grátis"}</small></button>
+                <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""} ${activeCareAction === "sleep" ? "is-active" : ""}`} aria-expanded={activeCareAction === "sleep"} onClick={() => openCareAction("sleep")}><span><Moon size={22} fill="currentColor" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>{game.inventory.caminha > 0 && !game.sleeping ? `${game.inventory.caminha} na mochila` : "recupera energia"}</small></button>
+              </div>}
+              {!collapsed.care && activeCareAction && !focusMode && renderCareActionTray()}
+              {!collapsed.care && <button className="care-inventory-link" onClick={() => openShop("inventory")}>Ver mochila completa <ChevronRight size={15} /></button>}
+            </section>
+          </aside>
 
-          {activeRoomMenu && <section className={`room-menu-panel room-menu-${activeRoomMenu}`} role="region" aria-label={`${roomPanelCopy[activeRoomMenu].title} do pet`}>
-            <div className="room-menu-panel-heading"><div><span className="room-menu-kicker">{roomPanelCopy[activeRoomMenu].kicker}</span><h2>{roomPanelCopy[activeRoomMenu].title}</h2></div><button className="room-menu-panel-close" type="button" onClick={() => setActiveRoomMenu(null)} aria-label="Fechar menu"><X size={17} /></button></div>
-            {activeRoomMenu === "care" && <div className="room-menu-care">
-              <div className="room-menu-care-status"><div className="room-menu-section-title"><Activity size={15} /> Como estou?</div><div className="stats-list">{statMeta.map((item) => <div className="stat-row" key={item.key}><div className="stat-icon">{item.icon}</div><div className="stat-main"><div className="stat-label"><strong>{item.label}</strong><span>{Math.round(game.stats[item.key])}%</span></div><div className={`stat-track ${item.color}`}><span style={{ width: `${game.stats[item.key]}%` }} /></div></div></div>)}</div></div>
-              <div className="care-grid">
-                <button className="care-button feed" onClick={() => care("food")}><span>🍎</span><b>Alimentar</b><small>18 moedas</small></button>
-                <button className="care-button bath" onClick={() => care("bath")}><span><Bath size={22} /></span><b>Banho</b><small>12 moedas</small></button>
-                <button className="care-button love" onClick={() => care("love")}><span><Heart size={22} fill="currentColor" /></span><b>Carinho</b><small>grátis</small></button>
-                <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""}`} onClick={() => care("sleep")}><span><Moon size={22} fill="currentColor" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>recupera energia</small></button>
-              </div>
-            </div>}
-            {activeRoomMenu === "missions" && <div className="room-menu-missions"><p>Complete 3 minijogos para ganhar moedas e XP.</p><div className="mission-progress-row"><div className="mission-track"><span style={{ width: `${missionPercent}%` }} /></div><strong>{Math.min(game.missionProgress, 3)}/3</strong></div><div className="mission-reward"><span>Recompensa</span><strong><Coins size={17} fill="currentColor" /> +200</strong></div><button className="mission-button" onClick={openMiniHub}>{game.missionClaimed ? "Jogar de novo" : "Ver minijogos"}<ChevronRight size={16} /></button></div>}
-            {activeRoomMenu === "minigames" && <div className="room-mini-grid">{MINI_GAMES.map((item) => <button className={`room-mini-game-card ${item.id === "colheita" ? "featured" : ""}`} key={item.id} type="button" onClick={() => startMinigame(item.id)}><span className="room-mini-game-icon">{item.icon}</span><span className="room-mini-game-copy"><strong>{item.title}</strong><small>{item.badge}</small></span><ChevronRight size={14} /></button>)}</div>}
-            {activeRoomMenu === "feeding" && <div className="room-menu-feeding"><p>Use um petisco da mochila ou ofereça uma refeição rápida.</p>{STORE_ITEMS.filter((item) => item.stat === "fome").map((item) => { const count = game.inventory[item.id] ?? 0; return <div className="room-item-row" key={item.id}><span className="room-item-emoji">{item.icon}</span><span className="room-item-copy"><strong>{item.name}</strong><small>Na mochila: {count} · +{item.boost}% de fome</small></span>{count > 0 ? <button className="room-item-action use" type="button" onClick={() => consumeItem(item.id)}>Usar</button> : <button className="room-item-action buy" type="button" onClick={() => { setActiveRoomMenu(null); openShop("items"); }}>Comprar</button>}</div>; })}<button className="care-button feed room-quick-feed" type="button" onClick={() => care("food")}><span>🍎</span><b>Alimentar agora</b><small>18 moedas</small></button></div>}
-            {activeRoomMenu === "inventory" && <div className="room-menu-inventory"><p>Seus itens ficam guardados aqui. Use consumíveis ou posicione uma decoração conquistada.</p><h3>Cuidados e consumíveis</h3><div className="room-item-list">{STORE_ITEMS.filter((item) => (game.inventory[item.id] ?? 0) > 0).map((item) => <div className="room-item-row" key={item.id}><span className="room-item-emoji">{item.icon}</span><span className="room-item-copy"><strong>{item.name}</strong><small>Quantidade: {game.inventory[item.id]}</small></span><button className="room-item-action use" type="button" onClick={() => consumeItem(item.id)}>Usar</button></div>)}</div>{STORE_ITEMS.every((item) => (game.inventory[item.id] ?? 0) < 1) && <p className="inventory-empty">Sua mochila de cuidados está vazia. Visite a Loja para comprar mimos.</p>}<h3>Decorações conquistadas</h3><div className="room-item-list">{DECORATIONS.filter((item) => (game.decorInventory[item.id] ?? 0) > 0).map((item) => { const placedIn = Object.entries(game.roomDecorations).find(([, items]) => items.some((placement) => placement.itemId === item.id))?.[0]; return <div className="room-item-row" key={item.id}><span className="room-item-art"><img src={GAME_ASSETS.decorations[item.id]} alt="" loading="lazy" /></span><span className="room-item-copy"><strong>{item.name}</strong><small>{placedIn ? `Já está na Casa ${placedIn}` : `Recompensa da Casa ${item.room}`}</small></span><button className="room-item-action use" type="button" disabled={Boolean(placedIn)} onClick={() => useDecorationFromBackpack(item.id)}>{placedIn ? "Fixada" : "Colocar"}</button></div>; })}</div>{DECORATIONS.every((item) => (game.decorInventory[item.id] ?? 0) < 1) && <p className="inventory-empty">Vença fases da Aventura para conquistar decorações únicas.</p>}</div>}
-            {activeRoomMenu === "decor" && <div className="room-menu-decor"><p>Casa {game.activeRoom} · {activeChapter.location}. Cada peça vem da fase correspondente da Aventura.</p><div className="room-item-list decor-item-list">{roomDecorationCatalog.map((item) => { const count = game.decorInventory[item.id] ?? 0; const stageId = getDecorationStageId(item.id); const unlocked = Boolean(stageId && game.platformProgress.completedStages.includes(stageId)); const placed = Object.values(game.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id)); return <button className="room-item-row room-decor-row" key={item.id} type="button" disabled={!unlocked || placed} onClick={() => buyOrEquipDecoration(item.id)}><span className="room-item-art"><img src={GAME_ASSETS.decorations[item.id]} alt="" loading="lazy" /></span><span className="room-item-copy"><strong>{item.name}</strong><small>{placed ? "Peça única já posicionada" : unlocked ? count > 0 ? "Na mochila · toque para colocar" : `Liberada · ${item.price} moedas` : `Conquiste a fase ${stageId}`}</small></span>{placed ? <Check size={15} aria-label="Já posicionada" /> : !unlocked ? <LockKeyhole size={15} aria-label="Ainda bloqueada" /> : <ChevronRight size={15} aria-hidden="true" />}</button>; })}</div></div>}
-            {activeRoomMenu === "rooms" && <div className="room-menu-rooms"><p>As casas conquistadas continuam decoradas. Escolha para onde passear.</p><div className="room-map-side-grid">{CAMPAIGN_LEVELS.slice(0, game.level).map((chapter) => <button type="button" key={chapter.level} className={`room-map-side-item ${game.activeRoom === chapter.level ? "current" : ""}`} onClick={() => selectHouse(chapter.level)} style={{ backgroundImage: `linear-gradient(180deg,rgba(7,17,42,.1),rgba(7,17,42,.92)),url(${GAME_ASSETS.levels[chapter.level - 1]})` }}><span>CASA {chapter.level}</span><strong>{chapter.location}</strong><small>{chapter.title}</small>{game.activeRoom === chapter.level && <i>Você está aqui</i>}</button>)}</div><p className="room-map-note"><MapPin size={14} /> {game.level} de 10 casas desbloqueadas</p></div>}
-          </section>}
-
-          <section className="center-stage" aria-label={`Cenário de ${activeChapter.location}`} onClick={handleStageClick} data-room-tour="room">
+          <section className="center-stage" data-room-tour="room" aria-label={`Cenário de ${activeChapter.location}`} onClick={handleStageClick}>
             <div className="stage-location-tag"><HomeIcon size={13} /><span>CASA {game.activeRoom}</span><i />{activeChapter.location}</div>
             <CreatorPlaquePicker onOpen={() => setCreatorInfoOpen(true)} />
             {currentCompanion && <button className="stage-companion-tag" type="button" onClick={() => tapCompanion(currentCompanion.id)} aria-label={`Ouvir ${currentCompanion.name}`}><span>✦</span> {currentCompanion.name}: toque para ouvir</button>}
             {roomDecorations.filter((placement) => placement.id !== selectedDecorationId).map((placement) => <SceneDecorationPicker key={`picker-${placement.id}`} placement={placement} onSelect={() => setSelectedDecorationId(placement.id)} />)}
             {roomDecorations.filter((placement) => selectedDecorationId === placement.id).map((placement) => <SceneDecoration key={placement.id} placement={placement} image={GAME_ASSETS.decorations[placement.itemId]} selected onSelect={() => setSelectedDecorationId(placement.id)} onFix={() => setSelectedDecorationId(null)} onMove={moveDecoration} onRemove={(id) => { setSelectedDecorationId(null); setGame((current) => removeDecoration(current, id)); showToast("Item guardado novamente na mochila."); }} />)}
             {roomGifts.map((gift) => <SceneGift key={gift.id} gift={gift} image={GAME_ASSETS.gift} now={giftClock} onCollect={collectGift} />)}
+            <div className="stage-toolbar" data-room-tour="room-tools" onClick={(event) => event.stopPropagation()}>
+              <button type="button" onClick={() => setRoomsOpen(true)}><MapPin size={14} /> Casas</button>
+              <button type="button" onClick={() => { setSelectedDecorationId(null); setPendingDecoration(null); openShop("decor"); }}><Sparkles size={14} /> Decorar</button>
+              {focusMode && <button type="button" className="focus-feed-shortcut" aria-expanded={activeCareAction === "food"} onClick={() => openCareAction("food")}><span aria-hidden="true">🍎</span> Alimentar</button>}
+            </div>
             <button className="scene-photo-button" type="button" onClick={(event) => { event.stopPropagation(); void saveScenePhoto(); }} aria-label="Salvar foto limpa do cenário e do pet" title="Salvar foto limpa"><Camera size={16} /></button>
             {pendingDecoration && <div className="placement-nudge"><Sparkles size={14} /> Toque onde quer colocar o item</div>}
             {petLine && <div ref={petSpeechElementRef} className={`pet-speech ${petSpeechVisible ? "is-visible" : "is-fading"}`} role="status" aria-live="polite">{petLine}</div>}
             {game.profile && <div ref={petNameplateRef} className={`pet-nameplate ${showPetName ? "is-visible" : ""}`} aria-hidden={!showPetName}><span className="online-dot" /> {game.profile.name}</div>}
             <div className="stage-hint"><Sparkles size={14} /> {pendingDecoration ? "Toque no cenário para colocar o item" : selectedDecorationId ? "Arraste para ajustar · toque em Fixar ao terminar" : "Toque no cenário para passear · toque no pet para carinho"}</div>
-            <button ref={petTapAreaRef} className="pet-tap-area" onClick={petTap} aria-label={`Fazer carinho em ${petName}`} />
+            <button ref={petTapAreaRef} className={`pet-tap-area ${petDropTarget ? "is-care-drop-target" : ""}`} onClick={petTap} onDragEnter={(event) => { event.preventDefault(); setPetDropTarget(true); }} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; setPetDropTarget(true); }} onDragLeave={() => setPetDropTarget(false)} onDrop={dropCareItemOnPet} aria-label={activeCareAction ? `Soltar item de ${CARE_ACTION_META[activeCareAction].label.toLowerCase()} em ${petName}` : `Fazer carinho em ${petName}`} />
           </section>
 
+          <aside className="side-column side-right">
+            <section className={`mission-card ${collapsed.mission ? "panel-is-collapsed" : ""}`} data-room-tour="missions">
+              <div className="mission-heading"><span className="mission-star"><Star size={24} fill="currentColor" /></span><div><small>MISSÃO DO NÍVEL {game.level}</small><h2>{game.missionClaimed ? "Desafio concluído!" : "Brincar faz bem"}</h2></div><CollapseButton collapsed={collapsed.mission} onClick={() => togglePanel("mission")} label="missão" /></div>
+              {!collapsed.mission && <><p>Complete 3 minijogos para ganhar moedas e XP.</p><div className="mission-progress-row"><div className="mission-track"><span style={{ width: `${missionPercent}%` }} /></div><strong>{Math.min(game.missionProgress, 3)}/3</strong></div><div className="mission-reward"><span>Recompensa</span><strong><Coins size={17} fill="currentColor" /> +200</strong></div><button className="mission-button" data-room-tour="minigames" onClick={openMiniHub}>{game.missionClaimed ? "Jogar de novo" : "Ver minijogos"}<ChevronRight size={16} /></button></>}
+            </section>
+            <section className={`glass-panel shop-preview ${collapsed.shop ? "panel-is-collapsed" : ""}`}>
+              <div className="panel-heading"><h2><ShoppingBag size={19} /> Loja</h2><div className="panel-heading-actions"><button className="text-link backpack-inline" onClick={() => openShop("inventory")} data-room-tour="inventory"><Backpack size={14} /> Mochila</button><button className="text-link" onClick={() => openShop("items")}>Ver tudo <ChevronRight size={14} /></button><CollapseButton collapsed={collapsed.shop} onClick={() => togglePanel("shop")} label="loja" /></div></div>
+              {!collapsed.shop && <><div className="shop-shortcuts">
+                <button onClick={() => openShop("looks")}><span>🎀</span><small>Visuais</small></button>
+                <button onClick={() => openShop("items")}><span>🐟</span><small>Itens</small></button>
+                <button onClick={() => openShop("boosts")}><span>⚡</span><small>Boosts</small></button>
+                <button onClick={() => openShop("friends")}><span>🐾</span><small>Amigos</small></button>
+              </div><div className="shop-nudge"><span>✨</span><p>Moedas virtuais viram mimos, cuidados e novos companheiros.</p></div></>}
+            </section>
+            <button className="chapter-shortcut" onClick={() => setStoryLevel(game.level)}><BookOpen size={17} /><span><small>SUA HISTÓRIA</small><strong>{currentChapter.title}</strong></span><ChevronRight size={17} /></button>
+          </aside>
         </main>
+
+        {focusMode && activeCareAction === "food" && <div className="focus-care-tray">{renderCareActionTray()}</div>}
+
+        <nav className="bottom-nav" aria-label="Navegação do jogo">
+          <button className={`nav-item ${activeTab === "care" ? "active care-active" : ""}`} onClick={selectCareTab}><span><PawPrint size={20} fill="currentColor" /></span><b>Cuidar</b></button>
+          <button className={`nav-item ${activeTab === "games" ? "active games-active" : ""}`} onClick={openMiniHub}><span><Gamepad2 size={21} /></span><b>Minijogos <i>11</i></b></button>
+          <button className={`nav-item ${activeTab === "shop" ? "active shop-active" : ""}`} onClick={() => openShop("items")}><span><ShoppingBag size={20} /></span><b>Loja</b></button>
+        </nav>
       </div>
 
       {toast && <div className="toast-message" role="status"><Sparkles size={16} />{toast}</div>}

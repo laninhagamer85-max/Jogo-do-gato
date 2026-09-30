@@ -67,3 +67,9 @@ Substitui as notas anteriores: a Aventura é o botão de destaque acima de um gr
 Tela limpa oculta a UI adicional, mantendo câmera, Sobre, mapa, decoração e alimentação. Em paisagem curta, Sobre fica no rodapé, depois do dock; esconde enquanto o painel ocupa essa área para não cobrir ações e reaparece ao fechar. Em modo limpo ele retorna ao canto inferior esquerdo, alinhado com a câmera.
 
 QA no demo em 1280×720, 375×812, 844×390 e 667×375. Revisados painéis de Cuidar, Missões e Minijogos; todas as quatro ações de cuidado e os 11 jogos cabem em paisagem curta sem corte; mapa, decoração e petiscos continuam funcionais no modo limpo. TypeScript, build e diff-check passaram; build mantém apenas o aviso de chunk grande do Babylon. Preview: https://3000-iq758tlsmeljsgb03xc3g-23cfac3e.us1.manus.computer/?demo=1. PR #2 (`feature/meu-pet-virtual-refresh`) deve continuar aberto, sem merge/publicação.
+
+
+## Estado final da sala e QA — 2026-09-30
+Manter a versão de duas colunas preferida em 29/09: cuidados/status à esquerda, cenário central, missão/loja/história à direita; Casas/Decorar diretos na cena e Cuidar/Minijogos/Loja no rodapé. Essa escolha substitui a proposta de navegação flutuante. Foram sincronizados o orquestrador da sala, regras CSS finais, tutorial, cor da barra Felicidade e tintas das decorações; assets, catálogo de jogo, modelos e dependências do branch permaneceram intactos.
+
+QA: desktop 1280×720, retrato 375×812, paisagem 844×390 e curta 667×375; cuidado via toque e drag/drop; modo limpo com alimentação; panel scroll acima do rodapé; rotas Casas/Decorar/Mochila/Minijogos; recompensas Sardinha e Luminária lunar com “Usar agora”; tutorial de seis passos. `?demo=1` manteve hash/chaves de `localStorage` idênticas durante a interação, sem expor conteúdo de saves. TypeScript/build Vite/diff-check aprovados; aviso do chunk Babylon >500 kB permanece informativo. PR #2 deve continuar aberto: sem merge e sem publicação.

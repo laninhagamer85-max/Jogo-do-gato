@@ -97,7 +97,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 .stat-label span { color: #f7f9ff; font-size: 10px; font-weight: 900; }
 .stat-track { height: 8px; background: rgb(255 255 255 / 14%); }
 .stat-track span { display: block; height: 100%; border-radius: inherit; transition: width 250ms var(--ease-out); }
-.stat-track.pink span { background: linear-gradient(90deg,#1cd783,#70f294); }
+.stat-track.pink span { background: linear-gradient(90deg,#ff75ae,#ff4e91); }
 .stat-track.gold span { background: linear-gradient(90deg,#f5aa25,#ffd665); }
 .stat-track.cyan span { background: linear-gradient(90deg,#10bcec,#5ce4ff); }
 .stat-track.violet span { background: linear-gradient(90deg,#914cf1,#c290ff); }
@@ -2231,4 +2231,291 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 
 @media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
   .game-root:has(.room-menu-panel) .creator-about-button { visibility: hidden; pointer-events: none; }
+}
+
+/* Restored 2026-09-29 room layout: care/status left, pet scene center, missions/shop/story right. */
+.game-root.classic-two-column-layout { overflow: visible; }
+.game-root.classic-two-column-layout .screen-ui { min-height: 100svh; padding: 17px clamp(12px,2.2vw,30px) 100px; }
+.game-root.classic-two-column-layout .topbar { display:grid; grid-template-columns:minmax(190px,1fr) minmax(250px,350px) minmax(260px,1fr); grid-template-areas:none; align-items:center; gap:18px; max-width:1600px; margin:0 auto; }
+.game-root.classic-two-column-layout .topbar > .brand-lockup { grid-area:auto; }
+.game-root.classic-two-column-layout .topbar > .level-card { grid-area:auto; width:100%; max-width:350px; min-height:0; padding:10px 14px; }
+.game-root.classic-two-column-layout .topbar > .top-actions { grid-area:auto; display:flex; align-self:auto; justify-content:flex-end; align-items:center; gap:8px; }
+.game-root.classic-two-column-layout .top-actions .adventure-home-button { display:inline-flex; }
+.game-root.classic-two-column-layout .dashboard-grid { display:grid; grid-template-columns:minmax(205px,250px) minmax(280px,1fr) minmax(220px,270px); grid-template-areas:none; align-items:center; gap:clamp(12px,1.6vw,22px); max-width:1600px; min-height:calc(100svh - 146px); margin:0 auto; padding-top:20px; }
+.game-root.classic-two-column-layout .side-column { position:static; display:flex; width:auto; max-width:none; max-height:none; flex-direction:column; align-items:stretch; gap:15px; overflow:visible; }
+.game-root.classic-two-column-layout .side-left,.game-root.classic-two-column-layout .side-right { grid-area:auto; }
+.game-root.classic-two-column-layout .center-stage { grid-area:auto; width:auto; min-width:0; min-height:min(68svh,650px); max-height:none; padding:0 18px 67px; }
+.game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .shop-preview { padding:15px; }
+.game-root.classic-two-column-layout .bottom-nav { display:flex; }
+.game-root.classic-two-column-layout .mission-card,.game-root.classic-two-column-layout .shop-preview { height:auto; }
+.game-root.classic-two-column-layout .stage-toolbar { display:flex; }
+.game-root.classic-two-column-layout .backpack-inline { display:inline-flex; align-items:center; gap:4px; color:#bfdaff; }
+.game-root.classic-two-column-layout .backpack-inline:hover { color:#fff; }
+
+@media (max-width:1120px) and (min-width:901px) {
+  .game-root.classic-two-column-layout .screen-ui { padding-right:15px; padding-left:15px; }
+  .game-root.classic-two-column-layout .topbar { grid-template-columns:minmax(160px,1fr) minmax(220px,300px) minmax(240px,1fr); gap:10px; }
+  .game-root.classic-two-column-layout .dashboard-grid { grid-template-columns:minmax(185px,220px) minmax(245px,1fr) minmax(205px,235px); gap:10px; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .shop-preview { padding:12px; }
+  .game-root.classic-two-column-layout .center-stage { min-height:520px; }
+}
+@media (max-width:900px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .screen-ui { padding:12px 12px 96px; }
+  .game-root.classic-two-column-layout .topbar { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"brand actions" "progress progress"; gap:8px; }
+  .game-root.classic-two-column-layout .topbar > .brand-lockup { grid-area:brand; }
+  .game-root.classic-two-column-layout .topbar > .level-card { grid-area:progress; max-width:none; }
+  .game-root.classic-two-column-layout .topbar > .top-actions { grid-area:actions; gap:5px; }
+  .game-root.classic-two-column-layout .top-actions .adventure-home-button span { display:none; }
+  .game-root.classic-two-column-layout .dashboard-grid { grid-template-columns:minmax(0,1fr); grid-template-areas:"stage" "left" "right"; gap:12px; min-height:0; padding-top:8px; }
+  .game-root.classic-two-column-layout .center-stage { grid-area:stage; min-height:min(62svh,510px); padding-bottom:48px; }
+  .game-root.classic-two-column-layout .side-left { grid-area:left; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:9px; }
+  .game-root.classic-two-column-layout .side-right { grid-area:right; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:9px; }
+  .game-root.classic-two-column-layout .mission-card,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .shop-preview { min-height:100%; }
+  .game-root.classic-two-column-layout .chapter-shortcut { min-height:64px; }
+  .game-root.classic-two-column-layout .bottom-nav { bottom:max(7px,env(safe-area-inset-bottom)); }
+}
+@media (max-width:600px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .screen-ui { padding:8px 9px 88px; }
+  .game-root.classic-two-column-layout .topbar { gap:7px; }
+  .game-root.classic-two-column-layout .brand-paw { width:36px; height:36px; }
+  .game-root.classic-two-column-layout .brand-lockup strong { font-size:19px; }
+  .game-root.classic-two-column-layout .brand-lockup small { font-size:7px; letter-spacing:1.2px; }
+  .game-root.classic-two-column-layout .top-actions .coin-pill { min-height:36px; gap:4px; padding:0 6px; font-size:10px; }
+  .game-root.classic-two-column-layout .top-actions .coin-plus { width:18px; height:18px; }
+  .game-root.classic-two-column-layout .top-actions .icon-button,.game-root.classic-two-column-layout .top-actions .adventure-home-button { width:36px; min-width:36px; height:36px; min-height:36px; padding:0; }
+  .game-root.classic-two-column-layout .top-actions .icon-button svg,.game-root.classic-two-column-layout .top-actions .adventure-home-button svg { width:15px; height:15px; }
+  .game-root.classic-two-column-layout .dashboard-grid { gap:9px; }
+  .game-root.classic-two-column-layout .center-stage { min-height:min(59svh,470px); }
+  .game-root.classic-two-column-layout .side-left,.game-root.classic-two-column-layout .side-right { gap:7px; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .shop-preview,.game-root.classic-two-column-layout .mission-card { padding:9px; border-radius:15px; }
+  .game-root.classic-two-column-layout .panel-heading { margin-bottom:7px; }
+  .game-root.classic-two-column-layout .panel-heading h2 { font-size:14px; }
+  .game-root.classic-two-column-layout .stats-list { gap:7px; }
+  .game-root.classic-two-column-layout .care-grid { gap:5px; }
+  .game-root.classic-two-column-layout .care-button { min-height:48px; padding-left:36px; }
+  .game-root.classic-two-column-layout .care-button > span { left:5px; width:25px; height:27px; }
+  .game-root.classic-two-column-layout .care-button b { font-size:9px; }
+  .game-root.classic-two-column-layout .care-button small { font-size:7px; }
+  .game-root.classic-two-column-layout .bottom-nav { gap:3px; padding:4px; }
+  .game-root.classic-two-column-layout .nav-item { min-width:88px; padding:6px 9px 4px; }
+}
+@media (max-width:900px) and (orientation:landscape) {
+  .game-root.classic-two-column-layout .screen-ui { padding:8px 10px 62px; }
+  .game-root.classic-two-column-layout .topbar { grid-template-columns:minmax(130px,1fr) minmax(190px,280px) auto; gap:8px; }
+  .game-root.classic-two-column-layout .topbar > .level-card { max-width:none; padding:6px 9px; }
+  .game-root.classic-two-column-layout .topbar .brand-paw { width:36px; height:36px; }
+  .game-root.classic-two-column-layout .topbar .brand-lockup strong { font-size:19px; }
+  .game-root.classic-two-column-layout .topbar .brand-lockup small { font-size:7px; letter-spacing:1px; }
+  .game-root.classic-two-column-layout .top-actions { gap:4px; }
+  .game-root.classic-two-column-layout .top-actions .coin-pill { min-height:35px; gap:4px; padding:0 6px; font-size:10px; }
+  .game-root.classic-two-column-layout .top-actions .coin-plus { display:none; }
+  .game-root.classic-two-column-layout .top-actions .icon-button,.game-root.classic-two-column-layout .top-actions .adventure-home-button { width:34px; min-width:34px; height:34px; min-height:34px; padding:0; }
+  .game-root.classic-two-column-layout .top-actions .adventure-home-button span { display:none; }
+  .game-root.classic-two-column-layout .dashboard-grid { grid-template-columns:minmax(150px,190px) minmax(0,1fr) minmax(165px,205px); gap:8px; min-height:calc(100svh - 100px); padding-top:8px; }
+  .game-root.classic-two-column-layout .side-column { gap:7px; }
+  .game-root.classic-two-column-layout .center-stage { min-height:min(57svh,310px); padding:0 8px 34px; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .shop-preview,.game-root.classic-two-column-layout .mission-card { padding:7px; border-radius:13px; }
+  .game-root.classic-two-column-layout .panel-heading { margin-bottom:5px; }
+  .game-root.classic-two-column-layout .panel-heading h2 { font-size:13px; }
+  .game-root.classic-two-column-layout .stats-list { gap:4px; }
+  .game-root.classic-two-column-layout .stat-row { gap:4px; }
+  .game-root.classic-two-column-layout .stat-icon { flex-basis:24px; width:24px; height:24px; font-size:14px; }
+  .game-root.classic-two-column-layout .stat-label { margin-bottom:2px; font-size:8px; }
+  .game-root.classic-two-column-layout .stat-label strong,.game-root.classic-two-column-layout .stat-label span { font-size:8px; }
+  .game-root.classic-two-column-layout .stat-track { height:5px; }
+  .game-root.classic-two-column-layout .care-grid { gap:4px; }
+  .game-root.classic-two-column-layout .care-button { min-height:39px; padding-left:29px; }
+  .game-root.classic-two-column-layout .care-button > span { left:4px; width:21px; height:25px; font-size:13px; }
+  .game-root.classic-two-column-layout .care-button b { font-size:8px; }
+  .game-root.classic-two-column-layout .care-button small { font-size:6px; }
+  .game-root.classic-two-column-layout .mission-card > p { margin:6px 0 4px; font-size:8px; }
+  .game-root.classic-two-column-layout .mission-heading h2 { font-size:12px; }
+  .game-root.classic-two-column-layout .mission-reward { margin:5px 0; }
+  .game-root.classic-two-column-layout .mission-button { min-height:27px; }
+  .game-root.classic-two-column-layout .shop-shortcuts { gap:4px; }
+  .game-root.classic-two-column-layout .shop-shortcuts button { min-height:43px; padding:4px; }
+  .game-root.classic-two-column-layout .shop-shortcuts button span { font-size:17px; }
+  .game-root.classic-two-column-layout .shop-nudge { display:none; }
+  .game-root.classic-two-column-layout .chapter-shortcut { min-height:37px; padding:6px; }
+  .game-root.classic-two-column-layout .bottom-nav { bottom:max(4px,env(safe-area-inset-bottom)); gap:3px; padding:4px; }
+  .game-root.classic-two-column-layout .nav-item { min-width:82px; flex-direction:row; gap:4px; padding:5px 9px; }
+  .game-root.classic-two-column-layout .nav-item > span { width:20px; height:20px; }
+}
+@media (max-width:900px) and (orientation:landscape) and (max-height:440px) {
+  .game-root.classic-two-column-layout .screen-ui { padding-top:5px; }
+  .game-root.classic-two-column-layout .topbar { grid-template-columns:minmax(115px,1fr) minmax(160px,240px) auto; gap:5px; }
+  .game-root.classic-two-column-layout .topbar .brand-paw { width:30px; height:30px; }
+  .game-root.classic-two-column-layout .topbar .brand-lockup strong { font-size:16px; }
+  .game-root.classic-two-column-layout .topbar .brand-lockup small { margin-top:3px; font-size:6px; }
+  .game-root.classic-two-column-layout .topbar > .level-card { padding:4px 7px; }
+  .game-root.classic-two-column-layout .level-heading strong { font-size:10px; }
+  .game-root.classic-two-column-layout .xp-copy { font-size:8px; }
+  .game-root.classic-two-column-layout .xp-track { height:5px; margin-top:4px; }
+  .game-root.classic-two-column-layout .dashboard-grid { grid-template-columns:minmax(135px,170px) minmax(0,1fr) minmax(145px,180px); gap:6px; min-height:calc(100svh - 77px); padding-top:5px; }
+  .game-root.classic-two-column-layout .side-column { gap:5px; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .shop-preview,.game-root.classic-two-column-layout .mission-card { padding:5px; }
+  .game-root.classic-two-column-layout .mission-card > p,.game-root.classic-two-column-layout .shop-nudge { display:none; }
+  .game-root.classic-two-column-layout .shop-shortcuts button { min-height:34px; }
+  .game-root.classic-two-column-layout .chapter-shortcut { min-height:30px; }
+  .game-root.classic-two-column-layout .bottom-nav { bottom:2px; }
+  .game-root.classic-two-column-layout .nav-item { min-height:28px; padding:3px 7px; }
+}
+.game-root.classic-two-column-layout.focus-mode .screen-ui { min-height:0; padding:0; pointer-events:none; }
+.game-root.classic-two-column-layout.focus-mode .topbar { position:fixed; top:12px; right:12px; bottom:auto; left:auto; z-index:40; display:flex; width:max-content; height:auto; min-height:0; max-width:max-content; max-height:none; justify-content:flex-end; gap:7px; margin:0; padding:0; pointer-events:none; }
+.game-root.classic-two-column-layout.focus-mode .brand-lockup,.game-root.classic-two-column-layout.focus-mode .level-card,.game-root.classic-two-column-layout.focus-mode .side-column,.game-root.classic-two-column-layout.focus-mode .bottom-nav { display:none !important; }
+.game-root.classic-two-column-layout.focus-mode .top-actions .coin-pill,.game-root.classic-two-column-layout.focus-mode .top-actions .sound-toggle,.game-root.classic-two-column-layout.focus-mode .top-actions .pause-toggle { display:none !important; }
+.game-root.classic-two-column-layout.focus-mode .topbar > .top-actions { width:max-content; height:auto; min-height:0; max-width:max-content; flex:0 0 auto; pointer-events:auto; }
+.game-root.classic-two-column-layout.focus-mode .dashboard-grid { position:fixed; inset:0; display:block; width:100%; max-width:none; min-height:0; margin:0; padding:0; pointer-events:none; }
+.game-root.classic-two-column-layout.focus-mode .center-stage { position:absolute; inset:0; display:block; width:100%; min-height:0; height:100%; max-height:none; padding:0; overflow:visible; pointer-events:auto; }
+.game-root.classic-two-column-layout.focus-mode .stage-location-tag,.game-root.classic-two-column-layout.focus-mode .stage-companion-tag,.game-root.classic-two-column-layout.focus-mode .stage-hint { display:none !important; }
+.game-root.classic-two-column-layout.focus-mode .stage-toolbar { display:flex !important; }
+
+
+/* Responsive polish after restoring the classic menu: panels stack full-width in portrait and size to content in landscape. */
+@media (max-width:900px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .side-left,.game-root.classic-two-column-layout .side-right { grid-template-columns:minmax(0,1fr); align-items:stretch; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .mission-card,.game-root.classic-two-column-layout .shop-preview { min-height:0; }
+}
+@media (max-width:900px) and (orientation:landscape) {
+  .game-root.classic-two-column-layout .side-column { align-self:start; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .mission-card,.game-root.classic-two-column-layout .shop-preview { min-height:0; }
+}
+@media (max-width:390px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .brand-lockup strong { white-space:nowrap; font-size:17px; }
+  .game-root.classic-two-column-layout .brand-lockup small { display:none; }
+}
+
+@media (max-width:900px) and (orientation:landscape) {
+  .game-root.classic-two-column-layout .dashboard-grid { align-items:start; }
+  .game-root.classic-two-column-layout .side-left,.game-root.classic-two-column-layout .side-right { height:max-content !important; align-self:start; }
+  .game-root.classic-two-column-layout .stats-panel,.game-root.classic-two-column-layout .care-panel,.game-root.classic-two-column-layout .mission-card,.game-root.classic-two-column-layout .shop-preview { height:auto !important; min-height:0 !important; flex:0 0 auto; }
+  .game-root.classic-two-column-layout .center-stage { align-self:center; }
+}
+
+@media (max-width:600px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .center-stage { min-height:min(52svh,420px); }
+}
+@media (max-width:900px) and (orientation:landscape) and (max-height:440px) {
+  .game-root.classic-two-column-layout .topbar .brand-lockup strong { white-space:nowrap; font-size:15px; }
+  .game-root.classic-two-column-layout .topbar .brand-lockup small { display:none; }
+}
+
+/* A newer compact layout hid the right sidebar below desktop widths; the restored design keeps it in the stacked responsive flow. */
+@media (max-width:1120px) {
+  .game-root.classic-two-column-layout .side-right { display:flex !important; }
+}
+@media (max-width:900px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .side-right { display:grid !important; grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:900px) and (orientation:landscape) {
+  .game-root.classic-two-column-layout .side-right { display:flex !important; flex-direction:column; }
+}
+
+/* Restore the right-hand menu column on desktop as well; a legacy compact refresh hid it globally. */
+.game-root.classic-two-column-layout .side-right { display:flex !important; }
+
+@media (max-width:600px) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .center-stage { min-height:min(52svh,420px); }
+}
+
+
+/* Restored two-column room: compact item-based care stays inside its existing panel. */
+.care-button.is-active {
+  outline: 2px solid rgb(255 255 255 / 78%);
+  outline-offset: 2px;
+  filter: brightness(1.08);
+}
+.care-action-tray {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid rgb(149 189 255 / 24%);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgb(8 24 55 / 96%), rgb(22 43 83 / 94%));
+  box-shadow: 0 8px 20px rgb(2 8 24 / 22%), inset 0 1px 0 rgb(255 255 255 / 8%);
+}
+.care-action-tray-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.care-action-tray-heading > span { display: grid; gap: 2px; min-width: 0; }
+.care-action-tray-heading strong { color: #fff; font-size: 10px; font-weight: 1000; }
+.care-action-tray-heading small { color: #bdcee9; font-size: 8px; line-height: 1.3; }
+.care-tray-close {
+  display: grid;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 8%);
+  color: #eaf2ff;
+}
+.care-tray-close:hover { background: rgb(255 255 255 / 16%); }
+.care-item-options { display: grid; gap: 5px; }
+.care-item-option {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 39px;
+  padding: 5px 7px;
+  border: 1px solid rgb(255 255 255 / 11%);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 7%);
+  color: #fff;
+  text-align: left;
+  cursor: grab;
+  transition: background 130ms var(--ease-out), transform 130ms var(--ease-out), border-color 130ms;
+}
+.care-item-option:hover { transform: translateY(-1px); border-color: rgb(145 214 255 / 48%); background: rgb(255 255 255 / 12%); }
+.care-item-option:active { cursor: grabbing; }
+.care-item-option-icon { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 8px; background: rgb(255 255 255 / 10%); font-size: 17px; }
+.care-item-option-copy { display: grid; min-width: 0; gap: 1px; }
+.care-item-option-copy strong { overflow: hidden; color: #fff; font-size: 9px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+.care-item-option-copy small { overflow: hidden; color: #bdcee9; font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+.care-item-count { color: #b7d9ff; font-size: 9px; font-weight: 900; }
+.care-item-use { padding: 5px 7px; border-radius: 7px; background: #f26b9e; color: #fff; font-size: 8px; font-weight: 1000; }
+.care-empty-state { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; padding: 5px 2px; color: #fff; }
+.care-empty-state > span { font-size: 17px; }
+.care-empty-state > div { display: grid; gap: 2px; }
+.care-empty-state strong { font-size: 9px; }
+.care-empty-state small { color: #bdcee9; font-size: 7px; }
+.care-empty-feed { grid-column: 1 / -1; min-height: 29px; border: 0; border-radius: 8px; background: #ed5791; color: #fff; font-size: 9px; font-weight: 1000; }
+.care-empty-feed:hover { filter: brightness(1.08); }
+
+/* In clean mode, care remains reachable without restoring the hidden menus. */
+.game-root.classic-two-column-layout.focus-mode .stage-toolbar .focus-feed-shortcut {
+  display: inline-flex;
+  min-height: 34px;
+  padding: 0 10px;
+  border-color: rgb(190 255 222 / 32%);
+  background: linear-gradient(135deg, #16b878, #10935f);
+  color: #fff;
+  font-size: 9px;
+}
+.game-root.classic-two-column-layout.focus-mode .focus-feed-shortcut span { font-size: 15px; }
+.focus-care-tray {
+  position: fixed;
+  z-index: 60;
+  top: max(86px, calc(env(safe-area-inset-top) + 74px));
+  left: 14px;
+  width: min(320px, calc(100vw - 28px));
+  pointer-events: auto;
+}
+.focus-care-tray .care-action-tray { margin: 0; }
+
+/* Mobile footer is fixed; provide a reliable scroll target with safe-area clearance. */
+.game-root.classic-two-column-layout .care-panel { scroll-margin-block: 84px 104px; }
+@media (max-width: 700px) {
+  .care-action-tray { padding: 9px; }
+  .care-item-option { min-height: 43px; }
+  .game-root.classic-two-column-layout .care-panel { scroll-margin-block: calc(76px + env(safe-area-inset-top)) calc(92px + env(safe-area-inset-bottom)); }
+  .focus-care-tray { top: max(78px, calc(env(safe-area-inset-top) + 68px)); left: 12px; width: calc(100vw - 24px); }
 }

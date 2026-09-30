@@ -138,7 +138,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const worldSize = (viewWidth * displaySize) / rect.width;
     const { placement, sprite } = entry;
     sprite.material.diffuseColor = Color3.White();
-    sprite.material.emissiveColor = new Color3(0.14, 0.14, 0.14);
+    sprite.material.emissiveColor = Color3.White();
     sprite.mesh.scaling.set(worldSize, worldSize, 1);
     sprite.mesh.position.set(
       (placement.x / 100 - 0.5) * backgroundWidth,
