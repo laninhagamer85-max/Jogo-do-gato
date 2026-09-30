@@ -81,3 +81,7 @@ A sala passa a usar breakpoints de toque (`pointer: coarse`) além da largura, e
 
 ### QA final de dock e Mochila
 Correção final do dock: distância medida até o rodapé de 8 px no retrato 375×812 e 11 px nas paisagens 844×390/667×375. Mochila lista apenas itens de cuidado; decorações únicas permanecem na aba Decoração. Todas as abas do cabeçalho ficam sem glifo duplicado; modo limpo mantém Mimi visível. Demo não alterou localStorage e o console do navegador permaneceu sem erros.
+
+
+## Fundo em retrato — correção verificada (2026-09-30)
+O empilhamento visual vinha de duas camadas da mesma arte (cover ampliado + composição completa 16:9). A cena retrato agora conserva a sala inteira, sem recorte lateral, sobre preenchimento ambiente desfocado e feather transparente; paisagem e desktop permanecem iguais. QA no demo em 375×812, 844×390, 667×375 e 1280×720; rotação no mesmo browser retrato→paisagem→retrato, sem reload; WebGL/asset carregados, sem erro no console e sem alteração do save. Manter PR #2 aberto, sem merge ou publicação.

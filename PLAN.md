@@ -144,3 +144,9 @@ Atualização destinada ao PR #2 (`feature/meu-pet-virtual-refresh`), que deve p
 
 ### Verificação final do dock móvel
 Após a primeira QA, foi corrigida sobreposição de 4 px entre Missão/Minijogos e o rodapé em retrato. A revalidação mediu 8 px em 375×812 e 11 px nas paisagens 844×390 e 667×375, sem clipping. O teste também confirmou Mochila apenas com itens de cuidado, decorações únicas em Decoração, modo limpo funcional e saves reais intactos.
+
+
+## Correção do fundo da sala em retrato — 2026-09-30
+- Causa: a tela alta do celular mostrava ao mesmo tempo o fundo 16:9 ampliado em cover e a sala completa em outra camada, aparentando faixas repetidas.
+- Correção: centralizar a arte completa sem cortar as laterais e usar preenchimento desfocado com feather nas bordas em retrato; paisagem/desktop mantêm o fundo original.
+- QA demo: 375×812, 844×390, 667×375, 1280×720 e rotação ao vivo sem reload retrato→paisagem→retrato. Asset e WebGL ativos, sem erro de navegador, save demo isolado. PR #2 permanece aberto; sem merge/publicação.
