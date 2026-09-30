@@ -1,38 +1,161 @@
-import { useState } from "react";
-import { ArrowLeft, ArrowRight, BookOpen, Heart, ShoppingBag, Sparkles, Star, Trophy, X } from "lucide-react";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  ArrowLeft, ArrowRight, Backpack, BookOpen, Gamepad2, Heart, Home, PawPrint,
+  Sparkles, Star, X,
+} from "lucide-react";
 
-const STEPS = [
-  { icon: <Heart size={24} />, kicker: "PASSO 1 DE 5 · CONHEÇA", title: "Como seu pet está?", copy: "As quatro barras mostram felicidade, fome, higiene e energia. Elas mudam um pouquinho com o tempo; cuide para manter seu amigo bem." },
-  { icon: <PawPrintIcon />, kicker: "PASSO 2 DE 5 · CUIDADOS", title: "Carinho faz diferença", copy: "Use Alimentar, Banho, Carinho e Dormir. Cada cuidado custa algumas moedas ou é gratuito; o pet se move e responde ao que você faz." },
-  { icon: <GamepadIcon />, kicker: "PASSO 3 DE 5 · BRINCADEIRAS", title: "Escolha um minijogo", copy: "O hub tem 11 jogos jogáveis: memória, reflexo, ritmo, busca e outros. Cada partida dá moedas e XP para avançar." },
-  { icon: <Sparkles size={24} />, kicker: "PASSO 4 DE 5 · DESTAQUE", title: "Arraste e combine petiscos", copy: "No Colheita de Petiscos, arraste uma peça até uma vizinha (ou toque em duas) para trocar. Faça linhas de 3 ou mais, planeje cascatas e cumpra os três pedidos antes de acabarem as jogadas." },
-  { icon: <ShoppingBag size={24} />, kicker: "PASSO 5 DE 5 · SUA HISTÓRIA", title: "Volte, decore e descubra", copy: "A missão rende moedas; use a loja para comprar decoração e arraste/gire os itens no cenário. Volte às casas conquistadas pelo mapa. Presentes surpresa ficam por pouco tempo — toque para abrir antes que desapareçam." },
+type TourStep = {
+  icon: ReactNode;
+  kicker: string;
+  title: string;
+  copy: string;
+  target?: string;
+};
+
+const STEPS: TourStep[] = [
+  {
+    icon: <PawPrint size={24} />,
+    kicker: "PASSO 1 DE 6 · A SALA",
+    title: "Passeie e conheça seu pet",
+    copy: "Toque em um espaço livre para o pet andar. Toque nele para fazer carinho e revelar seu nome. Vamos conhecer os atalhos da sala?",
+    target: '[data-room-tour="room"]',
+  },
+  {
+    icon: <Heart size={24} />,
+    kicker: "PASSO 2 DE 6 · CUIDADOS",
+    title: "Veja como ele está",
+    copy: "Acompanhe fome, energia, higiene e felicidade. Abra Cuidar para alimentar, dar banho, brincar com carinho ou colocar seu amigo para dormir.",
+    target: '[data-room-tour="care"]',
+  },
+  {
+    icon: <Star size={24} />,
+    kicker: "PASSO 3 DE 6 · MISSÕES",
+    title: "Jogue para evoluir",
+    copy: "As missões mostram seu progresso. Abra os minijogos para ganhar moedas e XP; cumprir objetivos ajuda o pet a subir de nível.",
+    target: '[data-room-tour="missions"]',
+  },
+  {
+    icon: <Backpack size={24} />,
+    kicker: "PASSO 4 DE 6 · ITENS",
+    title: "Loja e mochila",
+    copy: "Na Loja há itens de cuidado e visuais. A Mochila guarda seus consumíveis e as decorações únicas conquistadas na Aventura.",
+    target: '[data-room-tour="inventory"]',
+  },
+  {
+    icon: <Home size={24} />,
+    kicker: "PASSO 5 DE 6 · SUA CASA",
+    title: "Troque de casa e decore",
+    copy: "Use Casas para visitar cenários já liberados. Em Decorar, escolha onde colocar suas peças conquistadas — cada decoração pertence a uma casa.",
+    target: '[data-room-tour="room-tools"]',
+  },
+  {
+    icon: <Gamepad2 size={24} />,
+    kicker: "PASSO 6 DE 6 · AVENTURA",
+    title: "Sua campanha principal",
+    copy: "A Aventura é o jogo de plataforma: avance pelas fases, vença desafios e desbloqueie decorações. Na engrenagem ficam o volume, as vozes e este guia para rever quando quiser.",
+    target: '[data-room-tour="adventure"]',
+  },
 ];
 
-function PawPrintIcon() { return <span className="guide-emoji">🐾</span>; }
-function GamepadIcon() { return <span className="guide-emoji">🎮</span>; }
-
 type Props = { onComplete: () => void; onClose?: () => void; canClose?: boolean };
+type Box = { left: number; top: number; width: number; height: number };
 
 export default function TutorialOverlay({ onComplete, onClose, canClose = true }: Props) {
   const [step, setStep] = useState(0);
+  const [spotlight, setSpotlight] = useState<Box | null>(null);
+  const [cardPosition, setCardPosition] = useState<{ left: number; top: number } | null>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const current = STEPS[step];
   const finish = () => { setStep(0); onComplete(); };
+
+  useLayoutEffect(() => {
+    let frame = 0;
+    const update = () => {
+      const card = cardRef.current;
+      if (!card) return;
+      const cardRect = card.getBoundingClientRect();
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const target = current.target ? document.querySelector<HTMLElement>(current.target) : null;
+      const rect = target?.getBoundingClientRect();
+      const desktopTour = width >= 1000 && rect && rect.width > 0 && rect.height > 0;
+
+      if (!desktopTour || !rect) {
+        setSpotlight(null);
+        setCardPosition({ left: Math.max(14, (width - cardRect.width) / 2), top: Math.max(14, (height - cardRect.height) / 2) });
+        return;
+      }
+
+      const pad = 9;
+      const left = Math.max(8, rect.left - pad);
+      const top = Math.max(8, rect.top - pad);
+      const right = Math.min(width - 8, rect.right + pad);
+      const bottom = Math.min(height - 8, rect.bottom + pad);
+      setSpotlight({ left, top, width: right - left, height: bottom - top });
+
+      const gutter = 22;
+      const rightCandidate = right + gutter;
+      const leftCandidate = left - gutter - cardRect.width;
+      const cardLeft = rightCandidate + cardRect.width <= width - 14
+        ? rightCandidate
+        : leftCandidate >= 14
+          ? leftCandidate
+          : Math.max(14, (width - cardRect.width) / 2);
+      const maxTop = Math.max(14, height - cardRect.height - 14);
+      const cardTop = Math.min(maxTop, Math.max(14, (top + bottom - cardRect.height) / 2));
+      setCardPosition({ left: cardLeft, top: cardTop });
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [current.target, step]);
+
+  const shades: CSSProperties[] = spotlight ? [
+    { left: 0, top: 0, width: "100vw", height: spotlight.top },
+    { left: 0, top: spotlight.top + spotlight.height, width: "100vw", height: `calc(100vh - ${spotlight.top + spotlight.height}px)` },
+    { left: 0, top: spotlight.top, width: spotlight.left, height: spotlight.height },
+    { left: spotlight.left + spotlight.width, top: spotlight.top, width: `calc(100vw - ${spotlight.left + spotlight.width}px)`, height: spotlight.height },
+  ] : [{ left: 0, top: 0, width: "100vw", height: "100vh" }];
+
   return (
-    <div className="guide-backdrop">
-      <section className="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
-        {canClose && onClose && <button className="guide-close" onClick={onClose} aria-label="Fechar o guia"><X size={18} /></button>}
-        <div className="guide-topline"><span className="guide-book"><BookOpen size={18} /></span><span>PRIMEIROS PASSOS</span><span className="guide-count">{step + 1}<i> / 5</i></span></div>
+    <div className="guide-backdrop" onKeyDown={(event) => {
+      if (event.key === "ArrowRight" && step < STEPS.length - 1) setStep((value) => value + 1);
+      if (event.key === "ArrowLeft" && step > 0) setStep((value) => value - 1);
+      if (event.key === "Escape" && canClose && onClose) onClose();
+    }}>
+      {shades.map((style, index) => <div key={index} className={`guide-shade ${spotlight ? "" : "guide-shade-full"}`} style={style} aria-hidden="true" />)}
+      {spotlight && <div className="guide-focus-frame" style={spotlight} aria-hidden="true" />}
+      <section
+        ref={cardRef}
+        className="guide-card"
+        style={cardPosition ? { left: cardPosition.left, top: cardPosition.top } : undefined}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="guide-title"
+        aria-describedby="guide-copy"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {canClose && onClose && <button className="guide-close" type="button" onClick={onClose} aria-label="Fechar o guia"><X size={18} /></button>}
+        <div className="guide-topline"><span className="guide-book"><BookOpen size={18} /></span><span>GUIA RÁPIDO DA SALA</span><span className="guide-count">{step + 1}<i> / {STEPS.length}</i></span></div>
         <div className="guide-progress" aria-hidden="true"><span style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
         <div className="guide-icon">{current.icon}</div>
         <span className="guide-kicker">{current.kicker}</span>
-        <h2 id="guide-title">{current.title}</h2>
-        <p>{current.copy}</p>
-        {step === 4 && <div className="guide-reward"><Star size={16} fill="currentColor" /> <span>Meta da campanha</span><strong>nível 1 → 10</strong><Trophy size={18} /></div>}
-        <div className="guide-dots" aria-label={`Passo ${step + 1} de 5`}>{STEPS.map((item, index) => <span key={item.kicker} className={index === step ? "active" : index < step ? "done" : ""} />)}</div>
+        <h2 id="guide-title" aria-live="polite">{current.title}</h2>
+        <p id="guide-copy">{current.copy}</p>
+        <div className="guide-dots" aria-label="Ir para um passo do guia">{STEPS.map((item, index) => <button key={item.kicker} type="button" className={index === step ? "active" : index < step ? "done" : ""} aria-label={`Ir para o passo ${index + 1}: ${item.title}`} aria-current={index === step ? "step" : undefined} onClick={() => setStep(index)} />)}</div>
         <div className="guide-actions">
-          {step > 0 ? <button className="guide-back" onClick={() => setStep((value) => value - 1)}><ArrowLeft size={16} /> Voltar</button> : <span />}
-          {step < STEPS.length - 1 ? <button className="guide-next" onClick={() => setStep((value) => value + 1)}>Próximo <ArrowRight size={16} /></button> : <button className="guide-next" onClick={finish}>Vamos jogar <Sparkles size={16} /></button>}
+          <div className="guide-actions-start">
+            {step > 0 && <button className="guide-back" type="button" onClick={() => setStep((value) => value - 1)}><ArrowLeft size={16} /> Voltar</button>}
+            {canClose && onClose && <button className="guide-skip" type="button" onClick={onClose}>Pular</button>}
+          </div>
+          {step < STEPS.length - 1 ? <button className="guide-next" type="button" onClick={() => setStep((value) => value + 1)}>Próximo <ArrowRight size={16} /></button> : <button className="guide-next" type="button" onClick={finish}>Vamos jogar <Sparkles size={16} /></button>}
         </div>
       </section>
     </div>

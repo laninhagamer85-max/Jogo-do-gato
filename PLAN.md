@@ -85,3 +85,18 @@ Esta nota atualiza os bullets anteriores: a entrada normal após onboarding abre
 - Coleta idempotente: cada variante foi verificada no domínio e uma segunda coleta da mesma caixa é rejeitada. O popup fica centralizado, mostra uma recompensa por vez, tem X no topo, origem e ação Usar quando aplicável.
 - Porta-retrato permanente, arrastável e minimizável; ícone Sobre abre a homenagem e Restaurar traz a moldura de volta. O botão minimizar foi elevado acima da moldura para manter alvos independentes.
 - Browser demo confirmou prêmio de moedas uma única vez, fechamento pelo X, minimizar → Sobre → Restaurar; captura da sala desktop e validação móvel anteriores mantidas. TypeScript, build Vite e `git diff --check` aprovados.
+
+
+## Tour interativo e navegação da sala (2026-09-30)
+- A primeira visita abre um guia de seis passos após o onboarding; Configurações → Como jogar o reabre quando necessário.
+- O guia destaca a sala, cuidados, missões, mochila, navegação/decoração e Aventura com marcadores `data-room-tour`. No desktop há recorte com spotlight; abaixo de 1000 px a experiência usa cartão modal central compacto. Progresso, pontos clicáveis, Voltar/Próximo/Pular/Fechar e setas de teclado permitem navegar sem perder contexto.
+- `?demo=1&tour=1` abre o primeiro passo em perfil de demonstração, sem persistir save; `?demo=1` segue iniciando na sala.
+- QA WebDev: typecheck, build de produção e `git diff --check` aprovados; primeiro passo capturado em 1280×720 e 375×812; Configurações → Como jogar reabriu o guia; o browser avançou pelos seis passos até “Vamos jogar”. O bundle continua emitindo apenas o aviso informativo de tamanho do chunk Babylon. Manter PR aberto; sem merge/publicação.
+
+
+## Menus compactos e acesso à idealizadora (2026-09-30)
+- A coluna permanente de cartões foi substituída por um dock de sete atalhos: Cuidar, Missões, Loja, Mochila, Casas, Decorar e História. Cuidar reúne as quatro necessidades/status e as quatro ações de cuidado; Missões abre um único painel de progresso. Loja, mochila, casas, decoração e história seguem a um toque de distância.
+- O controle de tela limpa agora oculta cabeçalho/detalhes, mas mantém os atalhos à vista e operáveis. Em larguras até 900 px o dock vira uma trilha estreita à esquerda, com rótulos compactos, para liberar a área central do pet; os painéis de contexto só aparecem quando solicitados.
+- O porta-retrato visual grande foi substituído pelo atalho discreto **ⓘ Sobre** à esquerda da cena. A foto autorizada e a homenagem continuam no modal: composição lado a lado no desktop e empilhada em telas estreitas.
+- QA desta rodada: TypeScript, build de produção e `git diff --check` aprovados; screenshots demo em 1280×720 e 375×812; no browser foram abertos Cuidar, Missões, Loja, Mochila, Casas, Decorar, História, Sobre e o modo limpo, confirmando que os atalhos continuam acessíveis. O build conserva o aviso conhecido de chunks grandes do Babylon; a demo não altera o save real.
+- Manter o PR #2 aberto; não fazer merge nem publicar o site.

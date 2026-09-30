@@ -36,3 +36,14 @@
 - Áudio independente (2026-09-30): `platformerAudio.ts` sintetiza trilha chiptune e centraliza SFX em dois barramentos Web Audio. `AudioVolumeControls` é compartilhado pela engrenagem da sala e da aventura; música/efeitos ficam persistidos em `localStorage` sob `meu-pet-platform-audio-v1`. O mute existente silencia somente efeitos, não a música; vozes do pet permanecem inalteradas. Browser confirmou valores independentes e persistência; WebDev e clone do PR passaram TypeScript/build. PR #2 segue aberto, sem merge/publicação.
 
 - UI/itens (2026-09-30): Home sincronizada do WebDev com painel lateral e mochila; presentes aceitam moeda, consumível ou decoração e a coleta repetida é bloqueada. QA browser em demo: abriu +110 moedas uma vez, o X fechou sem selecionar móvel; porta-retrato minimizou, o ícone Sobre abriu a homenagem e Restaurar trouxe a moldura de volta. TypeScript/build e smoke test das três recompensas passaram; preview de demo preserva o save real.
+
+
+- Tour de sala (2026-09-30): primeira visita após criação do perfil recebe guia interativo com seis etapas; Configurações → Como jogar reabre-o. `TutorialOverlay.tsx` usa `data-room-tour`, spotlight desktop e modal central conciso em telas estreitas; oferece progresso, pontos, teclado, voltar, pular e concluir. `?demo=1&tour=1` inicia passo 1 sem escrita no save; demo normal continua fechada.
+- QA: typecheck/build/diff-check aprovados no WebDev; screenshots 1280×720 e 375×812 sem clipping; browser confirmou reabertura pelas Configurações e avanço até a etapa final. PR #2 `feature/meu-pet-virtual-refresh` permanece aberto, sem merge nem publicação.
+
+
+- UI da sala (2026-09-30): coluna alta substituída por dock de sete atalhos — Cuidar, Missões, Loja, Mochila, Casas, Decorar e História. Um único drawer de Cuidar agrega barras de necessidades e ações; outro mostra progresso de missões. O botão de tela limpa recolhe o cabeçalho/detalhes, mas não esconde os atalhos; em mobile o dock compacto fica na borda esquerda para não cobrir o pet.
+- Homenagem: `CreatorPlaquePicker.tsx` agora rende somente ícone de informação + “Sobre” no canto esquerdo da cena; removeu o porta-retrato grande/draggable. `CreatorTributeModal.tsx` mantém retrato autorizado e texto aprovado, lado a lado no desktop e empilhados em mobile.
+- QA da reorganização: typecheck, Vite build e diff-check passaram; screenshots 1280×720 e 375×812 confirmam a cena desobstruída; browser abriu Cuidar, Missões, Loja, Mochila, Casas, Decorar, História, o modal da idealizadora e confirmou que a tela limpa preserva a navegação. A demo foi usada, sem tocar no save normal. O PR #2 permanece aberto, sem merge/publicação.
+
+- Referências da revisão 2026-09-30: preview demo em https://3000-iq758tlsmeljsgb03xc3g-23cfac3e.us1.manus.computer/?demo=1 e PR #2 em https://github.com/laninhagamer85-max/Jogo-do-gato/pull/2; foram usados para verificação, sem publicação do site.
