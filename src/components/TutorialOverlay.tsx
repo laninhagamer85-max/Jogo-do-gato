@@ -38,8 +38,8 @@ const STEPS: TourStep[] = [
     icon: <Backpack size={24} />,
     kicker: "PASSO 4 DE 6 · ITENS",
     title: "Loja e mochila",
-    copy: "Abra Mais do jogo para acessar a Loja, a Mochila com seus itens e a História, sem deixar todos os atalhos ocupando a sala.",
-    target: '[data-room-tour="secondary-menu"]',
+    copy: "A Mochila fica sempre à mão para ver seus itens. Em Mais do jogo você encontra a Loja e a História.",
+    target: '[data-room-tour="inventory"]',
   },
   {
     icon: <Home size={24} />,

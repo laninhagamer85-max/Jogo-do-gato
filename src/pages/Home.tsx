@@ -121,7 +121,13 @@ export default function Home() {
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_PREF_KEY) !== "false");
   const [audioMix, setAudioMix] = useState<PlatformAudioMix>(loadPlatformAudioMix);
   const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem(VOICE_PREF_KEY) !== "false");
-  const [activeRoomMenu, setActiveRoomMenu] = useState<RoomMenuPanel>(null);
+  const [activeRoomMenu, setActiveRoomMenu] = useState<RoomMenuPanel>(() => {
+    if (import.meta.env.DEV && demoMode) {
+      const previewMenu = new URLSearchParams(window.location.search).get("roomMenu");
+      return previewMenu === "care" || previewMenu === "missions" ? previewMenu : null;
+    }
+    return null;
+  });
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(() => localStorage.getItem(FOCUS_MODE_PREF_KEY) === "true");
   const [tutorialOpen, setTutorialOpen] = useState(false);
@@ -673,7 +679,6 @@ export default function Home() {
             <button className="level-location room-map-button" onClick={() => setRoomsOpen(true)} aria-label="Abrir mapa das casas conquistadas"><MapPin size={11} /> {currentChapter.location}<span>{game.level}/10</span></button>
           </div>
           <div className="top-actions">
-            <button className="adventure-home-button" type="button" onClick={openAdventure} aria-label="Voltar à aventura de 100 fases" data-room-tour="adventure"><Gamepad2 size={17} /><span>Aventura</span></button>
             <button className="coin-pill" onClick={() => openShop("items")} aria-label="Abrir a loja de itens"><Coins size={21} fill="currentColor" /><strong>{game.coins.toLocaleString("pt-BR")}</strong><span className="coin-plus"><Plus size={15} /></span></button>
             <button className="icon-button" onClick={() => setSettingsOpen(true)} aria-label="Configurações"><Settings size={19} /></button>
             <button className="icon-button sound-toggle" onClick={() => setSoundOn((value) => !value)} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
@@ -682,8 +687,13 @@ export default function Home() {
           </div>
         </header>
 
-        <main className="dashboard-grid">
-          <aside className="side-column side-left room-control-panel" aria-label="Menus principais da sala">
+        <main className={`dashboard-grid ${activeRoomMenu ? "has-room-panel" : ""}`}>
+          <aside className={`side-column side-left room-control-panel ${activeRoomMenu ? "has-open-panel" : ""}`} aria-label="Menus principais da sala">
+            <button className="room-adventure-entry" type="button" onClick={() => { setActiveRoomMenu(null); setMoreMenuOpen(false); openAdventure(); }} aria-label="Jogar aventura principal de 100 fases" title="Jogar aventura principal" data-room-tour="adventure">
+              <span className="room-adventure-icon"><Gamepad2 size={18} /></span>
+              <span className="room-adventure-copy"><strong>Aventura</strong><small>Jogar 100 fases</small></span>
+              <ChevronRight size={17} aria-hidden="true" />
+            </button>
             <div className="room-control-header" aria-hidden="true">
               <span className="room-control-badge"><PawPrint size={18} fill="currentColor" /></span>
               <span className="room-control-title"><strong>Meu cantinho</strong><small>CASA {game.activeRoom} · {activeChapter.location}</small></span>
@@ -706,36 +716,38 @@ export default function Home() {
                 <span className="room-chip-icon"><Star size={17} fill="currentColor" /></span><strong>Missões</strong><small>{Math.min(game.missionProgress, 3)}/3</small>
               </button>
             </div>
+            <button className="room-inventory-button" type="button" onClick={() => { setActiveRoomMenu(null); setMoreMenuOpen(false); openShop("inventory"); }} aria-label="Abrir mochila e ver itens" title="Abrir Mochila" data-room-tour="inventory">
+              <span className="room-inventory-icon"><Backpack size={17} /></span>
+              <span className="room-inventory-copy"><strong>Mochila</strong><small>Seus itens</small></span>
+              <ChevronRight size={15} aria-hidden="true" />
+            </button>
             <button className={`room-more-toggle ${moreMenuOpen ? "is-open" : ""}`} type="button" onClick={() => { setActiveRoomMenu(null); setMoreMenuOpen((value) => !value); }} aria-expanded={moreMenuOpen} aria-controls="room-secondary-links" data-room-tour="secondary-menu">
               <span className="room-more-icon"><Gift size={17} /></span>
-              <span className="room-more-copy"><strong>Mais do jogo</strong><small>Loja, mochila e história</small></span>
+              <span className="room-more-copy"><strong>Mais do jogo</strong><small>Loja e história</small></span>
               <ChevronRight size={16} aria-hidden="true" />
             </button>
             {moreMenuOpen && <nav id="room-secondary-links" className="room-secondary-links" aria-label="Outras opções do jogo">
               <button type="button" onClick={() => { setMoreMenuOpen(false); openShop("items"); }} aria-label="Abrir loja">
                 <span className="room-secondary-icon"><ShoppingBag size={17} /></span><span className="room-secondary-copy"><strong>Loja</strong><small>Itens e visuais</small></span>
               </button>
-              <button type="button" onClick={() => { setMoreMenuOpen(false); openShop("inventory"); }} aria-label="Abrir mochila" data-room-tour="inventory">
-                <span className="room-secondary-icon"><Backpack size={17} /></span><span className="room-secondary-copy"><strong>Mochila</strong><small>Seus itens</small></span>
-              </button>
               <button type="button" onClick={() => { setMoreMenuOpen(false); setStoryLevel(game.level); }} aria-label="Abrir história">
                 <span className="room-secondary-icon"><BookOpen size={17} /></span><span className="room-secondary-copy"><strong>História</strong><small>Capítulo atual</small></span>
               </button>
             </nav>}
-            {activeRoomMenu && <section className="room-menu-panel" role="region" aria-label={activeRoomMenu === "care" ? "Cuidados e estado do pet" : "Missões e nível"}>
-              <div className="room-menu-panel-heading"><div><span className="room-menu-kicker">{activeRoomMenu === "care" ? "ROTINA DO PET" : `NÍVEL ${game.level} · PROGRESSO`}</span><h2>{activeRoomMenu === "care" ? "Cuidar" : "Missões"}</h2></div><button className="room-menu-panel-close" type="button" onClick={() => setActiveRoomMenu(null)} aria-label="Fechar menu"><X size={17} /></button></div>
-              {activeRoomMenu === "care" ? <div className="room-menu-care">
-                <div className="room-menu-care-status"><div className="room-menu-section-title"><Activity size={15} /> Como estou?</div><div className="stats-list">{statMeta.map((item) => <div className="stat-row" key={item.key}><div className="stat-icon">{item.icon}</div><div className="stat-main"><div className="stat-label"><strong>{item.label}</strong><span>{Math.round(game.stats[item.key])}%</span></div><div className={`stat-track ${item.color}`}><span style={{ width: `${game.stats[item.key]}%` }} /></div></div></div>)}</div></div>
-                <div className="care-grid">
-                  <button className="care-button feed" onClick={() => care("food")}><span>🍎</span><b>Alimentar</b><small>18 moedas</small></button>
-                  <button className="care-button bath" onClick={() => care("bath")}><span><Bath size={22} /></span><b>Banho</b><small>12 moedas</small></button>
-                  <button className="care-button love" onClick={() => care("love")}><span><Heart size={22} fill="currentColor" /></span><b>Carinho</b><small>grátis</small></button>
-                  <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""}`} onClick={() => care("sleep")}><span><Moon size={22} fill="currentColor" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>recupera energia</small></button>
-                </div>
-                <button className="care-inventory-link" onClick={() => openShop("inventory")}>Usar item da mochila <ChevronRight size={15} /></button>
-              </div> : <div className="room-menu-missions"><p>Complete 3 minijogos para ganhar moedas e XP.</p><div className="mission-progress-row"><div className="mission-track"><span style={{ width: `${missionPercent}%` }} /></div><strong>{Math.min(game.missionProgress, 3)}/3</strong></div><div className="mission-reward"><span>Recompensa</span><strong><Coins size={17} fill="currentColor" /> +200</strong></div><button className="mission-button" onClick={openMiniHub}>{game.missionClaimed ? "Jogar de novo" : "Ver minijogos"}<ChevronRight size={16} /></button></div>}
-            </section>}
           </aside>
+
+          {activeRoomMenu && <section className="room-menu-panel" role="region" aria-label={activeRoomMenu === "care" ? "Cuidados e estado do pet" : "Missões e nível"}>
+            <div className="room-menu-panel-heading"><div><span className="room-menu-kicker">{activeRoomMenu === "care" ? "ROTINA DO PET" : `NÍVEL ${game.level} · PROGRESSO`}</span><h2>{activeRoomMenu === "care" ? "Cuidar" : "Missões"}</h2></div><button className="room-menu-panel-close" type="button" onClick={() => setActiveRoomMenu(null)} aria-label="Fechar menu"><X size={17} /></button></div>
+            {activeRoomMenu === "care" ? <div className="room-menu-care">
+              <div className="room-menu-care-status"><div className="room-menu-section-title"><Activity size={15} /> Como estou?</div><div className="stats-list">{statMeta.map((item) => <div className="stat-row" key={item.key}><div className="stat-icon">{item.icon}</div><div className="stat-main"><div className="stat-label"><strong>{item.label}</strong><span>{Math.round(game.stats[item.key])}%</span></div><div className={`stat-track ${item.color}`}><span style={{ width: `${game.stats[item.key]}%` }} /></div></div></div>)}</div></div>
+              <div className="care-grid">
+                <button className="care-button feed" onClick={() => care("food")}><span>🍎</span><b>Alimentar</b><small>18 moedas</small></button>
+                <button className="care-button bath" onClick={() => care("bath")}><span><Bath size={22} /></span><b>Banho</b><small>12 moedas</small></button>
+                <button className="care-button love" onClick={() => care("love")}><span><Heart size={22} fill="currentColor" /></span><b>Carinho</b><small>grátis</small></button>
+                <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""}`} onClick={() => care("sleep")}><span><Moon size={22} fill="currentColor" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>recupera energia</small></button>
+              </div>
+            </div> : <div className="room-menu-missions"><p>Complete 3 minijogos para ganhar moedas e XP.</p><div className="mission-progress-row"><div className="mission-track"><span style={{ width: `${missionPercent}%` }} /></div><strong>{Math.min(game.missionProgress, 3)}/3</strong></div><div className="mission-reward"><span>Recompensa</span><strong><Coins size={17} fill="currentColor" /> +200</strong></div><button className="mission-button" onClick={openMiniHub}>{game.missionClaimed ? "Jogar de novo" : "Ver minijogos"}<ChevronRight size={16} /></button></div>}
+          </section>}
 
           <section className="center-stage" aria-label={`Cenário de ${activeChapter.location}`} onClick={handleStageClick} data-room-tour="room">
             <div className="stage-location-tag"><HomeIcon size={13} /><span>CASA {game.activeRoom}</span><i />{activeChapter.location}</div>

@@ -53,3 +53,9 @@
 Feedback posterior substituiu o dock de sete atalhos por quatro ações sempre expostas: **Casas**, **Decorar**, **Cuidar** e **Missões**. **Loja**, **Mochila** e **História** ficam sob **Mais do jogo**; Aventura permanece no cabeçalho. Os painéis de cuidado e missão são parte da coluna/área lateral, não modais centrais. Em retrato, a grade compacta fica no alto à esquerda; em paisagem curta e desktop, usa coluna lateral. O modo de tela limpa mantém os quatro atalhos e Mais visíveis.
 
 O atalho **Sobre** está no canto inferior esquerdo da cena e alinhado à câmera no canto inferior direito; o modal mantém a foto autorizada e o texto à direita. QA no preview demo: Cuidar, Missões, Mais, Loja, Mochila, Casas, Decorar, História, Sobre, tela limpa e o alvo atualizado do passo 4 do tutorial foram exercitados; dimensões verificadas em 1280×720, 375×812 e 844×390. O PR #2 estava aberto no branch `feature/meu-pet-virtual-refresh` (head pré-sync `e7b5140`); manter aberto, sem merge/publicação.
+
+
+## Atualização da navegação após QA de orientação — 2026-09-30
+Esta nota substitui a hierarquia da entrada anterior: Aventura destacada no alto da navegação; Casas, Decorar, Cuidar e Missões expostos; Mochila em atalho próprio; Loja/História dentro de Mais do jogo. Cuidar/Missões abrem painéis laterais completos; retrato usa a rail compacta com janela à direita, e paisagem usa painel adjacente sem esticar os botões. A faixa de nível fica sob a marca em paisagem. Sobre e câmera estão alinhados ao rodapé da cena.
+
+QA no demo em 1280×720, 375×812, 844×390 e 667×375; browser confirmou Aventura/campanha, Mochila/inventário, Casas, Decorar, Cuidar, Missões, Mais do jogo e o modal Sobre. Tutorial reaberto pelas Configurações; passos 4 e 6 verificados. TypeScript, Vite build e `git diff --check` passaram. PR #2 autorizado segue aberto, sem merge/publicação.
