@@ -132,3 +132,15 @@ A decisão atual substitui as revisões de menu flutuante acima: a sala segue o 
 Ajustes incluídos: link Mochila na aba correta, remoção de navegação duplicada, Felicidade em rosa, brilho natural para decorações e tutorial compatível com os alvos/restauração. QA no preview em 1280×720, 375×812 e 844×390, além de 667×375; bandejas de cuidado verificadas acima do rodapé fixo; Sardinha (“Usar agora”) e Luminária lunar (“Usar agora”) exercitados, com a decoração entrando no modo de posicionamento. Hashes/chaves de `localStorage` não mudaram durante uma ação demo. TypeScript, Vite build e `git diff --check` passaram; permanece o aviso informativo de chunk Babylon >500 kB.
 
 Atualização destinada ao PR #2 (`feature/meu-pet-virtual-refresh`), que deve permanecer aberto e sem merge; não publicar o site.
+
+
+## Compatibilidade touch, zoom e inventário móvel — 2026-09-30
+- Breakpoints da sala também reconhecem dispositivos touch (`pointer: coarse`), para que zoom/“site para computador” no celular não troque a sala empilhada por um layout desktop minúsculo. Em retrato touch com viewport CSS ampliada, o conteúdo fica centralizado com largura máxima de 640 px; cenário/canvas continua ocupando a tela.
+- Em retrato, a arte 16:9 da casa fica inteira e centralizada na largura, sem cortar as laterais; o preenchimento da área restante mantém a mesma imagem em cover, sem faixa clara/escura. Paisagem e desktop mantêm o enquadramento verificado.
+- A faixa de missão e o atalho Minijogos ficam acima do rodapé móvel; Aventura conserva rótulo em paisagem; Mimi segue visível no modo limpo. Loja mostra prévia de consumíveis e o atalho Mochila sem glifo duplicado; Mochila lista itens de cuidado, enquanto decorações únicas ficam em Decoração.
+- QA demo: 375×812, 844×390, 667×375, 1280×720 e retrato touch com viewport ampliada 1200×2670. O teste ampliado confirmou `pointer: coarse`, coluna empilhada, dock de missão, rodapé, localização da casa e prévia da loja; o screenshot mostrou a UI centralizada e arte do cenário em tela cheia. Saves reais não foram usados.
+- TypeScript, build Vite e `git diff --check` devem permanecer aprovados; atualizar PR #2 mantendo-o aberto, sem merge nem publicação.
+
+
+### Verificação final do dock móvel
+Após a primeira QA, foi corrigida sobreposição de 4 px entre Missão/Minijogos e o rodapé em retrato. A revalidação mediu 8 px em 375×812 e 11 px nas paisagens 844×390 e 667×375, sem clipping. O teste também confirmou Mochila apenas com itens de cuidado, decorações únicas em Decoração, modo limpo funcional e saves reais intactos.

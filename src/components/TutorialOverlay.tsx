@@ -31,14 +31,14 @@ const STEPS: TourStep[] = [
     icon: <Star size={24} />,
     kicker: "PASSO 3 DE 6 · MISSÕES",
     title: "Jogue para evoluir",
-    copy: "No painel da direita, acompanhe a missão e toque em Ver minijogos para escolher uma brincadeira. Sua história também fica logo abaixo.",
+    copy: "Acompanhe a missão do nível e toque em Minijogos para escolher uma brincadeira. No celular, a barra da missão fica logo acima dos atalhos inferiores.",
     target: '[data-room-tour="minigames"]',
   },
   {
     icon: <Backpack size={24} />,
     kicker: "PASSO 4 DE 6 · ITENS",
     title: "Loja e mochila",
-    copy: "No painel Loja, abra Mochila para ver petiscos e decorações conquistadas. As opções de compra ficam em Ver tudo.",
+    copy: "A Mochila guarda apenas itens de cuidado que você pode usar. As decorações únicas conquistadas ficam na aba Decoração; toque em um item em destaque para ver as opções da loja.",
     target: '[data-room-tour="inventory"]',
   },
   {

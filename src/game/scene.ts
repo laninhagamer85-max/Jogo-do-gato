@@ -79,8 +79,19 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   backgroundMaterial.disableLighting = true;
   backgroundMaterial.backFaceCulling = false;
   background.material = backgroundMaterial;
+  const portraitBackground = MeshBuilder.CreatePlane("portrait-room-fit", { width: 14, height: 8 }, scene);
+  portraitBackground.position.z = 2.8;
+  portraitBackground.isVisible = false;
+  const portraitBackgroundMaterial = new StandardMaterial("portrait-room-fit-material", scene);
+  portraitBackgroundMaterial.disableLighting = true;
+  portraitBackgroundMaterial.backFaceCulling = false;
+  portraitBackground.material = portraitBackgroundMaterial;
   let backgroundTexture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
-  backgroundMaterial.emissiveTexture = backgroundTexture;
+  backgroundMaterial.diffuseTexture = backgroundTexture;
+  portraitBackgroundMaterial.diffuseTexture = backgroundTexture;
+  portraitBackgroundMaterial.diffuseColor = Color3.Black();
+  portraitBackgroundMaterial.emissiveTexture = backgroundTexture;
+  portraitBackgroundMaterial.emissiveColor = Color3.White();
 
   const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
   const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
@@ -162,12 +173,18 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const roomRatio = 16 / 9;
     const bgHeight = Math.max(viewHeight, viewWidth / roomRatio);
     const bgWidth = Math.max(viewWidth, viewHeight * roomRatio);
-    backgroundWidth = bgWidth;
-    backgroundHeight = bgHeight;
+    const usePortraitFit = aspect < 0.7;
+    const portraitWidth = viewWidth;
+    const portraitHeight = portraitWidth / roomRatio;
+    backgroundWidth = usePortraitFit ? portraitWidth : bgWidth;
+    backgroundHeight = usePortraitFit ? portraitHeight : bgHeight;
     background.scaling.set(bgWidth / 14, bgHeight / 8, 1);
+    portraitBackground.scaling.set(portraitWidth / 14, portraitHeight / 8, 1);
+    portraitBackground.isVisible = usePortraitFit;
+    backgroundMaterial.emissiveColor = Color3.White();
     decorationSprites.forEach(updateDecorationSprite);
 
-    baseY = aspect < 0.7 ? 1.18 : aspect < 1.15 ? -0.35 : -1.12;
+    baseY = usePortraitFit ? 0.78 : aspect < 1.15 ? -0.35 : -1.12;
     petWidth = aspect < 0.7 ? Math.min(2.2, viewWidth * 0.60) : Math.min(3.35, viewWidth * 0.48);
     kitten.position.y = baseY;
     const scale = petWidth / 3.35;
@@ -205,7 +222,9 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   const setRoom = (room: number) => {
     currentRoom = Math.max(1, Math.min(10, Math.round(room)));
     const texture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
-    backgroundMaterial.emissiveTexture = texture;
+    backgroundMaterial.diffuseTexture = texture;
+    portraitBackgroundMaterial.diffuseTexture = texture;
+    portraitBackgroundMaterial.emissiveTexture = texture;
     const old = backgroundTexture;
     backgroundTexture = texture;
     old.dispose();

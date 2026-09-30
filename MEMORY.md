@@ -73,3 +73,11 @@ QA no demo em 1280×720, 375×812, 844×390 e 667×375. Revisados painéis de Cu
 Manter a versão de duas colunas preferida em 29/09: cuidados/status à esquerda, cenário central, missão/loja/história à direita; Casas/Decorar diretos na cena e Cuidar/Minijogos/Loja no rodapé. Essa escolha substitui a proposta de navegação flutuante. Foram sincronizados o orquestrador da sala, regras CSS finais, tutorial, cor da barra Felicidade e tintas das decorações; assets, catálogo de jogo, modelos e dependências do branch permaneceram intactos.
 
 QA: desktop 1280×720, retrato 375×812, paisagem 844×390 e curta 667×375; cuidado via toque e drag/drop; modo limpo com alimentação; panel scroll acima do rodapé; rotas Casas/Decorar/Mochila/Minijogos; recompensas Sardinha e Luminária lunar com “Usar agora”; tutorial de seis passos. `?demo=1` manteve hash/chaves de `localStorage` idênticas durante a interação, sem expor conteúdo de saves. TypeScript/build Vite/diff-check aprovados; aviso do chunk Babylon >500 kB permanece informativo. PR #2 deve continuar aberto: sem merge e sem publicação.
+
+
+## Retrato móvel, zoom e Mochila — 2026-09-30
+A sala passa a usar breakpoints de toque (`pointer: coarse`) além da largura, evitando que viewport CSS alargada por zoom/site desktop troque para o layout desktop. Retrato touch amplo centra o HUD em até 640 px sem limitar o canvas. A arte 16:9 da casa permanece inteira, sem recorte lateral; a área adicional usa preenchimento da mesma imagem. A faixa Missão/Minijogos, Aventura em paisagem, atalho Mimi no modo limpo e preview da Loja foram revistos. Removido o glifo duplicado de Mochila no cabeçalho; Mochila contém consumíveis utilizáveis, decoração única fica na aba Decoração. QA demo em 375×812, 844×390, 667×375, 1280×720 e 1200×2670 com touch emulado; no viewport ampliado o dock, rodapé e painéis continuam no modo móvel, com conteúdo centralizado. Nenhum save real foi usado.
+
+
+### QA final de dock e Mochila
+Correção final do dock: distância medida até o rodapé de 8 px no retrato 375×812 e 11 px nas paisagens 844×390/667×375. Mochila lista apenas itens de cuidado; decorações únicas permanecem na aba Decoração. Todas as abas do cabeçalho ficam sem glifo duplicado; modo limpo mantém Mimi visível. Demo não alterou localStorage e o console do navegador permaneceu sem erros.

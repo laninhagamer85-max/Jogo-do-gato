@@ -60,15 +60,20 @@ function loadGame(): GameState {
 }
 
 function createDemoGameState(): GameState {
+  const params = new URLSearchParams(window.location.search);
+  const requestedRoom = Number(params.get("room"));
+  const requestedLevel = Number(params.get("level"));
+  const demoRoom = Number.isInteger(requestedRoom) && requestedRoom >= 1 ? Math.min(10, requestedRoom) : 1;
+  const demoLevel = Number.isInteger(requestedLevel) && requestedLevel >= 1 ? Math.min(100, requestedLevel) : 3;
   const base = setPetProfile(createInitialGameState(), { name: "Pudim", age: 2, gender: "menino", characterId: "menino-prata" });
   const demoNow = Date.now();
   return {
     ...base,
     skin: "laranja",
     ownedSkins: ["tigrinho", "laranja"],
-    level: 3,
-    xp: 160,
-    xpMax: 338,
+    level: demoLevel,
+    xp: demoLevel === 5 ? 159 : 160,
+    xpMax: demoLevel === 5 ? 676 : 338,
     coins: 920,
     missionProgress: 2,
     missionsCompleted: 2,
@@ -77,14 +82,14 @@ function createDemoGameState(): GameState {
     inventory: { sardinha: 2, novelo: 1, banho: 1, caminha: 0 },
     ownedCompanions: ["mimi"],
     activeCompanionId: "mimi",
-    activeRoom: 1,
+    activeRoom: demoRoom,
     decorInventory: { ...base.decorInventory, tower: 0, bed: 0, plant: 0, lamp: 0 },
     roomDecorations: { "1": [
       { id: "demo-tower", itemId: "tower", x: 40, y: 46, rotation: 0, anchor: "background" },
       { id: "demo-bed", itemId: "bed", x: 60, y: 46, rotation: 0, anchor: "background" },
       { id: "demo-plant", itemId: "plant", x: 50, y: 36, rotation: 0, anchor: "background" },
     ] },
-    gifts: [{ id: "demo-gift", room: 1, x: 0.18, spawnedAt: demoNow, expiresAt: demoNow + 90000, reward: "coins", coins: 110 }],
+    gifts: [{ id: "demo-gift", room: demoRoom, x: 0.18, spawnedAt: demoNow, expiresAt: demoNow + 90000, reward: "coins", coins: 110 }],
     tutorialComplete: new URLSearchParams(window.location.search).get("tour") !== "1",
   };
 }
@@ -779,7 +784,7 @@ export default function Home() {
       <div className="room-overlay" aria-hidden="true" />
       <div className="screen-ui">
         <header className="topbar">
-          <div className="brand-lockup"><span className="brand-paw"><PawPrint size={28} fill="currentColor" /></span><div><strong>Meu Pet</strong><small>UMA CASA DE CADA VEZ</small>{demoMode && <small className="demo-state">DEMO · SAVE PRESERVADO</small>}</div></div>
+          <div className="brand-lockup"><span className="brand-paw"><PawPrint size={28} fill="currentColor" /></span><div><strong>Meu Pet</strong><small>UMA CASA DE CADA VEZ</small>{demoMode && <small className="demo-state">DEMO · SAVE PRESERVADO</small>}</div><span className="mobile-room-location"><MapPin size={10} aria-hidden="true" /> Casa {game.activeRoom} · {activeChapter.location}</span></div>
           <div className="level-card" aria-label={`Nível ${game.level}, ${game.xp} de ${game.xpMax} XP`}>
             <div className="level-heading"><span className="level-star"><Star size={23} fill="currentColor" /></span><strong>Nível {game.level}</strong><span className="xp-copy">{game.xp} / {game.xpMax} XP</span></div>
             <div className="xp-track"><span style={{ width: `${xpPercent}%` }} /></div>
@@ -840,17 +845,23 @@ export default function Home() {
               {!collapsed.mission && <><p>Complete 3 minijogos para ganhar moedas e XP.</p><div className="mission-progress-row"><div className="mission-track"><span style={{ width: `${missionPercent}%` }} /></div><strong>{Math.min(game.missionProgress, 3)}/3</strong></div><div className="mission-reward"><span>Recompensa</span><strong><Coins size={17} fill="currentColor" /> +200</strong></div><button className="mission-button" data-room-tour="minigames" onClick={openMiniHub}>{game.missionClaimed ? "Jogar de novo" : "Ver minijogos"}<ChevronRight size={16} /></button></>}
             </section>
             <section className={`glass-panel shop-preview ${collapsed.shop ? "panel-is-collapsed" : ""}`}>
-              <div className="panel-heading"><h2><ShoppingBag size={19} /> Loja</h2><div className="panel-heading-actions"><button className="text-link backpack-inline" onClick={() => openShop("inventory")} data-room-tour="inventory"><Backpack size={14} /> Mochila</button><button className="text-link" onClick={() => openShop("items")}>Ver tudo <ChevronRight size={14} /></button><CollapseButton collapsed={collapsed.shop} onClick={() => togglePanel("shop")} label="loja" /></div></div>
+              <div className="panel-heading"><h2><ShoppingBag size={19} /> Loja</h2><div className="panel-heading-actions"><button className="text-link backpack-inline" onClick={() => openShop("inventory")} data-room-tour="inventory">Mochila</button><CollapseButton collapsed={collapsed.shop} onClick={() => togglePanel("shop")} label="loja" /></div></div>
               {!collapsed.shop && <><div className="shop-shortcuts">
                 <button onClick={() => openShop("looks")}><span>🎀</span><small>Visuais</small></button>
                 <button onClick={() => openShop("items")}><span>🐟</span><small>Itens</small></button>
                 <button onClick={() => openShop("boosts")}><span>⚡</span><small>Boosts</small></button>
                 <button onClick={() => openShop("friends")}><span>🐾</span><small>Amigos</small></button>
-              </div><div className="shop-nudge"><span>✨</span><p>Moedas virtuais viram mimos, cuidados e novos companheiros.</p></div></>}
+              </div><div className="shop-nudge"><span>✨</span><p>Moedas virtuais viram mimos, cuidados e novos companheiros.</p></div><div className="shop-mobile-preview" aria-label="Itens em destaque">{STORE_ITEMS.slice(0, 3).map((item) => { const count = game.inventory[item.id] ?? 0; return <button className="shop-preview-item" key={item.id} onClick={() => openShop("items")} aria-label={`Ver ${item.name} na loja`}><span className="shop-preview-item-icon">{item.icon}</span><span><strong>{item.name}</strong><small>{count > 0 ? `${count} na mochila` : `${item.price} moedas`}</small></span></button>; })}</div></>}
             </section>
             <button className="chapter-shortcut" onClick={() => setStoryLevel(game.level)}><BookOpen size={17} /><span><small>SUA HISTÓRIA</small><strong>{currentChapter.title}</strong></span><ChevronRight size={17} /></button>
           </aside>
         </main>
+
+        <div className="mobile-mission-dock" data-room-tour="missions" aria-label={`Missão do nível ${game.level}: ${Math.min(game.missionProgress, 3)} de 3 minijogos`}>
+          <div className="mobile-mission-copy"><small>MISSÃO DO NÍVEL {game.level}</small><strong>{game.missionClaimed ? "Desafio concluído!" : "Brincar faz bem"}</strong><span>{Math.min(game.missionProgress, 3)}/3 · +200 moedas</span></div>
+          <div className="mobile-mission-track"><span style={{ width: `${missionPercent}%` }} /></div>
+          <button type="button" data-room-tour="minigames" onClick={openMiniHub} aria-label="Abrir minijogos da missão"><Gamepad2 size={16} /><span>Minijogos</span></button>
+        </div>
 
         {focusMode && activeCareAction === "food" && <div className="focus-care-tray">{renderCareActionTray()}</div>}
 
@@ -897,18 +908,17 @@ export default function Home() {
         {!miniId ? <><span className="modal-kicker">HORA DA DIVERSÃO · 11 JOGOS PRONTOS</span><div className="games-title-row"><div><h2 id="games-title">Minijogos</h2><p className="modal-subtitle">Cada brincadeira soma moedas, XP e progresso para a missão do capítulo.</p></div><span className="games-count"><Gamepad2 size={18} /> 11</span></div><div className="mini-game-grid expanded-game-grid">{MINI_GAMES.map((item) => <button className={`mini-game-card ${item.id === "colheita" ? "mini-game-featured" : ""}`} key={item.id} onClick={() => startMinigame(item.id)}><span className="mini-icon">{item.icon}</span><span className="mini-card-copy"><small className="mini-game-badge">{item.badge}</small><strong>{item.title}</strong><small>{item.subtitle}</small></span><span className="play-chip">Jogar <ChevronRight size={14} /></span></button>)}</div><div className="modal-footer-note"><Trophy size={16} /> Missão do nível {game.level}: {Math.min(game.missionProgress, 3)} de 3 partidas completas · recompensa +200 moedas</div></> : currentMini ? <MiniGameBoard key={miniId} id={miniId} petName={petName} onWin={finishMinigame} onExit={() => setMiniId(null)} soundOn={soundOn} difficulty={game.level} /> : null}
       </section></div>}
 
-      {shopOpen && <div className="modal-backdrop" onClick={() => setShopOpen(false)}><section className="modal-card shop-card" role="dialog" aria-modal="true" aria-labelledby="shop-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setShopOpen(false)} aria-label={shopTab === "inventory" ? "Fechar mochila" : "Fechar loja"}><X size={18} /></button><span className="modal-kicker">{shopTab === "inventory" ? "ITENS QUE JÁ SÃO SEUS" : shopTab === "decor" ? "RECOMPENSAS DA AVENTURA" : "MIMOS COM MOEDAS VIRTUAIS"}</span><div className="shop-modal-title"><div><h2 id="shop-title">{shopTab === "inventory" ? "Mochila do pet" : "Loja da turma"}</h2><p className="modal-subtitle">Saldo: <strong>{game.coins.toLocaleString("pt-BR")} moedas</strong></p></div><span className="shop-paw">🐾</span></div><div className="shop-tabs"><button className={shopTab === "items" ? "selected" : ""} onClick={() => setShopTab("items")}>Itens</button><button className={shopTab === "decor" ? "selected" : ""} onClick={() => setShopTab("decor")}>Decoração</button><button className={shopTab === "inventory" ? "selected" : ""} onClick={() => setShopTab("inventory")}><Backpack size={14} /> Mochila</button><button className={shopTab === "looks" ? "selected" : ""} onClick={() => setShopTab("looks")}>Visuais</button><button className={shopTab === "boosts" ? "selected" : ""} onClick={() => setShopTab("boosts")}>Boosts</button><button className={shopTab === "friends" ? "selected" : ""} onClick={() => setShopTab("friends")}>Amigos</button></div>
+      {shopOpen && <div className="modal-backdrop" onClick={() => setShopOpen(false)}><section className="modal-card shop-card" role="dialog" aria-modal="true" aria-labelledby="shop-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setShopOpen(false)} aria-label={shopTab === "inventory" ? "Fechar mochila" : "Fechar loja"}><X size={18} /></button><span className="modal-kicker">{shopTab === "inventory" ? "ITENS QUE JÁ SÃO SEUS" : shopTab === "decor" ? "RECOMPENSAS DA AVENTURA" : "MIMOS COM MOEDAS VIRTUAIS"}</span><div className="shop-modal-title"><div><h2 id="shop-title">{shopTab === "inventory" ? "Mochila do pet" : "Loja da turma"}</h2><p className="modal-subtitle">Saldo: <strong>{game.coins.toLocaleString("pt-BR")} moedas</strong></p></div><span className="shop-paw">🐾</span></div><div className="shop-tabs"><button className={shopTab === "items" ? "selected" : ""} onClick={() => setShopTab("items")}>Itens</button><button className={shopTab === "decor" ? "selected" : ""} onClick={() => setShopTab("decor")}>Decoração</button><button className={shopTab === "inventory" ? "selected" : ""} onClick={() => setShopTab("inventory")}>Mochila</button><button className={shopTab === "looks" ? "selected" : ""} onClick={() => setShopTab("looks")}>Visuais</button><button className={shopTab === "boosts" ? "selected" : ""} onClick={() => setShopTab("boosts")}>Boosts</button><button className={shopTab === "friends" ? "selected" : ""} onClick={() => setShopTab("friends")}>Amigos</button></div>
         {shopTab === "items" && <div className="store-item-grid">{STORE_ITEMS.map((item) => { const count = game.inventory[item.id]; return <article className="store-item-card" key={item.id}><div className={`store-item-art item-${item.id}`}>{item.icon}</div><span className="store-item-stock">na mochila: {count}</span><strong>{item.name}</strong><small>{item.description}</small><div className="store-item-actions">{count > 0 && <button className="use-item-button" onClick={() => consumeItem(item.id)}>Usar</button>}<button className="buy-button" onClick={() => purchaseItem(item.id)}><Coins size={13} fill="currentColor" /> {item.price}</button></div></article>; })}</div>}
         {shopTab === "inventory" && <div className="inventory-panel">
-          <div className="inventory-summary"><Backpack size={20} /><span><strong>{Object.values(game.inventory).reduce((sum, count) => sum + count, 0)} itens de cuidado</strong><small>Suas decorações conquistadas ficam guardadas aqui até serem posicionadas.</small></span></div>
+          <div className="inventory-summary"><Backpack size={20} /><span><strong>{Object.values(game.inventory).reduce((sum, count) => sum + count, 0)} itens de cuidado</strong><small>Use os petiscos para cuidar do pet. Decorações ficam na aba Decoração.</small></span></div>
           <section className="inventory-section"><h3>Cuidados e consumíveis</h3><div className="store-item-grid inventory-item-grid">{STORE_ITEMS.filter((item) => (game.inventory[item.id] ?? 0) > 0).map((item) => <article className="store-item-card inventory-owned-card" key={item.id}><div className={`store-item-art item-${item.id}`}>{item.icon}</div><span className="store-item-stock">quantidade: {game.inventory[item.id]}</span><strong>{item.name}</strong><small>{item.description}</small><button className="use-item-button" onClick={() => consumeItem(item.id)}>Usar item</button></article>)}</div>{STORE_ITEMS.every((item) => (game.inventory[item.id] ?? 0) < 1) && <p className="inventory-empty">Sua mochila de cuidados está vazia. Visite a aba Itens para comprar mimos.</p>}</section>
-          <section className="inventory-section"><h3>Decorações únicas conquistadas</h3><div className="decor-shop-grid inventory-decor-grid">{DECORATIONS.filter((item) => (game.decorInventory[item.id] ?? 0) > 0 || Object.values(game.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id))).map((item) => {
-            const count = game.decorInventory[item.id] ?? 0;
-            const placedIn = Object.entries(game.roomDecorations).find(([, items]) => items.some((placement) => placement.itemId === item.id))?.[0];
-            return <article className="decor-shop-card inventory-decor-card" key={item.id}><div className="decor-shop-art"><img src={GAME_ASSETS.decorations[item.id]} alt={item.name} loading="lazy" /></div><span className="store-item-stock">{placedIn ? `FIXADA · CASA ${placedIn}` : `NA MOCHILA · CASA ${item.room}`}</span><strong>{item.name}</strong><small>{item.description}</small><button disabled={Boolean(placedIn)} className={placedIn ? "locked-button" : "use-item-button"} onClick={() => useDecorationFromBackpack(item.id)}>{placedIn ? "Peça única já posicionada" : "Posicionar decoração"}</button></article>;
-          })}</div>{DECORATIONS.every((item) => (game.decorInventory[item.id] ?? 0) < 1 && !Object.values(game.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id))) && <p className="inventory-empty">Ainda não há decoração na mochila. Vença fases da Aventura para conquistar as peças de cada casa.</p>}</section>
         </div>}
         {shopTab === "decor" && <>
+          <section className="inventory-section decor-owned-section"><h3>Decorações únicas conquistadas</h3><div className="decor-shop-grid inventory-decor-grid">{DECORATIONS.filter((item) => (game.decorInventory[item.id] ?? 0) > 0 || Object.values(game.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id))).map((item) => {
+            const placedIn = Object.entries(game.roomDecorations).find(([, items]) => items.some((placement) => placement.itemId === item.id))?.[0];
+            return <article className="decor-shop-card inventory-decor-card" key={item.id}><div className="decor-shop-art"><img src={GAME_ASSETS.decorations[item.id]} alt={item.name} loading="lazy" /></div><span className="store-item-stock">{placedIn ? `FIXADA · CASA ${placedIn}` : `NA MOCHILA · CASA ${item.room}`}</span><strong>{item.name}</strong><small>{item.description}</small><button disabled={Boolean(placedIn)} className={placedIn ? "locked-button" : "use-item-button"} onClick={() => useDecorationFromBackpack(item.id)}>{placedIn ? "Peça única já posicionada" : "Posicionar decoração"}</button></article>;
+          })}</div>{DECORATIONS.every((item) => (game.decorInventory[item.id] ?? 0) < 1 && !Object.values(game.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id))) && <p className="inventory-empty">Ainda não há decoração conquistada. Vença fases da Aventura para liberar as peças de cada casa.</p>}</section>
           <div className="decor-room-summary"><div><strong>Casa {game.activeRoom} · {activeChapter.location}</strong><small>Peças únicas liberadas ao vencer cada fase desta casa</small></div><span>{(game.roomDecorations[String(game.activeRoom)] ?? []).length}/10</span></div>
           <div className="decor-shop-grid">{roomDecorationCatalog.map((item) => {
             const count = game.decorInventory[item.id] ?? 0;
