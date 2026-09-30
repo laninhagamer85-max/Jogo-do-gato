@@ -1473,6 +1473,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .room-menu-panel,.room-secondary-links { animation: none; }
 }
 
+
 /* Orientation-aware room navigation: persistent actions stay short, readable, and pet-themed. */
 .dashboard-grid.has-room-panel {
   grid-template-columns: minmax(214px,238px) minmax(260px,300px) minmax(0,1fr);
@@ -1695,4 +1696,539 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 @media (max-width: 900px) and (orientation: portrait) {
   .side-left.room-control-panel:not(.has-open-panel) .room-adventure-copy { display: flex; }
   .side-left.room-control-panel:not(.has-open-panel) .room-adventure-entry > svg { display: block; }
+}
+
+
+/* Familiar stacked menu, restyled to match the pet game's colors and keep the side-panel interaction. */
+.side-left.room-control-panel { gap: 6px; }
+.room-primary-grid { display: grid; width: 100%; grid-template-columns: minmax(0,1fr); gap: 5px; }
+.room-action-card { width: 100%; min-height: 43px; flex-direction: row; align-items: center; justify-content: flex-start; gap: 9px; padding: 5px 9px; border-radius: 13px; }
+.room-action-card::after { display: none; }
+.room-action-card:hover { transform: translateX(2px); }
+.room-action-illustration { width: 31px; height: 31px; flex-basis: 31px; border-radius: 10px; }
+.room-action-copy { min-width: 0; flex: 1; gap: 2px; }
+.room-action-copy strong { font-size: 10px; }
+.room-action-copy small { font-size: 7.5px; }
+.room-secondary-row { display: grid; width: 100%; grid-template-columns: minmax(0,1fr); gap: 5px; }
+.room-action-chip { width: 100%; min-height: 43px; gap: 9px; padding: 5px 9px; border-radius: 13px; }
+.room-chip-care { border-color: rgb(118 227 190 / 23%); background: linear-gradient(100deg,rgb(118 227 190 / 10%),rgb(255 255 255 / 3%)); }
+.room-chip-missions { border-color: rgb(255 215 96 / 24%); background: linear-gradient(100deg,rgb(255 215 96 / 10%),rgb(255 255 255 / 3%)); }
+.room-chip-icon { width: 31px; height: 31px; flex-basis: 31px; border-radius: 10px; }
+.room-chip-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
+.room-chip-copy strong { overflow: hidden; color: #fff; font-size: 10px; font-weight: 1000; line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }
+.room-chip-copy small { overflow: hidden; color: #c3d0e7; font-size: 7.5px; font-weight: 800; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.room-chip-progress { flex: 0 0 auto; margin-left: auto; padding: 3px 5px; border: 1px solid rgb(255 215 96 / 26%); border-radius: 99px; background: rgb(255 215 96 / 13%); color: #ffdf78; font-size: 7px; font-weight: 1000; line-height: 1; }
+.room-inventory-button { width: 100%; min-height: 43px; gap: 9px; padding: 5px 9px; border-radius: 13px; }
+.room-inventory-icon { width: 31px; height: 31px; flex-basis: 31px; border-radius: 10px; }
+.room-inventory-copy strong,.room-more-copy strong { font-size: 10px; }
+.room-inventory-copy small,.room-more-copy small { font-size: 7.5px; }
+.room-more-toggle { min-height: 43px; gap: 9px; padding: 5px 9px; border-radius: 13px; }
+.room-more-icon { width: 31px; height: 31px; flex-basis: 31px; border-radius: 10px; }
+.room-more-copy { gap: 2px; }
+.room-secondary-links { grid-template-columns: minmax(0,1fr); gap: 4px; padding-left: 8px; border-left: 1px dashed rgb(141 221 255 / 30%); }
+.room-secondary-links button { min-height: 39px; flex-direction: row; justify-content: flex-start; gap: 9px; padding: 5px 8px; text-align: left; }
+.room-secondary-icon { width: 29px; height: 29px; flex: 0 0 29px; border-radius: 10px; }
+.room-secondary-copy { align-items: flex-start; gap: 2px; }
+.room-secondary-copy strong { font-size: 9px; }
+.room-secondary-copy small { font-size: 7px; }
+.room-action-card:focus-visible,.room-action-chip:focus-visible,.room-inventory-button:focus-visible,.room-more-toggle:focus-visible,.room-secondary-links button:focus-visible { outline: 2px solid #9de8ff; outline-offset: 2px; }
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .side-left.room-control-panel { gap: 4px; }
+  .room-primary-grid,.room-secondary-row { gap: 4px; }
+  .room-action-card,.room-action-chip,.room-inventory-button,.room-more-toggle { min-height: 36px; gap: 6px; padding: 4px 6px; border-radius: 11px; }
+  .room-action-illustration,.room-chip-icon,.room-inventory-icon,.room-more-icon { width: 26px; height: 26px; flex-basis: 26px; border-radius: 8px; }
+  .room-action-copy strong,.room-chip-copy strong,.room-inventory-copy strong,.room-more-copy strong { font-size: 8px; }
+  .room-action-copy small,.room-chip-copy small,.room-inventory-copy small,.room-more-copy small { font-size: 6px; }
+  .room-chip-progress { padding: 2px 4px; font-size: 6px; }
+  .room-secondary-links button { min-height: 32px; gap: 6px; padding: 3px 6px; }
+  .room-secondary-icon { width: 24px; height: 24px; flex-basis: 24px; }
+  .side-left.room-control-panel.has-open-panel .room-action-card,
+  .side-left.room-control-panel.has-open-panel .room-action-chip,
+  .side-left.room-control-panel.has-open-panel .room-inventory-button,
+  .side-left.room-control-panel.has-open-panel .room-more-toggle { min-height: 34px; justify-content: center; padding: 3px; }
+  .side-left.room-control-panel.has-open-panel .room-chip-copy,
+  .side-left.room-control-panel.has-open-panel .room-chip-progress { display: none; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .side-left.room-control-panel { gap: 3px; padding: 6px; }
+  .room-primary-grid,.room-secondary-row { gap: 3px; }
+  .room-action-card,.room-action-chip,.room-inventory-button,.room-more-toggle { min-height: 30px; gap: 5px; padding: 3px 5px; border-radius: 9px; }
+  .room-action-illustration,.room-chip-icon,.room-inventory-icon,.room-more-icon { width: 23px; height: 23px; flex-basis: 23px; border-radius: 7px; }
+  .room-action-copy strong,.room-chip-copy strong,.room-inventory-copy strong,.room-more-copy strong { font-size: 7.5px; }
+  .room-action-copy small,.room-chip-copy small,.room-inventory-copy small,.room-more-copy small { display: none; }
+  .room-chip-progress { padding: 2px 4px; font-size: 6px; }
+  .room-secondary-links { gap: 3px; }
+  .room-secondary-links button { min-height: 27px; gap: 5px; padding: 2px 5px; }
+  .room-secondary-icon { width: 22px; height: 22px; flex-basis: 22px; }
+  .room-secondary-copy small { display: none; }
+  .room-adventure-entry { min-height: 38px; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .room-action-chip { flex-direction: row; align-items: center; justify-content: flex-start; }
+  .room-chip-copy { align-items: flex-start; }
+  .room-chip-progress { margin-left: auto; }
+}
+
+.room-action-card > svg:last-child,.room-action-chip > svg:last-child { flex: 0 0 auto; width: 14px; height: 14px; color: #c9daf2; }
+.room-action-home > svg:last-child { color: #ffe08a; }
+.room-action-decor > svg:last-child { color: #ffc7e9; }
+.room-chip-care > svg:last-child { color: #9eebd1; }
+.room-chip-missions > svg:last-child { color: #ffe283; }
+@media (max-width: 900px) and (orientation: portrait) {
+  .side-left.room-control-panel.has-open-panel .room-action-card > svg:last-child,
+  .side-left.room-control-panel.has-open-panel .room-action-chip > svg:last-child { display: none; }
+}
+
+
+/* Floating pet HUD: direct touch targets, visible progress, and adjacent content panels. */
+.topbar { grid-template-columns: minmax(185px,1fr) minmax(340px,440px) minmax(248px,1fr); align-items: start; gap: 12px; }
+.brand-column { display: grid; align-content: start; justify-items: start; gap: 5px; min-width: 0; }
+.brand-column .brand-lockup { min-height: 42px; }
+.care-glance { display: grid; gap: 4px; max-width: 100%; padding: 5px 8px; border: 1px solid rgb(255 255 255 / 13%); border-radius: 12px; background: rgb(8 22 49 / 72%); color: #eff8ff; text-align: left; box-shadow: 0 6px 18px rgb(2 9 27 / 18%); backdrop-filter: blur(12px); }
+.care-glance-heading { display: flex; align-items: center; gap: 5px; color: #c8e9ff; font-size: 8px; font-weight: 1000; }
+.care-glance-heading svg { color: #ff9bc1; }
+.care-glance-needs { display: flex; flex-wrap: wrap; gap: 4px; }
+.care-glance-need { display: inline-flex; align-items: center; gap: 3px; padding: 2px 5px; border-radius: 7px; background: rgb(255 255 255 / 7%); color: #f1f5ff; font-size: 7px; white-space: nowrap; }
+.care-glance-need i { font-size: 9px; font-style: normal; }
+.care-glance-need b { font-weight: 900; }
+.care-glance-need strong { color: #ffe38a; font-size: 7px; }
+.progress-hud { display: grid; align-content: start; gap: 6px; min-width: 0; }
+.progress-hud .level-card { width: 100%; padding: 8px 11px; }
+.progress-hud .level-location { min-height: 19px; margin-top: 4px; }
+.mission-hud { display: grid; grid-template-columns: auto minmax(35px,1fr) auto; align-items: center; gap: 7px; min-height: 34px; padding: 4px 6px 4px 9px; border: 1px solid rgb(255 255 255 / 14%); border-radius: 12px; background: rgb(10 25 58 / 78%); box-shadow: 0 7px 18px rgb(4 14 36 / 22%); backdrop-filter: blur(12px); }
+.mission-hud-summary { display: inline-flex; align-items: center; gap: 5px; padding: 3px 0; border: 0; background: transparent; color: #fff; font-size: 9px; font-weight: 1000; white-space: nowrap; }
+.mission-hud-summary > span { display: inline-flex; align-items: center; gap: 4px; }
+.mission-hud-summary svg { color: #ffda58; }
+.mission-hud-summary > strong { color: #ffe791; font-size: 8px; }
+.mission-hud-track { height: 7px; min-width: 35px; }
+.mini-games-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 27px; padding: 0 8px; border: 1px solid rgb(100 222 255 / 33%); border-radius: 9px; background: linear-gradient(135deg,rgb(28 153 197 / 25%),rgb(67 94 194 / 30%)); color: #edfbff; font-size: 8px; font-weight: 1000; white-space: nowrap; }
+.mini-games-trigger svg:first-child { color: #8ceaff; }
+.mini-games-trigger:hover { border-color: rgb(131 231 255 / 72%); filter: brightness(1.1); }
+
+.dashboard-grid { grid-template-columns: minmax(178px,212px) minmax(0,1fr); grid-template-areas: "rail stage"; align-items: start; gap: 13px; padding-top: 10px; }
+.dashboard-grid.has-room-panel { grid-template-columns: minmax(178px,212px) minmax(280px,318px) minmax(0,1fr); grid-template-areas: "rail panel stage"; gap: 10px; }
+.side-left.room-control-panel { grid-area: rail; display: grid; width: 100%; max-width: none; max-height: none; align-self: start; align-content: start; gap: 8px; overflow: visible; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+.room-adventure-entry { min-height: 54px; padding: 7px 10px; border-radius: 15px; }
+.room-adventure-icon { width: 34px; height: 34px; flex-basis: 34px; }
+.room-adventure-copy strong { font-size: 12px; }
+.room-adventure-copy small { font-size: 8px; }
+.room-control-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+.room-action-card { display: flex; min-width: 0; min-height: 48px; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; padding: 5px 7px; border: 1px solid rgb(255 255 255 / 17%); border-radius: 13px; color: #fff; text-align: left; box-shadow: 0 6px 14px rgb(2 10 27 / 17%),inset 0 1px 0 rgb(255 255 255 / 12%); transition: transform 140ms var(--ease-out),filter 140ms,border-color 140ms; }
+.room-action-card:hover,.room-action-card.is-active { transform: translateY(-1px); filter: brightness(1.12); border-color: rgb(255 255 255 / 48%); }
+.room-action-card:active { transform: scale(.97); }
+.room-action-card::after { right: -22px; bottom: -28px; width: 57px; height: 57px; background: rgb(255 255 255 / 6%); }
+.room-action-home { background: linear-gradient(145deg,rgb(179 124 28 / 91%),rgb(99 71 29 / 94%)); }
+.room-action-decor { background: linear-gradient(145deg,rgb(179 67 139 / 91%),rgb(101 45 112 / 95%)); }
+.room-action-care { background: linear-gradient(145deg,rgb(203 65 115 / 93%),rgb(122 43 111 / 94%)); }
+.room-action-feed { background: linear-gradient(145deg,rgb(209 128 30 / 94%),rgb(137 78 29 / 95%)); }
+.room-action-missions { background: linear-gradient(145deg,rgb(155 111 32 / 94%),rgb(107 78 34 / 96%)); }
+.room-action-inventory { background: linear-gradient(145deg,rgb(35 146 122 / 93%),rgb(31 91 103 / 95%)); }
+.room-action-shop { background: linear-gradient(145deg,rgb(42 124 193 / 94%),rgb(35 75 142 / 95%)); }
+.room-action-story { background: linear-gradient(145deg,rgb(108 91 195 / 94%),rgb(71 59 139 / 95%)); }
+.room-action-illustration { width: 28px; height: 28px; flex: 0 0 28px; border-radius: 9px; background: rgb(8 19 44 / 24%); color: #fff; }
+.room-action-home .room-action-illustration { color: #ffe188; }
+.room-action-decor .room-action-illustration { color: #ffd0ed; }
+.room-action-care .room-action-illustration { color: #ffc0d2; }
+.room-action-feed .room-action-illustration { color: #ffe39a; }
+.room-action-missions .room-action-illustration { color: #ffdf72; }
+.room-action-inventory .room-action-illustration { color: #aaffdd; }
+.room-action-shop .room-action-illustration { color: #a8eaff; }
+.room-action-story .room-action-illustration { color: #dad0ff; }
+.room-action-copy { flex: 1; min-width: 0; gap: 2px; }
+.room-action-copy strong { font-size: 9px; }
+.room-action-copy small { color: rgb(255 255 255 / 82%); font-size: 6.5px; }
+.room-action-card > svg:last-child { flex: 0 0 13px; width: 13px; height: 13px; color: rgb(255 255 255 / 68%); }
+
+.room-menu-panel { grid-area: panel; position: relative; inset: auto; z-index: 18; width: 100%; max-height: min(67svh,540px); overflow: auto; padding: 14px; border: 1px solid rgb(255 255 255 / 18%); border-radius: 18px; background: linear-gradient(145deg,rgb(18 43 82 / 97%),rgb(9 25 56 / 97%)); box-shadow: 0 17px 42px rgb(0 7 24 / 34%),inset 0 1px 0 rgb(255 255 255 / 10%); backdrop-filter: blur(17px); scrollbar-width: thin; scrollbar-color: rgb(134 199 238 / 35%) transparent; }
+.room-menu-panel-heading { position: sticky; top: -14px; z-index: 2; padding: 4px 0 9px; background: linear-gradient(180deg,rgb(17 41 79 / 99%) 80%,rgb(17 41 79 / 0%)); }
+.room-menu-panel-heading h2 { font-size: 19px; }
+.room-menu-panel .room-menu-care { gap: 10px; }
+.room-menu-panel .room-menu-care-status { padding: 9px; }
+.room-menu-panel .stats-list { grid-template-columns: 1fr 1fr; gap: 8px; }
+.room-menu-panel .stat-row { min-width: 0; }
+.room-menu-panel .stat-label strong,.room-menu-panel .stat-label span { font-size: 8px; }
+.room-menu-panel .care-button { min-height: 62px; }
+.room-menu-missions > p,.room-menu-feeding > p,.room-menu-inventory > p,.room-menu-decor > p,.room-menu-rooms > p { margin: 0 0 10px; color: #d2def1; font-size: 10px; line-height: 1.45; }
+.room-menu-missions .mission-progress-row { margin: 10px 0; }
+.room-menu-missions .mission-button { min-height: 40px; margin-top: 12px; font-size: 10px; }
+.room-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.room-mini-game-card { display: flex; min-width: 0; min-height: 48px; align-items: center; gap: 7px; padding: 6px 7px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 12px; background: linear-gradient(145deg,rgb(255 255 255 / 8%),rgb(255 255 255 / 3%)); color: #fff; text-align: left; }
+.room-mini-game-card:hover { border-color: rgb(116 220 255 / 45%); background: rgb(67 139 203 / 19%); }
+.room-mini-game-card.featured { border-color: rgb(255 213 99 / 40%); background: linear-gradient(145deg,rgb(150 102 25 / 25%),rgb(255 255 255 / 4%)); }
+.room-mini-game-icon { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border-radius: 9px; background: rgb(94 168 224 / 17%); font-size: 18px; }
+.room-mini-game-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
+.room-mini-game-copy strong { overflow: hidden; font-size: 8px; font-weight: 1000; text-overflow: ellipsis; white-space: nowrap; }
+.room-mini-game-copy small { color: #afc4df; font-size: 6px; font-weight: 900; }
+.room-mini-game-card > svg { flex: 0 0 auto; color: #a7c9e8; }
+.room-item-list { display: grid; gap: 6px; }
+.room-item-row { display: flex; min-width: 0; min-height: 43px; align-items: center; gap: 8px; padding: 5px 7px; border: 1px solid rgb(255 255 255 / 11%); border-radius: 11px; background: rgb(255 255 255 / 5%); color: #f5f8ff; text-align: left; }
+.room-item-row:disabled { opacity: .72; }
+.room-item-emoji,.room-item-art { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; border-radius: 9px; background: rgb(255 255 255 / 8%); font-size: 19px; }
+.room-item-art img { width: 27px; height: 27px; object-fit: contain; }
+.room-item-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
+.room-item-copy strong { overflow: hidden; color: #fff; font-size: 9px; font-weight: 1000; text-overflow: ellipsis; white-space: nowrap; }
+.room-item-copy small { overflow: hidden; color: #b8cae1; font-size: 7px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.room-item-action { min-width: 48px; min-height: 28px; padding: 0 8px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 8px; font-size: 8px; font-weight: 1000; }
+.room-item-action.use { background: linear-gradient(135deg,#17bd74,#0b925d); color: #fff; }
+.room-item-action.buy { background: linear-gradient(135deg,#247fca,#3155a4); color: #fff; }
+.room-item-action:disabled { opacity: .65; }
+.room-menu-inventory h3 { margin: 11px 0 6px; color: #9fe6ff; font-size: 9px; font-weight: 1000; }
+.inventory-empty { margin: 7px 2px; color: #b5c6de; font-size: 8px; line-height: 1.45; }
+.room-decor-row { width: 100%; cursor: pointer; }
+.room-map-side-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+.room-map-side-item { display: flex; min-height: 68px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 2px; overflow: hidden; padding: 7px; border: 1px solid rgb(255 255 255 / 18%); border-radius: 12px; background-size: cover; background-position: center; color: #fff; text-align: left; box-shadow: inset 0 -20px 28px rgb(3 9 25 / 35%); }
+.room-map-side-item.current { outline: 2px solid #69d9ff; outline-offset: 1px; }
+.room-map-side-item span { color: #ffe388; font-size: 6px; font-weight: 1000; letter-spacing: .6px; }
+.room-map-side-item strong { overflow: hidden; max-width: 100%; font-size: 8px; font-weight: 1000; text-overflow: ellipsis; white-space: nowrap; }
+.room-map-side-item small { overflow: hidden; max-width: 100%; color: #d9e7f7; font-size: 6px; text-overflow: ellipsis; white-space: nowrap; }
+.room-map-side-item i { color: #8fffc0; font-size: 6px; font-style: normal; font-weight: 1000; }
+.room-menu-rooms .room-map-note { display: flex; align-items: center; gap: 5px; margin: 9px 1px 0; color: #b8cbea; font-size: 8px; }
+.room-menu-rooms .room-map-note svg { color: #7ddcff; }
+@media (max-width: 1100px) {
+  .topbar { grid-template-columns: minmax(160px,1fr) minmax(280px,390px) minmax(210px,1fr); gap: 8px; }
+  .dashboard-grid { grid-template-columns: minmax(164px,190px) minmax(0,1fr); gap: 9px; }
+  .dashboard-grid.has-room-panel { grid-template-columns: minmax(164px,190px) minmax(270px,300px) minmax(0,1fr); gap: 8px; }
+  .room-action-copy small { display: none; }
+}
+
+@media (max-width: 900px) {
+  .topbar { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "brand actions" "progress progress"; align-items: start; gap: 6px 9px; }
+  .brand-column { grid-area: brand; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 7px; }
+  .brand-column .brand-lockup { min-height: 40px; }
+  .brand-paw { width: 35px; height: 35px; }
+  .brand-lockup strong { font-size: 19px; }
+  .brand-lockup small { font-size: 7px; letter-spacing: 1.3px; }
+  .care-glance { min-width: 0; padding: 4px 6px; }
+  .care-glance-heading { font-size: 7px; }
+  .care-glance-needs { flex-wrap: nowrap; }
+  .care-glance-need { gap: 2px; padding: 2px 4px; font-size: 6px; }
+  .progress-hud { grid-area: progress; grid-template-columns: minmax(0,1fr); gap: 5px; }
+  .progress-hud .level-card { padding: 6px 9px; }
+  .level-heading strong { font-size: 11px; }
+  .xp-copy { font-size: 9px; }
+  .progress-hud .level-location { margin-top: 2px; font-size: 8px; }
+  .mission-hud { min-height: 30px; }
+  .top-actions { grid-area: actions; gap: 5px; }
+  .top-actions .icon-button { width: 35px; height: 35px; }
+  .top-actions .coin-pill { min-height: 35px; padding: 0 7px 0 9px; gap: 5px; font-size: 11px; }
+  .top-actions .coin-plus { width: 21px; height: 21px; }
+  .dashboard-grid { display: block; position: relative; min-height: 0; padding-top: 5px; }
+  .dashboard-grid.has-room-panel { display: block; }
+  .center-stage { width: 100%; min-height: min(64svh,560px); max-height: none; padding-bottom: 52px; }
+  .side-left.room-control-panel { position: absolute; z-index: 20; top: 7px; left: 8px; display: grid; width: min(190px,calc(100vw - 16px)); max-width: 190px; gap: 6px; }
+  .room-adventure-entry { min-height: 45px; gap: 7px; padding: 5px 7px; }
+  .room-adventure-icon { width: 29px; height: 29px; flex-basis: 29px; }
+  .room-adventure-copy strong { font-size: 10px; }
+  .room-adventure-copy small { font-size: 7px; }
+  .room-control-grid { gap: 5px; }
+  .room-action-card { min-height: 40px; gap: 4px; padding: 4px 5px; border-radius: 11px; }
+  .room-action-illustration { width: 24px; height: 24px; flex-basis: 24px; border-radius: 8px; }
+  .room-action-copy strong { font-size: 8px; }
+  .room-action-card > svg:last-child { width: 11px; height: 11px; flex-basis: 11px; }
+  .room-menu-panel { position: fixed; z-index: 36; top: max(142px,calc(env(safe-area-inset-top) + 132px)); left: 70px; width: min(340px,calc(100vw - 78px)); max-height: calc(100dvh - max(160px,calc(env(safe-area-inset-top) + 148px)) - 12px); padding: 12px; }
+  .room-menu-panel-heading { top: -12px; }
+  .room-menu-panel .stats-list { grid-template-columns: 1fr 1fr; }
+  .room-mini-game-card { min-height: 44px; }
+  .game-root.focus-mode .center-stage { min-height: 100svh; }
+}
+@media (max-width: 600px) and (orientation: portrait) {
+  .screen-ui { padding: max(8px,env(safe-area-inset-top)) 10px 12px; }
+  .topbar { gap: 5px 6px; }
+  .brand-column { grid-template-columns: minmax(0,1fr); gap: 2px; }
+  .brand-column .brand-lockup { min-height: 34px; }
+  .brand-paw { width: 29px; height: 29px; }
+  .brand-lockup strong { font-size: 17px; }
+  .brand-lockup small { margin-top: 3px; font-size: 6px; }
+  .care-glance { display: flex; align-items: center; gap: 5px; padding: 3px 5px; }
+  .care-glance-heading { flex: 0 0 auto; font-size: 6px; }
+  .care-glance-needs { gap: 3px; min-width: 0; }
+  .care-glance-need { font-size: 5.5px; }
+  .care-glance-need i { font-size: 8px; }
+  .care-glance-need strong { font-size: 6px; }
+  .top-actions { gap: 3px; }
+  .top-actions .icon-button { width: 31px; height: 31px; }
+  .top-actions .coin-pill { min-height: 31px; gap: 4px; padding: 0 5px 0 7px; font-size: 10px; }
+  .top-actions .coin-plus { width: 18px; height: 18px; }
+  .progress-hud { gap: 4px; }
+  .progress-hud .level-card { padding: 5px 7px; border-radius: 12px; }
+  .level-heading { gap: 5px; }
+  .level-heading strong { font-size: 10px; }
+  .level-star svg { width: 17px; height: 17px; }
+  .xp-copy { font-size: 8px; }
+  .xp-track { height: 6px; margin-top: 4px; }
+  .progress-hud .level-location { min-height: 15px; font-size: 7px; }
+  .mission-hud { min-height: 27px; grid-template-columns: auto minmax(25px,1fr) auto; gap: 5px; padding: 3px 5px 3px 7px; }
+  .mission-hud-summary { gap: 4px; font-size: 8px; }
+  .mission-hud-summary svg { width: 12px; height: 12px; }
+  .mission-hud-track { height: 6px; }
+  .mini-games-trigger { min-height: 23px; gap: 3px; padding: 0 5px; font-size: 7px; }
+  .mini-games-trigger svg:first-child { width: 14px; height: 14px; }
+  .mini-games-trigger svg:last-child { display: none; }
+  .dashboard-grid { padding-top: 3px; }
+  .side-left.room-control-panel { top: 4px; left: 6px; width: min(174px,calc(100vw - 12px)); }
+  .room-adventure-entry { min-height: 41px; }
+  .room-action-card { min-height: 38px; }
+  .room-menu-panel { top: max(145px,calc(env(safe-area-inset-top) + 138px)); left: 68px; width: calc(100vw - 76px); max-height: calc(100dvh - max(160px,calc(env(safe-area-inset-top) + 152px)) - 8px); padding: 10px; }
+  .room-menu-panel-heading h2 { font-size: 16px; }
+  .room-menu-panel .stats-list { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .room-menu-panel .stat-icon { width: 22px; height: 22px; flex-basis: 22px; font-size: 11px; }
+  .room-menu-panel .stat-label strong,.room-menu-panel .stat-label span { font-size: 7px; }
+  .room-menu-panel .care-button { min-height: 54px; padding-left: 34px; }
+  .room-menu-panel .care-button > span { left: 6px; width: 22px; height: 25px; }
+  .room-menu-panel .care-button b { font-size: 7px; }
+  .room-mini-grid { grid-template-columns: 1fr; gap: 4px; }
+  .room-mini-game-card { min-height: 36px; padding: 3px 6px; }
+  .room-mini-game-icon { width: 25px; height: 25px; flex-basis: 25px; font-size: 15px; }
+  .room-mini-game-copy strong { font-size: 7px; }
+  .room-mini-game-copy small { font-size: 5px; }
+  .room-map-side-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+  .room-map-side-item { min-height: 57px; padding: 5px; }
+  .care-glance-need b { display: none; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .screen-ui { padding: max(5px,env(safe-area-inset-top)) 10px 8px; }
+  .topbar { grid-template-columns: minmax(150px,.85fr) minmax(270px,1.2fr) auto; grid-template-areas: "brand progress actions"; align-items: center; gap: 7px; }
+  .brand-column { display: grid; grid-template-columns: 1fr; gap: 3px; }
+  .brand-column .brand-lockup { min-height: 31px; }
+  .brand-paw { width: 29px; height: 29px; }
+  .brand-lockup strong { font-size: 17px; }
+  .brand-lockup small { margin-top: 3px; font-size: 6px; }
+  .care-glance { padding: 3px 5px; }
+  .care-glance-heading { font-size: 6px; }
+  .care-glance-need { font-size: 5px; }
+  .progress-hud { grid-template-columns: 1fr; gap: 3px; }
+  .progress-hud .level-card { padding: 4px 7px; }
+  .level-heading strong { font-size: 9px; }
+  .level-star svg { width: 15px; height: 15px; }
+  .xp-copy { font-size: 7px; }
+  .progress-hud .level-location { min-height: 12px; margin-top: 1px; font-size: 6px; }
+  .xp-track { height: 5px; margin-top: 3px; }
+  .mission-hud { min-height: 24px; gap: 4px; padding: 2px 4px; }
+  .mission-hud-summary { font-size: 7px; }
+  .mission-hud-summary svg { width: 11px; height: 11px; }
+  .mini-games-trigger { min-height: 20px; padding: 0 5px; font-size: 6px; }
+  .mini-games-trigger svg:first-child { width: 12px; height: 12px; }
+  .top-actions { gap: 3px; }
+  .top-actions .icon-button { width: 30px; height: 30px; }
+  .top-actions .coin-pill { min-height: 30px; padding: 0 5px; font-size: 9px; }
+  .top-actions .coin-plus { width: 18px; height: 18px; }
+  .dashboard-grid { padding-top: 3px; }
+  .center-stage { min-height: calc(100svh - 94px); padding-bottom: 34px; }
+  .side-left.room-control-panel { top: 5px; left: 6px; width: 162px; gap: 4px; }
+  .room-adventure-entry { min-height: 35px; padding: 3px 6px; }
+  .room-adventure-icon { width: 25px; height: 25px; flex-basis: 25px; }
+  .room-adventure-copy strong { font-size: 9px; }
+  .room-adventure-copy small { font-size: 6px; }
+  .room-control-grid { gap: 4px; }
+  .room-action-card { min-height: 33px; gap: 3px; padding: 3px 4px; border-radius: 9px; }
+  .room-action-illustration { width: 21px; height: 21px; flex-basis: 21px; }
+  .room-action-illustration svg { width: 14px; height: 14px; }
+  .room-action-copy strong { font-size: 7px; }
+  .room-action-card > svg:last-child { width: 9px; height: 9px; flex-basis: 9px; }
+  .room-menu-panel { top: max(88px,calc(env(safe-area-inset-top) + 82px)); left: 174px; width: min(320px,calc(100vw - 184px)); max-height: calc(100dvh - max(98px,calc(env(safe-area-inset-top) + 92px)) - 7px); padding: 8px; }
+  .room-menu-panel-heading { top: -8px; margin-bottom: 6px; padding-bottom: 6px; }
+  .room-menu-panel-heading h2 { font-size: 14px; }
+  .room-menu-kicker { font-size: 6px; }
+  .room-menu-panel-close { width: 25px; height: 25px; }
+  .room-menu-panel .stats-list { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 3px; }
+  .room-menu-panel .stat-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .room-menu-panel .stat-icon { width: 20px; height: 20px; flex-basis: 20px; }
+  .room-menu-panel .stat-label { flex-direction: column; gap: 1px; margin-bottom: 2px; }
+  .room-menu-panel .care-grid { gap: 4px; }
+  .room-menu-panel .care-button { min-height: 45px; }
+  .room-mini-grid { grid-template-columns: 1fr 1fr; gap: 3px; }
+  .room-mini-game-card { min-height: 32px; padding: 2px 4px; }
+  .room-mini-game-icon { width: 22px; height: 22px; flex-basis: 22px; font-size: 13px; }
+  .room-mini-game-copy strong { font-size: 6px; }
+  .room-mini-game-copy small { font-size: 5px; }
+  .room-item-row { min-height: 34px; gap: 5px; padding: 3px 5px; }
+  .room-item-emoji,.room-item-art { width: 25px; height: 25px; flex-basis: 25px; font-size: 14px; }
+  .room-item-art img { width: 21px; height: 21px; }
+  .room-item-copy strong { font-size: 7px; }
+  .room-item-copy small { font-size: 6px; }
+  .room-item-action { min-height: 23px; min-width: 40px; font-size: 7px; }
+}
+
+/* Clean-scene mode keeps only camera, About, house map, decor and food shortcuts. */
+.game-root.focus-mode .topbar { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-start; justify-content: flex-end; padding: max(12px,env(safe-area-inset-top)) 12px 0; pointer-events: none; }
+.game-root.focus-mode .brand-column { display: none !important; }
+.game-root.focus-mode .progress-hud { display: contents !important; }
+.game-root.focus-mode .mission-hud { display: none !important; }
+.game-root.focus-mode .level-card { position: fixed; top: max(12px,env(safe-area-inset-top)); left: 12px; z-index: 41; display: block !important; width: auto; padding: 0; border: 0; background: transparent; box-shadow: none; backdrop-filter: none; pointer-events: auto; }
+.game-root.focus-mode .level-heading,.game-root.focus-mode .xp-track { display: none !important; }
+.game-root.focus-mode .level-location { display: inline-flex !important; min-height: 37px; gap: 6px; margin: 0; padding: 0 11px; border: 1px solid rgb(255 255 255 / 24%); border-radius: 12px; background: rgb(10 26 59 / 89%); color: #f3f8ff; box-shadow: 0 8px 22px rgb(2 9 27 / 30%); font-size: 9px; backdrop-filter: blur(14px); }
+.game-root.focus-mode .top-actions { display: flex !important; align-self: flex-start; pointer-events: auto; }
+.game-root.focus-mode .top-actions > :not(.focus-mode-toggle) { display: none !important; }
+.game-root.focus-mode .top-actions .focus-mode-toggle { display: inline-flex !important; width: 38px; height: 38px; border-color: rgb(255 255 255 / 31%); background: rgb(10 26 59 / 89%); }
+.game-root.focus-mode .dashboard-grid { display: block; min-height: 100svh; padding: 0; }
+.game-root.focus-mode .center-stage { min-height: 100svh; max-height: none; padding: 0; }
+.game-root.focus-mode .room-control-panel { display: contents !important; }
+.game-root.focus-mode .room-adventure-entry { display: none !important; }
+.game-root.focus-mode .room-control-grid { display: contents !important; }
+.game-root.focus-mode .room-control-grid > :not(.room-action-decor):not(.room-action-feed) { display: none !important; }
+.game-root.focus-mode .room-control-grid > .room-action-decor,.game-root.focus-mode .room-control-grid > .room-action-feed { position: fixed !important; z-index: 39; display: inline-flex !important; width: 43px; min-width: 43px; height: 43px; min-height: 43px; justify-content: center; padding: 0; border: 1px solid rgb(255 255 255 / 26%); border-radius: 13px; box-shadow: 0 8px 24px rgb(2 9 27 / 34%); }
+.game-root.focus-mode .room-action-decor { top: calc(50% - 48px); left: 12px; }
+.game-root.focus-mode .room-action-feed { top: calc(50% + 3px); left: 12px; }
+.game-root.focus-mode .room-action-decor .room-action-copy,.game-root.focus-mode .room-action-feed .room-action-copy,.game-root.focus-mode .room-action-decor > svg:last-child,.game-root.focus-mode .room-action-feed > svg:last-child { display: none !important; }
+.game-root.focus-mode .room-action-decor .room-action-illustration,.game-root.focus-mode .room-action-feed .room-action-illustration { width: 26px; height: 26px; flex-basis: 26px; border: 0; background: transparent; }
+.game-root.focus-mode .room-menu-panel { display: none !important; }
+.game-root.focus-mode .side-right,.game-root.focus-mode .bottom-nav,.game-root.focus-mode .stage-location-tag,.game-root.focus-mode .stage-companion-tag,.game-root.focus-mode .stage-hint,.game-root.focus-mode .pet-nameplate { display: none !important; }
+@media (max-width: 900px) {
+  .game-root.focus-mode .topbar { padding: max(8px,env(safe-area-inset-top)) 8px 0; }
+  .game-root.focus-mode .level-card { top: max(8px,env(safe-area-inset-top)); left: 8px; }
+  .game-root.focus-mode .level-location { min-height: 33px; padding: 0 8px; font-size: 8px; }
+  .game-root.focus-mode .top-actions .focus-mode-toggle { width: 34px; height: 34px; }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .game-root.focus-mode .room-control-grid > .room-action-decor { top: calc(50% - 43px); left: 8px; }
+  .game-root.focus-mode .room-control-grid > .room-action-feed { top: calc(50% + 5px); left: 8px; }
+}
+@media (max-width: 600px) and (orientation: portrait) {
+  .game-root.focus-mode .room-control-grid > .room-action-decor { top: calc(50% - 43px); left: 8px; }
+  .game-root.focus-mode .room-control-grid > .room-action-feed { top: calc(50% + 7px); left: 8px; }
+}
+
+/* Final layout polish after portrait/landscape visual QA. */
+.progress-hud .level-card { grid-column: auto; grid-row: 1; }
+.progress-hud .mission-hud { grid-column: auto; grid-row: 2; }
+.room-control-grid { grid-template-columns: 1fr; gap: 5px; }
+.room-action-card { min-height: 37px; padding: 4px 8px; }
+.room-action-copy strong { font-size: 9px; }
+.room-action-copy small { display: block; font-size: 7px; }
+@media (max-width: 900px) {
+  .room-control-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; }
+  .room-action-card { min-height: 46px; flex-direction: column; justify-content: center; gap: 2px; padding: 4px 3px; }
+  .room-action-illustration { width: 23px; height: 23px; flex-basis: 23px; }
+  .room-action-illustration svg { width: 15px; height: 15px; }
+  .room-action-copy { width: 100%; align-items: center; text-align: center; }
+  .room-action-copy strong { font-size: 7px; line-height: 1.1; }
+  .room-action-copy small,.room-action-card > svg:last-child { display: none !important; }
+  .room-menu-panel { top: max(172px,calc(env(safe-area-inset-top) + 160px)); left: 58px; width: calc(100vw - 66px); max-height: calc(100dvh - max(184px,calc(env(safe-area-inset-top) + 172px)) - 8px); }
+  .side-left.room-control-panel.has-open-panel { width: 46px; max-width: 46px; }
+  .side-left.has-open-panel .room-adventure-entry { width: 42px; min-height: 38px; justify-content: center; padding: 4px; }
+  .side-left.has-open-panel .room-adventure-icon { width: 26px; height: 26px; flex-basis: 26px; }
+  .side-left.has-open-panel .room-adventure-copy,.side-left.has-open-panel .room-adventure-entry > svg:last-child { display: none !important; }
+  .side-left.has-open-panel .room-control-grid { grid-template-columns: 1fr; gap: 4px; }
+  .side-left.has-open-panel .room-action-card { width: 42px; min-width: 42px; min-height: 38px; flex-direction: row; justify-content: center; padding: 3px; }
+  .side-left.has-open-panel .room-action-illustration { width: 25px; height: 25px; flex-basis: 25px; }
+  .side-left.has-open-panel .room-action-copy,.side-left.has-open-panel .room-action-card > svg:last-child { display: none !important; }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .topbar { grid-template-areas: "brand actions" "progress progress"; grid-template-columns: minmax(160px,220px) minmax(0,1fr) auto; }
+  .side-left.room-control-panel.has-open-panel { width: 162px; max-width: 162px; }
+  .side-left.has-open-panel .room-adventure-entry { width: auto; min-height: 35px; justify-content: flex-start; padding: 3px 6px; }
+  .side-left.has-open-panel .room-adventure-icon { width: 25px; height: 25px; flex-basis: 25px; }
+  .side-left.has-open-panel .room-adventure-copy { display: flex !important; }
+  .side-left.has-open-panel .room-adventure-entry > svg:last-child { display: block !important; }
+  .side-left.has-open-panel .room-control-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+  .side-left.has-open-panel .room-action-card { width: auto; min-width: 0; min-height: 46px; flex-direction: column; justify-content: center; padding: 4px 3px; }
+  .side-left.has-open-panel .room-action-illustration { width: 23px; height: 23px; flex-basis: 23px; }
+  .side-left.has-open-panel .room-action-copy { display: flex !important; }
+  .side-left.has-open-panel .room-action-card > svg:last-child { display: none !important; }
+  .room-menu-panel { top: max(88px,calc(env(safe-area-inset-top) + 82px)); left: 174px; width: min(320px,calc(100vw - 184px)); max-height: calc(100dvh - max(98px,calc(env(safe-area-inset-top) + 92px)) - 7px); }
+}
+@media (max-width: 600px) and (orientation: portrait) {
+  .room-action-card { min-height: 45px; }
+  .room-menu-panel { top: max(172px,calc(env(safe-area-inset-top) + 160px)); left: 58px; width: calc(100vw - 66px); max-height: calc(100dvh - max(184px,calc(env(safe-area-inset-top) + 172px)) - 8px); }
+}
+
+@media (min-width: 901px) {
+  .topbar { grid-template-columns: minmax(260px,340px) minmax(0,1fr) auto; grid-template-areas: "brand . actions" "progress progress ."; align-items: start; }
+  .brand-column { grid-area: brand; }
+  .progress-hud { grid-area: progress; width: min(100%,440px); justify-self: start; }
+  .top-actions { grid-area: actions; }
+  .progress-hud .level-card { justify-self: start; }
+  .dashboard-grid { min-height: 0; }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .topbar { grid-template-areas: "brand . actions" "progress progress ."; grid-template-columns: minmax(155px,220px) minmax(0,1fr) auto; }
+  .progress-hud { grid-area: progress; width: min(100%,410px); justify-self: start; }
+  .progress-hud .level-card { justify-self: start; }
+  .center-stage { min-height: calc(100svh - 120px); max-height: none; }
+}
+
+/* In clean-scene mode, the deliberately retained map/decor/food shortcuts still work. */
+.game-root.focus-mode .room-menu-panel.room-menu-feeding,
+.game-root.focus-mode .room-menu-panel.room-menu-decor { position: fixed; z-index: 50; top: 50%; left: 64px; display: block !important; width: min(350px,calc(100vw - 78px)); max-height: calc(100dvh - 28px); overflow: auto; transform: translateY(-50%); }
+.game-root.focus-mode .room-menu-panel.room-menu-rooms { position: fixed; z-index: 50; top: max(58px,calc(env(safe-area-inset-top) + 52px)); left: 12px; display: block !important; width: min(390px,calc(100vw - 24px)); max-height: calc(100dvh - max(70px,calc(env(safe-area-inset-top) + 64px)) - 10px); overflow: auto; }
+.game-root.focus-mode .room-menu-panel.room-menu-rooms .room-map-side-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+@media (max-width: 600px) {
+  .game-root.focus-mode .room-menu-panel.room-menu-rooms .room-map-side-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .game-root.focus-mode .room-menu-panel.room-menu-feeding,.game-root.focus-mode .room-menu-panel.room-menu-decor { left: 58px; width: calc(100vw - 70px); }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .side-left.room-control-panel { grid-template-columns: 1fr; align-items: start; }
+  .side-left.room-control-panel.has-open-panel { grid-template-columns: 1fr; }
+  .room-control-panel > .room-adventure-entry { grid-column: 1; width: 100%; min-height: 35px; }
+  .room-control-panel > .room-control-grid { grid-column: 1; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .room-control-panel .room-action-card { min-height: 36px; }
+  .room-control-panel .room-action-illustration { width: 20px; height: 20px; flex-basis: 20px; }
+  .room-control-panel .room-action-illustration svg { width: 13px; height: 13px; }
+  .room-control-panel .room-action-copy strong { font-size: 6px; }
+  .room-menu-panel { top: max(166px,calc(env(safe-area-inset-top) + 158px)); max-height: calc(100dvh - max(176px,calc(env(safe-area-inset-top) + 168px)) - 6px); }
+  .room-menu-panel .room-menu-care { gap: 5px; }
+  .room-menu-panel .room-menu-care-status { padding: 5px; }
+  .room-menu-panel .stats-list { gap: 2px; }
+  .room-menu-panel .stat-row { gap: 1px; }
+  .room-menu-panel .stat-label strong,.room-menu-panel .stat-label span { font-size: 6px; }
+  .room-menu-panel .stat-track { height: 4px; }
+  .room-menu-panel .care-grid { gap: 3px; }
+  .room-menu-panel .care-button { min-height: 34px; padding-left: 31px; }
+  .room-menu-panel .care-button > span { left: 4px; width: 22px; height: 24px; }
+  .room-menu-panel .care-button b { font-size: 6px; }
+  .room-menu-panel .care-button small { font-size: 5px; }
+  .room-mini-grid { gap: 2px; }
+  .room-mini-game-card { min-height: 25px; gap: 4px; padding: 1px 3px; }
+  .room-mini-game-icon { width: 19px; height: 19px; flex-basis: 19px; font-size: 11px; }
+  .room-mini-game-copy strong { font-size: 5px; }
+  .room-mini-game-copy small { font-size: 4px; }
+  .room-mini-game-card > svg { width: 11px; height: 11px; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .center-stage { min-height: calc(100svh - 182px); max-height: none; }
+  .room-menu-panel .care-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 3px; }
+  .room-menu-panel .care-button { min-height: 48px; flex-direction: column; justify-content: center; gap: 1px; padding: 3px 1px; }
+  .room-menu-panel .care-button > span { position: static; width: 21px; height: 21px; margin: 0; }
+  .room-menu-panel .care-button > span svg { width: 15px; height: 15px; }
+  .room-menu-panel .care-button b { font-size: 5px; line-height: 1.05; }
+  .room-menu-panel .care-button small { font-size: 4px; line-height: 1.05; }
+  .room-mini-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2px; }
+  .room-mini-game-card { min-height: 33px; gap: 3px; padding: 2px 3px; }
+  .room-mini-game-icon { width: 17px; height: 17px; flex-basis: 17px; font-size: 10px; }
+  .room-mini-game-copy strong { font-size: 4.5px; }
+  .room-mini-game-copy small { font-size: 4px; }
+  .room-mini-game-card > svg { width: 9px; height: 9px; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .room-menu-panel { padding: 5px; }
+  .room-menu-panel-heading { margin-bottom: 2px; padding-bottom: 3px; }
+  .room-menu-panel-heading h2 { font-size: 12px; }
+  .room-menu-kicker { font-size: 5px; }
+  .room-menu-panel .room-menu-care-status { padding: 3px; }
+  .room-menu-panel .room-menu-care-status > h3 { margin-bottom: 2px; font-size: 7px; }
+  .room-menu-panel .stat-icon { width: 14px; height: 14px; flex-basis: 14px; font-size: 8px; }
+  .room-menu-panel .stat-row { min-height: 0; }
+  .room-menu-panel .stat-track { height: 3px; }
+  .room-menu-panel .care-button { min-height: 36px; }
+  .room-menu-panel .care-button > span { width: 17px; height: 17px; }
+  .room-menu-panel .care-button > span svg { width: 12px; height: 12px; }
+  .room-menu-panel .care-button b { font-size: 4.5px; }
+  .room-menu-panel .care-button small { font-size: 3.5px; }
+  .room-mini-game-card { min-height: 27px; }
+  .room-mini-game-icon { width: 15px; height: 15px; flex-basis: 15px; font-size: 9px; }
+  .room-mini-game-copy strong { font-size: 4px; }
+  .room-mini-game-copy small { font-size: 3.5px; }
+  .creator-about-button { left: 180px; bottom: max(10px,env(safe-area-inset-bottom)); z-index: 42; }
+  .game-root.focus-mode .creator-about-button { left: 12px; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .game-root:has(.room-menu-panel) .creator-about-button { visibility: hidden; pointer-events: none; }
 }

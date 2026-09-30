@@ -59,3 +59,11 @@ O atalho **Sobre** está no canto inferior esquerdo da cena e alinhado à câmer
 Esta nota substitui a hierarquia da entrada anterior: Aventura destacada no alto da navegação; Casas, Decorar, Cuidar e Missões expostos; Mochila em atalho próprio; Loja/História dentro de Mais do jogo. Cuidar/Missões abrem painéis laterais completos; retrato usa a rail compacta com janela à direita, e paisagem usa painel adjacente sem esticar os botões. A faixa de nível fica sob a marca em paisagem. Sobre e câmera estão alinhados ao rodapé da cena.
 
 QA no demo em 1280×720, 375×812, 844×390 e 667×375; browser confirmou Aventura/campanha, Mochila/inventário, Casas, Decorar, Cuidar, Missões, Mais do jogo e o modal Sobre. Tutorial reaberto pelas Configurações; passos 4 e 6 verificados. TypeScript, Vite build e `git diff --check` passaram. PR #2 autorizado segue aberto, sem merge/publicação.
+
+
+## Navegação atual da sala — 2026-09-30 (revisão final)
+Substitui as notas anteriores: a Aventura é o botão de destaque acima de um grupo de atalhos independentes e coloridos — Casas, Decorar, Cuidar, Petiscos, Missões, Mochila, Loja e História — sem contêiner lateral. Logo abaixo da marca ficam as barras de nível e missão; Minijogos fica junto da barra de missão, e o resumo de necessidades exibe fome/energia prioritárias. Cuidar abre estado e ações; Petiscos, Missões, Minijogos, Mochila, Decorar e Casas usam painéis adjacentes no cenário. Loja/História preservam os fluxos completos existentes.
+
+Tela limpa oculta a UI adicional, mantendo câmera, Sobre, mapa, decoração e alimentação. Em paisagem curta, Sobre fica no rodapé, depois do dock; esconde enquanto o painel ocupa essa área para não cobrir ações e reaparece ao fechar. Em modo limpo ele retorna ao canto inferior esquerdo, alinhado com a câmera.
+
+QA no demo em 1280×720, 375×812, 844×390 e 667×375. Revisados painéis de Cuidar, Missões e Minijogos; todas as quatro ações de cuidado e os 11 jogos cabem em paisagem curta sem corte; mapa, decoração e petiscos continuam funcionais no modo limpo. TypeScript, build e diff-check passaram; build mantém apenas o aviso de chunk grande do Babylon. Preview: https://3000-iq758tlsmeljsgb03xc3g-23cfac3e.us1.manus.computer/?demo=1. PR #2 (`feature/meu-pet-virtual-refresh`) deve continuar aberto, sem merge/publicação.

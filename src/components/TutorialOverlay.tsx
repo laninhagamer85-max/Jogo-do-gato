@@ -31,14 +31,14 @@ const STEPS: TourStep[] = [
     icon: <Star size={24} />,
     kicker: "PASSO 3 DE 6 · MISSÕES",
     title: "Jogue para evoluir",
-    copy: "As missões mostram seu progresso. Abra os minijogos para ganhar moedas e XP; cumprir objetivos ajuda o pet a subir de nível.",
-    target: '[data-room-tour="missions"]',
+    copy: "Acompanhe a barrinha da missão no topo e toque em Minijogos para brincar, ganhar moedas e XP.",
+    target: '[data-room-tour="minigames"]',
   },
   {
     icon: <Backpack size={24} />,
     kicker: "PASSO 4 DE 6 · ITENS",
     title: "Loja e mochila",
-    copy: "A Mochila fica sempre à mão para ver seus itens. Em Mais do jogo você encontra a Loja e a História.",
+    copy: "A Mochila guarda petiscos e decorações conquistadas. Loja e História também têm atalhos próprios na sala.",
     target: '[data-room-tour="inventory"]',
   },
   {
