@@ -38,8 +38,8 @@ const STEPS: TourStep[] = [
     icon: <Backpack size={24} />,
     kicker: "PASSO 4 DE 6 · ITENS",
     title: "Loja e mochila",
-    copy: "Na Loja há itens de cuidado e visuais. A Mochila guarda seus consumíveis e as decorações únicas conquistadas na Aventura.",
-    target: '[data-room-tour="inventory"]',
+    copy: "Abra Mais do jogo para acessar a Loja, a Mochila com seus itens e a História, sem deixar todos os atalhos ocupando a sala.",
+    target: '[data-room-tour="secondary-menu"]',
   },
   {
     icon: <Home size={24} />,

@@ -47,3 +47,9 @@
 - QA da reorganização: typecheck, Vite build e diff-check passaram; screenshots 1280×720 e 375×812 confirmam a cena desobstruída; browser abriu Cuidar, Missões, Loja, Mochila, Casas, Decorar, História, o modal da idealizadora e confirmou que a tela limpa preserva a navegação. A demo foi usada, sem tocar no save normal. O PR #2 permanece aberto, sem merge/publicação.
 
 - Referências da revisão 2026-09-30: preview demo em https://3000-iq758tlsmeljsgb03xc3g-23cfac3e.us1.manus.computer/?demo=1 e PR #2 em https://github.com/laninhagamer85-max/Jogo-do-gato/pull/2; foram usados para verificação, sem publicação do site.
+
+
+## Estado atual da navegação da sala — 2026-09-30
+Feedback posterior substituiu o dock de sete atalhos por quatro ações sempre expostas: **Casas**, **Decorar**, **Cuidar** e **Missões**. **Loja**, **Mochila** e **História** ficam sob **Mais do jogo**; Aventura permanece no cabeçalho. Os painéis de cuidado e missão são parte da coluna/área lateral, não modais centrais. Em retrato, a grade compacta fica no alto à esquerda; em paisagem curta e desktop, usa coluna lateral. O modo de tela limpa mantém os quatro atalhos e Mais visíveis.
+
+O atalho **Sobre** está no canto inferior esquerdo da cena e alinhado à câmera no canto inferior direito; o modal mantém a foto autorizada e o texto à direita. QA no preview demo: Cuidar, Missões, Mais, Loja, Mochila, Casas, Decorar, História, Sobre, tela limpa e o alvo atualizado do passo 4 do tutorial foram exercitados; dimensões verificadas em 1280×720, 375×812 e 844×390. O PR #2 estava aberto no branch `feature/meu-pet-virtual-refresh` (head pré-sync `e7b5140`); manter aberto, sem merge/publicação.

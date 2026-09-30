@@ -100,3 +100,11 @@ Esta nota atualiza os bullets anteriores: a entrada normal após onboarding abre
 - O porta-retrato visual grande foi substituído pelo atalho discreto **ⓘ Sobre** à esquerda da cena. A foto autorizada e a homenagem continuam no modal: composição lado a lado no desktop e empilhada em telas estreitas.
 - QA desta rodada: TypeScript, build de produção e `git diff --check` aprovados; screenshots demo em 1280×720 e 375×812; no browser foram abertos Cuidar, Missões, Loja, Mochila, Casas, Decorar, História, Sobre e o modo limpo, confirmando que os atalhos continuam acessíveis. O build conserva o aviso conhecido de chunks grandes do Babylon; a demo não altera o save real.
 - Manter o PR #2 aberto; não fazer merge nem publicar o site.
+
+
+## Revisão da navegação da sala após feedback (2026-09-30)
+A proposta anterior de deixar sete ícones em uma barra foi substituída por uma hierarquia baseada nos objetivos do jogo. **Casas**, **Decorar**, **Cuidar** e **Missões** são os quatro atalhos permanentes; **Loja**, **Mochila** e **História** ficam agrupadas em **Mais do jogo**, sem perder acesso. Aventura continua no cabeçalho. Cuidar e Missões abrem painéis contextuais junto à navegação, sem modal central; Casas e Decorar preservam seus fluxos existentes.
+
+O menu ganhou uma identidade visual lúdica de patinhas e cores quentes. Em desktop ele ocupa uma coluna lateral compacta; no retrato móvel organiza os quatro controles em dois pares no alto à esquerda para não cobrir o pet nem os presentes; em paisagem curta usa um painel lateral mais estreito com os mesmos controles. O modo de tela limpa mantém esse conjunto principal acessível. **Sobre** agora fica no canto inferior esquerdo, alinhado verticalmente à câmera no canto inferior direito, e continua abrindo o tributo com foto e texto.
+
+QA desta revisão: build de produção e TypeScript aprovados; capturas em 1280×720, 375×812 e 844×390; no navegador, Cuidar e Missões abriram no próprio painel, Mais revelou Loja/Mochila/História, Loja e Mochila carregaram suas telas, História exibiu o capítulo, Casas e Decorar abriram seus fluxos, Sobre exibiu foto e texto, e o modo limpo preservou os atalhos. O passo 4 do tutorial aponta para Mais do jogo. Alteração destinada apenas ao PR #2, que permanece aberto, sem merge ou publicação do site.

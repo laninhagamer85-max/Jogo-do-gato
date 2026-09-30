@@ -122,6 +122,7 @@ export default function Home() {
   const [audioMix, setAudioMix] = useState<PlatformAudioMix>(loadPlatformAudioMix);
   const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem(VOICE_PREF_KEY) !== "false");
   const [activeRoomMenu, setActiveRoomMenu] = useState<RoomMenuPanel>(null);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(() => localStorage.getItem(FOCUS_MODE_PREF_KEY) === "true");
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [storyLevel, setStoryLevel] = useState<number | null>(null);
@@ -682,16 +683,45 @@ export default function Home() {
         </header>
 
         <main className="dashboard-grid">
-          <aside className="side-column side-left" aria-label="Atalhos da sala">
-            <nav className="room-quick-dock" aria-label="Menus principais" data-room-tour="room-tools">
-              <button className={`room-quick-button ${activeRoomMenu === "care" ? "is-active" : ""}`} type="button" onClick={() => toggleRoomMenu("care")} aria-expanded={activeRoomMenu === "care"} title="Cuidar e ver necessidades" data-room-tour="care"><span className="room-quick-icon"><PawPrint size={19} /></span><span className="room-quick-label">Cuidar</span></button>
-              <button className={`room-quick-button ${activeRoomMenu === "missions" ? "is-active" : ""}`} type="button" onClick={() => toggleRoomMenu("missions")} aria-expanded={activeRoomMenu === "missions"} title="Ver missões e nível" data-room-tour="missions"><span className="room-quick-icon"><Star size={19} fill="currentColor" /></span><span className="room-quick-label">Missões</span></button>
-              <button className="room-quick-button" type="button" onClick={() => openShop("items")} aria-label="Abrir loja" title="Loja"><span className="room-quick-icon"><ShoppingBag size={19} /></span><span className="room-quick-label">Loja</span></button>
-              <button className="room-quick-button" type="button" onClick={() => openShop("inventory")} aria-label="Abrir mochila" title="Mochila" data-room-tour="inventory"><span className="room-quick-icon"><Backpack size={19} /></span><span className="room-quick-label">Mochila</span></button>
-              <button className="room-quick-button" type="button" onClick={() => { setActiveRoomMenu(null); setRoomsOpen(true); }} aria-label="Abrir mapa de casas" title="Casas"><span className="room-quick-icon"><MapPin size={19} /></span><span className="room-quick-label">Casas</span></button>
-              <button className="room-quick-button" type="button" onClick={() => { setSelectedDecorationId(null); setPendingDecoration(null); openShop("decor"); }} aria-label="Abrir decoração" title="Decorar"><span className="room-quick-icon"><Sparkles size={19} /></span><span className="room-quick-label">Decorar</span></button>
-              <button className="room-quick-button" type="button" onClick={() => { setActiveRoomMenu(null); setStoryLevel(game.level); }} aria-label="Abrir história" title="História"><span className="room-quick-icon"><BookOpen size={19} /></span><span className="room-quick-label">História</span></button>
-            </nav>
+          <aside className="side-column side-left room-control-panel" aria-label="Menus principais da sala">
+            <div className="room-control-header" aria-hidden="true">
+              <span className="room-control-badge"><PawPrint size={18} fill="currentColor" /></span>
+              <span className="room-control-title"><strong>Meu cantinho</strong><small>CASA {game.activeRoom} · {activeChapter.location}</small></span>
+            </div>
+            <div className="room-primary-grid" role="group" data-room-tour="room-tools" aria-label="Ações principais">
+              <button className="room-action-card room-action-home" type="button" onClick={() => { setActiveRoomMenu(null); setMoreMenuOpen(false); setRoomsOpen(true); }} aria-label="Escolher uma casa" title="Escolher casa">
+                <span className="room-action-illustration"><HomeIcon size={21} /></span>
+                <span className="room-action-copy"><strong>Casas</strong><small>Trocar cenário</small></span>
+              </button>
+              <button className="room-action-card room-action-decor" type="button" onClick={() => { setActiveRoomMenu(null); setMoreMenuOpen(false); setSelectedDecorationId(null); setPendingDecoration(null); openShop("decor"); }} aria-label="Decorar esta casa" title="Decorar esta casa">
+                <span className="room-action-illustration"><Sparkles size={21} /></span>
+                <span className="room-action-copy"><strong>Decorar</strong><small>Deixar com sua cara</small></span>
+              </button>
+            </div>
+            <div className="room-secondary-row" role="group" aria-label="Cuidados e progresso">
+              <button className={`room-action-chip room-chip-care ${activeRoomMenu === "care" ? "is-active" : ""}`} type="button" onClick={() => { setMoreMenuOpen(false); toggleRoomMenu("care"); }} aria-expanded={activeRoomMenu === "care"} title="Cuidar e ver necessidades" data-room-tour="care">
+                <span className="room-chip-icon"><PawPrint size={17} /></span><strong>Cuidar</strong>
+              </button>
+              <button className={`room-action-chip room-chip-missions ${activeRoomMenu === "missions" ? "is-active" : ""}`} type="button" onClick={() => { setMoreMenuOpen(false); toggleRoomMenu("missions"); }} aria-expanded={activeRoomMenu === "missions"} title="Ver missões e nível" data-room-tour="missions">
+                <span className="room-chip-icon"><Star size={17} fill="currentColor" /></span><strong>Missões</strong><small>{Math.min(game.missionProgress, 3)}/3</small>
+              </button>
+            </div>
+            <button className={`room-more-toggle ${moreMenuOpen ? "is-open" : ""}`} type="button" onClick={() => { setActiveRoomMenu(null); setMoreMenuOpen((value) => !value); }} aria-expanded={moreMenuOpen} aria-controls="room-secondary-links" data-room-tour="secondary-menu">
+              <span className="room-more-icon"><Gift size={17} /></span>
+              <span className="room-more-copy"><strong>Mais do jogo</strong><small>Loja, mochila e história</small></span>
+              <ChevronRight size={16} aria-hidden="true" />
+            </button>
+            {moreMenuOpen && <nav id="room-secondary-links" className="room-secondary-links" aria-label="Outras opções do jogo">
+              <button type="button" onClick={() => { setMoreMenuOpen(false); openShop("items"); }} aria-label="Abrir loja">
+                <span className="room-secondary-icon"><ShoppingBag size={17} /></span><span className="room-secondary-copy"><strong>Loja</strong><small>Itens e visuais</small></span>
+              </button>
+              <button type="button" onClick={() => { setMoreMenuOpen(false); openShop("inventory"); }} aria-label="Abrir mochila" data-room-tour="inventory">
+                <span className="room-secondary-icon"><Backpack size={17} /></span><span className="room-secondary-copy"><strong>Mochila</strong><small>Seus itens</small></span>
+              </button>
+              <button type="button" onClick={() => { setMoreMenuOpen(false); setStoryLevel(game.level); }} aria-label="Abrir história">
+                <span className="room-secondary-icon"><BookOpen size={17} /></span><span className="room-secondary-copy"><strong>História</strong><small>Capítulo atual</small></span>
+              </button>
+            </nav>}
             {activeRoomMenu && <section className="room-menu-panel" role="region" aria-label={activeRoomMenu === "care" ? "Cuidados e estado do pet" : "Missões e nível"}>
               <div className="room-menu-panel-heading"><div><span className="room-menu-kicker">{activeRoomMenu === "care" ? "ROTINA DO PET" : `NÍVEL ${game.level} · PROGRESSO`}</span><h2>{activeRoomMenu === "care" ? "Cuidar" : "Missões"}</h2></div><button className="room-menu-panel-close" type="button" onClick={() => setActiveRoomMenu(null)} aria-label="Fechar menu"><X size={17} /></button></div>
               {activeRoomMenu === "care" ? <div className="room-menu-care">
