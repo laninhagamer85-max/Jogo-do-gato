@@ -71,3 +71,9 @@ Esta nota atualiza os bullets anteriores: a entrada normal após onboarding abre
 - O topo de grama/terra é a superfície real do percurso; há plataformas suspensas e rotas verticais, tema de sala fixo ao fundo e sprite lateral do gato selecionado. Web Audio cobre coleta de moeda, impacto/pisão, perda de vida e vitória.
 - QA real completou cinco fases consecutivas no perfil demo e confirmou a fase 6 liberada. Capturas de gameplay em retrato 390×844 e paisagem 844×390 mostram piso, pet, HUD e controles sem corte; a moldura e o modal também foram abertos no browser e a foto carregou.
 - TypeScript e build de produção do branch passaram; permanece apenas o aviso informativo de chunk grande do bundle Babylon. PR aberto; sem merge e sem publicação.
+
+
+## Preferências de áudio independentes (2026-09-30)
+- A engrenagem aparece na sala principal e na aventura; ambos os painéis oferecem sliders separados para música de fundo e efeitos, com valor percentual e foco acessível.
+- A trilha chiptune é sintetizada via Web Audio API e possui barramento próprio; efeitos mantêm volume independente e o mute existente afeta apenas efeitos. Os dois valores são persistidos localmente no aparelho.
+- Verificado no WebDev: sliders presentes nos dois modos, valores alterados independentemente e persistidos; valores originais restaurados depois do teste. TypeScript, build Vite e `git diff --check` passaram no WebDev e neste clone do PR. Capturas móveis 390×844 confirmaram o encaixe da engrenagem.

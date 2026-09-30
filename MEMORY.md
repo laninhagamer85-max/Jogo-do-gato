@@ -32,3 +32,5 @@
 
 
 - Atualização visual posterior (2026-09-29): substitui a nota de “placa sem foto”; a sala mostra o retrato autorizado na moldura flutuante, que abre um modal com a foto ampliada à esquerda e o texto aprovado à direita. O PR contém a referência de imagem gerenciada, como documentado em ASSETS.md.
+
+- Áudio independente (2026-09-30): `platformerAudio.ts` sintetiza trilha chiptune e centraliza SFX em dois barramentos Web Audio. `AudioVolumeControls` é compartilhado pela engrenagem da sala e da aventura; música/efeitos ficam persistidos em `localStorage` sob `meu-pet-platform-audio-v1`. O mute existente silencia somente efeitos, não a música; vozes do pet permanecem inalteradas. Browser confirmou valores independentes e persistência; WebDev e clone do PR passaram TypeScript/build. PR #2 segue aberto, sem merge/publicação.

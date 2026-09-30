@@ -1,6 +1,7 @@
 import { GAME_ASSETS } from "./assets";
 import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface } from "./platformerLevels";
 import type { PetProfile } from "./PetGame";
+import { playPlatformSfx } from "./platformerAudio";
 
 type InputAction = "left" | "right" | "jump";
 export type PlatformerHud = { hearts: number; coins: number; totalCoins: number; progress: number; checkpoint: boolean };
@@ -72,7 +73,6 @@ export class PlatformerEngine {
   private keyDown: (event: KeyboardEvent) => void;
   private keyUp: (event: KeyboardEvent) => void;
   private visibilityChange: () => void;
-  private soundContext: AudioContext | null = null;
   private soundEnabled = true;
 
   constructor(canvas: HTMLCanvasElement, stageId: number, profile: PetProfile, callbacks: Callbacks) {
@@ -156,11 +156,6 @@ export class PlatformerEngine {
     window.removeEventListener("keydown", this.keyDown);
     window.removeEventListener("keyup", this.keyUp);
     document.removeEventListener("visibilitychange", this.visibilityChange);
-    if (this.soundContext) {
-      const context = this.soundContext;
-      this.soundContext = null;
-      window.setTimeout(() => { if (context.state !== "closed") void context.close(); }, 900);
-    }
   }
 
   private resize(canvas: HTMLCanvasElement) {
@@ -201,49 +196,7 @@ export class PlatformerEngine {
 
   private playTone(kind: "jump" | "coin" | "hurt" | "bump" | "clear") {
     if (!this.soundEnabled) return;
-    try {
-      const AudioContextClass = window.AudioContext;
-      if (!AudioContextClass) return;
-      this.soundContext = this.soundContext ?? new AudioContextClass();
-      if (this.soundContext.state === "suspended") void this.soundContext.resume();
-      const context = this.soundContext;
-      type Note = { from: number; to: number; at: number; duration: number; wave: OscillatorType; volume: number };
-      const notesByKind: Record<"jump" | "coin" | "hurt" | "bump" | "clear", Note[]> = {
-        jump: [{ from: 390, to: 650, at: 0, duration: .14, wave: "sine", volume: .045 }],
-        coin: [
-          { from: 820, to: 1120, at: 0, duration: .12, wave: "sine", volume: .055 },
-          { from: 1120, to: 1580, at: .07, duration: .15, wave: "triangle", volume: .035 },
-        ],
-        bump: [{ from: 190, to: 78, at: 0, duration: .12, wave: "square", volume: .035 }],
-        hurt: [
-          { from: 320, to: 115, at: 0, duration: .27, wave: "triangle", volume: .055 },
-          { from: 145, to: 72, at: .04, duration: .22, wave: "sine", volume: .026 },
-        ],
-        clear: [
-          { from: 523, to: 523, at: 0, duration: .31, wave: "sine", volume: .045 },
-          { from: 659, to: 659, at: .09, duration: .31, wave: "sine", volume: .045 },
-          { from: 784, to: 784, at: .18, duration: .34, wave: "sine", volume: .05 },
-          { from: 1047, to: 1047, at: .28, duration: .45, wave: "triangle", volume: .045 },
-        ],
-      };
-      const notes = notesByKind[kind];
-      const startAt = context.currentTime;
-      for (const note of notes) {
-        const oscillator = context.createOscillator();
-        const gain = context.createGain();
-        const noteStart = startAt + note.at;
-        oscillator.type = note.wave;
-        oscillator.frequency.setValueAtTime(note.from, noteStart);
-        if (note.from !== note.to) oscillator.frequency.exponentialRampToValueAtTime(note.to, noteStart + note.duration);
-        gain.gain.setValueAtTime(.0001, noteStart);
-        gain.gain.linearRampToValueAtTime(note.volume, noteStart + .012);
-        gain.gain.exponentialRampToValueAtTime(.0001, noteStart + note.duration);
-        oscillator.connect(gain);
-        gain.connect(context.destination);
-        oscillator.start(noteStart);
-        oscillator.stop(noteStart + note.duration + .01);
-      }
-    } catch { /* Audio is a progressive enhancement and follows the user's first input. */ }
+    playPlatformSfx(kind);
   }
 
   private findSurfaceAt(x: number): PlatformSurface | undefined {

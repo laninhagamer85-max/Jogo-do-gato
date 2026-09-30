@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import {
   ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Coins, Gamepad2, Heart, Home as HomeIcon,
-  LockKeyhole, Map, Pause, PawPrint, Play, RotateCcw, Sparkles, Star, Trophy, Volume2, VolumeX, X,
+  LockKeyhole, Map, Pause, PawPrint, Play, RotateCcw, Settings, Sparkles, Star, Trophy, Volume2, VolumeX, X,
 } from "lucide-react";
 import { GAME_ASSETS } from "@/game/assets";
 import { completePlatformStage, type GameState } from "@/game/PetGame";
+import AudioVolumeControls from "@/components/AudioVolumeControls";
 import { PlatformerEngine, type PlatformerHud } from "@/game/PlatformerEngine";
+import { setPlatformAudioMix, startPlatformMusic, stopPlatformMusic, unlockPlatformAudio, type PlatformAudioMix } from "@/game/platformerAudio";
 import { getPlatformStage, getPlatformWorld } from "@/game/platformerLevels";
 import "./PlatformAdventure.css";
 
@@ -15,6 +17,8 @@ type Completion = ReturnType<typeof completePlatformStage>;
 type Props = {
   state: GameState;
   soundOn: boolean;
+  audioMix: PlatformAudioMix;
+  onAudioMixChange: (mix: PlatformAudioMix) => void;
   onToggleSound: () => void;
   onGoToHouse: () => void;
   onCompleteTutorial: () => void;
@@ -35,7 +39,7 @@ function formatStars(stars: number) {
   return `${"★".repeat(stars)}${"☆".repeat(Math.max(0, 3 - stars))}`;
 }
 
-export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage }: Props) {
+export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMixChange, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage }: Props) {
   const qaAutoPilot = useMemo(() => import.meta.env.DEV && new URLSearchParams(window.location.search).get("autoplay") === "1", []);
   const qaStageLimit = useMemo(() => {
     const requested = Number(new URLSearchParams(window.location.search).get("qa-stages"));
@@ -50,6 +54,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
   const [reward, setReward] = useState<Completion | null>(null);
   const [rewardStep, setRewardStep] = useState(0);
   const [helpOpen, setHelpOpen] = useState(!state.tutorialComplete);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [creatorOpen, setCreatorOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageCarouselRef = useRef<HTMLDivElement>(null);
@@ -67,6 +72,22 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
     : world * 10;
 
   useEffect(() => { completeStageRef.current = onCompleteStage; }, [onCompleteStage]);
+
+  useEffect(() => {
+    setPlatformAudioMix(audioMix);
+  }, [audioMix]);
+
+  useEffect(() => {
+    startPlatformMusic();
+    const unlock = () => unlockPlatformAudio();
+    window.addEventListener("pointerdown", unlock, { capture: true, passive: true });
+    window.addEventListener("keydown", unlock, { capture: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlock, true);
+      window.removeEventListener("keydown", unlock, true);
+      stopPlatformMusic();
+    };
+  }, []);
 
   useEffect(() => {
     if (phase !== "map") return;
@@ -98,12 +119,12 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
         });
       }
       engineRef.current.setSoundEnabled(soundOn);
-      engineRef.current.setPaused(phase === "paused");
+      engineRef.current.setPaused(phase === "paused" || settingsOpen);
     } else if (engineRef.current) {
       engineRef.current.dispose();
       engineRef.current = null;
     }
-  }, [phase, stageId, attempt, state.profile, soundOn]);
+  }, [phase, stageId, attempt, state.profile, soundOn, settingsOpen]);
 
   useEffect(() => () => {
     engineRef.current?.dispose();
@@ -113,6 +134,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      if (settingsOpen) { setSettingsOpen(false); return; }
       if (creatorOpen) { setCreatorOpen(false); return; }
       if (helpOpen) { setHelpOpen(false); return; }
       if (phase === "playing") setPhase("paused");
@@ -122,7 +144,7 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [phase, rewardStep, helpOpen, creatorOpen]);
+  }, [phase, rewardStep, helpOpen, creatorOpen, settingsOpen]);
 
   useEffect(() => {
     if (phase !== "playing") return;
@@ -251,7 +273,8 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
       <div className="pa-top-actions">
         <div className="pa-pet-level"><Star size={16} fill="currentColor" /><span>Nível {state.level}</span><small>{state.xp}/{state.xpMax} XP</small></div>
         <div className="pa-wallet"><Coins size={17} fill="currentColor" /><strong>{state.coins.toLocaleString("pt-BR")}</strong></div>
-        <button className="pa-icon-button" type="button" onClick={onToggleSound} aria-label={soundOn ? "Desligar som" : "Ligar som"}>{soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
+        <button className="pa-icon-button" type="button" onClick={onToggleSound} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"} title={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
+        <button className="pa-icon-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Configurações de áudio" title="Configurações de áudio"><Settings size={18} /></button>
         <button className="pa-icon-button" type="button" onClick={() => setHelpOpen(true)} aria-label="Como jogar"><BookOpen size={18} /></button>
       </div>
     </header>
@@ -331,6 +354,20 @@ export default function PlatformAdventure({ state, soundOn, onToggleSound, onGoT
     </section></div>}
 
     {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><span className="pa-creator-modal-emblem" aria-hidden="true">✦</span><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}
+
+    {settingsOpen && <div className="pa-modal-backdrop" onClick={() => setSettingsOpen(false)}><section className="pa-guide-modal pa-settings-modal" role="dialog" aria-modal="true" aria-labelledby="pa-settings-title" onClick={(event) => event.stopPropagation()}>
+      <button className="pa-modal-close" type="button" onClick={() => setSettingsOpen(false)} aria-label="Fechar configurações"><X size={18} /></button>
+      <span className="pa-guide-art"><Settings size={23} /></span><small>AJUSTE DO SEU JEITO</small>
+      <h2 id="pa-settings-title">Som e música</h2>
+      <p className="pa-settings-copy">Regule cada áudio separadamente. Sua escolha fica salva neste aparelho.</p>
+      <AudioVolumeControls
+        musicVolume={audioMix.music}
+        effectsVolume={audioMix.effects}
+        onMusicChange={(music) => onAudioMixChange({ ...audioMix, music })}
+        onEffectsChange={(effects) => onAudioMixChange({ ...audioMix, effects })}
+      />
+      <button className="pa-primary-action" type="button" onClick={() => setSettingsOpen(false)}>Pronto <Check size={16} /></button>
+    </section></div>}
   </div>;
 }
 

@@ -540,3 +540,19 @@
 .pa-stage-reward-large span { max-width: 270px; font-size: 8px; }
 .pa-reward-caption { margin: 2px 0 8px; color: #71869b; font-size: 8px; line-height: 1.4; }
 @media (prefers-reduced-motion: reduce) { .pa-reveal-icon { animation: none; } }
+
+
+/* Preferências de áudio da aventura */
+.pa-settings-modal { width: min(430px,100%); }
+.pa-settings-copy { margin: -7px 0 12px; color: #687f97; font-size: 9px; font-weight: 750; line-height: 1.45; }
+.pa-settings-modal .audio-volume-controls { margin: 14px 0 16px; }
+.pa-settings-modal .audio-volume-row { border-color: rgb(47 89 132 / 11%); background: rgb(255 255 255 / 75%); }
+.pa-settings-modal .audio-volume-icon { border-color: rgb(50 141 188 / 12%); background: #e3f3fa; color: #2588aa; }
+.pa-settings-modal .audio-volume-heading strong { color: #304d6c; }
+.pa-settings-modal .audio-volume-heading output { color: #2488a8; }
+.pa-settings-modal .audio-volume-row input[type="range"] { accent-color: #29a4c6; }
+.pa-settings-modal .audio-volume-note { color: #71869a; }
+@media (max-width: 620px) {
+  .pa-settings-modal { padding: 21px 17px 17px; border-radius: 20px; }
+  .pa-settings-modal h2 { font-size: 23px; }
+}
