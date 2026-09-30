@@ -77,3 +77,11 @@ Esta nota atualiza os bullets anteriores: a entrada normal após onboarding abre
 - A engrenagem aparece na sala principal e na aventura; ambos os painéis oferecem sliders separados para música de fundo e efeitos, com valor percentual e foco acessível.
 - A trilha chiptune é sintetizada via Web Audio API e possui barramento próprio; efeitos mantêm volume independente e o mute existente afeta apenas efeitos. Os dois valores são persistidos localmente no aparelho.
 - Verificado no WebDev: sliders presentes nos dois modos, valores alterados independentemente e persistidos; valores originais restaurados depois do teste. TypeScript, build Vite e `git diff --check` passaram no WebDev e neste clone do PR. Capturas móveis 390×844 confirmaram o encaixe da engrenagem.
+
+
+## Interface da sala, mochila e presentes (2026-09-30)
+- Atalhos da sala organizados em coluna única à esquerda (status, cuidados, missões, loja, mochila e história), com painéis expansíveis e barra de nível compacta.
+- Mochila exibe consumíveis e decorações únicas já conquistadas, com ações adequadas para usar ou posicionar; presentes podem conceder moedas, consumíveis ou decoração.
+- Coleta idempotente: cada variante foi verificada no domínio e uma segunda coleta da mesma caixa é rejeitada. O popup fica centralizado, mostra uma recompensa por vez, tem X no topo, origem e ação Usar quando aplicável.
+- Porta-retrato permanente, arrastável e minimizável; ícone Sobre abre a homenagem e Restaurar traz a moldura de volta. O botão minimizar foi elevado acima da moldura para manter alvos independentes.
+- Browser demo confirmou prêmio de moedas uma única vez, fechamento pelo X, minimizar → Sobre → Restaurar; captura da sala desktop e validação móvel anteriores mantidas. TypeScript, build Vite e `git diff --check` aprovados.

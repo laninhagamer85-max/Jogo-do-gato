@@ -18,16 +18,18 @@ export type SkinId = "tigrinho" | "laranja" | "pretinho" | "fantasia";
 export type CareAction = "food" | "bath" | "love" | "sleep";
 export type StoreItemId = "sardinha" | "novelo" | "banho" | "caminha";
 export type DecorationPlacement = { id: string; itemId: DecorationId; x: number; y: number; rotation: number; anchor?: "background" | "viewport" };
-export type SurpriseGift = {
+type SurpriseGiftBase = {
   id: string;
   room: number;
   x: number;
   spawnedAt: number;
   expiresAt: number;
-  reward: "coins" | "decoration";
-  coins?: number;
-  decorationId?: DecorationId;
 };
+export type SurpriseGift = SurpriseGiftBase & (
+  | { reward: "coins"; coins?: number }
+  | { reward: "decoration"; decorationId: DecorationId }
+  | { reward: "item"; storeItemId: StoreItemId; quantity?: number }
+);
 
 export type PlatformProgress = {
   /** First uncleared stage (101 means the full 100-stage campaign is complete). */
@@ -138,6 +140,7 @@ const validCharacter = (value: unknown): value is PetCharacterId => PET_CHARACTE
 const isSkinId = (value: unknown): value is SkinId => SKINS.some((item) => item.id === value);
 const isCompanionId = (value: unknown): value is CompanionId => value === "mimi" || value === "tico";
 const isDecorationId = (value: unknown): value is DecorationId => DECORATIONS.some((item) => item.id === value);
+const isStoreItemId = (value: unknown): value is StoreItemId => STORE_ITEMS.some((item) => item.id === value);
 
 export function defaultCharacter(gender: PetGender): PetCharacterId {
   return gender === "menina" ? "menina-creme" : "menino-prata";
@@ -237,12 +240,13 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
   if (Array.isArray(parsed.gifts)) {
     parsed.gifts.forEach((raw) => {
       if (!raw || typeof raw !== "object" || gifts.length >= 2) return;
-      const gift = raw as Partial<SurpriseGift>;
+      const gift = raw as Record<string, unknown>;
       if (typeof gift.id !== "string" || !gift.id || !Number.isFinite(Number(gift.expiresAt)) || Number(gift.expiresAt) <= now) return;
       const room = Math.round(numeric(gift.room, activeRoom, 1, level));
       const common = { id: gift.id.slice(0, 80), room, x: numeric(gift.x, 0.82, 0.12, 0.88), spawnedAt: numeric(gift.spawnedAt, now, 0, now + 1000), expiresAt: numeric(gift.expiresAt, now, now, now + 180000) };
       if (gift.reward === "coins") gifts.push({ ...common, reward: "coins", coins: Math.round(numeric(gift.coins, 80, 20, 500)) });
       else if (gift.reward === "decoration" && isDecorationId(gift.decorationId)) gifts.push({ ...common, reward: "decoration", decorationId: gift.decorationId });
+      else if (gift.reward === "item" && isStoreItemId(gift.storeItemId)) gifts.push({ ...common, reward: "item", storeItemId: gift.storeItemId, quantity: Math.round(numeric(gift.quantity, 1, 1, 3)) });
     });
   }
 
@@ -523,16 +527,22 @@ export function spawnSurpriseGift(state: GameState, id: string, now = Date.now()
   const decorChoices = DECORATIONS.filter((item) => item.room === state.activeRoom
     && Boolean(getDecorationStageId(item.id) && state.platformProgress.completedStages.includes(getDecorationStageId(item.id)!))
     && state.decorInventory[item.id] === 0 && !placed.has(item.id));
-  const reward = decorChoices.length && random() >= 0.56 ? "decoration" : "coins";
-  const gift: SurpriseGift = {
+  const roll = random();
+  const decorationChance = decorChoices.length ? 0.32 : 0;
+  const reward = roll < decorationChance ? "decoration" : roll < decorationChance + 0.32 ? "item" : "coins";
+  const itemChoice = STORE_ITEMS[Math.min(STORE_ITEMS.length - 1, Math.floor(random() * STORE_ITEMS.length))];
+  const common = {
     id,
     room: state.activeRoom,
     x: random() < 0.5 ? 0.18 : 0.82,
     spawnedAt: now,
     expiresAt: now + 90000,
-    reward,
-    ...(reward === "coins" ? { coins: 70 + Math.floor(random() * 71) } : { decorationId: decorChoices[Math.floor(random() * decorChoices.length)]?.id ?? "plant" }),
   };
+  const gift: SurpriseGift = reward === "coins"
+    ? { ...common, reward, coins: 70 + Math.floor(random() * 71) }
+    : reward === "item"
+      ? { ...common, reward, storeItemId: itemChoice.id, quantity: random() < 0.16 ? 2 : 1 }
+      : { ...common, reward, decorationId: decorChoices[Math.min(decorChoices.length - 1, Math.floor(random() * decorChoices.length))]?.id ?? "plant" };
   return { ...state, gifts: [...live, gift] };
 }
 
@@ -546,7 +556,22 @@ export function collectSurpriseGift(state: GameState, id: string, now = Date.now
   if (!gift) return { state, ok: false, message: "Esse presente já não está mais aqui." };
   const withoutGift = { ...state, gifts: state.gifts.filter((candidate) => candidate.id !== id) };
   if (gift.expiresAt <= now) return { state: withoutGift, ok: false, message: "O presente expirou; outro pode aparecer logo." };
-  if (gift.reward === "coins") return { state: { ...withoutGift, coins: withoutGift.coins + (gift.coins ?? 80) }, ok: true, message: `Presente surpresa! +${gift.coins ?? 80} moedas.` };
+  if (gift.reward === "coins") {
+    const amount = gift.coins ?? 80;
+    return { state: { ...withoutGift, coins: Math.min(9_999_999, withoutGift.coins + amount) }, ok: true, message: `Presente surpresa! +${amount} moedas.` };
+  }
+  if (gift.reward === "item") {
+    const item = STORE_ITEMS.find((entry) => entry.id === gift.storeItemId);
+    const quantity = Math.round(clamp(gift.quantity ?? 1, 1, 3));
+    const current = withoutGift.inventory[gift.storeItemId] ?? 0;
+    const granted = Math.min(quantity, 999 - current);
+    if (!item || granted < 1) return { state: { ...withoutGift, coins: Math.min(9_999_999, withoutGift.coins + 100) }, ok: true, message: "A mochila está cheia deste item; o presente virou +100 moedas." };
+    return {
+      state: { ...withoutGift, inventory: { ...withoutGift.inventory, [gift.storeItemId]: current + granted } },
+      ok: true,
+      message: `Presente surpresa! ${item.name} ×${granted} foi para a mochila.`,
+    };
+  }
   const decorationId = gift.decorationId ?? "plant";
   const item = DECORATIONS.find((entry) => entry.id === decorationId);
   const stageId = item ? getDecorationStageId(item.id) : null;
