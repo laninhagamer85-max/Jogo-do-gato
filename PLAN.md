@@ -154,3 +154,7 @@ Após a primeira QA, foi corrigida sobreposição de 4 px entre Missão/Minijogo
 
 ## Requisito atualizado: fundo vertical em tela cheia — 2026-09-30
 O usuário esclareceu que a imagem deve preencher toda a tela em retrato. Isso substitui a versão portrait-fit com faixas desfocadas: a composição usa uma camada única em `cover`, preenchendo o canvas de cima a baixo; como a arte original é horizontal, as laterais são cortadas para manter a proporção. Paisagem/desktop mantêm o enquadramento original. QA demo em 375×812, 844×390, 667×375 e 1280×720, incluindo rotação sem reload; sem erro de runtime e sem alteração do save. PR #2 fica aberto, sem merge/publicação.
+
+
+## Barra de progresso abaixo do título da missão — 2026-09-30
+No dock móvel da tela principal, a barra de progresso fica diretamente abaixo do título e da contagem; o botão Minijogos permanece ao lado. Validação no demo: retrato 375×812, paisagem 844×390 e compacta 667×375; rotação ao vivo sem reload, sem clipping nem erro de console e sem alteração do save. Pedido de cenários verticais pausado por orientação do usuário; nenhuma imagem nova gerada. PR permanece aberto, sem merge/publicação.

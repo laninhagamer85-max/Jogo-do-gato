@@ -89,3 +89,7 @@ O empilhamento visual vinha de duas camadas da mesma arte (cover ampliado + comp
 
 ## Fundo retrato em tela cheia — ajuste solicitado (2026-09-30)
 A solução anterior de imagem completa centralizada com faixas foi removida. Retrato usa agora a única textura do cenário em `cover`: cobre toda a altura/largura do canvas, sem bandas ou camada repetida. Mantém proporção e, por isso, corta laterais da arte horizontal. Paisagem/desktop não mudam. Testado no demo em 375×812, 844×390, 667×375 e 1280×720, com rotação sem reload; sem erros e save demo intacto. Sem merge/publicação.
+
+
+## Dock móvel da missão — revisão 2026-09-30
+Barra de progresso agora aparece imediatamente abaixo do título/contagem da missão, com o botão Minijogos ao lado. Conferida em retrato 375×812 e paisagens 844×390/667×375, incluindo rotação ao vivo; sem clipping, erros ou alterações do save demo. A geração de cenários verticais foi interrompida antes de criar imagens, conforme pedido mais recente.

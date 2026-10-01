@@ -858,8 +858,7 @@ export default function Home() {
         </main>
 
         <div className="mobile-mission-dock" data-room-tour="missions" aria-label={`Missão do nível ${game.level}: ${Math.min(game.missionProgress, 3)} de 3 minijogos`}>
-          <div className="mobile-mission-copy"><small>MISSÃO DO NÍVEL {game.level}</small><strong>{game.missionClaimed ? "Desafio concluído!" : "Brincar faz bem"}</strong><span>{Math.min(game.missionProgress, 3)}/3 · +200 moedas</span></div>
-          <div className="mobile-mission-track"><span style={{ width: `${missionPercent}%` }} /></div>
+          <div className="mobile-mission-copy"><small>MISSÃO DO NÍVEL {game.level}</small><strong>{game.missionClaimed ? "Desafio concluído!" : "Brincar faz bem"}</strong><span>{Math.min(game.missionProgress, 3)}/3 · +200 moedas</span><div className="mobile-mission-track"><span style={{ width: `${missionPercent}%` }} /></div></div>
           <button type="button" data-room-tour="minigames" onClick={openMiniHub} aria-label="Abrir minijogos da missão"><Gamepad2 size={16} /><span>Minijogos</span></button>
         </div>
 

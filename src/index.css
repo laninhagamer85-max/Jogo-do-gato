@@ -2574,13 +2574,13 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
     box-shadow: 0 9px 25px rgb(1 9 25 / 34%),inset 0 1px 0 rgb(255 255 255 / 9%);
     backdrop-filter: blur(12px);
   }
-  .mobile-mission-copy { grid-column: 1; grid-row: 1 / 3; display: flex; min-width: 0; flex-direction: column; gap: 1px; }
+  .mobile-mission-copy { grid-column: 1; grid-row: 1; display: flex; min-width: 0; flex-direction: column; gap: 1px; }
   .mobile-mission-copy small { color: #8cdfff; font-size: 6px; font-weight: 1000; letter-spacing: .6px; }
   .mobile-mission-copy strong { overflow: hidden; font-family: "Baloo 2","Nunito",sans-serif; font-size: 11px; font-weight: 1000; line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }
   .mobile-mission-copy span { color: #b6c9e6; font-size: 7px; font-weight: 800; }
-  .mobile-mission-track { grid-column: 2; grid-row: 1; width: 92px; height: 5px; overflow: hidden; border-radius: 99px; background: rgb(255 255 255 / 17%); }
+  .mobile-mission-track { grid-column: 1; grid-row: 2; width: 100%; height: 5px; overflow: hidden; border-radius: 99px; background: rgb(255 255 255 / 17%); }
   .mobile-mission-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#32d695,#84f2bd); }
-  .mobile-mission-dock > button { grid-column: 2; grid-row: 2; display: inline-flex; min-width: 92px; min-height: 29px; align-items: center; justify-content: center; gap: 5px; padding: 0 9px; border: 1px solid rgb(255 214 91 / 35%); border-radius: 9px; background: linear-gradient(135deg,#f5bd37,#f39b26); color: #273151; box-shadow: 0 4px 10px rgb(0 0 0 / 18%); font-size: 8px; font-weight: 1000; }
+  .mobile-mission-dock > button { grid-column: 2; grid-row: 1 / 3; display: inline-flex; min-width: 92px; min-height: 29px; align-items: center; justify-content: center; gap: 5px; padding: 0 9px; border: 1px solid rgb(255 214 91 / 35%); border-radius: 9px; background: linear-gradient(135deg,#f5bd37,#f39b26); color: #273151; box-shadow: 0 4px 10px rgb(0 0 0 / 18%); font-size: 8px; font-weight: 1000; }
   .mobile-mission-dock > button:active { transform: scale(.97); }
   .game-root.classic-two-column-layout .shop-shortcuts { display: none; }
   .game-root.classic-two-column-layout .shop-mobile-preview { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 5px; padding-top: 3px; }
@@ -2605,14 +2605,14 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 @media (max-width: 600px) and (orientation: portrait), (pointer: coarse) and (orientation: portrait) {
   .game-root.classic-two-column-layout .screen-ui { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
   .game-root.classic-two-column-layout .mobile-mission-dock { bottom: calc(80px + env(safe-area-inset-bottom)); }
-  .game-root.classic-two-column-layout .mobile-mission-track { width: 72px; }
+  .game-root.classic-two-column-layout .mobile-mission-track { width: 100%; }
   .game-root.classic-two-column-layout .mobile-mission-dock > button { min-width: 82px; }
 }
 @media (max-width: 900px) and (orientation: landscape), (pointer: coarse) and (orientation: landscape) {
   .game-root.classic-two-column-layout .top-actions .adventure-home-button { width: auto !important; min-width: 96px !important; min-height: 35px !important; padding: 0 9px !important; }
   .game-root.classic-two-column-layout .top-actions .adventure-home-button span { display: inline !important; font-size: 9px !important; }
   .game-root.classic-two-column-layout .mobile-mission-dock { right: 12px; bottom: calc(57px + env(safe-area-inset-bottom)); left: auto; width: min(330px,calc(100vw - 24px)); transform: none; }
-  .game-root.classic-two-column-layout .mobile-mission-track { width: 74px; }
+  .game-root.classic-two-column-layout .mobile-mission-track { width: 100%; }
   .game-root.classic-two-column-layout .creator-about-button,
   .game-root.classic-two-column-layout .scene-photo-button { bottom: calc(92px + env(safe-area-inset-bottom)) !important; }
   .game-root.classic-two-column-layout .stage-companion-tag { top: calc(8% + 16px); right: 10px; left: auto; transform: none; }
