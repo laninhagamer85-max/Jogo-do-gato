@@ -20,6 +20,16 @@ import girlCalico from "../assets/girl-calico.webp?url";
 import girlBlue from "../assets/girl-azul.webp?url";
 import mimi from "../assets/companheira-mimi.webp?url";
 import tico from "../assets/companheiro-tico.webp?url";
+import mascotMimo from "../assets/mascot-01-mimo.webp?url";
+import mascotFlorita from "../assets/mascot-02-florita.webp?url";
+import mascotBigodito from "../assets/mascot-03-bigodito.webp?url";
+import mascotSol from "../assets/mascot-04-sol.webp?url";
+import mascotConchinha from "../assets/mascot-05-conchinha.webp?url";
+import mascotPingo from "../assets/mascot-06-pingo.webp?url";
+import mascotNevinha from "../assets/mascot-07-nevinha.webp?url";
+import mascotLetrinha from "../assets/mascot-08-letrinha.webp?url";
+import mascotEstrelinha from "../assets/mascot-09-estrelinha.webp?url";
+import mascotFesteiro from "../assets/mascot-10-festeiro.webp?url";
 import tower from "../assets/decor-tower.webp?url";
 import bed from "../assets/decor-bed.webp?url";
 import plant from "../assets/decor-plant.webp?url";
@@ -79,7 +89,20 @@ export const GAME_ASSETS = {
     "menina-calico": girlCalico,
     "menina-azul": girlBlue,
   } satisfies Record<PetCharacterId, string>,
-  companions: { mimi, tico },
+  companions: {
+    mimi,
+    tico,
+    mimo: mascotMimo,
+    florita: mascotFlorita,
+    bigodito: mascotBigodito,
+    sol: mascotSol,
+    conchinha: mascotConchinha,
+    pingo: mascotPingo,
+    nevinha: mascotNevinha,
+    letrinha: mascotLetrinha,
+    estrelinha: mascotEstrelinha,
+    festeiro: mascotFesteiro,
+  },
   creatorPlaque: "https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp",
   decorations,
   gift,

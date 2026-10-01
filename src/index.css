@@ -2233,6 +2233,583 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .game-root:has(.room-menu-panel) .creator-about-button { visibility: hidden; pointer-events: none; }
 }
 
+
+/* Care-panel options: compact themed icon chip, clear action copy, and a light cue. */
+.room-menu-panel .care-option-card {
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr) 13px;
+  grid-template-rows: 1fr;
+  align-items: center;
+  justify-items: stretch;
+  column-gap: 8px;
+  min-height: 56px;
+  padding: 7px 9px;
+  border: 1px solid rgb(255 255 255 / 23%);
+  border-radius: 13px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 16%), 0 5px 14px rgb(6 15 40 / 16%);
+}
+.room-menu-panel .care-option-card > .care-option-icon {
+  position: static;
+  display: grid;
+  grid-column: 1;
+  grid-row: 1;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 19%);
+  color: #fff;
+}
+.room-menu-panel .care-option-icon svg { width: 16px; height: 16px; stroke-width: 2.2; }
+.room-menu-panel .care-option-copy { display: flex; grid-column: 2; grid-row: 1; min-width: 0; flex-direction: column; gap: 3px; }
+.room-menu-panel .care-option-copy b { overflow: hidden; font-size: 10px; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
+.room-menu-panel .care-option-copy small { color: rgb(255 255 255 / 83%); font-size: 7px; line-height: 1.2; }
+.room-menu-panel .care-option-chevron { grid-column: 3; grid-row: 1; width: 13px; height: 13px; color: rgb(255 255 255 / 80%); }
+.room-menu-panel .care-option-card:focus-visible { outline: 2px solid #fff3a6; outline-offset: 2px; }
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .room-menu-panel .care-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+  .room-menu-panel .care-option-card { grid-template-columns: 23px minmax(0,1fr) 10px; column-gap: 5px; min-height: 39px; padding: 4px 6px; border-radius: 10px; }
+  .room-menu-panel .care-option-card > .care-option-icon { width: 22px; height: 22px; border-radius: 7px; }
+  .room-menu-panel .care-option-icon svg { width: 13px; height: 13px; }
+  .room-menu-panel .care-option-copy { gap: 2px; }
+  .room-menu-panel .care-option-copy b { font-size: 7px; }
+  .room-menu-panel .care-option-copy small { font-size: 5.5px; }
+  .room-menu-panel .care-option-chevron { width: 10px; height: 10px; }
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+  .room-menu-panel .care-option-card { grid-template-columns: 27px minmax(0,1fr) 12px; column-gap: 6px; min-height: 49px; padding: 6px 7px; }
+  .room-menu-panel .care-option-card > .care-option-icon { width: 26px; height: 26px; border-radius: 9px; }
+  .room-menu-panel .care-option-icon svg { width: 15px; height: 15px; }
+  .room-menu-panel .care-option-copy b { font-size: 9px; }
+  .room-menu-panel .care-option-copy small { font-size: 6.5px; }
+}
+
+
+/* Short-landscape fit: preserve inline icons while keeping all four care actions visible. */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .room-menu-panel { padding: 3px; }
+  .room-menu-panel-heading { top: -3px; margin-bottom: 1px; padding: 1px 0 2px; }
+  .room-menu-panel-heading h2 { font-size: 11px; }
+  .room-menu-panel .room-menu-care { gap: 3px; }
+  .room-menu-panel .room-menu-care-status { padding: 3px; }
+  .room-menu-panel .room-menu-section-title { margin-bottom: 2px; gap: 3px; font-size: 6px; }
+  .room-menu-panel .stats-list { gap: 2px; }
+  .room-menu-panel .stat-row { gap: 1px; }
+  .room-menu-panel .stat-label { flex-direction: row; align-items: center; gap: 2px; margin-bottom: 1px; }
+  .room-menu-panel .stat-label strong,.room-menu-panel .stat-label span { font-size: 5.5px; }
+  .room-menu-panel .stat-track { height: 2px; }
+  .room-menu-panel .care-grid { gap: 3px; }
+  .room-menu-panel .care-option-card { grid-template-columns: 19px minmax(0,1fr) 9px; column-gap: 4px; min-height: 34px; padding: 3px 5px; }
+  .room-menu-panel .care-option-card > .care-option-icon { width: 18px; height: 18px; border-radius: 6px; }
+  .room-menu-panel .care-option-icon svg { width: 11px; height: 11px; }
+  .room-menu-panel .care-option-copy { gap: 1px; }
+  .room-menu-panel .care-option-copy b { font-size: 8px; }
+  .room-menu-panel .care-option-copy small { font-size: 6px; }
+}
+
+
+/* Room HUD revision: compact actions, needs at a glance, and adjacent care trays. */
+.topbar {
+  grid-template-columns: minmax(190px,255px) minmax(0,1fr) auto;
+  grid-template-areas: "brand progress actions";
+  align-items: start;
+  gap: 10px;
+}
+.brand-column { grid-area: brand; display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+.brand-lockup { min-height: 34px; }
+.progress-hud { grid-area: progress; display: grid; width: 100%; min-width: 0; max-width: 520px; gap: 5px; }
+.progress-level-row { display: grid; min-width: 0; grid-template-columns: minmax(0,1fr) auto; align-items: stretch; gap: 5px; }
+.progress-hud .level-card { width: 100%; min-width: 0; min-height: 48px; padding: 5px 8px; border-radius: 13px; }
+.progress-hud .level-heading { gap: 6px; }
+.progress-hud .level-star { width: 21px; height: 21px; flex-basis: 21px; }
+.progress-hud .level-star svg { width: 13px; height: 13px; }
+.progress-hud .level-heading strong { font-size: 10px; }
+.progress-hud .xp-copy { font-size: 8px; }
+.progress-hud .xp-track { height: 5px; margin: 3px 0; }
+.progress-hud .level-location { min-height: 12px; font-size: 7px; }
+.story-hud-button {
+  display: flex; min-width: 64px; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  padding: 5px 8px; border: 1px solid rgb(255 255 255 / 34%); border-radius: 12px;
+  background: linear-gradient(145deg,#8b72dc,#6953bf); color: #fff; font-size: 8px; font-weight: 900;
+  box-shadow: 0 4px 11px rgb(41 28 90 / 20%); cursor: pointer;
+}
+.story-hud-button:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.mission-hud { display: grid; grid-template-columns: auto minmax(34px,.4fr) minmax(120px,1fr); align-items: center; gap: 6px; min-height: 28px; padding: 4px 6px; border-radius: 11px; }
+.mission-hud-summary { min-width: 80px; gap: 6px; font-size: 8px; }
+.mission-hud-summary > span { gap: 4px; }
+.mission-hud-track { height: 5px; }
+.mini-games-trigger { min-height: 24px; gap: 5px; padding: 3px 8px; border-radius: 9px; font-size: 8px; }
+.mini-games-trigger svg { width: 13px; height: 13px; }
+.top-actions { grid-area: actions; align-self: start; gap: 5px; }
+
+.care-glance {
+  display: flex; min-width: 0; flex-direction: column; gap: 4px; padding: 5px 6px;
+  border: 1px solid rgb(255 255 255 / 68%); border-radius: 11px;
+  background: rgb(255 255 255 / 78%); box-shadow: 0 3px 10px rgb(60 54 93 / 8%);
+}
+.care-glance-heading { display: flex; align-items: center; gap: 4px; color: #65558e; font-size: 7px; font-weight: 950; letter-spacing: .045em; text-transform: uppercase; }
+.care-glance-needs { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 3px 5px; }
+.care-glance-need { display: grid; min-width: 0; grid-template-columns: 12px minmax(0,1fr) auto; grid-template-rows: auto 3px; align-items: center; gap: 2px 4px; padding: 3px 4px; border-radius: 7px; background: rgb(237 239 249 / 80%); }
+.care-glance-need i { grid-column: 1; grid-row: 1; font-size: 9px; font-style: normal; line-height: 1; }
+.care-glance-need b { overflow: hidden; grid-column: 2; grid-row: 1; color: #494865; font-size: 7px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
+.care-glance-need strong { grid-column: 3; grid-row: 1; color: #403e5a; font-size: 7px; font-variant-numeric: tabular-nums; }
+.care-need-track { overflow: hidden; grid-column: 1 / -1; grid-row: 2; height: 3px; border-radius: 5px; background: #dedff0; }
+.care-need-track > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#79d9bd,#54b994); transition: width .2s ease; }
+.care-glance-need.hygiene .care-need-track > span { background: linear-gradient(90deg,#72c9ff,#6399ee); }
+.care-glance-need.happiness .care-need-track > span { background: linear-gradient(90deg,#ffa9c0,#f06c9c); }
+.care-glance-need.energy .care-need-track > span { background: linear-gradient(90deg,#ffd877,#f4aa4a); }
+
+.room-control-panel {
+  display: flex; min-width: 0; flex-direction: column; align-items: stretch; gap: 6px;
+  padding: 0; border: 0; background: transparent; box-shadow: none;
+}
+.room-control-panel > .room-adventure-entry {
+  min-height: 39px; gap: 7px; padding: 5px 9px; border: 1px solid rgb(255 255 255 / 40%); border-radius: 13px;
+  background: linear-gradient(135deg,#7e61d6 0%,#6650bb 58%,#5547a5 100%); color: #fff;
+  box-shadow: 0 6px 14px rgb(69 52 141 / 23%);
+}
+.room-adventure-icon { width: 25px; height: 25px; flex-basis: 25px; border-radius: 9px; background: rgb(255 255 255 / 19%); }
+.room-adventure-icon svg { width: 15px; height: 15px; }
+.room-adventure-copy { gap: 1px; }
+.room-adventure-copy strong { font-size: 10px; }
+.room-adventure-copy small { font-size: 7px; }
+.room-control-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+.room-control-panel .room-action-card {
+  display: flex; min-width: 0; min-height: 34px; align-items: center; gap: 6px; padding: 4px 6px;
+  border: 1px solid rgb(255 255 255 / 72%); border-radius: 11px; box-shadow: 0 3px 8px rgb(38 45 76 / 9%);
+}
+.room-control-panel .room-action-illustration { width: 22px; height: 22px; flex-basis: 22px; border-radius: 8px; }
+.room-control-panel .room-action-illustration svg { width: 13px; height: 13px; }
+.room-control-panel .room-action-copy { min-width: 0; gap: 1px; }
+.room-control-panel .room-action-copy strong { font-size: 8px; }
+.room-control-panel .room-action-copy small { font-size: 6px; }
+.room-control-panel .room-action-card > svg:last-child { width: 10px; height: 10px; margin-left: auto; }
+.room-action-home { background: linear-gradient(145deg,#f1eaff,#e7deff); color: #5845a1; }
+.room-action-decor { background: linear-gradient(145deg,#fff0db,#ffe6c6); color: #9b5c21; }
+.room-action-inventory { background: linear-gradient(145deg,#e8f4ff,#d7ebff); color: #28618f; }
+.room-action-shop { background: linear-gradient(145deg,#e8f8e9,#d8f0da); color: #36734a; }
+.room-action-home .room-action-illustration { background: #d7c8ff; }
+.room-action-decor .room-action-illustration { background: #ffd5a8; }
+.room-action-inventory .room-action-illustration { background: #c5e1ff; }
+.room-action-shop .room-action-illustration { background: #c7e9ca; }
+.room-care-shortcuts { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+.care-shortcut {
+  display: flex; min-width: 0; min-height: 31px; align-items: center; gap: 5px; padding: 4px 6px;
+  border: 1px solid rgb(255 255 255 / 77%); border-radius: 10px; color: #4d4961;
+  box-shadow: 0 3px 8px rgb(38 45 76 / 8%); cursor: pointer; transition: transform .15s ease,filter .15s ease;
+}
+.care-shortcut:hover { filter: brightness(1.03); transform: translateY(-1px); }
+.care-shortcut > span { display: grid; width: 21px; height: 21px; flex: 0 0 21px; place-items: center; border-radius: 7px; background: rgb(255 255 255 / 66%); }
+.care-shortcut > span svg { width: 13px; height: 13px; }
+.care-shortcut strong { overflow: hidden; font-size: 7px; font-weight: 950; text-overflow: ellipsis; white-space: nowrap; }
+.care-shortcut-food { background: linear-gradient(145deg,#e5f7e8,#d0eed7); color: #347348; }
+.care-shortcut-bath { background: linear-gradient(145deg,#e3f4ff,#d0e8ff); color: #2f6394; }
+.care-shortcut-love { background: linear-gradient(145deg,#fff0f3,#ffdde7); color: #a44566; }
+.care-shortcut-sleep { background: linear-gradient(145deg,#f0eaff,#e0d8ff); color: #5b4a9d; }
+.care-shortcut.is-active { outline: 2px solid currentColor; outline-offset: 1px; }
+
+.care-action-panel { grid-area: panel; }
+.care-action-prompt { margin: 0 0 7px; color: rgb(255 255 255 / 91%); font-size: 10px; line-height: 1.35; }
+.care-item-options { display: grid; gap: 6px; }
+.care-item-option {
+  display: grid; grid-template-columns: 34px minmax(0,1fr) auto auto; align-items: center; gap: 7px;
+  min-width: 0; min-height: 52px; padding: 6px 8px; border: 1px solid rgb(255 255 255 / 45%); border-radius: 12px;
+  background: rgb(255 255 255 / 16%); color: #fff; text-align: left; cursor: grab;
+}
+.care-item-option:active { cursor: grabbing; }
+.care-item-option:focus-visible,.care-empty-state button:focus-visible { outline: 2px solid #fff3a6; outline-offset: 2px; }
+.care-item-option-icon { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: rgb(255 255 255 / 23%); font-size: 21px; }
+.care-item-option-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.care-item-option-copy strong { font-size: 10px; }
+.care-item-option-copy small { overflow: hidden; color: rgb(255 255 255 / 86%); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.care-item-count { font-size: 9px; font-weight: 950; }
+.care-item-use { padding: 5px 7px; border-radius: 8px; background: #fff; color: #50429a; font-size: 8px; font-weight: 950; }
+.care-empty-state { display: grid; grid-template-columns: 34px minmax(0,1fr); align-items: center; gap: 6px; padding: 8px; border-radius: 12px; background: rgb(255 255 255 / 15%); color: #fff; }
+.care-empty-state > span { font-size: 23px; text-align: center; }
+.care-empty-state > div { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.care-empty-state strong { font-size: 9px; }
+.care-empty-state small { color: rgb(255 255 255 / 86%); font-size: 7px; }
+.care-empty-state button { display: inline-flex; min-height: 28px; align-items: center; justify-content: center; gap: 4px; border: 0; border-radius: 8px; font-size: 8px; font-weight: 900; cursor: pointer; }
+.care-empty-feed { grid-column: 1 / -1; background: #fff1c7; color: #78551d; }
+.care-empty-shop { grid-column: 1 / -1; background: rgb(255 255 255 / 19%); color: #fff; }
+.pet-tap-area.is-care-drop-target { outline: 3px dashed #ffe274; outline-offset: 4px; border-radius: 42%; background: rgb(255 239 161 / 13%); }
+
+/* Minigame chooser follows the same icon/color language as the Adventure card. */
+.room-mini-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; max-height: min(60svh,620px); overflow: auto; padding: 2px; }
+.room-mini-game-card {
+  display: flex; min-width: 0; min-height: 118px; flex-direction: column; align-items: stretch; gap: 4px; padding: 8px;
+  border: 1px solid rgb(255 255 255 / 54%); border-radius: 13px;
+  background: linear-gradient(150deg,#e9e5ff,#d9d5ff 60%,#cfc9fc); color: #40387c;
+  box-shadow: 0 4px 11px rgb(31 34 78 / 12%);
+}
+.room-mini-game-card.featured { background: linear-gradient(150deg,#ffefca,#ffe0a0); color: #72501e; }
+.room-mini-game-icon { display: grid; width: 31px; height: 31px; flex: 0 0 31px; place-items: center; border-radius: 10px; background: rgb(255 255 255 / 70%); font-size: 20px; }
+.room-mini-game-badge { overflow: hidden; color: currentColor; font-size: 7px; font-weight: 850; opacity: .76; text-overflow: ellipsis; white-space: nowrap; }
+.room-mini-game-title { overflow: hidden; font-size: 9px; font-weight: 950; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
+.room-mini-game-objective { display: -webkit-box; min-height: 24px; overflow: hidden; color: currentColor; font-size: 7px; line-height: 1.25; opacity: .8; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.room-mini-game-play { display: inline-flex; min-height: 22px; align-items: center; justify-content: center; gap: 3px; margin-top: auto; padding: 3px 6px; border: 0; border-radius: 7px; background: #6555bd; color: #fff; font-size: 7px; font-weight: 950; cursor: pointer; }
+.room-mini-game-card.featured .room-mini-game-play { background: #a76e26; }
+
+/* Clean-screen mode keeps only the essentials requested for the scene. */
+.game-root.focus-mode .brand-column,.game-root.focus-mode .progress-hud { display: none !important; }
+.game-root.focus-mode .topbar { grid-template-areas: "actions"; grid-template-columns: 1fr; }
+.game-root.focus-mode .top-actions > :not(.focus-mode-toggle) { display: none !important; }
+.game-root.focus-mode .top-actions { display: flex !important; justify-content: flex-end; }
+.game-root.focus-mode .room-adventure-entry,.game-root.focus-mode .room-action-inventory,.game-root.focus-mode .room-action-shop { display: none !important; }
+.game-root.focus-mode .room-control-grid { display: grid !important; grid-template-columns: 1fr !important; }
+.game-root.focus-mode .room-care-shortcuts { display: grid !important; grid-template-columns: 1fr !important; }
+.game-root.focus-mode .room-care-shortcuts .care-shortcut:not(.care-shortcut-food) { display: none !important; }
+.game-root.focus-mode .room-control-panel { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+.game-root.focus-mode .room-control-panel .room-action-home,.game-root.focus-mode .room-control-panel .room-action-decor,.game-root.focus-mode .room-care-shortcuts .care-shortcut-food { display: flex !important; }
+.game-root.focus-mode .room-menu-panel:not(.room-menu-rooms):not(.room-menu-decor):not(.care-action-panel) { display: none !important; }
+.game-root.focus-mode .care-action-panel,.game-root.focus-mode .room-menu-panel.room-menu-rooms,.game-root.focus-mode .room-menu-panel.room-menu-decor { position: fixed; z-index: 50; top: max(64px,calc(env(safe-area-inset-top) + 58px)); left: 58px; display: block !important; width: min(350px,calc(100vw - 70px)); max-height: calc(100dvh - max(76px,calc(env(safe-area-inset-top) + 70px))); overflow: auto; }
+
+@media (max-width: 1100px) {
+  .topbar { grid-template-columns: minmax(175px,220px) minmax(0,1fr) auto; gap: 7px; }
+  .room-mini-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 900px) and (orientation: portrait) {
+  .topbar { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "brand actions" "progress progress"; gap: 6px; }
+  .brand-column { max-width: 245px; }
+  .progress-hud { width: 100%; max-width: none; }
+  .progress-level-row { grid-template-columns: minmax(0,1fr) 66px; }
+  .mission-hud { grid-template-columns: auto minmax(32px,.35fr) minmax(100px,1fr); }
+  .dashboard-grid { position: relative; display: block; min-height: 0; }
+  .center-stage { min-height: min(68svh,650px); }
+  .side-left.room-control-panel { position: absolute; z-index: 24; top: 7px; left: 7px; width: min(174px,46vw); max-height: calc(100svh - 185px); overflow: visible; }
+  .room-control-panel > .room-adventure-entry { min-height: 35px; }
+  .room-control-panel .room-action-card { min-height: 31px; }
+  .room-action-copy small { display: none; }
+  .care-shortcut { min-height: 29px; }
+  .room-menu-panel { position: fixed; z-index: 42; top: max(150px,calc(env(safe-area-inset-top) + 140px)); left: 56px; width: calc(100vw - 66px); max-height: calc(100dvh - max(162px,calc(env(safe-area-inset-top) + 152px))); overflow: auto; }
+  .side-left.room-control-panel.has-open-panel { width: 42px; }
+  .side-left.has-open-panel .room-control-grid { grid-template-columns: 1fr; }
+  .side-left.has-open-panel .room-control-grid .room-action-card:not(.room-action-home):not(.room-action-decor) { display: none; }
+  .side-left.has-open-panel .room-action-copy,.side-left.has-open-panel .room-adventure-copy,.side-left.has-open-panel .room-control-panel > .room-adventure-entry > svg:last-child,.side-left.has-open-panel .room-control-grid .room-action-card > svg:last-child,.side-left.has-open-panel .care-shortcut strong { display: none; }
+  .side-left.has-open-panel .room-control-panel > .room-adventure-entry { width: 38px; padding: 4px; justify-content: center; }
+  .side-left.has-open-panel .room-care-shortcuts { grid-template-columns: 1fr; }
+  .side-left.has-open-panel .care-shortcut { width: 38px; min-height: 33px; justify-content: center; padding: 3px; }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .topbar { grid-template-columns: minmax(145px,190px) minmax(0,1fr) auto; grid-template-areas: "brand progress actions"; gap: 6px; }
+  .brand-column { gap: 3px; }
+  .brand-lockup { min-height: 27px; }
+  .brand-paw { width: 22px; height: 22px; }
+  .brand-paw svg { width: 15px; height: 15px; }
+  .brand-lockup strong { font-size: 12px; }
+  .brand-lockup small { font-size: 5px; }
+  .care-glance { gap: 2px; padding: 3px; }
+  .care-glance-heading { font-size: 5px; }
+  .care-glance-needs { gap: 2px; }
+  .care-glance-need { grid-template-columns: 9px minmax(0,1fr) auto; grid-template-rows:auto 2px; gap: 1px 2px; padding: 2px; }
+  .care-glance-need i { font-size: 7px; }
+  .care-glance-need b,.care-glance-need strong { font-size: 5px; }
+  .care-need-track { height: 2px; }
+  .progress-hud { gap: 3px; max-width: none; }
+  .progress-hud .level-card { min-height: 37px; padding: 3px 5px; }
+  .progress-hud .level-heading strong { font-size: 8px; }
+  .progress-hud .xp-copy { font-size: 6px; }
+  .progress-hud .level-location { font-size: 5px; }
+  .story-hud-button { min-width: 48px; padding: 3px; font-size: 6px; }
+  .mission-hud { grid-template-columns: auto minmax(30px,.3fr) minmax(84px,1fr); min-height: 23px; gap: 4px; padding: 3px; }
+  .mission-hud-summary { min-width: 60px; font-size: 6px; }
+  .mini-games-trigger { min-height: 20px; font-size: 6px; }
+  .top-actions { gap: 3px; }
+  .top-actions .icon-button,.top-actions .coin-pill { min-height: 26px; }
+  .room-control-panel { gap: 3px; }
+  .room-control-panel > .room-adventure-entry { min-height: 32px; }
+  .room-control-grid,.room-care-shortcuts { gap: 3px; }
+  .room-control-panel .room-action-card { min-height: 29px; gap: 4px; padding: 3px 4px; }
+  .room-control-panel .room-action-copy strong { font-size: 7px; }
+  .care-shortcut { min-height: 26px; gap: 3px; padding: 3px; }
+  .care-shortcut > span { width: 18px; height: 18px; flex-basis:18px; }
+  .care-shortcut strong { font-size: 6px; }
+  .dashboard-grid.has-room-panel { grid-template-columns: minmax(132px,160px) minmax(245px,275px) minmax(0,1fr); grid-template-areas: "rail panel stage"; gap: 6px; }
+  .room-menu-panel { top: 4px; max-height: calc(100svh - 8px); padding: 5px; }
+  .room-menu-panel-heading { margin-bottom: 4px; padding-bottom: 4px; }
+  .room-menu-panel-heading h2 { font-size: 11px; }
+  .care-action-prompt { margin-bottom: 4px; font-size: 7px; }
+  .care-item-options { grid-template-columns: 1fr; gap: 3px; }
+  .care-item-option { min-height: 36px; grid-template-columns: 23px minmax(0,1fr) auto auto; gap: 4px; padding: 3px 5px; }
+  .care-item-option-icon { width: 22px; height: 22px; font-size: 15px; }
+  .care-item-option-copy strong { font-size: 7px; }
+  .care-item-option-copy small { font-size: 5px; }
+  .care-item-use { padding: 3px 5px; font-size: 6px; }
+  .room-mini-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 3px; max-height: calc(100svh - 70px); }
+  .room-mini-game-card { min-height: 66px; gap: 2px; padding: 4px; border-radius: 8px; }
+  .room-mini-game-icon { width: 21px; height: 21px; flex-basis: 21px; border-radius: 7px; font-size: 14px; }
+  .room-mini-game-badge { font-size: 5px; }
+  .room-mini-game-title { font-size: 7px; }
+  .room-mini-game-objective { min-height: 13px; font-size: 5px; -webkit-line-clamp: 1; }
+  .room-mini-game-play { min-height: 16px; padding: 2px 4px; font-size: 5px; }
+  .center-stage { min-height: calc(100svh - 102px); }
+}
+
+
+/* Compact primary menu and always-visible care: current home-screen hierarchy. */
+.topbar { grid-template-columns: minmax(186px,250px) minmax(0,1fr) auto; grid-template-areas: "brand progress actions"; align-items: start; gap: 9px; }
+.brand-column { grid-area: brand; display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+.brand-lockup { min-height: 34px; }
+.progress-hud { grid-area: progress; display: grid; width: 100%; min-width: 0; max-width: 500px; gap: 4px; }
+.progress-level-row { display: grid; min-width: 0; grid-template-columns: minmax(0,1fr) auto; align-items: stretch; gap: 5px; }
+.progress-hud .level-card { width: 100%; min-width: 0; min-height: 44px; padding: 4px 7px; border-radius: 12px; }
+.progress-hud .level-heading { gap: 5px; }
+.progress-hud .level-star { width: 20px; height: 20px; flex-basis: 20px; }
+.progress-hud .level-star svg { width: 12px; height: 12px; }
+.progress-hud .level-heading strong { font-size: 9px; }
+.progress-hud .xp-copy { font-size: 7px; }
+.progress-hud .xp-track { height: 4px; margin: 2px 0; }
+.progress-hud .level-location { min-height: 11px; font-size: 6px; }
+.story-hud-button { display:flex; min-width:58px; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:4px 7px; border:1px solid rgb(255 255 255 / 38%); border-radius:11px; background:linear-gradient(145deg,#8b72dc,#6953bf); color:#fff; font-size:7px; font-weight:950; box-shadow:0 4px 11px rgb(41 28 90 / 18%); cursor:pointer; }
+.story-hud-button:hover { filter:brightness(1.06); transform:translateY(-1px); }
+.mission-hud { display:grid; grid-template-columns:auto minmax(30px,.35fr) minmax(115px,1fr); align-items:center; gap:5px; min-height:25px; padding:3px 5px; border-radius:10px; }
+.mission-hud-summary { min-width:74px; gap:5px; font-size:7px; }
+.mission-hud-summary > span { gap:3px; }
+.mission-hud-track { height:4px; }
+.mini-games-trigger { min-height:22px; gap:4px; padding:3px 7px; border-radius:8px; font-size:7px; }
+.mini-games-trigger svg { width:12px; height:12px; }
+.top-actions { grid-area:actions; align-self:start; gap:4px; }
+
+.care-glance { display:flex; min-width:0; flex-direction:column; gap:3px; padding:4px 5px; border:1px solid rgb(255 255 255 / 70%); border-radius:10px; background:rgb(255 255 255 / 80%); box-shadow:0 3px 9px rgb(60 54 93 / 8%); }
+.care-glance-heading { display:flex; align-items:center; gap:4px; color:#65558e; font-size:6px; font-weight:950; letter-spacing:.04em; text-transform:uppercase; }
+.care-glance-needs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:2px 4px; }
+.care-glance-need { display:grid; min-width:0; grid-template-columns:11px minmax(0,1fr) auto; grid-template-rows:auto 3px; align-items:center; gap:1px 3px; padding:2px 3px; border-radius:6px; background:rgb(237 239 249 / 84%); }
+.care-glance-need i { grid-column:1; grid-row:1; font-size:8px; font-style:normal; line-height:1; }
+.care-glance-need b { overflow:hidden; grid-column:2; grid-row:1; color:#494865; font-size:6px; font-weight:850; text-overflow:ellipsis; white-space:nowrap; }
+.care-glance-need strong { grid-column:3; grid-row:1; color:#403e5a; font-size:6px; font-variant-numeric:tabular-nums; }
+.care-need-track { overflow:hidden; grid-column:1/-1; grid-row:2; height:3px; border-radius:5px; background:#dedff0; }
+.care-need-track > span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#79d9bd,#54b994); transition:width .2s ease; }
+.care-glance-need.hygiene .care-need-track > span { background:linear-gradient(90deg,#72c9ff,#6399ee); }
+.care-glance-need.happiness .care-need-track > span { background:linear-gradient(90deg,#ffa9c0,#f06c9c); }
+.care-glance-need.energy .care-need-track > span { background:linear-gradient(90deg,#ffd877,#f4aa4a); }
+
+.room-control-panel { display:flex; min-width:0; flex-direction:column; align-items:stretch; gap:5px; padding:0; border:0; background:transparent; box-shadow:none; }
+.room-control-panel > .room-adventure-entry { min-height:35px; gap:6px; padding:4px 8px; border:1px solid rgb(255 255 255 / 40%); border-radius:12px; background:linear-gradient(135deg,#7e61d6 0%,#6650bb 58%,#5547a5 100%); color:#fff; box-shadow:0 5px 12px rgb(69 52 141 / 21%); }
+.room-adventure-icon { width:23px; height:23px; flex-basis:23px; border-radius:8px; background:rgb(255 255 255 / 19%); }
+.room-adventure-icon svg { width:14px; height:14px; }
+.room-adventure-copy { gap:1px; }
+.room-adventure-copy strong { font-size:9px; }
+.room-adventure-copy small { font-size:6px; }
+.room-control-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+.room-control-panel .room-action-card { display:flex; min-width:0; min-height:31px; align-items:center; gap:5px; padding:3px 5px; border:1px solid rgb(255 255 255 / 74%); border-radius:10px; box-shadow:0 3px 8px rgb(38 45 76 / 8%); }
+.room-control-panel .room-action-illustration { width:20px; height:20px; flex-basis:20px; border-radius:7px; }
+.room-control-panel .room-action-illustration svg { width:12px; height:12px; }
+.room-control-panel .room-action-copy { min-width:0; gap:0; }
+.room-control-panel .room-action-copy strong { font-size:7px; }
+.room-control-panel .room-action-copy small { display:none; }
+.room-control-panel .room-action-card > svg:last-child { width:9px; height:9px; margin-left:auto; }
+.room-action-home { background:linear-gradient(145deg,#f1eaff,#e7deff); color:#5845a1; }
+.room-action-decor { background:linear-gradient(145deg,#fff0db,#ffe6c6); color:#9b5c21; }
+.room-action-inventory { background:linear-gradient(145deg,#e8f4ff,#d7ebff); color:#28618f; }
+.room-action-shop { background:linear-gradient(145deg,#e8f8e9,#d8f0da); color:#36734a; }
+.room-action-home .room-action-illustration { background:#d7c8ff; }
+.room-action-decor .room-action-illustration { background:#ffd5a8; }
+.room-action-inventory .room-action-illustration { background:#c5e1ff; }
+.room-action-shop .room-action-illustration { background:#c7e9ca; }
+.room-care-shortcuts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+.care-shortcut { display:flex; min-width:0; min-height:28px; align-items:center; gap:4px; padding:3px 5px; border:1px solid rgb(255 255 255 / 76%); border-radius:9px; color:#4d4961; box-shadow:0 3px 8px rgb(38 45 76 / 7%); cursor:pointer; transition:transform .15s ease,filter .15s ease; }
+.care-shortcut:hover { filter:brightness(1.03); transform:translateY(-1px); }
+.care-shortcut > span { display:grid; width:19px; height:19px; flex:0 0 19px; place-items:center; border-radius:6px; background:rgb(255 255 255 / 70%); }
+.care-shortcut > span svg { width:12px; height:12px; }
+.care-shortcut strong { overflow:hidden; font-size:6px; font-weight:950; text-overflow:ellipsis; white-space:nowrap; }
+.care-shortcut-food { background:linear-gradient(145deg,#e5f7e8,#d0eed7); color:#347348; }
+.care-shortcut-bath { background:linear-gradient(145deg,#e3f4ff,#d0e8ff); color:#2f6394; }
+.care-shortcut-love { background:linear-gradient(145deg,#fff0f3,#ffdde7); color:#a44566; }
+.care-shortcut-sleep { background:linear-gradient(145deg,#f0eaff,#e0d8ff); color:#5b4a9d; }
+.care-shortcut.is-active { outline:2px solid currentColor; outline-offset:1px; }
+
+.care-action-panel { grid-area:panel; }
+.care-action-prompt { margin:0 0 6px; color:rgb(255 255 255 / 91%); font-size:9px; line-height:1.35; }
+.care-item-options { display:grid; gap:5px; }
+.care-item-option { display:grid; min-width:0; min-height:48px; grid-template-columns:32px minmax(0,1fr) auto auto; align-items:center; gap:6px; padding:5px 7px; border:1px solid rgb(255 255 255 / 45%); border-radius:11px; background:rgb(255 255 255 / 16%); color:#fff; text-align:left; cursor:grab; }
+.care-item-option:active { cursor:grabbing; }
+.care-item-option:focus-visible,.care-empty-state button:focus-visible { outline:2px solid #fff3a6; outline-offset:2px; }
+.care-item-option-icon { display:grid; width:30px; height:30px; place-items:center; border-radius:9px; background:rgb(255 255 255 / 23%); font-size:20px; }
+.care-item-option-copy { display:flex; min-width:0; flex-direction:column; gap:2px; }
+.care-item-option-copy strong { font-size:9px; }
+.care-item-option-copy small { overflow:hidden; color:rgb(255 255 255 / 86%); font-size:7px; text-overflow:ellipsis; white-space:nowrap; }
+.care-item-count { font-size:8px; font-weight:950; }
+.care-item-use { padding:4px 6px; border-radius:7px; background:#fff; color:#50429a; font-size:7px; font-weight:950; }
+.care-empty-state { display:grid; grid-template-columns:32px minmax(0,1fr); align-items:center; gap:5px; padding:7px; border-radius:11px; background:rgb(255 255 255 / 15%); color:#fff; }
+.care-empty-state > span { font-size:22px; text-align:center; }
+.care-empty-state > div { display:flex; min-width:0; flex-direction:column; gap:2px; }
+.care-empty-state strong { font-size:8px; }
+.care-empty-state small { color:rgb(255 255 255 / 86%); font-size:6px; }
+.care-empty-state button { display:inline-flex; min-height:27px; align-items:center; justify-content:center; gap:4px; border:0; border-radius:8px; font-size:7px; font-weight:900; cursor:pointer; }
+.care-empty-feed,.care-empty-shop { grid-column:1/-1; }
+.care-empty-feed { background:#fff1c7; color:#78551d; }
+.care-empty-shop { background:rgb(255 255 255 / 19%); color:#fff; }
+.pet-tap-area.is-care-drop-target { outline:3px dashed #ffe274; outline-offset:4px; border-radius:42%; background:rgb(255 239 161 / 13%); }
+
+/* Minigames are cards with their icon, title, objective and an unmistakable Play action. */
+.room-mini-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; max-height:min(58svh,590px); overflow:auto; padding:2px; }
+.room-mini-game-card { display:flex; min-width:0; min-height:110px; flex-direction:column; align-items:stretch; gap:3px; padding:7px; border:1px solid rgb(255 255 255 / 56%); border-radius:12px; background:linear-gradient(150deg,#e9e5ff,#d9d5ff 60%,#cfc9fc); color:#40387c; box-shadow:0 4px 10px rgb(31 34 78 / 11%); }
+.room-mini-game-card.featured { background:linear-gradient(150deg,#ffefca,#ffe0a0); color:#72501e; }
+.room-mini-game-icon { display:grid; width:28px; height:28px; flex:0 0 28px; place-items:center; border-radius:9px; background:rgb(255 255 255 / 72%); font-size:19px; }
+.room-mini-game-badge { overflow:hidden; color:currentColor; font-size:6px; font-weight:850; opacity:.78; text-overflow:ellipsis; white-space:nowrap; }
+.room-mini-game-title { overflow:hidden; font-size:8px; font-weight:950; line-height:1.15; text-overflow:ellipsis; white-space:nowrap; }
+.room-mini-game-objective { display:-webkit-box; min-height:22px; overflow:hidden; color:currentColor; font-size:6px; line-height:1.25; opacity:.82; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+.room-mini-game-play { display:inline-flex; min-height:21px; align-items:center; justify-content:center; gap:3px; margin-top:auto; padding:3px 5px; border:0; border-radius:7px; background:#6555bd; color:#fff; font-size:6px; font-weight:950; cursor:pointer; }
+.room-mini-game-card.featured .room-mini-game-play { background:#a76e26; }
+
+/* Keep the center-stage free; secondary features stay beside the controls. */
+.dashboard-grid.has-room-panel { grid-template-columns:minmax(154px,184px) minmax(270px,310px) minmax(0,1fr); grid-template-areas:"rail panel stage"; gap:8px; }
+.room-menu-panel { width:100%; max-width:none; }
+.room-menu-panel .room-menu-missions p { font-size:9px; }
+
+/* Clean-scene retains only map, scene decorations, food, photo, About and the eye toggle. */
+.game-root.focus-mode .brand-column,.game-root.focus-mode .progress-hud { display:none !important; }
+.game-root.focus-mode .topbar { grid-template-areas:"actions"; grid-template-columns:1fr; }
+.game-root.focus-mode .top-actions > :not(.focus-mode-toggle) { display:none !important; }
+.game-root.focus-mode .top-actions { display:flex !important; justify-content:flex-end; }
+.game-root.focus-mode .room-adventure-entry,.game-root.focus-mode .room-action-inventory,.game-root.focus-mode .room-action-shop { display:none !important; }
+.game-root.focus-mode .room-control-grid { display:grid !important; grid-template-columns:1fr !important; }
+.game-root.focus-mode .room-care-shortcuts { display:grid !important; grid-template-columns:1fr !important; }
+.game-root.focus-mode .room-care-shortcuts .care-shortcut:not(.care-shortcut-food) { display:none !important; }
+.game-root.focus-mode .room-control-panel { border:0 !important; background:transparent !important; box-shadow:none !important; }
+.game-root.focus-mode .room-control-panel .room-action-home,.game-root.focus-mode .room-control-panel .room-action-decor,.game-root.focus-mode .room-care-shortcuts .care-shortcut-food { display:flex !important; }
+.game-root.focus-mode .room-menu-panel:not(.room-menu-rooms):not(.room-menu-decor):not(.care-action-panel) { display:none !important; }
+.game-root.focus-mode .care-action-panel,.game-root.focus-mode .room-menu-panel.room-menu-rooms,.game-root.focus-mode .room-menu-panel.room-menu-decor { position:fixed; z-index:50; top:max(64px,calc(env(safe-area-inset-top) + 58px)); left:58px; display:block !important; width:min(350px,calc(100vw - 70px)); max-height:calc(100dvh - max(76px,calc(env(safe-area-inset-top) + 70px))); overflow:auto; }
+
+@media (max-width:1100px) {
+  .topbar { grid-template-columns:minmax(170px,215px) minmax(0,1fr) auto; gap:6px; }
+  .room-mini-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:900px) and (orientation:portrait) {
+  .topbar { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"brand actions" "progress progress"; gap:5px; }
+  .brand-column { max-width:235px; }
+  .progress-hud { width:100%; max-width:none; }
+  .progress-level-row { grid-template-columns:minmax(0,1fr) 60px; }
+  .mission-hud { grid-template-columns:auto minmax(28px,.32fr) minmax(90px,1fr); }
+  .dashboard-grid { position:relative; display:block; min-height:0; }
+  .center-stage { min-height:min(68svh,650px); }
+  .side-left.room-control-panel { position:absolute; z-index:24; top:7px; left:7px; width:min(168px,45vw); max-height:calc(100svh - 180px); overflow:visible; }
+  .room-control-panel > .room-adventure-entry { min-height:33px; }
+  .room-control-panel .room-action-card { min-height:29px; }
+  .room-menu-panel { position:fixed; z-index:42; top:max(148px,calc(env(safe-area-inset-top) + 136px)); left:54px; width:calc(100vw - 64px); max-height:calc(100dvh - max(160px,calc(env(safe-area-inset-top) + 148px))); overflow:auto; }
+  .side-left.room-control-panel.has-open-panel { width:40px; }
+  .side-left.has-open-panel .room-control-grid { grid-template-columns:1fr; }
+  .side-left.has-open-panel .room-control-grid .room-action-card:not(.room-action-home):not(.room-action-decor) { display:none; }
+  .side-left.has-open-panel .room-action-copy,.side-left.has-open-panel .room-adventure-copy,.side-left.has-open-panel .room-control-panel > .room-adventure-entry > svg:last-child,.side-left.has-open-panel .room-control-grid .room-action-card > svg:last-child,.side-left.has-open-panel .care-shortcut strong { display:none; }
+  .side-left.has-open-panel .room-control-panel > .room-adventure-entry { width:36px; padding:3px; justify-content:center; }
+  .side-left.has-open-panel .room-care-shortcuts { grid-template-columns:1fr; }
+  .side-left.has-open-panel .care-shortcut { width:36px; min-height:31px; justify-content:center; padding:2px; }
+  .room-mini-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:900px) and (orientation:landscape) and (max-height:560px) {
+  .topbar { grid-template-columns:minmax(140px,180px) minmax(0,1fr) auto; grid-template-areas:"brand progress actions"; gap:5px; }
+  .brand-column { gap:2px; }
+  .brand-lockup { min-height:26px; }
+  .brand-paw { width:21px; height:21px; }
+  .brand-paw svg { width:14px; height:14px; }
+  .brand-lockup strong { font-size:11px; }
+  .brand-lockup small { font-size:5px; }
+  .care-glance { gap:2px; padding:3px; }
+  .care-glance-heading { font-size:5px; }
+  .care-glance-needs { gap:2px; }
+  .care-glance-need { grid-template-columns:8px minmax(0,1fr) auto; grid-template-rows:auto 2px; gap:1px; padding:2px; }
+  .care-glance-need i { font-size:6px; }
+  .care-glance-need b,.care-glance-need strong { font-size:5px; }
+  .care-need-track { height:2px; }
+  .progress-hud { gap:2px; max-width:none; }
+  .progress-hud .level-card { min-height:34px; padding:2px 4px; }
+  .progress-hud .level-heading strong { font-size:7px; }
+  .progress-hud .xp-copy { font-size:5px; }
+  .progress-hud .level-location { font-size:5px; }
+  .story-hud-button { min-width:42px; padding:2px; font-size:5px; }
+  .mission-hud { grid-template-columns:auto minmax(24px,.3fr) minmax(76px,1fr); min-height:20px; gap:3px; padding:2px; }
+  .mission-hud-summary { min-width:54px; font-size:5px; }
+  .mini-games-trigger { min-height:18px; font-size:5px; }
+  .top-actions { gap:2px; }
+  .top-actions .icon-button,.top-actions .coin-pill { min-height:24px; }
+  .room-control-panel { gap:2px; }
+  .room-control-panel > .room-adventure-entry { min-height:29px; }
+  .room-control-grid,.room-care-shortcuts { gap:2px; }
+  .room-control-panel .room-action-card { min-height:25px; gap:3px; padding:2px 3px; }
+  .room-control-panel .room-action-copy strong { font-size:6px; }
+  .care-shortcut { min-height:23px; gap:2px; padding:2px; }
+  .care-shortcut > span { width:16px; height:16px; flex-basis:16px; }
+  .care-shortcut > span svg { width:10px; height:10px; }
+  .care-shortcut strong { font-size:5px; }
+  .dashboard-grid.has-room-panel { grid-template-columns:minmax(124px,148px) minmax(235px,260px) minmax(0,1fr); grid-template-areas:"rail panel stage"; gap:5px; }
+  .room-menu-panel { top:2px; max-height:calc(100svh - 4px); padding:4px; }
+  .room-menu-panel-heading { margin-bottom:3px; padding-bottom:3px; }
+  .room-menu-panel-heading h2 { font-size:10px; }
+  .care-action-prompt { margin-bottom:3px; font-size:6px; }
+  .care-item-options { gap:2px; }
+  .care-item-option { min-height:31px; grid-template-columns:20px minmax(0,1fr) auto auto; gap:3px; padding:2px 4px; }
+  .care-item-option-icon { width:19px; height:19px; font-size:13px; }
+  .care-item-option-copy strong { font-size:6px; }
+  .care-item-option-copy small { font-size:4.5px; }
+  .care-item-use { padding:2px 4px; font-size:5px; }
+  .room-mini-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:2px; max-height:calc(100svh - 58px); }
+  .room-mini-game-card { min-height:57px; gap:1px; padding:3px; border-radius:7px; }
+  .room-mini-game-icon { width:18px; height:18px; flex-basis:18px; font-size:12px; }
+  .room-mini-game-badge { font-size:4px; }
+  .room-mini-game-title { font-size:6px; }
+  .room-mini-game-objective { min-height:10px; font-size:4px; -webkit-line-clamp:1; }
+  .room-mini-game-play { min-height:14px; padding:1px 3px; font-size:4.5px; }
+  .center-stage { min-height:calc(100svh - 95px); }
+}
+
+
+/* Final responsive corrections based on 375×812 and 844×390 captures. */
+.care-shortcut small { margin-left:auto; padding:1px 3px; border-radius:5px; background:rgb(255 255 255 / 48%); font-size:6px; font-weight:900; font-variant-numeric:tabular-nums; }
+@media (max-width:900px) and (orientation:portrait) {
+  .care-glance-heading { font-size:7px; }
+  .care-glance-need b,.care-glance-need strong { font-size:7px; }
+  .room-control-panel .room-action-copy strong { font-size:8px; }
+  .care-shortcut strong { font-size:7px; }
+  .care-shortcut small { font-size:7px; }
+}
+@media (max-width:900px) and (orientation:landscape) and (max-height:560px) {
+  .dashboard-grid.has-room-panel { display:grid !important; grid-template-columns:minmax(138px,150px) minmax(300px,340px) minmax(0,1fr); grid-template-areas:"rail panel stage"; gap:6px; align-items:start; }
+  .dashboard-grid.has-room-panel > .room-control-panel { grid-area:rail; }
+  .dashboard-grid.has-room-panel > .room-menu-panel { position:relative; top:auto; left:auto; width:100%; min-width:0; max-width:340px; max-height:calc(100svh - 8px); transform:none; }
+  .dashboard-grid.has-room-panel > .center-stage { grid-area:stage; min-width:0; }
+  .room-control-panel .room-action-copy strong { font-size:7px; }
+  .care-shortcut strong,.care-shortcut small { font-size:6px; }
+  .care-shortcut small { display:none; }
+  .care-glance-need b,.care-glance-need strong { font-size:6px; }
+  .room-mini-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .room-mini-game-badge { font-size:5px; }
+  .room-mini-game-title { font-size:7px; }
+  .room-mini-game-objective { font-size:5px; }
+  .room-mini-game-play { font-size:6px; }
+}
+
+
+/* Keep the full game catalog visible with less panel scrolling. */
+.room-mini-grid { max-height:min(62svh,620px); }
+.room-mini-game-card { min-height:84px; gap:2px; padding:6px; }
+.room-mini-game-icon { width:24px; height:24px; flex-basis:24px; font-size:16px; }
+.room-mini-game-objective { min-height:18px; }
+.room-mini-game-play { min-height:18px; }
+@media (min-width:901px) {
+  .dashboard-grid.has-room-panel { grid-template-columns:minmax(178px,200px) minmax(300px,350px) minmax(0,1fr); }
+  .room-menu-panel { max-width:350px; }
+}
+
+/* Clean-scene exception controls are a tidy icon rail, including the room map. */
+.game-root.focus-mode .room-control-panel .room-control-grid > .room-action-home {
+  position:fixed !important; z-index:39; display:inline-flex !important; width:43px; min-width:43px; height:43px; min-height:43px;
+  top:calc(50% - 99px); left:12px; justify-content:center; padding:0; border:1px solid rgb(255 255 255 / 26%); border-radius:13px; box-shadow:0 8px 24px rgb(2 9 27 / 34%);
+}
+.game-root.focus-mode .room-control-grid > .room-action-home .room-action-copy,
+.game-root.focus-mode .room-control-grid > .room-action-home > svg:last-child,
+.game-root.focus-mode .room-control-grid > .room-action-decor .room-action-copy,
+.game-root.focus-mode .room-care-shortcuts .care-shortcut-food strong,
+.game-root.focus-mode .room-care-shortcuts .care-shortcut-food small { display:none !important; }
+.game-root.focus-mode .room-care-shortcuts { display:contents !important; }
+.game-root.focus-mode .room-care-shortcuts .care-shortcut-food {
+  position:fixed !important; z-index:39; display:inline-flex !important; width:43px; min-width:43px; height:43px; min-height:43px;
+  top:calc(50% + 3px); left:12px; justify-content:center; padding:0; border:1px solid rgb(255 255 255 / 26%); border-radius:13px; box-shadow:0 8px 24px rgb(2 9 27 / 34%);
+}
+
+
 /* Restored 2026-09-29 room layout: care/status left, pet scene center, missions/shop/story right. */
 .game-root.classic-two-column-layout { overflow: visible; }
 .game-root.classic-two-column-layout .screen-ui { min-height: 100svh; padding: 17px clamp(12px,2.2vw,30px) 100px; }
@@ -2520,6 +3097,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .focus-care-tray { top: max(78px, calc(env(safe-area-inset-top) + 68px)); left: 12px; width: calc(100vw - 24px); }
 }
 
+
 /* Mobile room polish: clear location, level mission and shop previews without squeezing the scene. */
 .mobile-room-location,.mobile-mission-dock,.shop-mobile-preview { display: none; }
 @media (max-width: 900px), (pointer: coarse) {
@@ -2775,4 +3353,79 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
 
 @media (max-width: 900px) and (orientation: portrait), (pointer: coarse) and (orientation: portrait) {
   .game-root.classic-two-column-layout .mobile-mission-dock > button > small { max-width: 100%; color: rgb(255 255 255 / 83%); font-size: 5px; font-weight: 850; line-height: 1; }
+}
+
+
+/* Compact desktop room: keep portrait's progression → needs/care → scene → missions order. */
+@media (min-width: 901px) and (pointer: fine) {
+  .game-root.classic-two-column-layout .topbar {
+    grid-template-columns: minmax(170px, 230px) minmax(260px, 370px) minmax(250px, 1fr);
+    align-items: center;
+    gap: clamp(8px, 1vw, 14px);
+  }
+  .game-root.classic-two-column-layout .topbar > .level-card {
+    width: 100%;
+    min-height: 54px;
+    padding: 7px 10px;
+  }
+  .game-root.classic-two-column-layout .top-actions { justify-content: flex-end; gap: 6px; }
+  .game-root.classic-two-column-layout .dashboard-grid {
+    grid-template-columns: minmax(188px, clamp(188px, 18vw, 220px)) minmax(0, 1fr) minmax(205px, clamp(205px, 21vw, 250px));
+    align-items: center;
+    gap: clamp(8px, 1vw, 14px);
+    max-width: 1540px;
+    min-height: calc(100svh - 124px);
+    padding-top: 10px;
+  }
+  .game-root.classic-two-column-layout .side-left,
+  .game-root.classic-two-column-layout .side-right {
+    min-width: 0;
+    align-self: center;
+    gap: 8px;
+  }
+  .game-root.classic-two-column-layout .side-left > .glass-panel,
+  .game-root.classic-two-column-layout .side-right > .glass-panel,
+  .game-root.classic-two-column-layout .side-right > .mission-card,
+  .game-root.classic-two-column-layout .side-right > .chapter-shortcut {
+    min-width: 0;
+    margin: 0;
+  }
+  .game-root.classic-two-column-layout .side-left > .glass-panel,
+  .game-root.classic-two-column-layout .side-right > .shop-preview { padding: 10px; }
+  .game-root.classic-two-column-layout .side-left .panel-heading { min-height: 28px; margin-bottom: 6px; }
+  .game-root.classic-two-column-layout .side-left .panel-heading h2,
+  .game-root.classic-two-column-layout .side-right .panel-heading h2 { font-size: 13px; }
+  .game-root.classic-two-column-layout .side-left .stats-list { gap: 7px; }
+  .game-root.classic-two-column-layout .side-left .care-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+  .game-root.classic-two-column-layout .side-left .care-button { min-height: 58px; }
+  .game-root.classic-two-column-layout .center-stage {
+    min-width: 0;
+    min-height: min(64svh, 570px);
+    padding: 0 10px 58px;
+  }
+  .game-root.classic-two-column-layout .side-right .mission-card { padding: 11px; }
+  .game-root.classic-two-column-layout .side-right .mission-heading { gap: 8px; }
+  .game-root.classic-two-column-layout .side-right .mission-heading h2 { font-size: 15px; }
+  .game-root.classic-two-column-layout .side-right .mission-card > p { margin: 7px 0; font-size: 9px; }
+  .game-root.classic-two-column-layout .side-right .shop-shortcuts { gap: 5px; }
+  .game-root.classic-two-column-layout .side-right .shop-shortcuts button { min-height: 52px; }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) and (pointer: fine) {
+  .game-root.classic-two-column-layout .topbar {
+    grid-template-columns: minmax(145px, 190px) minmax(220px, 330px) minmax(230px, 1fr);
+    gap: 7px;
+  }
+  .game-root.classic-two-column-layout .dashboard-grid {
+    grid-template-columns: minmax(170px, 195px) minmax(0, 1fr) minmax(185px, 215px);
+    gap: 7px;
+    min-height: calc(100svh - 108px);
+    padding-top: 6px;
+  }
+  .game-root.classic-two-column-layout .side-left,
+  .game-root.classic-two-column-layout .side-right { gap: 6px; }
+  .game-root.classic-two-column-layout .side-left > .glass-panel,
+  .game-root.classic-two-column-layout .side-right > .shop-preview { padding: 8px; }
+  .game-root.classic-two-column-layout .center-stage { min-height: min(60svh, 500px); padding-inline: 4px; }
+  .game-root.classic-two-column-layout .side-right .shop-shortcuts button { min-height: 46px; }
 }

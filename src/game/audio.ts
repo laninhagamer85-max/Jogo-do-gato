@@ -1,5 +1,6 @@
 import { GAME_ASSETS } from "./assets";
 import type { CompanionId, PetGender } from "./PetGame";
+import { getPlatformMascot } from "./platformerLevels";
 
 export type PetVoiceCue = "intro" | "welcome" | "care" | "level" | "tap";
 let currentVoice: HTMLAudioElement | null = null;
@@ -39,7 +40,11 @@ export function playPetVoice(cue: PetVoiceCue, gender?: PetGender | null, onEnd?
 }
 
 export function playCompanionVoice(id: CompanionId, onEnd?: () => void): void {
-  playClip(GAME_ASSETS.voice[id], onEnd);
+  const mascot = getPlatformMascot(id);
+  const source = id === "mimi" || id === "tico"
+    ? GAME_ASSETS.voice[id]
+    : mascot && mascot.world % 2 === 0 ? GAME_ASSETS.voice.tico : GAME_ASSETS.voice.mimi;
+  playClip(source, onEnd);
 }
 
 export function playMatchSound(): void {

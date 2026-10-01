@@ -1,4 +1,5 @@
 import { DECORATIONS, getDecorationLockReason, getDecorationStageId, type DecorationId } from "./decorations";
+import { PLATFORM_MASCOTS, getPlatformMascot, type PlatformMascotId } from "./platformerLevels";
 
 export { DECORATIONS, getDecorationLockReason, getDecorationStageId } from "./decorations";
 export type { DecorationDefinition, DecorationId } from "./decorations";
@@ -13,7 +14,7 @@ export type PetStats = {
 export type PetGender = "menino" | "menina";
 export type PetCharacterId = "menino-prata" | "menino-laranja" | "menino-preto" | "menina-creme" | "menina-calico" | "menina-azul";
 export type PetProfile = { name: string; age: number; gender: PetGender; characterId: PetCharacterId };
-export type CompanionId = "mimi" | "tico";
+export type CompanionId = "mimi" | "tico" | PlatformMascotId;
 export type SkinId = "tigrinho" | "laranja" | "pretinho" | "fantasia";
 export type CareAction = "food" | "bath" | "love" | "sleep";
 export type StoreItemId = "sardinha" | "novelo" | "banho" | "caminha";
@@ -66,6 +67,14 @@ export type GameState = {
 export const MAX_LEVEL = 10;
 export const MAX_PLATFORM_STAGE = 100;
 const INITIAL_PLATFORM_PROGRESS: PlatformProgress = { unlockedStage: 1, completedStages: [], starsByStage: {} };
+
+export function getUnlockedRoomCount(state: Pick<GameState, "level" | "platformProgress">): number {
+  const level = Math.max(1, Math.min(MAX_LEVEL, Math.round(Number(state.level) || 1)));
+  const requestedStage = Number(state.platformProgress?.unlockedStage) || 1;
+  const adventureRooms = Math.min(MAX_LEVEL, Math.ceil(Math.max(1, Math.min(MAX_PLATFORM_STAGE + 1, requestedStage)) / 10));
+  return Math.max(level, adventureRooms);
+}
+
 export const CURRENT_SAVE_KEY = "meu-pet-virtual-save-v2";
 export const LEGACY_SAVE_KEYS = ["meu-pet-virtual-save-v1", "pet_estado"] as const;
 
@@ -138,7 +147,7 @@ export const STORE_ITEMS: Array<{
 const clamp = (value: number, min = 0, max = 100) => Math.max(min, Math.min(max, value));
 const validCharacter = (value: unknown): value is PetCharacterId => PET_CHARACTERS.some((item) => item.id === value);
 const isSkinId = (value: unknown): value is SkinId => SKINS.some((item) => item.id === value);
-const isCompanionId = (value: unknown): value is CompanionId => value === "mimi" || value === "tico";
+export const isCompanionId = (value: unknown): value is CompanionId => value === "mimi" || value === "tico" || Boolean(getPlatformMascot(typeof value === "string" ? value : undefined));
 const isDecorationId = (value: unknown): value is DecorationId => DECORATIONS.some((item) => item.id === value);
 const isStoreItemId = (value: unknown): value is StoreItemId => STORE_ITEMS.some((item) => item.id === value);
 
@@ -207,7 +216,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     ? { name: rawProfile.name.trim().slice(0, 18) || "Pudim", age: clamp(Number(rawProfile.age) || 1, 1, 25), gender, characterId: PET_CHARACTERS.find((item) => item.id === selectedCharacter)?.gender === gender ? selectedCharacter : defaultCharacter(gender) }
     : null;
   const ownedSkins = Array.isArray(parsed.ownedSkins) ? parsed.ownedSkins.filter(isSkinId) : base.ownedSkins;
-  const ownedCompanions = Array.isArray(parsed.ownedCompanions) ? parsed.ownedCompanions.filter(isCompanionId) : [];
+  const rawOwnedCompanions = Array.isArray(parsed.ownedCompanions) ? parsed.ownedCompanions.filter(isCompanionId) : [];
   const level = Math.round(clamp(Number(parsed.level) || 1, 1, MAX_LEVEL));
   const inventory = parsed.inventory && typeof parsed.inventory === "object" ? parsed.inventory as Record<string, unknown> : {};
   const decorInventoryRaw = parsed.decorInventory && typeof parsed.decorInventory === "object" ? parsed.decorInventory as Record<string, unknown> : {};
@@ -216,15 +225,18 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     const number = Number(input);
     return Number.isFinite(number) ? clamp(number, min, max) : fallback;
   };
-  const active = isCompanionId(parsed.activeCompanionId) && ownedCompanions.includes(parsed.activeCompanionId) ? parsed.activeCompanionId : null;
   const platformProgress = normalizePlatformProgress(parsed.platformProgress);
+  const earnedWorldMascots = PLATFORM_MASCOTS.filter((mascot) => platformProgress.completedStages.includes(mascot.world * 10)).map((mascot) => mascot.id);
+  const ownedCompanions = Array.from(new Set([...rawOwnedCompanions, ...earnedWorldMascots]));
+  const active = isCompanionId(parsed.activeCompanionId) && ownedCompanions.includes(parsed.activeCompanionId) ? parsed.activeCompanionId : null;
+  const unlockedRooms = getUnlockedRoomCount({ level, platformProgress });
   const rawRooms = parsed.roomDecorations && typeof parsed.roomDecorations === "object" ? parsed.roomDecorations as Record<string, unknown> : {};
   const roomDecorations: Record<string, DecorationPlacement[]> = {};
   const placedDecorationIds = new Set<DecorationId>();
   const placedPlacementIds = new Set<string>();
   Object.entries(rawRooms).forEach(([roomKey, rawItems]) => {
     const room = Number(roomKey);
-    if (!Number.isInteger(room) || room < 1 || room > level || !Array.isArray(rawItems)) return;
+    if (!Number.isInteger(room) || room < 1 || room > unlockedRooms || !Array.isArray(rawItems)) return;
     const roomItems = new Set<DecorationId>();
     const placements = rawItems.map(normalizePlacement).filter((item): item is DecorationPlacement => {
       if (!item || placedPlacementIds.has(item.id) || placedDecorationIds.has(item.itemId) || roomItems.has(item.itemId)) return false;
@@ -235,14 +247,16 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     placements.forEach((item) => { placedDecorationIds.add(item.itemId); placedPlacementIds.add(item.id); });
     if (placements.length) roomDecorations[String(room)] = placements;
   });
-  const activeRoom = Math.round(numeric(parsed.activeRoom, level, 1, level));
+  const activeRoom = Math.round(numeric(parsed.activeRoom, level, 1, unlockedRooms));
+  const activeMascot = getPlatformMascot(active);
+  const activeCompanion = activeMascot && activeMascot.world !== activeRoom ? null : active;
   const gifts: SurpriseGift[] = [];
   if (Array.isArray(parsed.gifts)) {
     parsed.gifts.forEach((raw) => {
       if (!raw || typeof raw !== "object" || gifts.length >= 2) return;
       const gift = raw as Record<string, unknown>;
       if (typeof gift.id !== "string" || !gift.id || !Number.isFinite(Number(gift.expiresAt)) || Number(gift.expiresAt) <= now) return;
-      const room = Math.round(numeric(gift.room, activeRoom, 1, level));
+      const room = Math.round(numeric(gift.room, activeRoom, 1, unlockedRooms));
       const common = { id: gift.id.slice(0, 80), room, x: numeric(gift.x, 0.82, 0.12, 0.88), spawnedAt: numeric(gift.spawnedAt, now, 0, now + 1000), expiresAt: numeric(gift.expiresAt, now, now, now + 180000) };
       if (gift.reward === "coins") gifts.push({ ...common, reward: "coins", coins: Math.round(numeric(gift.coins, 80, 20, 500)) });
       else if (gift.reward === "decoration" && isDecorationId(gift.decorationId)) gifts.push({ ...common, reward: "decoration", decorationId: gift.decorationId });
@@ -280,7 +294,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
       caminha: Math.round(numeric(inventory.caminha, 0, 0, 999)),
     },
     ownedCompanions,
-    activeCompanionId: active,
+    activeCompanionId: activeCompanion,
     decorInventory: Object.fromEntries(DECORATIONS.map((item) => [item.id, placedDecorationIds.has(item.id) ? 0 : Math.round(numeric(decorInventoryRaw[item.id], base.decorInventory[item.id], 0, 1))])) as Record<DecorationId, number>,
     roomDecorations,
     gifts,
@@ -313,6 +327,8 @@ function awardXp(state: GameState, amount: number): GameState {
     }
     activeRoom = level;
   }
+  const activeMascot = getPlatformMascot(activeCompanionId);
+  if (activeMascot && activeMascot.world !== activeRoom) activeCompanionId = null;
   if (level === MAX_LEVEL) xp = Math.min(xp, xpMax);
 
   return { ...state, level, activeRoom, xp, xpMax, coins, missionProgress, missionClaimed, ownedCompanions, activeCompanionId };
@@ -384,18 +400,32 @@ export function getPlatformStageDecoration(stageId: number): typeof DECORATIONS[
   return DECORATIONS.filter((item) => item.room === room)[(stageId - 1) % 10];
 }
 
+export type PlatformBonusItem = { id: StoreItemId; name: string; icon: string; quantity: number };
+export type PlatformStageCompletion = {
+  state: GameState;
+  ok: boolean;
+  firstClear: boolean;
+  coins: number;
+  decorationId: DecorationId | null;
+  collectedItems: number;
+  bonusItem: PlatformBonusItem | null;
+  mascotUnlocked: PlatformMascotId | null;
+  message: string;
+};
+
 export function completePlatformStage(
   state: GameState,
   stageId: number,
   starsEarned: number,
   coinsCollected: number,
-): { state: GameState; ok: boolean; firstClear: boolean; coins: number; decorationId: DecorationId | null; message: string } {
+  worldItemsCollected = 0,
+): PlatformStageCompletion {
   const item = getPlatformStageDecoration(stageId);
-  if (!item) return { state, ok: false, firstClear: false, coins: 0, decorationId: null, message: "Essa fase não existe." };
+  if (!item) return { state, ok: false, firstClear: false, coins: 0, decorationId: null, collectedItems: 0, bonusItem: null, mascotUnlocked: null, message: "Essa fase não existe." };
   const progress = state.platformProgress ?? INITIAL_PLATFORM_PROGRESS;
   const alreadyComplete = progress.completedStages.includes(stageId);
   if (!alreadyComplete && stageId !== progress.unlockedStage) {
-    return { state, ok: false, firstClear: false, coins: 0, decorationId: null, message: "Conclua a fase anterior para abrir esta aventura." };
+    return { state, ok: false, firstClear: false, coins: 0, decorationId: null, collectedItems: 0, bonusItem: null, mascotUnlocked: null, message: "Conclua a fase anterior para abrir esta aventura." };
   }
   const stars = Math.round(clamp(Number(starsEarned) || 1, 1, 3));
   const starsByStage = { ...progress.starsByStage, [String(stageId)]: Math.max(progress.starsByStage[String(stageId)] ?? 0, stars) };
@@ -406,18 +436,33 @@ export function completePlatformStage(
       firstClear: false,
       coins: 0,
       decorationId: item.id,
+      collectedItems: 0,
+      bonusItem: null,
+      mascotUnlocked: null,
       message: `Revisita concluída! Seu melhor resultado: ${starsByStage[String(stageId)]} estrelas.`,
     };
   }
   const collected = Math.round(clamp(Number(coinsCollected) || 0, 0, 60));
   const world = Math.ceil(stageId / 10);
+  const mascot = PLATFORM_MASCOTS[world - 1];
+  const collectedItems = Math.round(clamp(Number(worldItemsCollected) || 0, 0, 12));
+  const storeItem = STORE_ITEMS.find((entry) => entry.id === mascot.rewardItem)!;
+  const inventoryCount = state.inventory[storeItem.id] ?? 0;
+  const itemsAdded = Math.min(collectedItems, Math.max(0, 999 - inventoryCount));
+  const bonusItem: PlatformBonusItem | null = collectedItems > 0
+    ? { id: storeItem.id, name: storeItem.name, icon: storeItem.icon, quantity: itemsAdded }
+    : null;
+  const mascotUnlocked = stageId % 10 === 0 && !state.ownedCompanions.includes(mascot.id) ? mascot.id : null;
   const stageCoins = 65 + (world - 1) * 8 + ((stageId - 1) % 10) * 4 + collected * 10;
   const completedStages = [...progress.completedStages, stageId].sort((a, b) => a - b);
   const unlockedStage = Math.min(MAX_PLATFORM_STAGE + 1, stageId + 1);
+  const ownedCompanions = mascotUnlocked ? [...state.ownedCompanions, mascotUnlocked] : state.ownedCompanions;
   return {
     state: {
       ...state,
       coins: state.coins + stageCoins,
+      inventory: itemsAdded > 0 ? { ...state.inventory, [storeItem.id]: inventoryCount + itemsAdded } : state.inventory,
+      ownedCompanions,
       decorInventory: {
         ...state.decorInventory,
         [item.id]: Object.values(state.roomDecorations).some((items) => items.some((placement) => placement.itemId === item.id)) ? 0 : 1,
@@ -428,7 +473,10 @@ export function completePlatformStage(
     firstClear: true,
     coins: stageCoins,
     decorationId: item.id,
-    message: `${item.name} desbloqueado! +${stageCoins} moedas.`,
+    collectedItems,
+    bonusItem,
+    mascotUnlocked,
+    message: `${item.name} desbloqueado! +${stageCoins} moedas.${itemsAdded > 0 ? ` ${storeItem.name} ×${itemsAdded} na mochila.` : ""}${mascotUnlocked ? ` ${mascot.name} agora mora na Casa ${mascot.world}!` : ""}`,
   };
 }
 
@@ -476,8 +524,9 @@ export function buyDecoration(state: GameState, itemId: DecorationId): { state: 
 }
 
 export function selectRoom(state: GameState, room: number): GameState {
-  if (!Number.isInteger(room) || room < 1 || room > state.level) return state;
-  return { ...state, activeRoom: room };
+  if (!Number.isInteger(room) || room < 1 || room > getUnlockedRoomCount(state)) return state;
+  const activeMascot = getPlatformMascot(state.activeCompanionId);
+  return { ...state, activeRoom: room, activeCompanionId: activeMascot && activeMascot.world !== room ? null : state.activeCompanionId };
 }
 
 export function placeDecoration(state: GameState, placement: DecorationPlacement): { state: GameState; ok: boolean; message: string } {
@@ -590,5 +639,7 @@ export function setPetProfile(state: GameState, profile: PetProfile): GameState 
 
 export function chooseCompanion(state: GameState, id: CompanionId | null): { state: GameState; ok: boolean; message: string } {
   if (id && !state.ownedCompanions.includes(id)) return { state, ok: false, message: "Esse amigo aparece durante a aventura." };
+  const mascot = getPlatformMascot(id);
+  if (mascot && state.activeRoom !== mascot.world) return { state, ok: false, message: `${mascot.name} participa das brincadeiras somente na Casa ${mascot.world}.` };
   return { state: { ...state, activeCompanionId: id }, ok: true, message: id ? "Seu companheiro já está pronto para brincar!" : "Hoje vamos explorar só nós dois." };
 }

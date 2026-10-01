@@ -22,10 +22,10 @@ type Props = {
   onToggleSound: () => void;
   onGoToHouse: () => void;
   onCompleteTutorial: () => void;
-  onCompleteStage: (stageId: number, stars: number, coins: number) => Completion;
+  onCompleteStage: (stageId: number, stars: number, coins: number, worldItemsCollected: number) => Completion;
 };
 
-const START_HUD: PlatformerHud = { hearts: 3, coins: 0, totalCoins: 0, progress: 0, checkpoint: false };
+const START_HUD: PlatformerHud = { hearts: 3, coins: 0, totalCoins: 0, worldItems: 0, totalWorldItems: 0, progress: 0, checkpoint: false };
 const CREATOR_COPY = <>Este jogo foi idealizado e criado com muito carinho e criatividade pela jovem desenvolvedora <strong>Allana Gabriela</strong>, de apenas <strong>11 Anos</strong>, no ano de <strong>2026</strong>. Ela provou que não há limite de idade para transformar imaginação em arte e código!</>;
 
 function starsForRun(hud: PlatformerHud) {
@@ -67,6 +67,8 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const worldDone = currentWorldStages.filter((id) => completed.includes(id)).length;
   const totalDone = completed.length;
   const availableWorld = Math.min(10, Math.max(1, Math.ceil(state.platformProgress.unlockedStage / 10)));
+  const finalRewardStep = reward?.mascotUnlocked ? 3 : 2;
+  const showingCoins = rewardStep === finalRewardStep;
   const focusStage = state.platformProgress.unlockedStage > (world - 1) * 10 && state.platformProgress.unlockedStage <= world * 10
     ? state.platformProgress.unlockedStage
     : world * 10;
@@ -107,10 +109,11 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       if (!engineRef.current) {
         engineRef.current = new PlatformerEngine(canvas, stageId, state.profile, {
           onHud: setHud,
-          onWin: (coins, hearts, totalCoins) => {
+          onCollectible: (worldItems, totalWorldItems) => setHud((current) => ({ ...current, worldItems, totalWorldItems })),
+          onWin: (coins, hearts, totalCoins, worldItemsCollected) => {
             const ratio = totalCoins ? coins / totalCoins : 0;
             const stars = ratio >= 0.72 && hearts === 3 ? 3 : ratio >= 0.36 || hearts === 3 ? 2 : 1;
-            const outcome = completeStageRef.current(stageId, stars, coins);
+            const outcome = completeStageRef.current(stageId, stars, coins, worldItemsCollected);
             setReward(outcome);
             setRewardStep(0);
             setPhase("won");
@@ -139,12 +142,12 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       if (helpOpen) { setHelpOpen(false); return; }
       if (phase === "playing") setPhase("paused");
       else if (phase === "paused") setPhase("playing");
-      else if (phase === "won" && rewardStep < 2) setRewardStep((step) => Math.min(2, step + 1));
+      else if (phase === "won" && rewardStep < finalRewardStep) setRewardStep((step) => Math.min(finalRewardStep, step + 1));
       else if (phase === "failed" || phase === "won") { setPhase("map"); setReward(null); setRewardStep(0); }
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [phase, rewardStep, helpOpen, creatorOpen, settingsOpen]);
+  }, [phase, rewardStep, finalRewardStep, helpOpen, creatorOpen, settingsOpen]);
 
   useEffect(() => {
     if (phase !== "playing") return;
@@ -191,7 +194,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   useEffect(() => {
     if (!qaAutoPilot || phase !== "won" || !reward) return;
     const timer = window.setTimeout(() => {
-      if (rewardStep < 2) setRewardStep((step) => Math.min(2, step + 1));
+      if (rewardStep < finalRewardStep) setRewardStep((step) => Math.min(finalRewardStep, step + 1));
       else if (stageId < qaStageLimit && state.platformProgress.unlockedStage > stageId) beginStage(stageId + 1);
       else if (stageId >= qaStageLimit) {
         setReward(null);
@@ -200,7 +203,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       }
     }, 650);
     return () => window.clearTimeout(timer);
-  }, [qaAutoPilot, qaStageLimit, phase, reward, rewardStep, stageId, state.platformProgress.unlockedStage]);
+  }, [qaAutoPilot, qaStageLimit, phase, reward, rewardStep, finalRewardStep, stageId, state.platformProgress.unlockedStage]);
 
   function beginStage(id: number) {
     if (id > state.platformProgress.unlockedStage) return;
@@ -252,10 +255,11 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       <span className="pa-stage-number">{String(data.stageInWorld).padStart(2, "0")}</span>
       <span className={`pa-reward-art ${rewardEarned ? "is-earned" : ""}`}>
         <img src={GAME_ASSETS.decorations[data.reward.id]} alt="" loading="lazy" />
+        {data.stageInWorld === 10 && <span className="pa-mascot-preview" title={`Mascote da Casa ${data.world}: ${data.mascot.name}`}><img src={GAME_ASSETS.companions[data.mascot.id]} alt="" loading="lazy" /></span>}
         {!rewardEarned && <span className="pa-lock-badge"><LockKeyhole size={14} /></span>}
       </span>
       <strong>{rewardEarned ? data.reward.name : data.subtitle}</strong>
-      <small>{isLocked ? "Conclua a fase anterior" : isComplete ? "Rejogar · prêmio recebido" : rewardEarned ? "Já está na mochila" : "Prêmio ao vencer"}</small>
+      <small>{isLocked ? "Conclua a fase anterior" : isComplete && data.stageInWorld === 10 ? `${data.mascot.name} mora nesta casa` : isComplete ? "Rejogar · prêmio recebido" : data.stageInWorld === 10 ? `Encontre ${data.mascot.name}` : "Prêmio ao vencer"}</small>
       {isComplete && <span className="pa-stage-stars" aria-label={`${stars} estrelas`}>{formatStars(stars)}</span>}
       {stage === state.platformProgress.unlockedStage && <span className="pa-ready-pill">JOGAR</span>}
       {isLocked && <span className="pa-tile-lock"><LockKeyhole size={16} /></span>}
@@ -293,18 +297,19 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       </aside>
 
       <section className="pa-map-card" aria-label="Mapa de fases">
-        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin">✦</span> Moedas pelo caminho</span></div>
+        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin">✦</span> Moedas + itens temáticos</span></div>
         <div className="pa-world-tabs" role="tablist" aria-label="Mundos da campanha">
           {Array.from({ length: 10 }, (_, index) => index + 1).map((worldId) => {
             const worldData = getPlatformWorld(worldId)!;
+            const worldMascot = getPlatformStage(worldId * 10)!.mascot;
             const locked = worldId > availableWorld;
-            const done = currentWorldStages.filter((id) => id <= totalDone && Math.ceil(id / 10) === worldId).length;
+            const done = completed.filter((id) => Math.ceil(id / 10) === worldId).length;
             return <button className={`${world === worldId ? "active" : ""} ${locked ? "locked" : ""}`} type="button" role="tab" aria-selected={world === worldId} disabled={locked} key={worldId} onClick={() => setWorld(worldId)} title={worldData.location}>
-              <span>{locked ? <LockKeyhole size={13} /> : String(worldId).padStart(2, "0")}</span><small>{worldData.location.split(" ").slice(-1)[0]}</small>
+              <span>{locked ? <LockKeyhole size={13} /> : String(worldId).padStart(2, "0")}</span><i aria-hidden="true">{worldMascot.icon}</i><small>{worldData.location.split(" ").slice(-1)[0]} · {done}/10</small>
             </button>;
           })}
         </div>
-        <div className="pa-map-world-caption"><div><span>CASA {world}</span><strong>{chapter.title}</strong></div><span className="pa-map-story-step">{worldDone === 10 ? "MUNDO CONCLUÍDO" : `${worldDone} de 10 fases`}</span></div>
+        <div className="pa-map-world-caption"><div><span>CASA {world} · {chapter.location.toUpperCase()}</span><strong>{chapter.title}</strong><small className="pa-map-mascot-label">{chapter.location === "Lar" ? "🐱" : getPlatformStage(world * 10)!.mascot.icon} Mascote {getPlatformStage(world * 10)!.mascot.name} · chega ao concluir a fase 10</small></div><span className="pa-map-story-step">{worldDone === 10 ? "MUNDO CONCLUÍDO" : `${worldDone} de 10 fases`}</span></div>
         <div className="pa-stage-carousel-shell">
           <button className="pa-carousel-arrow" type="button" aria-label="Ver fases anteriores" onClick={() => stageCarouselRef.current?.scrollBy({ left: -260, behavior: "smooth" })}><ArrowLeft size={17} /></button>
           <div ref={stageCarouselRef} className="pa-stage-carousel" tabIndex={0} aria-label={`Fases da Casa ${world}; deslize para ver os próximos prêmios`}>
@@ -317,7 +322,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       </section>
     </main> : <main className="pa-play-layout">
       <div className="pa-game-heading"><div><button type="button" className="pa-back-map" onClick={() => { setPhase("map"); setReward(null); }}><ArrowLeft size={15} /> Mapa</button><span className="pa-game-stage">MUNDO {currentStage.world} · FASE {currentStage.stageInWorld}</span><h1>{currentStage.title}</h1><p>{currentStage.objective}</p></div>
-        <div className="pa-game-status"><div className="pa-heart-row" aria-label={`${hud.hearts} vidas restantes`}>{Array.from({ length: 3 }, (_, index) => <Heart key={index} size={19} fill={index < hud.hearts ? "currentColor" : "transparent"} className={index < hud.hearts ? "heart-on" : "heart-off"} />)}</div><span className="pa-live-coins"><Coins size={15} fill="currentColor" /> {hud.coins}<small>/{hud.totalCoins}</small></span><button type="button" className="pa-pause-button" onClick={() => setPhase(phase === "paused" ? "playing" : "paused")} aria-label={phase === "paused" ? "Continuar" : "Pausar fase"}>{phase === "paused" ? <Play size={16} /> : <Pause size={16} />}</button></div>
+        <div className="pa-game-status"><div className="pa-heart-row" aria-label={`${hud.hearts} vidas restantes`}>{Array.from({ length: 3 }, (_, index) => <Heart key={index} size={19} fill={index < hud.hearts ? "currentColor" : "transparent"} className={index < hud.hearts ? "heart-on" : "heart-off"} />)}</div><span className="pa-live-coins"><Coins size={15} fill="currentColor" /> {hud.coins}<small>/{hud.totalCoins}</small></span><span className="pa-live-items" title={`${currentStage.mascot.collectibleName}: ${hud.worldItems} de ${hud.totalWorldItems}`}><i aria-hidden="true">{currentStage.mascot.collectibleIcon}</i>{hud.worldItems}<small>/{hud.totalWorldItems}</small></span><button type="button" className="pa-pause-button" onClick={() => setPhase(phase === "paused" ? "playing" : "paused")} aria-label={phase === "paused" ? "Continuar" : "Pausar fase"}>{phase === "paused" ? <Play size={16} /> : <Pause size={16} />}</button></div>
       </div>
       <section className="pa-playfield" aria-label={`Fase ${stageId}: ${currentStage.subtitle}`}>
         <canvas ref={canvasRef} className="pa-canvas" aria-label="Jogo de plataforma: use as setas para correr, espaço para pular e alcance o portal dourado" />
@@ -334,23 +339,27 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
           {phase === "paused" && <div className="pa-end-card"><span className="pa-overlay-icon pause"><Pause size={26} fill="currentColor" /></span><small>FASE {currentStage.id} · PAUSADA</small><h2>Respire um pouquinho</h2><p>Seu progresso e as moedas deste caminho ficam guardados durante a pausa.</p><button className="pa-primary-action" type="button" onClick={() => setPhase("playing")}><Play size={16} fill="currentColor" /> Continuar</button><button className="pa-secondary-action" type="button" onClick={() => setPhase("map")}><Map size={15} /> Voltar ao mapa</button></div>}
           {phase === "failed" && <div className="pa-end-card"><span className="pa-overlay-icon retry"><Heart size={26} /></span><small>AS PATINHAS PRECISAM DE UM DESCANSO</small><h2>Vamos tentar de novo?</h2><p>Você chega mais longe a cada tentativa. O marco ativado ajuda a recomeçar do meio do caminho.</p><button className="pa-primary-action" type="button" onClick={replayStage}><RotateCcw size={16} /> Tentar novamente</button><button className="pa-secondary-action" type="button" onClick={() => setPhase("map")}><Map size={15} /> Escolher outra fase</button></div>}
           {phase === "won" && <div className="pa-end-card pa-reward-card" aria-live="polite">
-            <span className={`pa-overlay-icon win pa-reveal-icon step-${rewardStep}`}>{rewardStep === 0 ? <Trophy size={27} fill="currentColor" /> : rewardStep === 1 ? <Sparkles size={27} /> : <Coins size={27} fill="currentColor" />}</span>
-            <small>{rewardStep === 0 ? "OBJETIVO CONCLUÍDO" : rewardStep === 1 ? "RECOMPENSA DA FASE" : "MOEDAS CONQUISTADAS"}</small>
-            <h2>{rewardStep === 0 ? "Missão cumprida!" : rewardStep === 1 ? (reward?.firstClear ? "Decoração desbloqueada!" : "Decoração já conquistada") : "Olha só o que você ganhou!"}</h2>
+            <span className={`pa-overlay-icon win pa-reveal-icon step-${rewardStep}`}>{rewardStep === 0 ? <Trophy size={27} fill="currentColor" /> : rewardStep === 1 ? <Sparkles size={27} /> : reward?.mascotUnlocked && rewardStep === 2 ? <PawPrint size={27} fill="currentColor" /> : <Coins size={27} fill="currentColor" />}</span>
+            <small>{rewardStep === 0 ? "OBJETIVO CONCLUÍDO" : rewardStep === 1 ? "RECOMPENSA DA FASE" : reward?.mascotUnlocked && rewardStep === 2 ? "NOVO AMIGO DA CASA" : "MOEDAS CONQUISTADAS"}</small>
+            <h2>{rewardStep === 0 ? "Missão cumprida!" : rewardStep === 1 ? (reward?.firstClear ? "Decoração desbloqueada!" : "Decoração já conquistada") : reward?.mascotUnlocked && rewardStep === 2 ? `${currentStage.mascot.name} chegou!` : "Olha só o que você ganhou!"}</h2>
             {rewardStep === 0 && <div className="pa-reveal-panel"><div className="pa-win-stars" aria-label={`${state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud)} estrelas`}>{formatStars(state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud))}</div><p>Você chegou ao portal e concluiu <strong>{currentStage.title}</strong>.</p><small>Prepare as patinhas: sua recompensa está chegando.</small></div>}
-            {rewardStep === 1 && (reward?.firstClear ? <div className="pa-stage-reward pa-stage-reward-large"><img src={GAME_ASSETS.decorations[currentStage.reward.id]} alt={currentStage.reward.name} /><div><small>CASA {currentStage.world} · FASE {currentStage.stageInWorld}</small><strong>{currentStage.reward.name}</strong><span>Conquistada e guardada na mochila para decorar Minha Casa.</span></div></div> : <div className="pa-reveal-panel"><p><strong>{currentStage.reward.name}</strong> já tinha sido conquistada nesta fase.</p><small>O replay não duplica decorações.</small></div>)}
-            {rewardStep === 2 && <><div className="pa-earned-coins"><Coins size={25} fill="currentColor" /><strong>+{reward?.coins ?? 0}</strong><span>moedas</span></div><p className="pa-reward-caption">{reward?.firstClear ? "As moedas já foram adicionadas à sua carteira." : "Replay concluído: moedas e decoração não são duplicadas."}</p>
+            {rewardStep === 1 && <>
+              {reward?.firstClear ? <div className="pa-stage-reward pa-stage-reward-large"><img src={GAME_ASSETS.decorations[currentStage.reward.id]} alt={currentStage.reward.name} /><div><small>CASA {currentStage.world} · FASE {currentStage.stageInWorld}</small><strong>{currentStage.reward.name}</strong><span>Conquistada e guardada na mochila para decorar Minha Casa.</span></div></div> : <div className="pa-reveal-panel"><p><strong>{currentStage.reward.name}</strong> já tinha sido conquistada nesta fase.</p><small>O replay não duplica decorações.</small></div>}
+              {reward?.bonusItem && <div className="pa-token-reward"><span aria-hidden="true">{reward.bonusItem.icon}</span><div><small>ITENS COLETADOS · {reward.collectedItems}/{hud.totalWorldItems}</small><strong>{reward.bonusItem.name}{reward.bonusItem.quantity > 0 ? ` ×${reward.bonusItem.quantity}` : ""}</strong><small>{reward.bonusItem.quantity > 0 ? "Guardados na Mochila para cuidar do pet." : "A Mochila está cheia; nenhum item foi perdido no save."}</small></div></div>}
+            </>}
+            {rewardStep === 2 && reward?.mascotUnlocked && <div className="pa-mascot-reveal"><img src={GAME_ASSETS.companions[currentStage.mascot.id]} alt={currentStage.mascot.name} /><div><small>MASCOTE DESBLOQUEADO · CASA {currentStage.world}</small><strong>{currentStage.mascot.name}</strong><span>{currentStage.mascot.species}</span><p>“{currentStage.mascot.phrase}”</p><small>Disponível em Minha Casa, somente na Casa {currentStage.world}.</small></div></div>}
+            {showingCoins && <><div className="pa-earned-coins"><Coins size={25} fill="currentColor" /><strong>+{reward?.coins ?? 0}</strong><span>moedas</span></div><p className="pa-reward-caption">{reward?.firstClear ? "As moedas já foram adicionadas à sua carteira." : "Replay concluído: moedas e decoração não são duplicadas."}</p>
               {currentStage.id < 100 && state.platformProgress.unlockedStage > currentStage.id && <button className="pa-primary-action" type="button" onClick={() => beginStage(currentStage.id + 1)}>Próxima fase <ChevronRight size={16} /></button>}
               <button className="pa-secondary-action" type="button" onClick={() => { setPhase("map"); setReward(null); setRewardStep(0); }}><Map size={15} /> Voltar ao mapa</button></>}
-            {rewardStep < 2 && <button className="pa-primary-action" type="button" onClick={() => setRewardStep((step) => Math.min(2, step + 1))}>{rewardStep === 0 ? "Ver decoração conquistada" : "Ver moedas da fase"} <ChevronRight size={16} /></button>}
+            {rewardStep < finalRewardStep && <button className="pa-primary-action" type="button" onClick={() => setRewardStep((step) => Math.min(finalRewardStep, step + 1))}>{rewardStep === 0 ? "Ver decoração conquistada" : reward?.mascotUnlocked && rewardStep === 1 ? "Conhecer novo amigo" : "Ver moedas da fase"} <ChevronRight size={16} /></button>}
           </div>}
         </div>}
       </section>
-      <div className="pa-play-footer"><span><kbd>←</kbd><kbd>→</kbd> mover <kbd>ESPAÇO</kbd> pular</span><span>Alcance o portal e pegue moedas pelo caminho</span><button type="button" onClick={onGoToHouse}><HomeIcon size={14} /> Minha Casa</button></div>
+      <div className="pa-play-footer"><span><kbd>←</kbd><kbd>→</kbd> mover <kbd>ESPAÇO</kbd> pular</span><span>Moedas + {currentStage.mascot.collectibleName} · alcance o portal</span><button type="button" onClick={onGoToHouse}><HomeIcon size={14} /> Minha Casa</button></div>
     </main>}
 
     {helpOpen && <div className="pa-modal-backdrop" onClick={finishGuide}><section className="pa-guide-modal" role="dialog" aria-modal="true" aria-labelledby="pa-guide-title" onClick={(event) => event.stopPropagation()}>
-      <button className="pa-modal-close" type="button" onClick={finishGuide} aria-label="Fechar guia"><X size={18} /></button><span className="pa-guide-art"><BookOpen size={25} /></span><small>UM GUIA DE PATINHAS</small><h2 id="pa-guide-title">Como jogar a aventura</h2><div className="pa-guide-steps"><p><b>1</b><span><strong>Escolha uma fase aberta</strong><small>O mapa mostra 10 mundos e 100 etapas. Vença a próxima para abrir o caminho.</small></span></p><p><b>2</b><span><strong>Corra e pule</strong><small>No teclado: setas ou A/D para mover e Espaço, W ou ↑ para pular. No celular: use as setas e o botão PULAR.</small></span></p><p><b>3</b><span><strong>Desvie e colete</strong><small>Evite os guardiões e espinhos, pegue moedas e ative o marco no meio do caminho.</small></span></p><p><b>4</b><span><strong>Entre no portal dourado</strong><small>Ganhe estrelas, moedas e uma decoração nova para a casa deste mundo. Replay não duplica prêmio.</small></span></p></div><div className="pa-guide-note"><Gamepad2 size={16} /><span>Os minijogos e cuidados continuam em Minha Casa e ajudam seu pet a evoluir com XP.</span></div><button className="pa-primary-action" type="button" onClick={finishGuide}>Entendi · vamos brincar <ChevronRight size={16} /></button>
+      <button className="pa-modal-close" type="button" onClick={finishGuide} aria-label="Fechar guia"><X size={18} /></button><span className="pa-guide-art"><BookOpen size={25} /></span><small>UM GUIA DE PATINHAS</small><h2 id="pa-guide-title">Como jogar a aventura</h2><div className="pa-guide-steps"><p><b>1</b><span><strong>Escolha uma fase aberta</strong><small>O mapa mostra 10 mundos e 100 etapas. Vença a próxima para abrir o caminho.</small></span></p><p><b>2</b><span><strong>Corra e pule</strong><small>No teclado: setas ou A/D para mover e Espaço, W ou ↑ para pular. No celular: use as setas e o botão PULAR.</small></span></p><p><b>3</b><span><strong>Desvie e colete</strong><small>Desvie do monstro e do obstáculo desta casa, pegue moedas e o item temático, e ative o marco no meio do caminho.</small></span></p><p><b>4</b><span><strong>Entre no portal dourado</strong><small>Ganhe estrelas, moedas, itens de cuidado e uma decoração para esta casa. Ao vencer a fase 10, libere também seu mascote. Replay não duplica prêmio.</small></span></p></div><div className="pa-guide-note"><Gamepad2 size={16} /><span>Os minijogos e cuidados continuam em Minha Casa e ajudam seu pet a evoluir com XP.</span></div><button className="pa-primary-action" type="button" onClick={finishGuide}>Entendi · vamos brincar <ChevronRight size={16} /></button>
     </section></div>}
 
     {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><span className="pa-creator-modal-emblem" aria-hidden="true">✦</span><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}

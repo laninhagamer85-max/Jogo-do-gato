@@ -1,5 +1,6 @@
 import { DECORATIONS, type DecorationDefinition } from "./decorations";
 import { CAMPAIGN_LEVELS, getCampaignLevel } from "./levels";
+import type { StoreItemId } from "./PetGame";
 
 export type PlatformPalette = {
   skyTop: string;
@@ -15,6 +16,42 @@ export type PlatformPalette = {
   soilShadow: string;
   terrainTint: string;
 };
+
+export type PlatformMascotDefinition = {
+  id: string;
+  world: number;
+  name: string;
+  species: string;
+  icon: string;
+  phrase: string;
+  collectibleName: string;
+  collectibleIcon: string;
+  rewardItem: StoreItemId;
+  enemyName: string;
+  enemyIcon: string;
+  hazardName: string;
+  hazardIcon: string;
+};
+
+/** One original friend, collectible, enemy motif, and success line belongs to each house. */
+export const PLATFORM_MASCOTS = [
+  { id: "mimo", world: 1, name: "Mimo", species: "gatinho aventureiro", icon: "🐱", phrase: "Peixinho brilhante encontrado! Miau de vitória!", collectibleName: "Peixinho dourado", collectibleIcon: "🐟", rewardItem: "sardinha", enemyName: "Gelatina gulosa", enemyIcon: "🟣", hazardName: "Cacto de patinhas", hazardIcon: "🌵" },
+  { id: "florita", world: 2, name: "Florita", species: "gatinha jardineira", icon: "🌼", phrase: "Uma florzinha! Vou guardar esse cheirinho bom!", collectibleName: "Flor de carinho", collectibleIcon: "🌼", rewardItem: "novelo", enemyName: "Abelhinha distraída", enemyIcon: "🐝", hazardName: "Espinhos do jardim", hazardIcon: "🌹" },
+  { id: "bigodito", world: 3, name: "Bigodito", species: "gatinho elegante da feira", icon: "🥸", phrase: "Olha este bigodinho dourado: elegante como o meu!", collectibleName: "Bigode de confete", collectibleIcon: "🥸", rewardItem: "novelo", enemyName: "Bigode-bola", enemyIcon: "🥸", hazardName: "Caixotes da feira", hazardIcon: "📦" },
+  { id: "sol", world: 4, name: "Sol", species: "gatinho raio de sol", icon: "☀️", phrase: "Um raio de sol pra aquecer a aventura!", collectibleName: "Raio de energia", collectibleIcon: "☀️", rewardItem: "caminha", enemyName: "Solzinho travesso", enemyIcon: "🌞", hazardName: "Rochas quentinhas", hazardIcon: "🌋" },
+  { id: "conchinha", world: 5, name: "Conchinha", species: "gatinha exploradora do mar", icon: "🐚", phrase: "Concha achada! O mar fez um presente!", collectibleName: "Concha de espuma", collectibleIcon: "🐚", rewardItem: "banho", enemyName: "Caranguejo sapeca", enemyIcon: "🦀", hazardName: "Conchas pontudas", hazardIcon: "🪸" },
+  { id: "pingo", world: 6, name: "Pingo", species: "gatinho do bosque", icon: "🧶", phrase: "Novelo no bosque! Quem quer brincar?", collectibleName: "Novelo do bosque", collectibleIcon: "🧶", rewardItem: "novelo", enemyName: "Bola de lã pulante", enemyIcon: "🧶", hazardName: "Trepadeiras enroladas", hazardIcon: "🌿" },
+  { id: "nevinha", world: 7, name: "Nevinha", species: "gatinha das montanhas nevadas", icon: "❄️", phrase: "Floco na patinha, friozinho gostoso!", collectibleName: "Floco fofinho", collectibleIcon: "❄️", rewardItem: "caminha", enemyName: "Nevasca saltitante", enemyIcon: "⛄", hazardName: "Cristais de gelo", hazardIcon: "🧊" },
+  { id: "letrinha", world: 8, name: "Letrinha", species: "gatinha leitora", icon: "📚", phrase: "Uma letrinha mágica para a nossa história!", collectibleName: "Página de petisco", collectibleIcon: "📖", rewardItem: "sardinha", enemyName: "Livro mordisquinho", enemyIcon: "📕", hazardName: "Pilhas de livros", hazardIcon: "📚" },
+  { id: "estrelinha", world: 9, name: "Estrelinha", species: "gatinho viajante das estrelas", icon: "⭐", phrase: "Estrelinha cadente: faça um pedido!", collectibleName: "Estrela de energia", collectibleIcon: "🌟", rewardItem: "caminha", enemyName: "Meteorinho dançarino", enemyIcon: "☄️", hazardName: "Pedras cósmicas", hazardIcon: "🌑" },
+  { id: "festeiro", world: 10, name: "Festeiro", species: "gatinho mestre das festas", icon: "🎉", phrase: "Confete, carinho e festa pra todo mundo!", collectibleName: "Confete docinho", collectibleIcon: "🎉", rewardItem: "sardinha", enemyName: "Confete saltitante", enemyIcon: "🎊", hazardName: "Surpresa de festa", hazardIcon: "🎁" },
+] as const satisfies readonly PlatformMascotDefinition[];
+
+export type PlatformMascotId = (typeof PLATFORM_MASCOTS)[number]["id"];
+
+export function getPlatformMascot(id: string | null | undefined) {
+  return id ? PLATFORM_MASCOTS.find((mascot) => mascot.id === id) : undefined;
+}
 
 /** Every house gets its own floor colors while the side-view grass tile stays readable. */
 export const PLATFORM_PALETTES: PlatformPalette[] = [
@@ -44,6 +81,7 @@ export type PlatformStage = {
   objective: string;
   reward: DecorationDefinition;
   palette: PlatformPalette;
+  mascot: (typeof PLATFORM_MASCOTS)[number];
   difficulty: number;
 };
 
@@ -53,7 +91,8 @@ export function getPlatformStage(stageId: number): PlatformStage | undefined {
   const stageInWorld = (stageId - 1) % 10 + 1;
   const chapter = getCampaignLevel(world);
   const reward = DECORATIONS.filter((item) => item.room === world)[stageInWorld - 1];
-  if (!reward) return undefined;
+  const mascot = PLATFORM_MASCOTS[world - 1];
+  if (!reward || !mascot) return undefined;
   const subtitle = STAGE_BEATS[stageInWorld - 1];
   return {
     id: stageId,
@@ -61,11 +100,12 @@ export function getPlatformStage(stageId: number): PlatformStage | undefined {
     stageInWorld,
     title: `${chapter.location} · ${String(stageInWorld).padStart(2, "0")}`,
     subtitle,
-    story: stageInWorld === 1 ? chapter.story : `${chapter.title}: ${subtitle.toLowerCase()} e descubra uma nova parte desta história.`,
-    objective: stageInWorld === 10 ? "Alcance o portal dourado para fechar este mundo." : `${subtitle}. Alcance o portal para concluir a fase.`,
+    story: stageInWorld === 1 ? chapter.story : `${chapter.title}: ${subtitle.toLowerCase()}, desvie de ${mascot.enemyName.toLowerCase()} e cuidado com ${mascot.hazardName.toLowerCase()}. Procure também um ${mascot.collectibleName.toLowerCase()} pelo caminho.`,
+    objective: stageInWorld === 10 ? `Alcance o portal dourado e encontre ${mascot.name}, o novo amigo desta casa.` : `${subtitle}. Colete ${mascot.collectibleName.toLowerCase()} e alcance o portal.`,
     reward,
     palette: PLATFORM_PALETTES[world - 1],
-    difficulty: world * 10 + stageInWorld - 1,
+    mascot,
+    difficulty: (world - 1) * 10 + stageInWorld - 1,
   };
 }
 
@@ -76,6 +116,7 @@ export function getPlatformWorld(world: number) {
 
 export type PlatformSurface = { x: number; y: number; width: number; height: number; kind: "ground" | "floating" };
 export type PlatformCoin = { id: number; x: number; y: number; collected: boolean };
+export type PlatformWorldItem = { id: number; x: number; y: number; collected: boolean };
 export type PlatformEnemy = { id: number; x: number; y: number; minX: number; maxX: number; direction: number; speed: number };
 export type PlatformHazard = { x: number; y: number; width: number; height: number };
 export type PlatformLayout = {
@@ -83,6 +124,7 @@ export type PlatformLayout = {
   groundSurfaces: PlatformSurface[];
   floatingSurfaces: PlatformSurface[];
   coins: PlatformCoin[];
+  worldItems: PlatformWorldItem[];
   enemies: PlatformEnemy[];
   hazards: PlatformHazard[];
   checkpoint: { x: number; y: number };
@@ -95,23 +137,24 @@ export type PlatformLayout = {
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 /**
- * Deterministic, beatable side-scroller routes: wide ground ledges set the jumping rhythm,
- * raised one-way ledges add vertical exploration, and the world's palette defines its floor.
+ * Deterministic, beatable side-scroller routes. World and stage number increase route length,
+ * gap pressure, raised ledges and friendly themed hazards while preserving safe landing spans.
  */
 export function createPlatformLayout(stageId: number, viewportHeight: number): PlatformLayout {
   const stage = getPlatformStage(stageId) ?? getPlatformStage(1)!;
   const height = Math.max(180, viewportHeight);
   const groundY = Math.max(96, Math.min(height - 72, height * 0.77));
   const world = stage.world;
-  const sectionCount = 15 + Math.min(5, Math.floor((stageId - 1) / 20));
+  const stagePressure = Math.floor((stage.stageInWorld - 1) / 5);
+  const sectionCount = 15 + (world - 1) + stagePressure;
   const groundSurfaces: PlatformSurface[] = [{ x: 0, y: groundY, width: 360, height: 120, kind: "ground" }];
   let x = 360;
   let previousY = groundY;
 
   for (let index = 1; index <= sectionCount; index += 1) {
-    const width = 252 + ((stageId * 17 + index * 23) % 62) - Math.min(24, world * 2);
-    const gap = 54 + ((stageId * 13 + index * 29) % 36) + Math.min(12, Math.floor(world * 1.1));
-    const verticalWave = Math.sin(index * 1.37 + stageId * 0.29) * (24 + world * 1.2);
+    const width = 252 + ((stageId * 17 + index * 23) % 62) - Math.min(18, world * 1.6) - stagePressure * 2;
+    const gap = 54 + ((stageId * 13 + index * 29) % 36) + Math.min(18, Math.floor(world * 1.8)) + stagePressure * 2;
+    const verticalWave = Math.sin(index * 1.37 + stageId * 0.29) * (24 + world * 1.6 + stagePressure * 1.8);
     const y = clamp(previousY + verticalWave, height * 0.56, groundY + 16);
     x += gap;
     groundSurfaces.push({ x, y, width, height: 120, kind: "ground" });
@@ -122,20 +165,22 @@ export function createPlatformLayout(stageId: number, viewportHeight: number): P
   const floatingSurfaces: PlatformSurface[] = [];
   groundSurfaces.forEach((surface, index) => {
     if (index < 2 || index >= groundSurfaces.length - 1) return;
-    if ((index + stage.stageInWorld) % 2 === 0) {
-      const width = 112 + ((stageId + index * 13) % 28);
-      const lift = 76 + ((stageId * 3 + index * 7) % 30);
-      const fx = surface.x + 22 + ((index * 11 + stageId) % 22);
-      floatingSurfaces.push({ x: fx, y: Math.max(height * 0.39, surface.y - lift), width, height: 64, kind: "floating" });
-      // Raised ledges and occasional stair-step platforms add readable up/down routes.
-      if (stageId >= 3 && (index + stageId) % 4 === 0 && width + 92 < surface.width) {
-        floatingSurfaces.push({ x: fx + width + 7, y: Math.max(height * 0.32, surface.y - lift - 66), width: 92, height: 64, kind: "floating" });
-      }
+    const createLedge = stage.difficulty >= 45
+      ? (index + stage.stageInWorld) % 3 !== 0
+      : (index + stage.stageInWorld) % 2 === 0;
+    if (!createLedge) return;
+    const width = 112 + ((stageId + index * 13) % 28) - (stage.difficulty >= 75 ? 5 : 0);
+    const lift = 76 + ((stageId * 3 + index * 7) % 30) + Math.min(20, Math.floor(stage.difficulty / 8));
+    const fx = surface.x + 22 + ((index * 11 + stageId) % 22);
+    floatingSurfaces.push({ x: fx, y: Math.max(height * 0.39, surface.y - lift), width, height: 64, kind: "floating" });
+    if (stage.difficulty >= 20 && (index + stageId) % 3 === 0 && width + 92 < surface.width) {
+      floatingSurfaces.push({ x: fx + width + 7, y: Math.max(height * 0.32, surface.y - lift - 66), width: 92, height: 64, kind: "floating" });
     }
   });
 
   const surfaces = [...groundSurfaces, ...floatingSurfaces].sort((a, b) => a.x - b.x || a.y - b.y);
   const coins: PlatformCoin[] = [];
+  const worldItems: PlatformWorldItem[] = [];
   const enemies: PlatformEnemy[] = [];
   const hazards: PlatformHazard[] = [];
   groundSurfaces.forEach((surface, index) => {
@@ -144,21 +189,47 @@ export function createPlatformLayout(stageId: number, viewportHeight: number): P
       const offset = coinCount === 1 ? surface.width * 0.52 : surface.width * (0.35 + item * 0.3);
       coins.push({ id: coins.length, x: surface.x + offset, y: surface.y - 60 - ((stageId + index + item) % 3) * 7, collected: false });
     }
+    const itemInterval = stage.difficulty >= 65 ? 3 : 4;
+    if (index >= 2 && index < groundSurfaces.length - 1 && (index + stageId) % itemInterval === 0) {
+      worldItems.push({ id: worldItems.length, x: surface.x + surface.width * (0.34 + (index % 3) * 0.12), y: surface.y - 33, collected: false });
+    }
   });
-  floatingSurfaces.forEach((surface) => coins.push({ id: coins.length, x: surface.x + surface.width / 2, y: surface.y - 39, collected: false }));
+  floatingSurfaces.forEach((surface, index) => {
+    coins.push({ id: coins.length, x: surface.x + surface.width / 2, y: surface.y - 39, collected: false });
+    if (stage.difficulty >= 30 && (index + stage.stageInWorld) % 4 === 0) {
+      worldItems.push({ id: worldItems.length, x: surface.x + surface.width / 2, y: surface.y - 31, collected: false });
+    }
+  });
 
   groundSurfaces.forEach((surface, index) => {
     if (index < 2 || index >= groundSurfaces.length - 1) return;
-    const useEnemy = (index + stageId) % 3 !== 0;
-    if (useEnemy) {
-      // Keep a readable run-up to the pit and landing zone; the patrol remains on a wide ledge.
+    const enemyThreshold = Math.min(86, 67 + Math.round(stage.difficulty * 0.19));
+    const enemyRoll = (index * 37 + stageId * 13) % 100;
+    if (enemyRoll < enemyThreshold) {
       const midpoint = surface.x + surface.width * 0.57;
       const patrol = Math.min(30, surface.width * 0.12);
-      enemies.push({ id: enemies.length, x: midpoint, y: surface.y - 28, minX: midpoint - patrol, maxX: midpoint + patrol, direction: (index + stageId) % 2 ? 1 : -1, speed: 40 + world * 3 + stage.stageInWorld });
-    } else if (index >= 3 && stage.stageInWorld >= 3 && (index + stageId) % 2 === 0) {
-      hazards.push({ x: surface.x + surface.width * 0.58, y: surface.y - 24, width: 34 + (world % 3) * 5, height: 24 });
+      enemies.push({
+        id: enemies.length,
+        x: midpoint,
+        y: surface.y - 28,
+        minX: midpoint - patrol,
+        maxX: midpoint + patrol,
+        direction: (index + stageId) % 2 ? 1 : -1,
+        speed: 43 + world * 3 + stage.stageInWorld * 1.5 + Math.floor(stage.difficulty / 8),
+      });
+    } else if (stage.difficulty >= 5) {
+      const hazardChance = Math.min(34, 15 + Math.round(stage.difficulty * 0.18));
+      const hazardRoll = (index * 29 + stageId * 17) % 100;
+      if (hazardRoll < hazardChance) {
+        hazards.push({ x: surface.x + surface.width * 0.58, y: surface.y - 24, width: 34 + (world % 3) * 5 + (stage.difficulty >= 55 ? 5 : 0), height: 24 });
+      }
     }
   });
+
+  // Guarantee at least three readable tokens per route, even where a deterministic pattern lands sparse.
+  if (worldItems.length < 3) {
+    groundSurfaces.slice(3, 6).forEach((surface) => worldItems.push({ id: worldItems.length, x: surface.x + surface.width * 0.46, y: surface.y - 33, collected: false }));
+  }
 
   const checkpointSurface = groundSurfaces[Math.floor(groundSurfaces.length / 2)];
   const lastSurface = groundSurfaces[groundSurfaces.length - 1];
@@ -167,6 +238,7 @@ export function createPlatformLayout(stageId: number, viewportHeight: number): P
     groundSurfaces,
     floatingSurfaces,
     coins,
+    worldItems,
     enemies,
     hazards,
     checkpoint: { x: checkpointSurface.x + checkpointSurface.width * 0.5, y: checkpointSurface.y },

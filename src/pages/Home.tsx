@@ -14,13 +14,14 @@ import CreatorTributeModal from "@/components/CreatorTributeModal";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import {
   buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame, completePlatformStage,
-  createInitialGameState, CURRENT_SAVE_KEY, DECORATIONS, PET_CHARACTERS, expireGifts, LEGACY_SAVE_KEYS,
+  createInitialGameState, CURRENT_SAVE_KEY, DECORATIONS, getUnlockedRoomCount, PET_CHARACTERS, expireGifts, LEGACY_SAVE_KEYS,
   getDecorationStageId, migrateGameState, performCare, placeDecoration, removeDecoration, selectRoom, setPetProfile,
   SKINS, spawnSurpriseGift, STORE_ITEMS, tickPet, updateDecoration, useStoreItem,
   type CareAction, type CompanionId, type DecorationId, type DecorationPlacement, type GameState,
   type PetGender, type PetProfile, type SkinId, type StoreItemId,
 } from "@/game/PetGame";
 import { CAMPAIGN_LEVELS, getCampaignLevel, MINI_GAMES, type MiniGameId } from "@/game/levels";
+import { getPlatformMascot, PLATFORM_MASCOTS } from "@/game/platformerLevels";
 import { playCompanionVoice, playMatchSound, playPetVoice, stopPetVoice, type PetVoiceCue } from "@/game/audio";
 import { GAME_ASSETS } from "@/game/assets";
 import { loadPlatformAudioMix, savePlatformAudioMix, setPlatformAudioMix, type PlatformAudioMix } from "@/game/platformerAudio";
@@ -121,9 +122,10 @@ const roomPanelCopy: Record<Exclude<RoomMenuPanel, null>, { kicker: string; titl
   decor: { kicker: "PEÇAS DESTA CASA", title: "Decorar" },
   rooms: { kicker: "CADA CASA GUARDA UMA HISTÓRIA", title: "Escolher casa" },
 };
-const companionMeta: Array<{ id: CompanionId; name: string; species: string; unlock: number; image: string; icon: string }> = [
+const companionMeta: Array<{ id: CompanionId; name: string; species: string; unlock: number; image: string; icon: string; homeRoom?: number }> = [
   { id: "mimi", name: "Mimi", species: "gatinha laranja", unlock: 3, image: GAME_ASSETS.companions.mimi, icon: "🐱" },
   { id: "tico", name: "Tico", species: "cachorrinho creme", unlock: 7, image: GAME_ASSETS.companions.tico, icon: "🐶" },
+  ...PLATFORM_MASCOTS.map((mascot) => ({ id: mascot.id, name: mascot.name, species: `${mascot.species} · Casa ${mascot.world}`, unlock: mascot.world * 10, image: GAME_ASSETS.companions[mascot.id], icon: mascot.icon, homeRoom: mascot.world })),
 ];
 
 function loadPanels(): CollapsedPanels {
@@ -203,7 +205,7 @@ export default function Home() {
   const missionPercent = Math.min(100, (game.missionProgress / 3) * 100);
   const petName = game.profile?.name || "meu pet";
   const profileCharacter = game.profile ? PET_CHARACTERS.find((item) => item.id === game.profile?.characterId) : undefined;
-  const currentCompanion = companionMeta.find((item) => item.id === game.activeCompanionId);
+  const currentCompanion = companionMeta.find((item) => item.id === game.activeCompanionId && (!item.homeRoom || item.homeRoom === game.activeRoom));
   const currentMini = useMemo(() => MINI_GAMES.find((item) => item.id === miniId), [miniId]);
   const storyChapter = storyLevel ? getCampaignLevel(storyLevel) : null;
   const activeChapter = getCampaignLevel(game.activeRoom);
@@ -555,10 +557,12 @@ export default function Home() {
   }
 
   function selectHouse(room: number) {
-    setGame((current) => selectRoom(current, room));
+    const nextState = selectRoom(game, room);
+    setGame(nextState);
     setActiveRoomMenu(null); setActiveCareAction(null); setRoomsOpen(false); setShopOpen(false); setGamesOpen(false); setMiniId(null); setSelectedDecorationId(null); setPendingDecoration(null);
     showPetSpeech(`Vamos passear de volta para ${getCampaignLevel(room).location}!`);
     dispatchPetEvent("pet:room", { room });
+    if (nextState.activeCompanionId !== game.activeCompanionId) dispatchPetEvent("pet:companion", { companionId: nextState.activeCompanionId });
   }
 
   function buyOrEquipDecoration(id: DecorationId) {
@@ -586,7 +590,7 @@ export default function Home() {
   function useDecorationFromBackpack(id: DecorationId) {
     const item = DECORATIONS.find((entry) => entry.id === id);
     if (!item || (game.decorInventory[id] ?? 0) < 1) return;
-    if (item.room > game.level) { showToast(`A Casa ${item.room} será liberada no nível ${item.room}.`); return; }
+    if (item.room > getUnlockedRoomCount(game)) { showToast(`A Casa ${item.room} será liberada ao subir de nível ou concluir o mundo ${item.room} da Aventura.`); return; }
     setShopOpen(false);
     if (item.room !== game.activeRoom) {
       setGame((current) => selectRoom(current, item.room));
@@ -643,9 +647,12 @@ export default function Home() {
   }
 
   function tapCompanion(id: CompanionId) {
-    const lines = id === "mimi"
-      ? ["Mimi: vim conferir se os petiscos estão em dia!", "Mimi: eu não ronrono… faço motorzinho de luxo!", "Mimi: quem trouxe o novelo? Pergunto para uma amiga."]
-      : ["Tico: au-au! Ops, era para miar?", "Tico: farejei um biscoito a três casas daqui!", "Tico: prometo não perseguir o próprio rabo. Talvez."];
+    const mascot = getPlatformMascot(id);
+    const lines = mascot
+      ? [`${mascot.name}: ${mascot.phrase}`, `${mascot.name}: esta Casa ${mascot.world} tem cheiro de aventura!`, `${mascot.name}: vamos brincar sem perder as patinhas?`]
+      : id === "mimi"
+        ? ["Mimi: vim conferir se os petiscos estão em dia!", "Mimi: eu não ronrono… faço motorzinho de luxo!", "Mimi: quem trouxe o novelo? Pergunto para uma amiga."]
+        : ["Tico: au-au! Ops, era para miar?", "Tico: farejei um biscoito a três casas daqui!", "Tico: prometo não perseguir o próprio rabo. Talvez."];
     const line = lines[Math.floor(Math.random() * lines.length)];
     showPetSpeech(line, 6500);
     if (voiceOn) playCompanionVoice(id, dismissPetSpeech);
@@ -682,8 +689,8 @@ export default function Home() {
     setTutorialOpen(false);
   }
 
-  function completeAdventureStage(stageId: number, stars: number, coins: number) {
-    const result = completePlatformStage(game, stageId, stars, coins);
+  function completeAdventureStage(stageId: number, stars: number, coins: number, worldItemsCollected: number) {
+    const result = completePlatformStage(game, stageId, stars, coins, worldItemsCollected);
     if (result.ok) setGame(result.state);
     return result;
   }
@@ -743,9 +750,12 @@ export default function Home() {
   }
 
   function selectCompanion(id: CompanionId | null) {
-    const result = chooseCompanion(game, id);
+    const friend = companionMeta.find((item) => item.id === id);
+    const destination = friend?.homeRoom ? selectRoom(game, friend.homeRoom) : game;
+    const result = chooseCompanion(destination, id);
     if (result.ok) {
       setGame(result.state); showToast(result.message);
+      if (destination.activeRoom !== game.activeRoom) dispatchPetEvent("pet:room", { room: destination.activeRoom });
       dispatchPetEvent("pet:companion", { companionId: id }); playTone("reward");
     } else showToast(result.message);
   }
@@ -904,7 +914,7 @@ export default function Home() {
       {!game.profile && <OnboardingFlow profile={game.profile} onComplete={handleProfile} onHearIntro={() => { if (voiceOn) playPetVoice("intro"); }} onHearPet={(gender) => { if (voiceOn) playPetVoice("welcome", gender); }} onPreviewPet={(gender, characterId) => setPreviewCharacter({ gender, characterId })} />}
       {tutorialOpen && game.profile && <TutorialOverlay onComplete={completeTutorial} onClose={completeTutorial} />}
 
-      {roomsOpen && <div className="modal-backdrop room-map-backdrop" onClick={() => setRoomsOpen(false)}><section className="modal-card room-map-card" role="dialog" aria-modal="true" aria-labelledby="room-map-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setRoomsOpen(false)} aria-label="Fechar mapa"><X size={18} /></button><span className="modal-kicker">CADA CASA GUARDA UMA HISTÓRIA</span><h2 id="room-map-title">Voltar para uma casa</h2><p className="modal-subtitle">As casas conquistadas continuam decoradas. A próxima será liberada ao subir de nível.</p><div className="room-map-grid">{CAMPAIGN_LEVELS.slice(0, game.level).map((chapter) => <button type="button" key={chapter.level} className={`room-map-item ${game.activeRoom === chapter.level ? "current" : ""}`} onClick={() => selectHouse(chapter.level)} style={{ backgroundImage: `linear-gradient(180deg,rgba(7,17,42,.18),rgba(7,17,42,.92)),url(${GAME_ASSETS.levels[chapter.level - 1]})` }}><span>CASA {chapter.level}</span><strong>{chapter.location}</strong><small>{chapter.title}</small>{game.activeRoom === chapter.level && <i>Você está aqui</i>}</button>)}</div><p className="room-map-note"><MapPin size={14} /> {game.level} de 10 casas desbloqueadas · progresso: nível {game.level}</p></section></div>}
+      {roomsOpen && <div className="modal-backdrop room-map-backdrop" onClick={() => setRoomsOpen(false)}><section className="modal-card room-map-card" role="dialog" aria-modal="true" aria-labelledby="room-map-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setRoomsOpen(false)} aria-label="Fechar mapa"><X size={18} /></button><span className="modal-kicker">CADA CASA GUARDA UMA HISTÓRIA</span><h2 id="room-map-title">Voltar para uma casa</h2><p className="modal-subtitle">As casas conquistadas continuam decoradas. A próxima casa abre ao subir de nível ou concluir o mundo correspondente da Aventura.</p><div className="room-map-grid">{CAMPAIGN_LEVELS.slice(0, getUnlockedRoomCount(game)).map((chapter) => <button type="button" key={chapter.level} className={`room-map-item ${game.activeRoom === chapter.level ? "current" : ""}`} onClick={() => selectHouse(chapter.level)} style={{ backgroundImage: `linear-gradient(180deg,rgba(7,17,42,.18),rgba(7,17,42,.92)),url(${GAME_ASSETS.levels[chapter.level - 1]})` }}><span>CASA {chapter.level}</span><strong>{chapter.location}</strong><small>{chapter.title}</small>{game.activeRoom === chapter.level && <i>Você está aqui</i>}</button>)}</div><p className="room-map-note"><MapPin size={14} /> {getUnlockedRoomCount(game)} de 10 casas disponíveis · nível {game.level} + Aventura</p></section></div>}
 
       {storyChapter && storyLevel !== null && <div className="modal-backdrop story-backdrop"><section className="modal-card story-card" role="dialog" aria-modal="true" aria-labelledby="story-title"><button className="modal-close" onClick={() => setStoryLevel(null)} aria-label="Fechar história"><X size={18} /></button><div className="story-art-ribbon"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div><span className="modal-kicker">CAPÍTULO {storyChapter.level} · {storyChapter.location.toUpperCase()}</span><div className="story-level-medallion"><Star size={27} fill="currentColor" /></div><h2 id="story-title">{storyChapter.title}</h2><p className="story-copy">{storyChapter.story.replace(/Pudim/g, petName)}</p>{storyChapter.companionUnlock && <div className="story-friend-card"><img src={storyChapter.companionUnlock === "mimi" ? GAME_ASSETS.companions.mimi : GAME_ASSETS.companions.tico} alt={storyChapter.companionUnlock === "mimi" ? "Mimi, a gatinha companheira" : "Tico, o cachorrinho companheiro"} /><div><small>NOVO AMIGO DA TURMA</small><strong>{storyChapter.companionUnlock === "mimi" ? "Mimi chegou!" : "Tico chegou!"}</strong><span>Agora ele participa das aventuras.</span></div><Check size={18} /></div>}<div className="story-reward-line"><span><Coins size={17} fill="currentColor" /> Bônus deste capítulo</span><strong>+{storyChapter.reward} moedas</strong></div><button className="primary-action story-continue" onClick={() => { setStoryLevel(null); showPetSpeech("Que tal conhecer a próxima aventura?"); }}>Explorar esta casa <ChevronRight size={17} /></button><p className="story-progress-note">{storyChapter.level < 10 ? `O primeiro arco tem 10 níveis. O próximo lugar: ${CAMPAIGN_LEVELS[storyChapter.level].location}.` : "Primeiro arco completo. Mais histórias podem ser adicionadas depois."}</p></section></div>}
 
@@ -948,7 +958,7 @@ export default function Home() {
         </>}
         {shopTab === "looks" && <><div className="skin-grid">{SKINS.map((skin) => { const owned = game.ownedSkins.includes(skin.id); const active = game.skin === skin.id; return <article className={`skin-card ${active ? "equipped" : ""}`} key={skin.id}><div className="skin-art">{skin.icon}<span className="skin-spark">✦</span></div><strong>{skin.name}</strong><small>{skin.description}</small><button className={active ? "owned-button" : "buy-button"} onClick={() => chooseSkin(skin.id)}>{active ? <><Check size={14} /> Em uso</> : owned ? "Equipar" : <><Coins size={14} fill="currentColor" /> {skin.price.toLocaleString("pt-BR")}</>}</button></article>; })}</div><p className="accessory-note">🧢 Menino usa boné · 🎀 Menina usa lacinho. A escolha foi feita no cadastro do pet.</p></>}
         {shopTab === "boosts" && <div className="boost-list">{statMeta.map((item) => <div className="boost-row" key={item.key}><span className="boost-emoji">{item.icon}</span><span className="boost-copy"><strong>{item.label} +30</strong><small>Um mimo rápido que melhora o dia</small></span><button onClick={() => boost(item.key)}><Coins size={14} /> 100</button></div>)}</div>}
-        {shopTab === "friends" && <div className="friend-shop-grid"><article className={`friend-card ${game.activeCompanionId === null ? "friend-selected" : ""}`}><div className="friend-avatar neutral-avatar">🐾</div><small>AVENTURA A DOIS</small><strong>Só nós dois</strong><p>Explore sem um companheiro ao lado.</p><button onClick={() => selectCompanion(null)}>{game.activeCompanionId === null ? "Em passeio" : "Escolher"}</button></article>{companionMeta.map((friend) => { const unlocked = game.ownedCompanions.includes(friend.id); const active = game.activeCompanionId === friend.id; return <article className={`friend-card ${active ? "friend-selected" : ""} ${!unlocked ? "friend-locked" : ""}`} key={friend.id}><div className="friend-avatar">{unlocked ? <img src={friend.image} alt={friend.name} /> : friend.icon}</div><small>{unlocked ? "AMIGO DA TURMA" : `DESBLOQUEIA NO NÍVEL ${friend.unlock}`}</small><strong>{friend.name}</strong><p>{friend.species}{unlocked ? " pronto para brincar" : " esperando na próxima casa"}</p><button disabled={!unlocked} onClick={() => selectCompanion(friend.id)}>{active ? "Passeando com vocês" : unlocked ? "Convidar" : "Ainda fechado"}</button></article>; })}</div>}
+        {shopTab === "friends" && <div className="friend-shop-grid"><article className={`friend-card ${game.activeCompanionId === null ? "friend-selected" : ""}`}><div className="friend-avatar neutral-avatar">🐾</div><small>AVENTURA A DOIS</small><strong>Só nós dois</strong><p>Explore sem um companheiro ao lado.</p><button onClick={() => selectCompanion(null)}>{game.activeCompanionId === null ? "Em passeio" : "Escolher"}</button></article>{companionMeta.map((friend) => { const unlocked = game.ownedCompanions.includes(friend.id); const active = game.activeCompanionId === friend.id; return <article className={`friend-card ${active ? "friend-selected" : ""} ${!unlocked ? "friend-locked" : ""}`} key={friend.id}><div className="friend-avatar">{unlocked ? <img src={friend.image} alt={friend.name} /> : friend.icon}</div><small>{unlocked ? (friend.homeRoom ? `MASCOTE DA CASA ${friend.homeRoom}` : "AMIGO DA TURMA") : friend.homeRoom ? `LIBERE NA FASE ${friend.unlock} · CASA ${friend.homeRoom}` : `DESBLOQUEIA NO NÍVEL ${friend.unlock}`}</small><strong>{friend.name}</strong><p>{friend.species}{unlocked ? " pronto para brincar" : " esperando na próxima casa"}</p><button disabled={!unlocked} onClick={() => selectCompanion(friend.id)}>{active ? "Passeando com vocês" : unlocked ? "Convidar" : "Ainda fechado"}</button></article>; })}</div>}
         <div className="shop-safe-note"><Sparkles size={15} /> Itens e moedas são virtuais e ficam salvos neste navegador.</div></section></div>}
     </div>
   );

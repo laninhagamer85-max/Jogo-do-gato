@@ -1,14 +1,15 @@
 import { GAME_ASSETS } from "./assets";
-import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface } from "./platformerLevels";
+import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface, type PlatformWorldItem } from "./platformerLevels";
 import type { PetProfile } from "./PetGame";
 import { playPlatformSfx } from "./platformerAudio";
 
 type InputAction = "left" | "right" | "jump";
-export type PlatformerHud = { hearts: number; coins: number; totalCoins: number; progress: number; checkpoint: boolean };
+export type PlatformerHud = { hearts: number; coins: number; totalCoins: number; worldItems: number; totalWorldItems: number; progress: number; checkpoint: boolean };
 
 type Callbacks = {
   onHud: (hud: PlatformerHud) => void;
-  onWin: (coinsCollected: number, hearts: number, totalCoins: number) => void;
+  onCollectible: (collected: number, total: number) => void;
+  onWin: (coinsCollected: number, hearts: number, totalCoins: number, worldItemsCollected: number, totalWorldItems: number) => void;
   onLose: () => void;
 };
 
@@ -52,6 +53,8 @@ export class PlatformerEngine {
   private hearts = 3;
   private coinsCollected = 0;
   private collectedCoinIds = new Set<number>();
+  private worldItemsCollected = 0;
+  private collectedWorldItemIds = new Set<number>();
   private defeatedEnemyIds = new Set<number>();
   private checkpointReached = false;
   private invulnerableFor = 0;
@@ -171,6 +174,7 @@ export class PlatformerEngine {
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.layout = createPlatformLayout(this.stage.id, this.height);
     this.layout.coins.forEach((coin) => { coin.collected = this.collectedCoinIds.has(coin.id); });
+    this.layout.worldItems.forEach((item) => { item.collected = this.collectedWorldItemIds.has(item.id); });
     if (isFirstResize) {
       this.player.x = this.layout.start.x;
       this.player.y = this.layout.start.y;
@@ -251,6 +255,16 @@ export class PlatformerEngine {
       }
     }
 
+    for (const item of this.layout.worldItems) {
+      if (!item.collected && Math.abs(this.player.x + PLAYER_WIDTH / 2 - item.x) < 31 && Math.abs(this.player.y + PLAYER_HEIGHT / 2 - item.y) < 38) {
+        item.collected = true;
+        this.collectedWorldItemIds.add(item.id);
+        this.worldItemsCollected += 1;
+        this.callbacks.onCollectible(this.worldItemsCollected, this.layout.worldItems.length);
+        this.playTone("coin");
+      }
+    }
+
     for (const enemy of this.layout.enemies) {
       if (this.defeatedEnemyIds.has(enemy.id)) continue;
       enemy.x += enemy.direction * enemy.speed * dt;
@@ -283,7 +297,7 @@ export class PlatformerEngine {
     if (this.player.y > this.height + 110) this.takeHit(now, true);
     if (this.player.x + PLAYER_WIDTH >= this.layout.goalX) {
       this.playTone("clear");
-      this.callbacks.onWin(this.coinsCollected, this.hearts, this.layout.coins.length);
+      this.callbacks.onWin(this.coinsCollected, this.hearts, this.layout.coins.length, this.worldItemsCollected, this.layout.worldItems.length);
       this.dispose();
       return;
     }
@@ -291,7 +305,7 @@ export class PlatformerEngine {
     this.cameraX += (Math.max(0, Math.min(this.layout.worldWidth - this.width, cameraTarget)) - this.cameraX) * Math.min(1, dt * 6.5);
     if (now - this.lastHudAt > 100) {
       this.lastHudAt = now;
-      this.callbacks.onHud({ hearts: this.hearts, coins: this.coinsCollected, totalCoins: this.layout.coins.length, progress: Math.min(100, Math.round((this.player.x / this.layout.goalX) * 100)), checkpoint: this.checkpointReached });
+      this.callbacks.onHud({ hearts: this.hearts, coins: this.coinsCollected, totalCoins: this.layout.coins.length, worldItems: this.worldItemsCollected, totalWorldItems: this.layout.worldItems.length, progress: Math.min(100, Math.round((this.player.x / this.layout.goalX) * 100)), checkpoint: this.checkpointReached });
     }
   }
 
@@ -313,7 +327,7 @@ export class PlatformerEngine {
     this.player.vy = fell ? -120 : 0;
     this.player.grounded = !fell;
     this.cameraX = Math.max(0, Math.min(this.layout.worldWidth - this.width, this.player.x - this.width * 0.34));
-    this.callbacks.onHud({ hearts: this.hearts, coins: this.coinsCollected, totalCoins: this.layout.coins.length, progress: Math.min(100, Math.round((this.player.x / this.layout.goalX) * 100)), checkpoint: this.checkpointReached });
+    this.callbacks.onHud({ hearts: this.hearts, coins: this.coinsCollected, totalCoins: this.layout.coins.length, worldItems: this.worldItemsCollected, totalWorldItems: this.layout.worldItems.length, progress: Math.min(100, Math.round((this.player.x / this.layout.goalX) * 100)), checkpoint: this.checkpointReached });
     this.lastHudAt = now;
   }
 
@@ -328,6 +342,7 @@ export class PlatformerEngine {
     for (const hazard of this.layout.hazards) this.drawHazard(ctx, hazard);
     this.drawCheckpoint(ctx);
     for (const coin of this.layout.coins) if (!coin.collected) this.drawCoin(ctx, coin.x, coin.y);
+    for (const item of this.layout.worldItems) if (!item.collected) this.drawWorldItem(ctx, item);
     for (const enemy of this.layout.enemies) if (!this.defeatedEnemyIds.has(enemy.id)) this.drawEnemy(ctx, enemy.x, enemy.y, enemy.direction);
     this.drawGoal(ctx);
     this.drawPlayer(ctx);
@@ -497,6 +512,28 @@ export class PlatformerEngine {
     ctx.restore();
   }
 
+  private drawWorldItem(ctx: CanvasRenderingContext2D, item: PlatformWorldItem) {
+    const x = item.x - this.cameraX;
+    if (x < -30 || x > this.width + 30) return;
+    const bob = Math.sin(this.elapsed * 4.4 + item.x) * 4;
+    ctx.save();
+    ctx.shadowColor = this.stage.palette.accent;
+    ctx.shadowBlur = 13;
+    ctx.fillStyle = "rgba(255,255,255,.96)";
+    ctx.beginPath();
+    ctx.arc(x, item.y + bob, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = this.stage.palette.accent;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = '17px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
+    ctx.fillText(this.stage.mascot.collectibleIcon, x, item.y + bob + 1);
+    ctx.restore();
+  }
+
   private drawEnemy(ctx: CanvasRenderingContext2D, worldX: number, y: number, direction: number) {
     const x = worldX - this.cameraX;
     if (x < -40 || x > this.width + 40) return;
@@ -522,12 +559,21 @@ export class PlatformerEngine {
     ctx.arc(x + direction * 6, y - 3, 1.7, 0, Math.PI * 2);
     ctx.arc(x + direction * 14, y - 3, 1.7, 0, Math.PI * 2);
     ctx.fill();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = '15px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
+    ctx.fillText(this.stage.mascot.enemyIcon, x, y - 23);
     ctx.restore();
   }
 
   private drawHazard(ctx: CanvasRenderingContext2D, hazard: { x: number; y: number; width: number; height: number }) {
     const x = hazard.x - this.cameraX;
     if (x < -60 || x > this.width + 60) return;
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.font = '15px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
+    ctx.fillText(this.stage.mascot.hazardIcon, x + hazard.width / 2, hazard.y - 1);
     ctx.fillStyle = "#e95671";
     ctx.strokeStyle = "#a8375d";
     ctx.lineWidth = 2;
@@ -542,6 +588,7 @@ export class PlatformerEngine {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+    ctx.restore();
   }
 
   private drawCheckpoint(ctx: CanvasRenderingContext2D) {
