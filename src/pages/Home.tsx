@@ -798,12 +798,14 @@ export default function Home() {
           <div className="brand-lockup"><span className="brand-paw"><PawPrint size={28} fill="currentColor" /></span><div><strong>Meu Pet</strong><small>UMA CASA DE CADA VEZ</small>{demoMode && <small className="demo-state">DEMO · SAVE PRESERVADO</small>}</div><span className="mobile-room-location"><MapPin size={10} aria-hidden="true" /> Casa {game.activeRoom} · {activeChapter.location}</span></div>
           <div className="level-card" aria-label={`Nível ${game.level}, ${game.xp} de ${game.xpMax} XP`}>
             <div className="level-heading"><span className="level-star"><Star size={23} fill="currentColor" /></span><strong>Nível {game.level}</strong><span className="xp-copy">{game.xp} / {game.xpMax} XP</span></div>
+            <button className="portrait-adventure-action level-adventure-action" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Abrir Aventura com 100 fases"><Gamepad2 size={16} /><span>Aventura</span></button>
             <div className="xp-track"><span style={{ width: `${xpPercent}%` }} /></div>
           <div className="level-location" aria-label={`Casa ${game.activeRoom}: ${activeChapter.location}`}><MapPin size={11} aria-hidden="true" /> {activeChapter.location}<span>Casa {game.activeRoom}/10</span></div>
           </div>
           <div className="top-actions">
             <button className="adventure-home-button" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Voltar à aventura de 100 fases"><Gamepad2 size={17} /><span>Aventura</span></button>
             <button className="coin-pill" onClick={() => openShop("items")} aria-label="Abrir a loja de itens"><Coins size={21} fill="currentColor" /><strong>{game.coins.toLocaleString("pt-BR")}</strong><span className="coin-plus"><Plus size={15} /></span></button>
+            <button className="portrait-story-button" type="button" onClick={() => setStoryLevel(game.level)} aria-label={`Abrir a história: ${currentChapter.title}`} title="Sua história"><BookOpen size={17} /></button>
             <button className="icon-button" onClick={() => setSettingsOpen(true)} aria-label="Configurações"><Settings size={19} /></button>
             <button className="icon-button sound-toggle" onClick={() => setSoundOn((value) => !value)} aria-label={soundOn ? "Desligar efeitos sonoros" : "Ligar efeitos sonoros"}>{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
             <button className="icon-button pause-toggle" onClick={() => setPaused(true)} aria-label="Pausar jogo"><span className="pause-symbol">Ⅱ</span></button>
@@ -836,6 +838,7 @@ export default function Home() {
                 {STORE_ITEMS.every((item) => (game.inventory[item.id] ?? 0) < 1) && <p className="portrait-backpack-empty">Sem itens de cuidado. Decorações ficam em Decorar.</p>}
               </div>}
             </section>
+            <button className="portrait-friends-shortcut" type="button" onClick={() => openShop("friends")} aria-label="Abrir amigos da loja"><PawPrint size={14} aria-hidden="true" /><span>Amigos</span><ChevronRight size={12} aria-hidden="true" /></button>
           </aside>
 
           <section className="center-stage" data-room-tour="room" aria-label={`Cenário de ${activeChapter.location}`} onClick={handleStageClick}>
@@ -878,7 +881,6 @@ export default function Home() {
 
         <div className="mobile-mission-dock" data-room-tour="missions" aria-label={`Missão do nível ${game.level}: ${Math.min(game.missionProgress, 3)} de 3 minijogos`}>
           <div className="mobile-mission-copy"><small>MISSÃO DO NÍVEL {game.level}</small><strong>{game.missionClaimed ? "Desafio concluído!" : "Brincar faz bem"}</strong><span>{Math.min(game.missionProgress, 3)}/3 · +200 moedas</span><div className="mobile-mission-track"><span style={{ width: `${missionPercent}%` }} /></div></div>
-          <button className="portrait-adventure-action" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Abrir Aventura com 100 fases"><Gamepad2 size={15} /><span>Aventura</span><small>100 fases</small></button>
           <button type="button" data-room-tour="minigames" onClick={openMiniHub} aria-label="Abrir os 11 minijogos da missão"><Gamepad2 size={16} /><span>Minijogos</span><small>11 jogos</small></button>
         </div>
 

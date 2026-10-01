@@ -476,17 +476,82 @@ export class PlatformerEngine {
     ctx.fillStyle = this.stage.palette.terrainTint;
     ctx.fillRect(x, surface.y, width, height);
     ctx.globalAlpha = 1;
-    ctx.fillStyle = this.stage.palette.grassLight;
-    ctx.fillRect(x, surface.y, width, 3);
-    ctx.fillStyle = this.stage.palette.grass;
-    for (let tuft = 0; tuft < Math.ceil(width / 36); tuft += 1) {
-      const tuftX = x + tuft * 36 + 12;
-      ctx.beginPath();
-      ctx.moveTo(tuftX - 3, surface.y + 4);
-      ctx.lineTo(tuftX, surface.y - 1);
-      ctx.lineTo(tuftX + 3, surface.y + 4);
-      ctx.closePath();
-      ctx.fill();
+    this.drawThemedTerrainTop(ctx, x, surface.y, width, height);
+    ctx.restore();
+  }
+
+  private drawThemedTerrainTop(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, surfaceHeight: number) {
+    const world = this.stage.world;
+    const topHeight = Math.min(17, surfaceHeight);
+    const meadow = this.stage.palette.grass;
+    const styles = [
+      { top: meadow, edge: this.stage.palette.grassLight, detail: "#efffb0" },
+      { top: "#65b84a", edge: "#b9ed72", detail: "#fff7c2" },
+      { top: "#b77c4b", edge: "#e6b66b", detail: "#70462f" },
+      { top: "#d99550", edge: "#ffd46d", detail: "#fff0a4" },
+      { top: "#dfbd78", edge: "#ffe8a2", detail: "#69c8dc" },
+      { top: "#347a42", edge: "#76c65a", detail: "#c4ee75" },
+      { top: "#c7f0f4", edge: "#f5ffff", detail: "#73c9e8" },
+      { top: "#89664b", edge: "#d0a676", detail: "#573b31" },
+      { top: "#554888", edge: "#a796dc", detail: "#fff2a2" },
+      { top: "#ad5289", edge: "#f1a2bd", detail: "#ffe27b" },
+    ];
+    const style = styles[world - 1] ?? styles[0];
+    const worldStart = x + this.cameraX;
+    const motifStep = world === 2 ? 52 : world === 3 ? 58 : world === 7 || world === 9 ? 42 : 48;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y - 1, width, topHeight + 1);
+    ctx.clip();
+    ctx.fillStyle = style.top;
+    ctx.fillRect(x, y, width, topHeight);
+    ctx.fillStyle = style.edge;
+    ctx.fillRect(x, y, width, 3);
+    ctx.fillStyle = style.detail;
+
+    const firstMotif = Math.floor(worldStart / motifStep) * motifStep;
+    for (let motifX = firstMotif; motifX < worldStart + width + motifStep; motifX += motifStep) {
+      const sx = motifX - this.cameraX + (motifX % 17);
+      if (sx < x - motifStep || sx > x + width + motifStep) continue;
+      if (world === 1) {
+        ctx.beginPath();
+        ctx.moveTo(sx - 3, y + 7); ctx.lineTo(sx, y - 1); ctx.lineTo(sx + 3, y + 7);
+        ctx.moveTo(sx + 5, y + 7); ctx.lineTo(sx + 8, y + 1); ctx.lineTo(sx + 11, y + 7);
+        ctx.fill();
+      } else if (world === 2) {
+        ctx.strokeStyle = "#438a41"; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(sx, y + 15); ctx.lineTo(sx, y + 6); ctx.stroke();
+        for (let petal = 0; petal < 5; petal += 1) {
+          const angle = (petal / 5) * Math.PI * 2;
+          ctx.beginPath(); ctx.arc(sx + Math.cos(angle) * 3, y + 6 + Math.sin(angle) * 2.5, 2, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.fillStyle = "#f2bd43"; ctx.beginPath(); ctx.arc(sx, y + 6, 1.5, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = style.detail;
+      } else if (world === 3) {
+        ctx.strokeStyle = style.detail; ctx.lineWidth = 2; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(sx - 7, y + 9); ctx.quadraticCurveTo(sx - 4, y + 3, sx, y + 8); ctx.quadraticCurveTo(sx + 4, y + 3, sx + 7, y + 9); ctx.stroke();
+      } else if (world === 4) {
+        ctx.strokeStyle = style.detail; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(sx - 5, y + 14); ctx.lineTo(sx + 2, y + 4); ctx.moveTo(sx + 3, y + 14); ctx.lineTo(sx + 10, y + 4); ctx.stroke();
+      } else if (world === 5) {
+        ctx.strokeStyle = style.detail; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(sx - 8, y + 9); ctx.quadraticCurveTo(sx - 2, y + 4, sx + 4, y + 9); ctx.quadraticCurveTo(sx + 10, y + 14, sx + 15, y + 9); ctx.stroke();
+      } else if (world === 6) {
+        ctx.fillStyle = style.detail;
+        ctx.beginPath(); ctx.ellipse(sx - 3, y + 7, 3.5, 1.8, -.55, 0, Math.PI * 2); ctx.ellipse(sx + 4, y + 11, 3.5, 1.8, .55, 0, Math.PI * 2); ctx.fill();
+      } else if (world === 7) {
+        ctx.beginPath(); ctx.moveTo(sx, y + 4); ctx.lineTo(sx + 4, y + 11); ctx.lineTo(sx, y + 15); ctx.lineTo(sx - 4, y + 11); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "#8bd9ee"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(sx, y + 7); ctx.lineTo(sx, y + 14); ctx.moveTo(sx - 3, y + 10); ctx.lineTo(sx + 3, y + 10); ctx.stroke();
+      } else if (world === 8) {
+        ctx.strokeStyle = style.detail; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(sx - 12, y + 6); ctx.lineTo(sx + 12, y + 6); ctx.moveTo(sx - 7, y + 12); ctx.lineTo(sx + 17, y + 12); ctx.stroke();
+        ctx.fillStyle = "#e7c494"; ctx.fillRect(sx - 11, y + 4, 2, 2); ctx.fillStyle = style.detail;
+      } else if (world === 9) {
+        ctx.beginPath(); ctx.moveTo(sx, y + 3); ctx.lineTo(sx + 2, y + 8); ctx.lineTo(sx + 7, y + 10); ctx.lineTo(sx + 2, y + 12); ctx.lineTo(sx, y + 16); ctx.lineTo(sx - 2, y + 12); ctx.lineTo(sx - 7, y + 10); ctx.lineTo(sx - 2, y + 8); ctx.closePath(); ctx.fill();
+      } else {
+        ctx.save(); ctx.translate(sx, y + 9); ctx.rotate((motifX % 3) * .42);
+        ctx.fillRect(-2, -6, 4, 8); ctx.fillRect(-7, 1, 4, 6); ctx.fillRect(4, -1, 4, 6);
+        ctx.restore();
+      }
     }
     ctx.restore();
   }
@@ -537,32 +602,72 @@ export class PlatformerEngine {
   private drawEnemy(ctx: CanvasRenderingContext2D, worldX: number, y: number, direction: number) {
     const x = worldX - this.cameraX;
     if (x < -40 || x > this.width + 40) return;
-    const squash = Math.sin(this.elapsed * 7 + worldX) * 2;
+    const pulse = Math.sin(this.elapsed * 7 + worldX) * 1.6;
+    const kind = (this.stage.world * 7 + this.stage.stageInWorld - 1) % 10;
+    const eyeX = x + direction * (kind === 2 ? 7 : 6);
     ctx.save();
     ctx.fillStyle = this.stage.palette.hazard;
     ctx.shadowColor = "rgba(56,24,61,.22)";
     ctx.shadowBlur = 8;
-    ctx.beginPath();
-    ctx.ellipse(x, y - squash, 18, 15 + squash * 0.35, 0, Math.PI, 0);
-    ctx.lineTo(x + 18, y + 9);
-    ctx.quadraticCurveTo(x, y + 21, x - 18, y + 9);
-    ctx.closePath();
-    ctx.fill();
+    if (kind === 0) {
+      ctx.beginPath(); ctx.ellipse(x, y - pulse, 18, 15 + pulse * .25, 0, Math.PI, 0); ctx.lineTo(x + 18, y + 8); ctx.quadraticCurveTo(x, y + 20, x - 18, y + 8); ctx.closePath(); ctx.fill();
+    } else if (kind === 1) {
+      ctx.beginPath(); ctx.ellipse(x, y - 1, 16, 14, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = this.stage.palette.accent;
+      for (let spike = 0; spike < 7; spike += 1) {
+        const angle = Math.PI + (spike / 6) * Math.PI;
+        const sx = x + Math.cos(angle) * 13; const sy = y + Math.sin(angle) * 12;
+        ctx.beginPath(); ctx.moveTo(sx - 3, sy + 3); ctx.lineTo(sx, sy - 5); ctx.lineTo(sx + 3, sy + 3); ctx.closePath(); ctx.fill();
+      }
+    } else if (kind === 2) {
+      ctx.beginPath(); ctx.roundRect(x - 17, y - 17, 34, 34, 8); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.25)"; ctx.fillRect(x - 11, y - 12, 22, 3);
+      ctx.strokeStyle = "rgba(70,32,44,.38)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - 8, y + 8); ctx.lineTo(x + 8, y + 8); ctx.stroke();
+    } else if (kind === 3) {
+      ctx.beginPath(); ctx.ellipse(x, y + 1, 19, 12, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = this.stage.palette.accent; ctx.beginPath(); ctx.ellipse(x, y - 4, 12, 8, 0, Math.PI, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = this.stage.palette.hazard; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - 13, y + 10); ctx.lineTo(x - 17, y + 15); ctx.moveTo(x + 13, y + 10); ctx.lineTo(x + 17, y + 15); ctx.stroke();
+    } else if (kind === 4) {
+      ctx.beginPath(); ctx.arc(x - 8, y + 1, 10, 0, Math.PI * 2); ctx.arc(x + 7, y, 12, 0, Math.PI * 2); ctx.arc(x + 1, y - 7, 10, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === 5) {
+      ctx.fillStyle = this.stage.palette.accent;
+      ctx.beginPath();
+      for (let point = 0; point < 10; point += 1) {
+        const angle = -Math.PI / 2 + (point / 10) * Math.PI * 2;
+        const radius = point % 2 === 0 ? 19 : 12;
+        const px = x + Math.cos(angle) * radius; const py = y + Math.sin(angle) * radius;
+        if (point === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath(); ctx.fill();
+    } else if (kind === 6) {
+      ctx.beginPath(); ctx.arc(x - 11, y + 1, 9, 0, Math.PI * 2); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.arc(x + 11, y + 1, 9, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === 7) {
+      ctx.beginPath(); ctx.ellipse(x, y + 1, 13, 12, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = this.stage.palette.hazard; ctx.lineWidth = 3; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(x - 12, y + 6); ctx.lineTo(x - 20, y + 12); ctx.lineTo(x - 23, y + 8); ctx.moveTo(x + 12, y + 6); ctx.lineTo(x + 20, y + 12); ctx.lineTo(x + 23, y + 8); ctx.stroke();
+      ctx.fillStyle = this.stage.palette.accent; ctx.beginPath(); ctx.arc(x - 21, y + 8, 4, 0, Math.PI * 2); ctx.arc(x + 21, y + 8, 4, 0, Math.PI * 2); ctx.fill();
+    } else if (kind === 8) {
+      ctx.beginPath(); ctx.arc(x, y, 17, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = this.stage.palette.accent; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - 12, y - 10); ctx.bezierCurveTo(x + 9, y - 8, x - 9, y + 2, x + 12, y + 4); ctx.moveTo(x - 12, y + 5); ctx.bezierCurveTo(x + 8, y + 4, x - 9, y + 13, x + 10, y + 13); ctx.stroke();
+    } else {
+      ctx.fillStyle = this.stage.palette.hazard;
+      ctx.beginPath(); ctx.arc(x, y + 5, 12, 0, Math.PI * 2); ctx.arc(x, y - 7, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = this.stage.palette.accent; ctx.beginPath(); ctx.arc(x - 3, y - 10, 2, 0, Math.PI * 2); ctx.arc(x + 3, y - 10, 2, 0, Math.PI * 2); ctx.fill();
+    }
     ctx.shadowBlur = 0;
     ctx.fillStyle = "#fff";
     ctx.beginPath();
-    ctx.ellipse(x + direction * 5, y - 3, 4, 5, 0, 0, Math.PI * 2);
-    ctx.ellipse(x + direction * 13, y - 3, 4, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(eyeX - 5, y - 3, 3.4, 4.2, 0, 0, Math.PI * 2);
+    ctx.ellipse(eyeX + 4, y - 3, 3.4, 4.2, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = "#37354e";
     ctx.beginPath();
-    ctx.arc(x + direction * 6, y - 3, 1.7, 0, Math.PI * 2);
-    ctx.arc(x + direction * 14, y - 3, 1.7, 0, Math.PI * 2);
+    ctx.arc(eyeX - 4, y - 3, 1.5, 0, Math.PI * 2);
+    ctx.arc(eyeX + 5, y - 3, 1.5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = '15px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
-    ctx.fillText(this.stage.mascot.enemyIcon, x, y - 23);
+    ctx.fillStyle = "rgba(255,255,255,.5)";
+    ctx.beginPath(); ctx.arc(x - 7, y + 5, 2, 0, Math.PI * 2); ctx.arc(x + 8, y + 5, 2, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
 

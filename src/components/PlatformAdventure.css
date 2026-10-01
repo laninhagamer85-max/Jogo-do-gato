@@ -696,3 +696,24 @@
   .pa-mascot-reveal strong { font-size: 14px; }
   .pa-mascot-reveal span,.pa-mascot-reveal p { font-size: 7px; }
 }
+
+
+/* Larger, thumb-friendly touch controls in both phone orientations. */
+@media (max-width: 620px) and (orientation: portrait), (pointer: coarse) and (orientation: portrait) {
+  .pa-touch-controls { right: 11px; bottom: 11px; left: 11px; }
+  .pa-direction-controls { gap: 8px; }
+  .pa-direction-controls button { width: 64px; height: 64px; border-radius: 19px; }
+  .pa-direction-controls svg { width: 27px; height: 27px; }
+  .pa-jump-control { width: 76px; height: 76px; border-radius: 23px !important; }
+  .pa-jump-control span { font-size: 33px; }
+  .pa-jump-control small { font-size: 7px; }
+}
+@media (max-width: 900px) and (orientation: landscape), (pointer: coarse) and (orientation: landscape) {
+  .pa-touch-controls { right: 12px; bottom: 8px; left: 12px; }
+  .pa-direction-controls { gap: 7px; }
+  .pa-direction-controls button { width: 58px; height: 58px; border-radius: 17px; }
+  .pa-direction-controls svg { width: 25px; height: 25px; }
+  .pa-jump-control { width: 66px; height: 66px; border-radius: 21px !important; }
+  .pa-jump-control span { font-size: 30px; }
+  .pa-jump-control small { font-size: 6px; }
+}

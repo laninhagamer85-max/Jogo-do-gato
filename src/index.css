@@ -3429,3 +3429,154 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .game-root.classic-two-column-layout .center-stage { min-height: min(60svh, 500px); padding-inline: 4px; }
   .game-root.classic-two-column-layout .side-right .shop-shortcuts button { min-height: 46px; }
 }
+
+
+/* Requested portrait composition: keep the pet stage clear and anchor only the mission at the bottom. */
+.portrait-story-button,
+.portrait-friends-shortcut { display: none; }
+@media (max-width: 900px) and (orientation: portrait), (pointer: coarse) and (orientation: portrait) {
+  .game-root.classic-two-column-layout .topbar .portrait-story-button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 20%);
+    border-radius: 10px;
+    background: linear-gradient(145deg, rgb(25 53 94 / 94%), rgb(18 39 76 / 93%));
+    color: #a6eaff;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 19%);
+  }
+  .game-root.classic-two-column-layout .topbar .portrait-story-button:focus-visible { outline: 2px solid #a4efff; outline-offset: 2px; }
+  .game-root.classic-two-column-layout .side-right > .chapter-shortcut { display: none !important; }
+
+  .game-root.classic-two-column-layout .level-card {
+    position: relative;
+    width: 100%;
+    padding: 7px 84px 7px 9px;
+  }
+  .game-root.classic-two-column-layout .level-adventure-action {
+    position: absolute;
+    top: 50%;
+    right: 7px;
+    display: inline-flex !important;
+    width: 69px;
+    min-width: 69px;
+    min-height: 38px;
+    grid-column: auto;
+    flex-direction: column;
+    gap: 2px;
+    padding: 3px 4px;
+    transform: translateY(-50%);
+    border: 1px solid rgb(185 255 218 / 46%);
+    border-radius: 10px;
+    background: linear-gradient(145deg, #21c97f, #078451);
+    color: #fff;
+    box-shadow: 0 5px 13px rgb(3 71 49 / 32%), inset 0 1px 0 rgb(255 255 255 / 28%);
+    font-size: 7px;
+    font-weight: 1000;
+  }
+  .game-root.classic-two-column-layout .level-adventure-action svg { width: 16px; height: 16px; color: #e5ffbd; }
+  .game-root.classic-two-column-layout .level-adventure-action:active { transform: translateY(-50%) scale(.97); }
+  .game-root.classic-two-column-layout .level-heading { min-width: 0; }
+  .game-root.classic-two-column-layout .level-heading .xp-copy { font-size: 7px; }
+
+  .game-root.classic-two-column-layout .mobile-mission-dock {
+    top: auto !important;
+    right: auto !important;
+    bottom: calc(7px + env(safe-area-inset-bottom)) !important;
+    left: 50% !important;
+    width: min(320px, calc(100vw - 112px));
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    grid-template-rows: auto;
+    align-items: center;
+    gap: 0 5px;
+    padding: 5px 6px;
+    transform: translateX(-50%);
+    border-radius: 12px;
+  }
+  .game-root.classic-two-column-layout .mobile-mission-copy {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .game-root.classic-two-column-layout .mobile-mission-copy small { font-size: 5px; line-height: 1.05; }
+  .game-root.classic-two-column-layout .mobile-mission-copy strong { font-size: 8px; line-height: 1.05; }
+  .game-root.classic-two-column-layout .mobile-mission-copy > span { font-size: 5px; line-height: 1.05; }
+  .game-root.classic-two-column-layout .mobile-mission-track { width: 100%; height: 4px; margin-top: 1px; }
+  .game-root.classic-two-column-layout .mobile-mission-dock > button[data-room-tour="minigames"] {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    width: 44px;
+    min-width: 44px;
+    min-height: 38px;
+    flex-direction: column;
+    gap: 1px;
+    padding: 3px 2px;
+    border-radius: 9px;
+    font-size: 5px;
+  }
+  .game-root.classic-two-column-layout .mobile-mission-dock > button[data-room-tour="minigames"] svg { width: 15px; height: 15px; }
+  .game-root.classic-two-column-layout .mobile-mission-dock > button[data-room-tour="minigames"] small { display: none; }
+
+  .game-root.classic-two-column-layout .creator-about-button,
+  .game-root.classic-two-column-layout .scene-photo-button {
+    position: fixed !important;
+    bottom: calc(7px + env(safe-area-inset-bottom)) !important;
+    z-index: 34;
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    padding: 0;
+    border-radius: 11px;
+  }
+  .game-root.classic-two-column-layout .creator-about-button { left: 7px !important; right: auto !important; }
+  .game-root.classic-two-column-layout .creator-about-button > span { display: none; }
+  .game-root.classic-two-column-layout .creator-about-button svg,
+  .game-root.classic-two-column-layout .scene-photo-button svg { width: 17px; height: 17px; }
+  .game-root.classic-two-column-layout .scene-photo-button { right: 7px !important; left: auto !important; }
+
+  .game-root.classic-two-column-layout .side-left { width: min(540px, calc(100vw - 20px)); grid-template-columns: minmax(0, .95fr) minmax(0, 1fr); gap: 4px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel,
+  .game-root.classic-two-column-layout .side-left > .portrait-backpack-panel { padding: 5px !important; border-radius: 11px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .panel-heading { min-height: 17px; margin-bottom: 2px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .panel-heading h2 { font-size: 10px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .panel-collapse,
+  .game-root.classic-two-column-layout .side-left > .stats-panel .panel-collapse { width: 20px; height: 20px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-grid { gap: 2px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button { min-height: 26px; gap: 0; padding: 2px 3px 2px 25px; border-radius: 7px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button > span { left: 4px; width: 17px; height: 18px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button > span svg { width: 13px; height: 13px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button b { font-size: 6.5px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button small { font-size: 4.8px; }
+  .game-root.classic-two-column-layout .side-left > .portrait-backpack-panel > .portrait-backpack-toggle { min-height: 31px; gap: 4px; padding: 3px; }
+  .game-root.classic-two-column-layout .side-left > .portrait-backpack-panel > .portrait-backpack-toggle > span { font-size: 7px; }
+  .game-root.classic-two-column-layout .side-left > .portrait-backpack-panel > .portrait-backpack-toggle > small { min-width: 16px; height: 16px; font-size: 6px; }
+  .game-root.classic-two-column-layout .side-left > .portrait-backpack-panel.is-open { grid-column: 1 / -1; }
+  .game-root.classic-two-column-layout .portrait-backpack-items { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; max-height: min(27svh, 220px); }
+  .game-root.classic-two-column-layout .portrait-backpack-item { grid-template-columns: 22px minmax(0, 1fr) auto; gap: 5px; padding: 4px; }
+  .game-root.classic-two-column-layout .portrait-backpack-copy strong { font-size: 7px; }
+  .game-root.classic-two-column-layout .portrait-backpack-copy small { font-size: 5.5px; }
+  .game-root.classic-two-column-layout .portrait-backpack-item > button { min-height: 25px; padding: 0 6px; font-size: 6px; }
+  .game-root.classic-two-column-layout .portrait-friends-shortcut {
+    display: inline-flex;
+    grid-column: 2;
+    min-height: 26px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 3px 7px;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: 9px;
+    background: linear-gradient(145deg, rgb(25 61 98 / 95%), rgb(15 41 77 / 94%));
+    color: #dff8ff;
+    font-size: 7px;
+    font-weight: 950;
+  }
+  .game-root.classic-two-column-layout .portrait-friends-shortcut svg:first-child { color: #96e7ff; }
+}
