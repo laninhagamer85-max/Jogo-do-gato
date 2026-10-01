@@ -93,3 +93,7 @@ A solução anterior de imagem completa centralizada com faixas foi removida. Re
 
 ## Dock móvel da missão — revisão 2026-09-30
 Barra de progresso agora aparece imediatamente abaixo do título/contagem da missão, com o botão Minijogos ao lado. Conferida em retrato 375×812 e paisagens 844×390/667×375, incluindo rotação ao vivo; sem clipping, erros ou alterações do save demo. A geração de cenários verticais foi interrompida antes de criar imagens, conforme pedido mais recente.
+
+
+## Barra móvel da missão — paisagem compacta — 2026-09-30
+CSS `clamp(120px, 23vw, 190px)` em paisagem para o comprimento da barra acompanhar telas estreitas; retrato inalterado. Validado em 844×390, 667×375 e 568×320 com 190/153/131 px, respectivamente; barra sob título, sem clipping e sem erro no console. PR #2 aberto, sem merge/publicação.

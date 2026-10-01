@@ -158,3 +158,7 @@ O usuário esclareceu que a imagem deve preencher toda a tela em retrato. Isso s
 
 ## Barra de progresso abaixo do título da missão — 2026-09-30
 No dock móvel da tela principal, a barra de progresso fica diretamente abaixo do título e da contagem; o botão Minijogos permanece ao lado. Validação no demo: retrato 375×812, paisagem 844×390 e compacta 667×375; rotação ao vivo sem reload, sem clipping nem erro de console e sem alteração do save. Pedido de cenários verticais pausado por orientação do usuário; nenhuma imagem nova gerada. PR permanece aberto, sem merge/publicação.
+
+
+## Proporção da barra em paisagem compacta — 2026-09-30
+O progresso da missão usa `clamp(120px, 23vw, 190px)` em paisagem para equilibrar barra e atalho Minijogos em telas menores; o layout em retrato não muda. Medidas QA: 844×390 = 190 px; 667×375 = 153 px; 568×320 = 131 px. Barra abaixo do título, sem clipping/erros; build/typecheck ok. PR #2 segue aberto, sem merge/publicação.

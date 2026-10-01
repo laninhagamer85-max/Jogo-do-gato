@@ -2612,7 +2612,7 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   .game-root.classic-two-column-layout .top-actions .adventure-home-button { width: auto !important; min-width: 96px !important; min-height: 35px !important; padding: 0 9px !important; }
   .game-root.classic-two-column-layout .top-actions .adventure-home-button span { display: inline !important; font-size: 9px !important; }
   .game-root.classic-two-column-layout .mobile-mission-dock { right: 12px; bottom: calc(57px + env(safe-area-inset-bottom)); left: auto; width: min(330px,calc(100vw - 24px)); transform: none; }
-  .game-root.classic-two-column-layout .mobile-mission-track { width: 100%; }
+  .game-root.classic-two-column-layout .mobile-mission-track { width: clamp(120px,23vw,190px); max-width: 100%; }
   .game-root.classic-two-column-layout .creator-about-button,
   .game-root.classic-two-column-layout .scene-photo-button { bottom: calc(92px + env(safe-area-inset-bottom)) !important; }
   .game-root.classic-two-column-layout .stage-companion-tag { top: calc(8% + 16px); right: 10px; left: auto; transform: none; }
