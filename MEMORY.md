@@ -97,3 +97,8 @@ Barra de progresso agora aparece imediatamente abaixo do título/contagem da mis
 
 ## Barra móvel da missão — paisagem compacta — 2026-09-30
 CSS `clamp(120px, 23vw, 190px)` em paisagem para o comprimento da barra acompanhar telas estreitas; retrato inalterado. Validado em 844×390, 667×375 e 568×320 com 190/153/131 px, respectivamente; barra sob título, sem clipping e sem erro no console. PR #2 aberto, sem merge/publicação.
+
+
+## HUD vertical e mapa móvel da Aventura — 2026-10-01
+No celular retrato, status e missão aparecem abaixo do nível; Aventura e Minijogos permanecem visíveis nesse bloco. Status e Cuidar têm controle para recolher/mostrar, com ações de cuidado em coluna, e Mochila inicia fechada; ao abrir, lista itens utilizáveis sem misturar decorações.
+O mapa da Aventura mostra em retrato e paisagem o conjunto de informações da versão desktop: pet/nome, mundo e casa, história, objetivo atual, progresso de fases/campanha e troféus, além do carrossel de etapas. Validação demo nos viewports 375×812, 390×844, 844×390 e 667×375, mais desktop 1280×720: conteúdo visível/dentro dos cartões, sem overflow no mapa móvel, recolher/expandir testado, localStorage intacto e zero erros de console. Não mesclar nem publicar.

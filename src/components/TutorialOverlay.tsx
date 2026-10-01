@@ -31,14 +31,14 @@ const STEPS: TourStep[] = [
     icon: <Star size={24} />,
     kicker: "PASSO 3 DE 6 · MISSÕES",
     title: "Jogue para evoluir",
-    copy: "Acompanhe a missão do nível e toque em Minijogos para escolher uma brincadeira. No celular, a barra da missão fica logo acima dos atalhos inferiores.",
+    copy: "Acompanhe a missão logo abaixo do nível. No retrato, Aventura e Minijogos ficam lado a lado nesse mesmo bloco.",
     target: '[data-room-tour="minigames"]',
   },
   {
     icon: <Backpack size={24} />,
     kicker: "PASSO 4 DE 6 · ITENS",
-    title: "Loja e mochila",
-    copy: "A Mochila guarda apenas itens de cuidado que você pode usar. As decorações únicas conquistadas ficam na aba Decoração; toque em um item em destaque para ver as opções da loja.",
+    title: "Mochila e itens",
+    copy: "No celular, toque na seta da Mochila para ver e usar os itens de cuidado sem abrir um pop-up. As decorações únicas continuam em Decorar; a loja segue acessível pelo saldo de moedas.",
     target: '[data-room-tour="inventory"]',
   },
   {
@@ -76,7 +76,13 @@ export default function TutorialOverlay({ onComplete, onClose, canClose = true }
       const cardRect = card.getBoundingClientRect();
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const target = current.target ? document.querySelector<HTMLElement>(current.target) : null;
+      const target = current.target
+        ? Array.from(document.querySelectorAll<HTMLElement>(current.target)).find((element) => {
+            const style = getComputedStyle(element);
+            const rect = element.getBoundingClientRect();
+            return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+          }) ?? null
+        : null;
       const rect = target?.getBoundingClientRect();
       const desktopTour = width >= 1000 && rect && rect.width > 0 && rect.height > 0;
 

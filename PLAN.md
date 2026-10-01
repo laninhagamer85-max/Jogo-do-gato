@@ -162,3 +162,7 @@ No dock móvel da tela principal, a barra de progresso fica diretamente abaixo d
 
 ## Proporção da barra em paisagem compacta — 2026-09-30
 O progresso da missão usa `clamp(120px, 23vw, 190px)` em paisagem para equilibrar barra e atalho Minijogos em telas menores; o layout em retrato não muda. Medidas QA: 844×390 = 190 px; 667×375 = 153 px; 568×320 = 131 px. Barra abaixo do título, sem clipping/erros; build/typecheck ok. PR #2 segue aberto, sem merge/publicação.
+
+
+## HUD vertical e mapa da Aventura no celular — 2026-10-01
+A tela principal em retrato agora põe missão e atalhos Aventura/Minijogos logo abaixo do nível; os quatro status ficam em uma faixa recolhível, Cuidar oferece as quatro ações em coluna e Mochila inicia recolhida, abrindo os itens de cuidado utilizáveis em um bloco lateral sem modal. O mapa da Aventura conserva no celular o resumo do desktop — pet, mundo/casa, descrição, desafio, progresso, troféus e etapas — em retrato e paisagem. QA demo: 375×812, 390×844, 844×390, 667×375 e desktop 1280×720; dados dentro dos cartões, carrossel acessível, saves inalterados e console sem erros. Sem merge ou publicação.

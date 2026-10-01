@@ -164,6 +164,7 @@ export default function Home() {
     return null;
   });
   const [activeCareAction, setActiveCareAction] = useState<CareAction | null>(() => import.meta.env.DEV && demoMode && new URLSearchParams(window.location.search).get("roomMenu") === "care" ? "food" : null);
+  const [portraitBackpackOpen, setPortraitBackpackOpen] = useState(false);
   const [petDropTarget, setPetDropTarget] = useState(false);
   const [focusMode, setFocusMode] = useState(() => !demoMode && localStorage.getItem(FOCUS_MODE_PREF_KEY) === "true");
   const [tutorialOpen, setTutorialOpen] = useState(false);
@@ -815,7 +816,15 @@ export default function Home() {
                 <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""} ${activeCareAction === "sleep" ? "is-active" : ""}`} aria-expanded={activeCareAction === "sleep"} onClick={() => openCareAction("sleep")}><span><Moon size={22} fill="currentColor" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>{game.inventory.caminha > 0 && !game.sleeping ? `${game.inventory.caminha} na mochila` : "recupera energia"}</small></button>
               </div>}
               {!collapsed.care && activeCareAction && !focusMode && renderCareActionTray()}
-              {!collapsed.care && <button className="care-inventory-link" onClick={() => openShop("inventory")}>Ver mochila completa <ChevronRight size={15} /></button>}
+            </section>
+            <section className={`glass-panel portrait-backpack-panel ${portraitBackpackOpen ? "is-open" : ""}`}>
+              <button className="portrait-backpack-toggle" type="button" data-room-tour="inventory" aria-expanded={portraitBackpackOpen} aria-controls="portrait-backpack-items" onClick={() => setPortraitBackpackOpen((open) => !open)}>
+                <Backpack size={17} aria-hidden="true" /><span>Mochila</span><small>{Object.values(game.inventory).reduce((sum, count) => sum + count, 0)}</small><ChevronDown size={15} aria-hidden="true" />
+              </button>
+              {portraitBackpackOpen && <div className="portrait-backpack-items" id="portrait-backpack-items">
+                {STORE_ITEMS.filter((item) => (game.inventory[item.id] ?? 0) > 0).map((item) => <article className="portrait-backpack-item" key={item.id}><span className="portrait-backpack-icon" aria-hidden="true">{item.icon}</span><span className="portrait-backpack-copy"><strong>{item.name}</strong><small>Quantidade: {game.inventory[item.id]}</small></span><button type="button" onClick={() => consumeItem(item.id)} aria-label={`Usar ${item.name}`}>Usar</button></article>)}
+                {STORE_ITEMS.every((item) => (game.inventory[item.id] ?? 0) < 1) && <p className="portrait-backpack-empty">Sem itens de cuidado. Decorações ficam em Decorar.</p>}
+              </div>}
             </section>
           </aside>
 
@@ -845,7 +854,7 @@ export default function Home() {
               {!collapsed.mission && <><p>Complete 3 minijogos para ganhar moedas e XP.</p><div className="mission-progress-row"><div className="mission-track"><span style={{ width: `${missionPercent}%` }} /></div><strong>{Math.min(game.missionProgress, 3)}/3</strong></div><div className="mission-reward"><span>Recompensa</span><strong><Coins size={17} fill="currentColor" /> +200</strong></div><button className="mission-button" data-room-tour="minigames" onClick={openMiniHub}>{game.missionClaimed ? "Jogar de novo" : "Ver minijogos"}<ChevronRight size={16} /></button></>}
             </section>
             <section className={`glass-panel shop-preview ${collapsed.shop ? "panel-is-collapsed" : ""}`}>
-              <div className="panel-heading"><h2><ShoppingBag size={19} /> Loja</h2><div className="panel-heading-actions"><button className="text-link backpack-inline" onClick={() => openShop("inventory")} data-room-tour="inventory">Mochila</button><CollapseButton collapsed={collapsed.shop} onClick={() => togglePanel("shop")} label="loja" /></div></div>
+              <div className="panel-heading"><h2><ShoppingBag size={19} /> Loja</h2><div className="panel-heading-actions"><button className="text-link backpack-inline" onClick={() => openShop("inventory")} data-room-tour="inventory"><Backpack size={13} /> Mochila</button><CollapseButton collapsed={collapsed.shop} onClick={() => togglePanel("shop")} label="loja" /></div></div>
               {!collapsed.shop && <><div className="shop-shortcuts">
                 <button onClick={() => openShop("looks")}><span>🎀</span><small>Visuais</small></button>
                 <button onClick={() => openShop("items")}><span>🐟</span><small>Itens</small></button>
@@ -859,7 +868,8 @@ export default function Home() {
 
         <div className="mobile-mission-dock" data-room-tour="missions" aria-label={`Missão do nível ${game.level}: ${Math.min(game.missionProgress, 3)} de 3 minijogos`}>
           <div className="mobile-mission-copy"><small>MISSÃO DO NÍVEL {game.level}</small><strong>{game.missionClaimed ? "Desafio concluído!" : "Brincar faz bem"}</strong><span>{Math.min(game.missionProgress, 3)}/3 · +200 moedas</span><div className="mobile-mission-track"><span style={{ width: `${missionPercent}%` }} /></div></div>
-          <button type="button" data-room-tour="minigames" onClick={openMiniHub} aria-label="Abrir minijogos da missão"><Gamepad2 size={16} /><span>Minijogos</span></button>
+          <button className="portrait-adventure-action" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Abrir Aventura com 100 fases"><Gamepad2 size={15} /><span>Aventura</span><small>100 fases</small></button>
+          <button type="button" data-room-tour="minigames" onClick={openMiniHub} aria-label="Abrir os 11 minijogos da missão"><Gamepad2 size={16} /><span>Minijogos</span><small>11 jogos</small></button>
         </div>
 
         {focusMode && activeCareAction === "food" && <div className="focus-care-tray">{renderCareActionTray()}</div>}
@@ -867,7 +877,7 @@ export default function Home() {
         <nav className="bottom-nav" aria-label="Navegação do jogo">
           <button className={`nav-item ${activeTab === "care" ? "active care-active" : ""}`} onClick={selectCareTab}><span><PawPrint size={20} fill="currentColor" /></span><b>Cuidar</b></button>
           <button className={`nav-item ${activeTab === "games" ? "active games-active" : ""}`} onClick={openMiniHub}><span><Gamepad2 size={21} /></span><b>Minijogos <i>11</i></b></button>
-          <button className={`nav-item ${activeTab === "shop" ? "active shop-active" : ""}`} onClick={() => openShop("items")}><span><ShoppingBag size={20} /></span><b>Loja</b></button>
+          <button className={`nav-item ${activeTab === "shop" ? "active shop-active" : ""}`} onClick={() => openShop("inventory")}><span><Backpack size={20} /></span><b>Mochila</b></button>
         </nav>
       </div>
 
