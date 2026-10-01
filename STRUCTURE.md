@@ -1,0 +1,58 @@
+# Estrutura do jogo
+
+## Experiência e UI
+- `src/main.tsx` — entrada React e CSS global.
+- `src/pages/Home.tsx` — composição de cena/HUD, navegação, história, save, loja, casas, decoração, missão, onboarding/demo, balões temporizados, nome revelado no toque e ficha do perfil.
+- `src/components/GameCanvas.tsx` — ciclo de vida React/Babylon, resize e limpeza da engine/cena; carregamento lazy.
+- `src/components/OnboardingFlow.tsx` — três passos: gênero, escolha entre três gatos, idade/nome.
+- `src/components/TutorialOverlay.tsx` — guia inicial e reabrível.
+- `src/components/MiniGameBoard.tsx` — roteador dos desafios e dez jogos além do puzzle principal.
+- `src/components/MatchThreeBoard.tsx` — tabuleiro 8×8, arrasto/tap, metas, cascatas, dificuldade e conclusão.
+- `src/components/SceneDecoration.tsx` — móveis fixos por padrão; selecionar revela drag, rotação, fixação e retorno à mochila; inclui ajuste por teclado e presente surpresa temporário.
+- `src/index.css` — design system, HUD, painéis minimizáveis, overlays, minijogos e breakpoints.
+
+## Domínio, cena e mídia
+- `src/game/PetGame.ts` — tipos/regras puras, save/migração, perfil, progresso, casas, inventário e presentes.
+- `src/game/decorations.ts` — 100 itens, dez por casa, preços e desbloqueios por nível/missão.
+- `src/game/decorationCoordinates.ts` — conversão entre viewport e coordenadas do background para persistir a posição visual em qualquer proporção.
+- `src/game/levels.ts` — dez capítulos e catálogo editorial das onze modalidades.
+- `src/game/matchThree.ts` — geração do tabuleiro, swaps, matches, cascatas e gravidade.
+- `src/game/scene.ts` — cena Babylon, movimento por clique, fundos, personagem, companheiros e reações.
+- `src/game/audio.ts` — falas PT-BR por personagem, voice cues, efeitos, callbacks de término/cancelamento e respeito à preferência sonora.
+- `src/game/assets.ts` — imports locais de `src/assets/`, com descoberta dos 96 props por `import.meta.glob`; o único asset remoto é o retrato autorizado da idealizadora no storage gerenciado.
+- `src/assets/decorations/` — sprites WebP transparentes individuais dos 96 itens originais adicionais; `docs/decoration-catalog.json` acompanha metadados e referências do storage.
+- `public/manifest.webmanifest` e ícones `public/icon-*.png` — metadados instaláveis do PWA.
+
+## Dados e privacidade local
+- O app é client-only, sem backend ou conta.
+- O save fica em `localStorage` neste navegador e permanece local.
+- Uma nova aventura começa no nível 1; saves anteriores são arquivados antes de reiniciar ou migrar.
+- `?demo=1` usa estado de teste em memória, incluindo decoração/presente demonstrativos, sem substituir o save real; `&play=colheita` abre diretamente o match-3.
+
+## Documentação
+- `README.md` — visão geral e instruções locais.
+- `PLAN.md` — escopo, riscos e critérios de verificação.
+- `ASSETS.md` — inventário e caminhos da mídia.
+- `MEMORY.md` — decisões entre sessões e estado da branch/PR.
+
+
+## PWA e privacidade
+O clone é uma aplicação Vite estática: não tem backend/API ou autenticação. O manifest e os ícones são instaláveis, mas não há service worker nem cache offline. O progresso fica no `localStorage` do navegador sem criptografia.
+
+
+## Moldura e escolha visual (2026-09-29)
+- `src/components/CreatorPlaquePicker.tsx` — hitbox acessível ancorada ao fundo com posição responsiva e legenda “Allana Gabriela”.
+- `src/game/scene.ts` — renderiza o retrato hospedado em todas as casas, mantém a placa alinhada no resize e aplica reações de troca de personagem/skin sem interferir com level-up.
+- `src/pages/Home.tsx` — modal informativo, prévia de personagem e revelação temporizada de presente.
+- A fotografia não é copiada ao repositório; é obtida do storage gerenciado.
+
+
+## Campanha lateral e modos (2026-09-29)
+- `src/components/PlatformAdventure.tsx` — mapa 10×10, seleção de mundo/fase, tutorial, HUD, controles, vitória/retry, cadeados e modo Minha Casa.
+- `src/components/PlatformAdventure.css` — layout arcade responsivo para desktop e celular.
+- `src/game/PlatformerEngine.ts` — motor Canvas 2D sem acoplamento React: delta-time, input, física, colisões, moedas, inimigos, checkpoints, vidas e goal.
+- `src/game/platformerLevels.ts` — 100 fases determinísticas, paletas por casa, história, dificuldade e associação 1:1 à decoração existente.
+- `src/game/PetGame.ts` — `platformProgress` persistido/migrado e recompensa de primeira conclusão sem farming em replay.
+- `src/pages/Home.tsx` — aventura como entrada após onboarding; Minha Casa continua como modo secundário e mantém os sistemas de cuidado/minijogos.
+- `src/game/assets.ts` — duas imagens do motor importadas de `src/assets/platform-grass.webp` e `src/assets/goal-portal.webp`; portrait de Allana permanece em storage gerenciado.
+- `/?demo=platformer` permite QA do mapa sem gravar save; `/?demo=1` permanece a demonstração da casa.

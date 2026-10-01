@@ -1,0 +1,94 @@
+# Assets do jogo
+
+**Direção de arte:** aventura felina ilustrada como livro 3D infantil; luz de fim de tarde, marinho/ciano, madeira quente, tecidos macios e expressões legíveis. Personagens, cenários, decoração, áudio e ícone são incorporados pelo build Vite a partir de assets locais; a única exceção é o retrato autorizado da idealizadora, servido do storage gerenciado.
+
+## Casas da campanha
+
+| Nível | Cenário | Arquivo |
+|---:|---|---|
+| 1 | Casa do Começo | `src/assets/nivel-01-lar.webp` |
+| 2 | Estufa das Flores | `src/assets/nivel-02-jardim.webp` |
+| 3 | Mercado dos Bigodes | `src/assets/nivel-03-feira.webp` |
+| 4 | Terraço do Sol | `src/assets/nivel-04-telhado.webp` |
+| 5 | Praia do Ronrom | `src/assets/nivel-05-praia.webp` |
+| 6 | Bosque do Novelo | `src/assets/nivel-06-bosque.webp` |
+| 7 | Montanha do Tico | `src/assets/nivel-07-neve.webp` |
+| 8 | Biblioteca Secreta | `src/assets/nivel-08-biblioteca.webp` |
+| 9 | Domo das Estrelas | `src/assets/nivel-09-observatorio.webp` |
+| 10 | Casa das Novas Histórias | `src/assets/nivel-10-festival.webp` |
+
+## Personagens, decoração e instalação
+
+| Asset | Arquivo | Uso |
+|---|---|---|
+| Pudim de referência | `src/assets/meu-pet-gatinho.webp` | fallback/arte de abertura |
+| Três meninos | `boy-prata.webp`, `boy-laranja.webp`, `boy-preto.webp` | escolha inicial masculina |
+| Três meninas | `girl-creme.webp`, `girl-calico.webp`, `girl-azul.webp` | escolha inicial feminina |
+| Boné e lacinho | `acessorio-bone.webp`, `acessorio-laco.webp` | acessórios visuais de perfil/fallback |
+| Mimi e Tico | `companheira-mimi.webp`, `companheiro-tico.webp` | companheiros clicáveis |
+| Árvore, caminha, planta, luminária | `decor-tower.webp`, `decor-bed.webp`, `decor-plant.webp`, `decor-lamp.webp` | decoração persistente por casa |
+| Presente surpresa | `gift-surprise.webp` | recompensa temporária coletável |
+| Ícone de arte | `app-icon.webp` | fonte visual do ícone do app |
+| Ícones PWA | `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` | instalação compatível |
+
+### Coleção de decoração
+
+O catálogo tem **100 props únicos**, dez para cada casa: os quatro sprites legados e 96 novas artes transparentes WebP de 384×384 px. O conjunto completo ocupa 3.346.716 bytes (13–62 KB por item). Os 96 arquivos novos ficam em `src/assets/decorations/`; `src/game/assets.ts` os carrega por `import.meta.glob`, sem dependência do storage do WebDev. Itens de nível avançado ou de missão permanecem bloqueados até cumprir o requisito, tanto na loja quanto na regra de compra do domínio.
+
+| Nível | Casa | Itens |
+|---:|---|---:|
+| 1 | Casa do Começo | 10 |
+| 2 | Estufa das Flores | 10 |
+| 3 | Mercado dos Bigodes | 10 |
+| 4 | Terraço do Sol | 10 |
+| 5 | Praia do Ronrom | 10 |
+| 6 | Bosque do Novelo | 10 |
+| 7 | Montanha do Tico | 10 |
+| 8 | Biblioteca Secreta | 10 |
+| 9 | Domo das Estrelas | 10 |
+| 10 | Casa das Novas Histórias | 10 |
+
+`docs/decoration-catalog.json` registra IDs, nomes, preços, casa, requisitos e referências correspondentes ao storage WebDev.
+
+## Áudio
+
+| Asset | Arquivo | Uso |
+|---|---|---|
+| Boas-vindas, cuidado e level-up base | `voz-boas-vindas.mp3`, `voz-cuidado.mp3`, `voz-nivel.mp3` | falas curtas em PT-BR |
+| Level-up por perfil | `level-boy.mp3`, `level-girl.mp3` | timbres distintos |
+| Abertura do onboarding e saudações do pet | `onboarding-intro.mp3`, `welcome-boy.mp3`, `welcome-girl.mp3` | introdução PT-BR e cumprimento masculino/feminino ao selecionar o personagem |
+| Companheiros | `voice-mimi.mp3`, `voice-tico.mp3` | frases divertidas ao toque |
+| Combinação match-3 | `match-combo.mp3` | chime curto para combos/cascatas |
+| Toque menino/menina | `pet-tap-boy.mp3`, `pet-tap-girl.mp3` | reação natural PT-BR ao tocar no pet |
+| Cuidado menino/menina | `pet-care-boy.mp3`, `pet-care-girl.mp3` | agradecimento natural PT-BR por gênero |
+
+Vite importa os arquivos por `src/game/assets.ts`; os assets não dependem do storage do WebDev. O modo `?demo=1` usa sprites de demonstração e nunca persiste no save ativo.
+
+
+## Retrato da idealizadora (2026-09-29)
+
+| Asset | Papel | Dimensões | URL do asset gerenciado |
+|---|---|---:|---|
+| Foto otimizada de Allana Gabriela | Moldura permanente da cena e modal de homenagem; retrato sem texto embutido | 1000×1407 px, WebP (~212 KB) | `https://meupetgame-4hwhw32b.manus.space/manus-storage/allana-gabriela-portrait_0da1a95d.webp` |
+
+A foto não é armazenada neste repositório. A moldura, legenda e texto são elementos acessíveis da interface e são exibidos no jogo conforme autorização da autora/responsável.
+
+
+## Aventura lateral (2026-09-29)
+
+| Asset | Uso | Arquivo local | Dimensões | Peso WebP |
+|---|---|---|---:|---:|
+| Plataforma de grama | Tile de colisão/plataforma do canvas | `src/assets/platform-grass.webp` | 2560×1440 | 382.810 bytes |
+| Portal dourado | Goal das fases | `src/assets/goal-portal.webp` | 1920×1920 | 349.324 bytes |
+
+As imagens são carregadas por imports Vite `?url`; os PNGs-fonte foram preservados fora do repositório WebDev. O retrato da idealizadora continua somente no storage gerenciado, não é copiado ao GitHub.
+
+
+## Polimento lateral final (2026-09-29)
+
+| Asset | Uso | Arquivo local | Tamanho aproximado |
+|---|---|---|---:|
+| Piso grama/terra | Superfície walkable contínua e plataformas suspensas | `src/assets/grass-earth-side-tile.webp` | 248 KB |
+| Gato prata/laranja/preto e gatinha creme/calico/azul | Sprites laterais por personagem selecionado, com fallback procedural | `src/assets/*-run.webp` (6 variantes) | 128–172 KB cada |
+
+A aventura usa Web Audio API para salto, coleta de moeda, impacto/pisão, perda de vida e conclusão; não depende de arquivos externos de áudio para estes efeitos. Os PNGs-fonte das novas artes permanecem fora do repositório; apenas WebP otimizados são incluídos.
