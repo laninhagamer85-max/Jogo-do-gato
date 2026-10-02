@@ -3580,3 +3580,19 @@ button:focus-visible { outline: 3px solid #7fd2ff; outline-offset: 3px; }
   }
   .game-root.classic-two-column-layout .portrait-friends-shortcut svg:first-child { color: #96e7ff; }
 }
+
+
+/* Privacy controls: make local-data erasure explicit and distinguish it from routine settings. */
+.data-delete-trigger { margin-top: 10px; border-color: rgb(255 116 136 / 28%); color: #ffb8c3; }
+.data-delete-trigger:hover { background: rgb(255 89 117 / 10%); }
+.data-delete-backdrop { z-index: 40; }
+.data-delete-card { width: min(430px, 100%); text-align: center; }
+.data-delete-icon { background: linear-gradient(145deg, #b9435b, #762d4d); color: #fff; }
+.data-delete-card > p { margin: 10px 0 20px; color: #c2cce0; font-size: 12px; line-height: 1.65; }
+.data-delete-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.danger-action { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 7px; padding: 10px 12px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 12px; background: linear-gradient(135deg, #df526d, #b72d52); color: #fff; font-size: 11px; font-weight: 1000; }
+.danger-action:hover { filter: brightness(1.08); }
+@media (max-width: 420px) {
+  .data-delete-card { padding: 24px 18px; }
+  .data-delete-actions { grid-template-columns: 1fr; }
+}
