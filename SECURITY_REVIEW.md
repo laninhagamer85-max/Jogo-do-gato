@@ -3,6 +3,8 @@
 - **Data:** 1 de outubro de 2026 (America/Sao_Paulo)
 - **Repositório:** [laninhagamer85-max/Jogo-do-gato](https://github.com/laninhagamer85-max/Jogo-do-gato) — público
 - **Branch de trabalho:** `security/audit-privacy-hardening-2026-10`
+- **Pull request:** [#3](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/3), aberto para `feature/meu-pet-virtual-refresh`, sem merge.
+- **Commit inicial:** `5fa34b6c7f95b53c8d45f194cacd904d51196409`.
 - **Ambiente avaliado:** checkout local da aplicação estática e preview local de produção em `127.0.0.1:4174`. **Nenhuma publicação/deploy foi feita.**
 
 ## 1. Resumo executivo
