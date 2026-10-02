@@ -69,7 +69,6 @@ O principal risco de privacidade residual é que a página e o repositório púb
 | Preview local de produção + console | **Passou:** HTTP 200 em loopback, aplicação/WebGL2 renderizados, CSP e cabeçalhos presentes, sem erro de runtime/CSP após recarga limpa. Testado também `fetch(data:)` usado para transformar a imagem do canvas em Blob. |
 | UX de exclusão | **Passou com dados fictícios:** abrir/cancelar não apaga; confirmar remove dados prefixados do jogo e preserva uma chave de outro app/origem. O perfil sintético de XSS foi apagado após o teste. |
 | Host/domínio publicado | **Não verificado:** sem teste de TLS/HSTS/cabeçalhos no domínio real; nenhuma alteração de `allowedHosts` ou publicação foi feita. |
-| CI GitHub | **Não executado ainda:** workflow foi validado localmente e será acionado pelo PR. |
 
 ## 5. GitHub, configurações externas e itens pendentes
 
