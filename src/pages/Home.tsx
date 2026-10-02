@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState, type DragEvent, t
 import {
   Activity, Backpack, Bath, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Gamepad2, Gift, Heart,
   Home as HomeIcon, LockKeyhole, MapPin, Moon, PawPrint, Plus, Settings, ShoppingBag,
-  Eye, EyeOff, Sparkles, Star, Trophy, Utensils, Volume2, VolumeX, X,
+  Eye, EyeOff, Sparkles, Star, Trash2, Trophy, Utensils, Volume2, VolumeX, X,
 } from "lucide-react";
 import MiniGameBoard from "@/components/MiniGameBoard";
 import AudioVolumeControls from "@/components/AudioVolumeControls";
@@ -20,6 +20,7 @@ import {
   type CareAction, type CompanionId, type DecorationId, type DecorationPlacement, type GameState,
   type PetGender, type PetProfile, type SkinId, type StoreItemId,
 } from "@/game/PetGame";
+import { archiveLatestSave, archiveSaveOnce, clearLocalGameData } from "@/game/privacyStore";
 import { CAMPAIGN_LEVELS, getCampaignLevel, MINI_GAMES, type MiniGameId } from "@/game/levels";
 import { getPlatformMascot, PLATFORM_MASCOTS } from "@/game/platformerLevels";
 import { playCompanionVoice, playMatchSound, playPetVoice, stopPetVoice, type PetVoiceCue } from "@/game/audio";
@@ -45,8 +46,7 @@ function loadGame(): GameState {
     if (current) {
       const state = migrateGameState(JSON.parse(current));
       if (!state.profile && state.level > 1) {
-        const archiveKey = "meu-pet-virtual-save-v2-archive";
-        if (!localStorage.getItem(archiveKey)) localStorage.setItem(archiveKey, current);
+        archiveSaveOnce(localStorage, CURRENT_SAVE_KEY, "meu-pet-virtual-save-v2-archive");
         return createInitialGameState();
       }
       return state;
@@ -153,6 +153,7 @@ export default function Home() {
   const [shopOpen, setShopOpen] = useState(false);
   const [shopTab, setShopTab] = useState<ShopTab>("items");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [deleteDataOpen, setDeleteDataOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem(SOUND_PREF_KEY) !== "false");
@@ -761,8 +762,12 @@ export default function Home() {
   }
 
   function startNewGame() {
-    const current = localStorage.getItem(CURRENT_SAVE_KEY);
-    if (current) localStorage.setItem(`meu-pet-virtual-save-v2-archive-${Date.now()}`, current);
+    let archiveStatus: "saved" | "empty" | "error" = "empty";
+    try {
+      archiveStatus = archiveLatestSave(localStorage, CURRENT_SAVE_KEY, "meu-pet-virtual-save-v2-archive") ? "saved" : "empty";
+    } catch {
+      archiveStatus = "error";
+    }
     setGame(createInitialGameState());
     adventureEnteredAtRef.current = null;
     setAdventureOpen(false);
@@ -771,7 +776,23 @@ export default function Home() {
     setSelectedDecorationId(null); setPendingDecoration(null); setProfileOpen(false);
     setSettingsOpen(false);
     setRoomsOpen(false);
-    showToast("Novo jogo iniciado. Seu save anterior foi arquivado neste navegador.");
+    showToast(archiveStatus === "saved" ? "Novo jogo iniciado. Uma única cópia do save anterior foi mantida." : archiveStatus === "error" ? "Novo jogo iniciado, mas o navegador não permitiu guardar uma cópia do save anterior." : "Novo jogo iniciado.");
+  }
+
+  function deleteSavedGameData() {
+    if (demoMode) {
+      setDeleteDataOpen(false);
+      showToast("A demonstração não pode apagar os dados do seu jogo.");
+      return;
+    }
+    try {
+      clearLocalGameData(localStorage);
+      setDeleteDataOpen(false);
+      setSettingsOpen(false);
+      window.location.reload();
+    } catch {
+      showToast("Não foi possível apagar todos os dados locais. Tente novamente nas configurações do navegador.");
+    }
   }
 
   const closeGames = () => { setGamesOpen(false); setMiniId(null); };
@@ -922,7 +943,8 @@ export default function Home() {
 
       {paused && <div className="modal-backdrop"><section className="modal-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><button className="modal-close" onClick={() => setPaused(false)} aria-label="Fechar"><X size={18} /></button><span className="modal-hero-icon">Ⅱ</span><h2 id="pause-title">Pausa para um cafuné</h2><p>{petName} está esperando por você.</p><button className="primary-action" onClick={() => setPaused(false)}>Continuar brincando</button></section></div>}
 
-      {settingsOpen && <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}><section className="modal-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setSettingsOpen(false)} aria-label="Fechar"><X size={18} /></button><span className="modal-kicker">MEU PET VIRTUAL</span><h2 id="settings-title">Configurações</h2><p className="modal-subtitle">Deixe a brincadeira do seu jeito.</p>{game.profile && <button className="setting-row profile-setting" onClick={() => { setSettingsOpen(false); setProfileOpen(true); }}><span className="setting-icon"><PawPrint size={19} /></span><span><strong>Perfil do pet</strong><small>{game.profile.name} · {game.profile.age} {game.profile.age === 1 ? "ano" : "anos"}</small></span><ChevronRight size={17} /></button>}<button className="setting-row" onClick={() => setSoundOn((value) => !value)}><span className="setting-icon">{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</span><span><strong>Efeitos sonoros</strong><small>{soundOn ? "Ligados" : "Desligados"}</small></span><span className={`toggle ${soundOn ? "on" : ""}`} /></button><AudioVolumeControls musicVolume={audioMix.music} effectsVolume={audioMix.effects} onMusicChange={(music) => setAudioMix((mix) => ({ ...mix, music }))} onEffectsChange={(effects) => setAudioMix((mix) => ({ ...mix, effects }))} /><button className="setting-row" onClick={() => setVoiceOn((value) => !value)}><span className="setting-icon">{voiceOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</span><span><strong>Voz do pet em português</strong><small>{voiceOn ? "Falas e reações ligadas" : "Desligada"}</small></span><span className={`toggle ${voiceOn ? "on" : ""}`} /></button><button className="setting-row guide-setting" onClick={() => { setSettingsOpen(false); setTutorialOpen(true); }}><span className="setting-icon"><BookOpen size={19} /></span><span><strong>Como jogar</strong><small>Reabrir o guia passo a passo</small></span><ChevronRight size={17} /></button><button className="secondary-action reset-action" onClick={startNewGame}><span>↻</span> Começar um novo jogo</button><p className="privacy-note">Seu progresso fica salvo neste navegador. Saves da versão anterior não são apagados.</p></section></div>}
+      {settingsOpen && <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}><section className="modal-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setSettingsOpen(false)} aria-label="Fechar"><X size={18} /></button><span className="modal-kicker">MEU PET VIRTUAL</span><h2 id="settings-title">Configurações</h2><p className="modal-subtitle">Deixe a brincadeira do seu jeito.</p>{game.profile && <button className="setting-row profile-setting" onClick={() => { setSettingsOpen(false); setProfileOpen(true); }}><span className="setting-icon"><PawPrint size={19} /></span><span><strong>Perfil do pet</strong><small>{game.profile.name} · {game.profile.age} {game.profile.age === 1 ? "ano" : "anos"}</small></span><ChevronRight size={17} /></button>}<button className="setting-row" onClick={() => setSoundOn((value) => !value)}><span className="setting-icon">{soundOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</span><span><strong>Efeitos sonoros</strong><small>{soundOn ? "Ligados" : "Desligados"}</small></span><span className={`toggle ${soundOn ? "on" : ""}`} /></button><AudioVolumeControls musicVolume={audioMix.music} effectsVolume={audioMix.effects} onMusicChange={(music) => setAudioMix((mix) => ({ ...mix, music }))} onEffectsChange={(effects) => setAudioMix((mix) => ({ ...mix, effects }))} /><button className="setting-row" onClick={() => setVoiceOn((value) => !value)}><span className="setting-icon">{voiceOn ? <Volume2 size={19} /> : <VolumeX size={19} />}</span><span><strong>Voz do pet em português</strong><small>{voiceOn ? "Falas e reações ligadas" : "Desligada"}</small></span><span className={`toggle ${voiceOn ? "on" : ""}`} /></button><button className="setting-row guide-setting" onClick={() => { setSettingsOpen(false); setTutorialOpen(true); }}><span className="setting-icon"><BookOpen size={19} /></span><span><strong>Como jogar</strong><small>Reabrir o guia passo a passo</small></span><ChevronRight size={17} /></button><button className="secondary-action reset-action" type="button" onClick={startNewGame}><span>↻</span> Começar um novo jogo</button>{!demoMode && <button className="secondary-action data-delete-trigger" type="button" onClick={() => setDeleteDataOpen(true)}><Trash2 size={15} /> Apagar dados salvos neste navegador</button>}<p className="privacy-note">O perfil do pet, o progresso e as preferências ficam neste navegador, sem conta ou sincronização. Reiniciar pode manter uma cópia de recuperação; dados legados são removidos pela opção de exclusão local.</p></section></div>}
+      {deleteDataOpen && !demoMode && <div className="modal-backdrop data-delete-backdrop" onClick={() => setDeleteDataOpen(false)}><section className="modal-card data-delete-card" role="alertdialog" aria-modal="true" aria-labelledby="delete-data-title" aria-describedby="delete-data-description" onClick={(event) => event.stopPropagation()}><button className="modal-close" type="button" onClick={() => setDeleteDataOpen(false)} aria-label="Cancelar exclusão"><X size={18} /></button><span className="modal-hero-icon data-delete-icon"><Trash2 size={26} /></span><span className="modal-kicker">CONTROLE DE DADOS</span><h2 id="delete-data-title">Apagar seus dados locais?</h2><p id="delete-data-description">Isso remove o perfil do pet, o progresso, as cópias de recuperação, as preferências e os dados legados deste jogo neste navegador. Esta ação não pode ser desfeita. Dados de outros sites neste navegador não serão apagados.</p><div className="data-delete-actions"><button className="secondary-action" type="button" onClick={() => setDeleteDataOpen(false)}>Cancelar</button><button className="danger-action" type="button" onClick={deleteSavedGameData}><Trash2 size={15} /> Apagar dados locais</button></div></section></div>}
       {profileOpen && game.profile && <div className="modal-backdrop profile-backdrop" onClick={() => setProfileOpen(false)}><section className="modal-card profile-card" role="dialog" aria-modal="true" aria-labelledby="profile-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setProfileOpen(false)} aria-label="Fechar perfil"><X size={18} /></button><span className="modal-kicker">FICHA DO COMPANHEIRO</span><div className="profile-hero"><div className="profile-avatar"><img src={GAME_ASSETS.characters[game.profile.characterId]} alt={game.profile.name} /></div><div><h2 id="profile-title">{game.profile.name}</h2><p>{profileCharacter?.name ?? "Meu gatinho"} · {game.profile.gender === "menina" ? "menina" : "menino"}</p><small>{profileCharacter?.description}</small></div></div><div className="profile-facts"><div className="profile-fact"><small>Idade</small><strong>{game.profile.age} {game.profile.age === 1 ? "ano" : "anos"}</strong></div><div className="profile-fact"><small>Nível</small><strong>{game.level} de 10</strong></div><div className="profile-fact"><small>Casa atual</small><strong>{activeChapter.location}</strong></div><div className="profile-fact"><small>Experiência</small><strong>{game.xp} / {game.xpMax} XP</strong></div><div className="profile-fact"><small>Moedas</small><strong>{game.coins.toLocaleString("pt-BR")}</strong></div><div className="profile-fact"><small>Companheiro</small><strong>{currentCompanion?.name ?? "Só nós dois"}</strong></div></div><h3 className="profile-section-title">Como está hoje</h3><div className="profile-stat-list">{statMeta.map((item) => <div className="profile-stat" key={item.key}><span>{item.icon} {item.label}</span><div className={`stat-track ${item.color}`}><span style={{ width: `${game.stats[item.key]}%` }} /></div><strong>{Math.round(game.stats[item.key])}%</strong></div>)}</div><p className="profile-footnote">Esses dados e o progresso ficam salvos neste navegador.</p></section></div>}
 
       {gamesOpen && <div className="modal-backdrop games-backdrop" onClick={closeGames}><section className={`modal-card games-card ${miniId ? "playing-minigame" : ""}`} role="dialog" aria-modal="true" aria-labelledby="games-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={closeGames} aria-label="Fechar minijogos"><X size={18} /></button>
