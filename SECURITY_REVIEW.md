@@ -6,7 +6,7 @@
 - **Pull request:** [#3](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/3), aberto para `feature/meu-pet-virtual-refresh`, sem merge.
 - **Commit inicial:** `5fa34b6c7f95b53c8d45f194cacd904d51196409`.
 - **Commit de implementação:** `e8254ab730daefee8405c2d27e5072da586473cf`.
-- **Commit documental final com CI aprovado:** `3db3fbb`.
+- **CI do PR:** checks aprovados no estado final do PR no momento da entrega; o histórico e os SHAs estão vinculados na página #3.
 - **Ambiente avaliado:** checkout local da aplicação estática e preview local de produção em `127.0.0.1:4174`. **Nenhuma publicação/deploy foi feita.**
 
 ## 1. Resumo executivo
@@ -65,7 +65,7 @@ O principal risco de privacidade residual é que a página e o repositório púb
 | `pnpm audit` | **Passou:** nenhum advisory conhecido no lockfile consultado. |
 | YAML + políticas do workflow | **Passou:** workflow e Dependabot parseados; permissões limitadas a `contents: read`; nenhum passo de deploy; ações fixadas por SHA. |
 | `git diff --check` | **Passou:** sem erros de whitespace. |
-| CI GitHub | **Passou:** `Quality and dependency security/validate` concluiu com sucesso (48 s) no commit documental final `3db3fbb`. |
+| CI GitHub | **Passou:** `Quality and dependency security/validate` concluiu com sucesso no estado final do PR (última execução: 49 s). |
 | Preview local de produção + console | **Passou:** HTTP 200 em loopback, aplicação/WebGL2 renderizados, CSP e cabeçalhos presentes, sem erro de runtime/CSP após recarga limpa. Testado também `fetch(data:)` usado para transformar a imagem do canvas em Blob. |
 | UX de exclusão | **Passou com dados fictícios:** abrir/cancelar não apaga; confirmar remove dados prefixados do jogo e preserva uma chave de outro app/origem. O perfil sintético de XSS foi apagado após o teste. |
 | Host/domínio publicado | **Não verificado:** sem teste de TLS/HSTS/cabeçalhos no domínio real; nenhuma alteração de `allowedHosts` ou publicação foi feita. |
@@ -74,7 +74,7 @@ O principal risco de privacidade residual é que a página e o repositório púb
 ## 5. GitHub, configurações externas e itens pendentes
 
 - O repositório é público e o checkout está associado ao PR de feature #2, que permanece separado. As alterações de segurança estão em uma branch dedicada e devem ser apresentadas em um PR próprio para a branch da feature; não devem ser mescladas nem publicadas sem nova autorização.
-- O job de CI adiciona typecheck, testes, build e audit em `pull_request` e `push` para `main`. As actions `checkout` e `setup-node` são fixadas por SHA; o workflow não usa secrets, não concede escrita e não publica artefatos. O check `Quality and dependency security/validate` passou no commit documental final `3db3fbb`.
+- O job de CI adiciona typecheck, testes, build e audit em `pull_request` e `push` para `main`. As actions `checkout` e `setup-node` são fixadas por SHA; o workflow não usa secrets, não concede escrita e não publica artefatos. O check `Quality and dependency security/validate` passou na revisão final do PR.
 - O arquivo Dependabot agenda atualizações semanais agrupadas por produção/desenvolvimento. A chave de **Dependabot security updates** do GitHub é uma configuração externa diferente e não foi alterada; o snapshot anterior a registrou desativada, mas não foi possível confirmar o estado atual.
 - A listagem de secrets e alertas do GitHub retornou 403. **Nenhum nome ou valor de secret foi exposto ou reproduzido.** A API também não retornou dados de proteção de `main` (404). O mantenedor deve revisar essas opções na interface do repositório.
 - O setting atual de GitHub Actions permite todas as actions e não exige pin por SHA. O workflow novo já fixa suas duas actions; não alterei a política global do repositório.
