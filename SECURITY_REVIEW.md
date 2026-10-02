@@ -65,7 +65,7 @@ O principal risco de privacidade residual é que a página e o repositório púb
 | `pnpm audit` | **Passou:** nenhum advisory conhecido no lockfile consultado. |
 | YAML + políticas do workflow | **Passou:** workflow e Dependabot parseados; permissões limitadas a `contents: read`; nenhum passo de deploy; ações fixadas por SHA. |
 | `git diff --check` | **Passou:** sem erros de whitespace. |
-| CI GitHub | **Passou:** `Quality and dependency security/validate` concluiu com sucesso no estado final do PR (última execução: 49 s). |
+| CI GitHub | **Passou:** `Quality and dependency security/validate` concluiu com sucesso no estado final do PR. |
 | Preview local de produção + console | **Passou:** HTTP 200 em loopback, aplicação/WebGL2 renderizados, CSP e cabeçalhos presentes, sem erro de runtime/CSP após recarga limpa. Testado também `fetch(data:)` usado para transformar a imagem do canvas em Blob. |
 | UX de exclusão | **Passou com dados fictícios:** abrir/cancelar não apaga; confirmar remove dados prefixados do jogo e preserva uma chave de outro app/origem. O perfil sintético de XSS foi apagado após o teste. |
 | Host/domínio publicado | **Não verificado:** sem teste de TLS/HSTS/cabeçalhos no domínio real; nenhuma alteração de `allowedHosts` ou publicação foi feita. |
