@@ -25,6 +25,8 @@ export const firebaseAuthReady = firebaseAuth ? setPersistence(firebaseAuth, inM
 let appCheck: AppCheck | null = null;
 let appCheckHeadersCache: { headers: Record<string, string>; expiresAt: number } | null = null;
 let appCheckHeadersPending: Promise<Record<string, string>> | null = null;
+// The first Enterprise assessment can take longer on slow connections.
+const APP_CHECK_TOKEN_TIMEOUT_MS = 15_000;
 if (firebaseApp && env.VITE_RECAPTCHA_SITE_KEY) {
   try {
     appCheck = initializeAppCheck(firebaseApp, {
@@ -46,7 +48,7 @@ export async function getAppCheckHeader(): Promise<Record<string, string>> {
       const timeout = window.setTimeout(() => {
         settled = true;
         resolve({});
-      }, 2500);
+      }, APP_CHECK_TOKEN_TIMEOUT_MS);
       getToken(appCheck!, false).then((result) => {
         if (settled) return;
         window.clearTimeout(timeout);
@@ -57,7 +59,10 @@ export async function getAppCheckHeader(): Promise<Record<string, string>> {
         resolve({});
       });
     }).then((headers) => {
-      appCheckHeadersCache = { headers, expiresAt: Date.now() + (headers["X-Firebase-AppCheck"] ? 30_000 : 5_000) };
+      // Cache only verified tokens so a transient failure can retry immediately.
+      appCheckHeadersCache = headers["X-Firebase-AppCheck"]
+        ? { headers, expiresAt: Date.now() + 30_000 }
+        : null;
       return headers;
     }).finally(() => {
       appCheckHeadersPending = null;
