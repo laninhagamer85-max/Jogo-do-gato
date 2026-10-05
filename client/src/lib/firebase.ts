@@ -1,5 +1,5 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider, getToken, type AppCheck } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider, getToken, type AppCheck } from "firebase/app-check";
 import { getAuth, inMemoryPersistence, setPersistence, type Auth } from "firebase/auth";
 
 const env = import.meta.env as ImportMetaEnv & {
@@ -28,7 +28,7 @@ let appCheckHeadersPending: Promise<Record<string, string>> | null = null;
 if (firebaseApp && env.VITE_RECAPTCHA_SITE_KEY) {
   try {
     appCheck = initializeAppCheck(firebaseApp, {
-      provider: new ReCaptchaV3Provider(env.VITE_RECAPTCHA_SITE_KEY),
+      provider: new ReCaptchaEnterpriseProvider(env.VITE_RECAPTCHA_SITE_KEY),
       isTokenAutoRefreshEnabled: true,
     });
   } catch {
