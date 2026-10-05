@@ -4,6 +4,12 @@
 
 **Canonical website:** `https://meupetgame-4hwhw32b.manus.space/` is the project's single assigned official site domain. The `*.manus.computer` URL is a temporary QA preview, not another official domain; the app marks development responses `noindex` and redirects alternate production page hosts to the canonical host. `meu-pet-gamer.firebaseapp.com` is the Firebase authentication handler domain, not a second website.
 
+## Sites migration review — 2026-10-05
+
+This review supersedes the historical Manus provider/domain observations below for the Sites migration. The staging app is registered with Enterprise (Fraud Defense), with a one-hour token TTL. Authentication App Check enforcement is currently not applied. The prepared client uses `ReCaptchaEnterpriseProvider`, waits up to 15 seconds for token retrieval, and caches only successful token headers; failed requests can retry immediately. Production backend token verification remains unchanged.
+
+The intended Sites hostname is `meupet.aquimeusite.chatgpt.site`. It is present in Firebase Authentication Authorized Domains, but its inclusion in the Enterprise key's allowed domains is unverified because this cloud browser cannot access Google Cloud Console. Configure build-time Firebase values from this staging web app, using the same Enterprise public site key registered in App Check. Do not reuse the historical production Firebase configuration below. No Sites deployment, live token issuance, login, or end-to-end validation is confirmed.
+
 ## Firebase / Identity Platform prerequisites
 
 Use a **separate staging Firebase project** until the owner explicitly approves a production environment.
@@ -13,7 +19,7 @@ Use a **separate staging Firebase project** until the owner explicitly approves 
 3. Choose **multiple accounts per email address** if the product requirement is to keep Google and password identities separate. The client does not call account-linking APIs; test duplicate-email behavior before accepting real accounts.
 4. Enable TOTP MFA. TOTP enrollment is offered to guardians and is mandatory for administrative access and sensitive admin actions.
 5. Keep the canonical official host and the exact temporary preview host in Firebase Authentication Authorized Domains while preview QA is active. Both are confirmed present. The Firebase `authDomain` (`meu-pet-gamer.firebaseapp.com`) is the authentication callback host, not another public game site.
-6. Register the staging web app with Firebase App Check / reCAPTCHA v3. The preview hostname is present in the site's allowed-domain list; verify/add the canonical official host to that same key if absent. Monitor provider metrics before enabling provider-side enforcement. The app API requires a valid App Check token in production; do not use or expose a production debug token.
+6. Register the staging web app with Firebase App Check / reCAPTCHA Enterprise (Fraud Defense), using a Web score-based key without a checkbox challenge and `ReCaptchaEnterpriseProvider` in the client. Verify every deployed hostname in the allowed-domain list of that same key; Firebase Authentication Authorized Domains is a separate setting. Monitor provider metrics before enabling provider-side enforcement. The app API requires a valid App Check token in production; do not use or expose a production debug token.
 7. Create a dedicated Firebase service account with only the Firebase Authentication and App Check permissions the server needs. Do not use a broad project-owner credential.
 
 Provider details and source links are in [FIREBASE_PROVIDER_NOTES.md](./FIREBASE_PROVIDER_NOTES.md).
@@ -28,7 +34,7 @@ Use the project's protected environment/secret settings, not source files, Git, 
 | `VITE_FIREBASE_AUTH_DOMAIN` | Browser config (public identifier) | Firebase Auth domain |
 | `VITE_FIREBASE_PROJECT_ID` | Browser config (public identifier) | Firebase project ID |
 | `VITE_FIREBASE_APP_ID` | Browser config (public identifier) | Firebase web app ID |
-| `VITE_RECAPTCHA_SITE_KEY` | Browser config (public site key) | Firebase App Check reCAPTCHA v3 |
+| `VITE_RECAPTCHA_SITE_KEY` | Browser config (public site key) | Firebase App Check reCAPTCHA Enterprise |
 | `FIREBASE_PROJECT_ID` | Server config | Project used by Firebase Admin |
 | `FIREBASE_ADMIN_CLIENT_EMAIL` | Server-only config | Dedicated service-account email |
 | `FIREBASE_ADMIN_PRIVATE_KEY` | **Secret** | Dedicated service-account private key; multiline PEM or `\\n`-escaped PEM is accepted |
