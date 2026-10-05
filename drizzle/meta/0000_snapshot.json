@@ -1,0 +1,812 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "a89a013f-815d-446e-b57c-26e22421c89b",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "admin_audit_events": {
+      "name": "admin_audit_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "actorGuardianId": {
+          "name": "actorGuardianId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "targetGuardianId": {
+          "name": "targetGuardianId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "targetProfileId": {
+          "name": "targetProfileId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "eventType": {
+          "name": "eventType",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "safeMetadata": {
+          "name": "safeMetadata",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "admin_audit_created_idx": {
+          "name": "admin_audit_created_idx",
+          "columns": [
+            "createdAt"
+          ],
+          "isUnique": false
+        },
+        "admin_audit_actor_idx": {
+          "name": "admin_audit_actor_idx",
+          "columns": [
+            "actorGuardianId",
+            "createdAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "admin_audit_events_actorGuardianId_guardian_accounts_id_fk": {
+          "name": "admin_audit_events_actorGuardianId_guardian_accounts_id_fk",
+          "tableFrom": "admin_audit_events",
+          "tableTo": "guardian_accounts",
+          "columnsFrom": [
+            "actorGuardianId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "admin_audit_events_targetGuardianId_guardian_accounts_id_fk": {
+          "name": "admin_audit_events_targetGuardianId_guardian_accounts_id_fk",
+          "tableFrom": "admin_audit_events",
+          "tableTo": "guardian_accounts",
+          "columnsFrom": [
+            "targetGuardianId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "admin_audit_events_targetProfileId_child_profiles_id_fk": {
+          "name": "admin_audit_events_targetProfileId_child_profiles_id_fk",
+          "tableFrom": "admin_audit_events",
+          "tableTo": "child_profiles",
+          "columnsFrom": [
+            "targetProfileId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "admin_audit_events_id": {
+          "name": "admin_audit_events_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "auth_sessions": {
+      "name": "auth_sessions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "sessionId": {
+          "name": "sessionId",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "guardianId": {
+          "name": "guardianId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tokenHash": {
+          "name": "tokenHash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "deviceType": {
+          "name": "deviceType",
+          "type": "enum('desktop','mobile','tablet','unknown')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'unknown'"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lastSeenAt": {
+          "name": "lastSeenAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "revokedAt": {
+          "name": "revokedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "auth_session_owner_active_idx": {
+          "name": "auth_session_owner_active_idx",
+          "columns": [
+            "guardianId",
+            "revokedAt",
+            "expiresAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "auth_sessions_guardianId_guardian_accounts_id_fk": {
+          "name": "auth_sessions_guardianId_guardian_accounts_id_fk",
+          "tableFrom": "auth_sessions",
+          "tableTo": "guardian_accounts",
+          "columnsFrom": [
+            "guardianId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "auth_sessions_id": {
+          "name": "auth_sessions_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "auth_sessions_sessionId_unique": {
+          "name": "auth_sessions_sessionId_unique",
+          "columns": [
+            "sessionId"
+          ]
+        },
+        "auth_sessions_tokenHash_unique": {
+          "name": "auth_sessions_tokenHash_unique",
+          "columns": [
+            "tokenHash"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "child_profiles": {
+      "name": "child_profiles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "guardianId": {
+          "name": "guardianId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nickname": {
+          "name": "nickname",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "avatarId": {
+          "name": "avatarId",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('active','deletion_requested')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        },
+        "stateJson": {
+          "name": "stateJson",
+          "type": "longtext",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "level": {
+          "name": "level",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "adventureStage": {
+          "name": "adventureStage",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "deletionRequestedAt": {
+          "name": "deletionRequestedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "child_profile_owner_status_idx": {
+          "name": "child_profile_owner_status_idx",
+          "columns": [
+            "guardianId",
+            "status"
+          ],
+          "isUnique": false
+        },
+        "child_profile_progress_idx": {
+          "name": "child_profile_progress_idx",
+          "columns": [
+            "level",
+            "adventureStage"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "child_profiles_guardianId_guardian_accounts_id_fk": {
+          "name": "child_profiles_guardianId_guardian_accounts_id_fk",
+          "tableFrom": "child_profiles",
+          "tableTo": "guardian_accounts",
+          "columnsFrom": [
+            "guardianId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "child_profiles_id": {
+          "name": "child_profiles_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "guardian_accounts": {
+      "name": "guardian_accounts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "firebaseUid": {
+          "name": "firebaseUid",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "enum('guardian','admin')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'guardian'"
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('pending_email','active','suspended','deletion_requested')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending_email'"
+        },
+        "loginMethod": {
+          "name": "loginMethod",
+          "type": "enum('password','google')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'password'"
+        },
+        "emailVerifiedAt": {
+          "name": "emailVerifiedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "guardianConsentWithdrawnAt": {
+          "name": "guardianConsentWithdrawnAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "lastSignedIn": {
+          "name": "lastSignedIn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "deletionRequestedAt": {
+          "name": "deletionRequestedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "guardian_status_created_idx": {
+          "name": "guardian_status_created_idx",
+          "columns": [
+            "status",
+            "createdAt"
+          ],
+          "isUnique": false
+        },
+        "guardian_last_signed_in_idx": {
+          "name": "guardian_last_signed_in_idx",
+          "columns": [
+            "lastSignedIn"
+          ],
+          "isUnique": false
+        },
+        "guardian_email_idx": {
+          "name": "guardian_email_idx",
+          "columns": [
+            "email"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "guardian_accounts_id": {
+          "name": "guardian_accounts_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "guardian_accounts_firebaseUid_unique": {
+          "name": "guardian_accounts_firebaseUid_unique",
+          "columns": [
+            "firebaseUid"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "notice_acknowledgements": {
+      "name": "notice_acknowledgements",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "guardianId": {
+          "name": "guardianId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "noticeType": {
+          "name": "noticeType",
+          "type": "enum('terms','privacy','guardianConsent')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "acceptedAt": {
+          "name": "acceptedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "withdrawnAt": {
+          "name": "withdrawnAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "notice_owner_type_version_uq": {
+          "name": "notice_owner_type_version_uq",
+          "columns": [
+            "guardianId",
+            "noticeType",
+            "version"
+          ],
+          "isUnique": true
+        },
+        "notice_owner_current_idx": {
+          "name": "notice_owner_current_idx",
+          "columns": [
+            "guardianId",
+            "noticeType",
+            "withdrawnAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "notice_acknowledgements_guardianId_guardian_accounts_id_fk": {
+          "name": "notice_acknowledgements_guardianId_guardian_accounts_id_fk",
+          "tableFrom": "notice_acknowledgements",
+          "tableTo": "guardian_accounts",
+          "columnsFrom": [
+            "guardianId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "notice_acknowledgements_id": {
+          "name": "notice_acknowledgements_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "security_events": {
+      "name": "security_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "guardianId": {
+          "name": "guardianId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "eventType": {
+          "name": "eventType",
+          "type": "varchar(48)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "enum('success','failure','blocked')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "safeCode": {
+          "name": "safeCode",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "security_event_created_idx": {
+          "name": "security_event_created_idx",
+          "columns": [
+            "createdAt"
+          ],
+          "isUnique": false
+        },
+        "security_event_guardian_idx": {
+          "name": "security_event_guardian_idx",
+          "columns": [
+            "guardianId",
+            "createdAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "security_events_guardianId_guardian_accounts_id_fk": {
+          "name": "security_events_guardianId_guardian_accounts_id_fk",
+          "tableFrom": "security_events",
+          "tableTo": "guardian_accounts",
+          "columnsFrom": [
+            "guardianId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "security_events_id": {
+          "name": "security_events_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "openId": {
+          "name": "openId",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "loginMethod": {
+          "name": "loginMethod",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "enum('user','admin')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'user'"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "lastSignedIn": {
+          "name": "lastSignedIn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "users_id": {
+          "name": "users_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "users_openId_unique": {
+          "name": "users_openId_unique",
+          "columns": [
+            "openId"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
