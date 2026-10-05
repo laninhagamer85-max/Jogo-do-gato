@@ -1,0 +1,44 @@
+name: Meu Pet Virtual - validate Sites migration
+on:
+  push:
+    branches: [sites/prepare-meu-pet-virtual-20261005]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The source lockfile omits the existing wouter patch metadata.
+      # Record the repaired lockfile with the artifact for review.
+      - name: Install declared dependencies and reconcile patch metadata
+        run: pnpm install --no-frozen-lockfile
+      - name: Type check
+        run: pnpm check
+      - name: Unit tests
+        run: pnpm test
+      - name: Build original application
+        run: pnpm build
+      - name: Record changes
+        if: always()
+        run: git diff -- pnpm-lock.yaml > lockfile-reconciliation.diff
+      - name: Upload build and effective lockfile
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meu-pet-virtual-original-build
+          retention-days: 7
+          path: |
+            dist/
+            pnpm-lock.yaml
+            lockfile-reconciliation.diff
