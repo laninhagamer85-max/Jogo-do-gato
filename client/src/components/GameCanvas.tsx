@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { createGameScene, type GameHandle, type ScenePetState } from "@/game/scene";
 
@@ -7,17 +7,23 @@ type CapturePhotoRequest = CustomEvent<{ resolve: (dataUrl: string) => void; rej
 export default function GameCanvas({ initialState }: { initialState?: ScenePetState }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const startedRef = useRef(false);
+  const [graphicsUnavailable, setGraphicsUnavailable] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || startedRef.current) return;
     startedRef.current = true;
 
-    const engine = new Engine(canvas, true, {
+    let engine: Engine;
+    try { engine = new Engine(canvas, true, {
       preserveDrawingBuffer: true,
       stencil: true,
       adaptToDeviceRatio: true,
-    });
+    }); } catch {
+      setGraphicsUnavailable(true);
+      startedRef.current = false;
+      return;
+    }
     let handle: GameHandle | null = null;
     let cancelled = false;
     let sceneReadyFrame = 0;
@@ -59,5 +65,6 @@ export default function GameCanvas({ initialState }: { initialState?: ScenePetSt
     };
   }, []);
 
+  if (graphicsUnavailable) return <div className="graphics-unavailable" role="alert">O cenário 3D precisa de WebGL. Ative a aceleração gráfica do navegador ou use outro navegador compatível. Seu progresso foi preservado.</div>;
   return <canvas ref={canvasRef} className="game-canvas" aria-hidden="true" />;
 }
