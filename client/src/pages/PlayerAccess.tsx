@@ -51,7 +51,7 @@ export default function PlayerAccess() {
     });
   }
   if (loading) return <main className="grid min-h-screen place-items-center" role="status">Preparando seu acesso…</main>;
-  if (user?.emailVerified) return <><div className="player-session-bar"><span>Progresso salvo neste navegador</span><button type="button" disabled={busy} onClick={() => void run(() => signOut(firebaseAuth!))}>Sair da conta</button></div><Home key={user.uid} localAccountId={user.uid} /></>;
+  if (user?.emailVerified) return <><div className="player-session-bar"><span>Progresso salvo neste navegador</span><button type="button" disabled={busy} onClick={() => void run(() => signOut(firebaseAuth!))}>Sair da conta</button></div><Home key={user.uid} localAccountId={user.uid} onSignOut={() => run(() => signOut(firebaseAuth!))} /></>;
   const inputClass = "pet-entry-input player-access-input";
   const buttonClass = "pet-entry-submit player-access-submit";
   return <main className="pet-entry-shell player-access"><div className="pet-entry-wrap">
