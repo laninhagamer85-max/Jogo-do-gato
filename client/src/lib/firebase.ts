@@ -1,6 +1,6 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider, getToken, type AppCheck } from "firebase/app-check";
-import { getAuth, inMemoryPersistence, setPersistence, type Auth } from "firebase/auth";
+import { getAuth, type Auth } from "firebase/auth";
 
 const env = import.meta.env as ImportMetaEnv & {
   VITE_FIREBASE_API_KEY?: string;
@@ -20,7 +20,7 @@ const firebaseConfig = {
 export const firebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId);
 export const firebaseApp = firebaseConfigured ? (getApps().length ? getApp() : initializeApp(firebaseConfig)) : null;
 export const firebaseAuth: Auth | null = firebaseApp ? getAuth(firebaseApp) : null;
-export const firebaseAuthReady = firebaseAuth ? setPersistence(firebaseAuth, inMemoryPersistence) : Promise.resolve();
+export const firebaseAuthReady = Promise.resolve();
 
 let appCheck: AppCheck | null = null;
 let appCheckHeadersCache: { headers: Record<string, string>; expiresAt: number } | null = null;
