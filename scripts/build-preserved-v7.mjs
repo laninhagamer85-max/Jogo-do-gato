@@ -31,6 +31,8 @@ await writeFile(resolve(output, cssName), css);
 // A new directory gives the complete module graph one fresh, consistent URL space.
 const assetDirectory = `assets-recovery-${hash(Buffer.concat([Buffer.from(updated), css])).slice(0, 12)}`;
 await rename(resolve(output, "assets"), resolve(output, assetDirectory));
+// Keep v7 modules available to sessions opened before the new deployment.
+await cp(resolve(baseline, "assets"), resolve(output, "assets"), { recursive: true });
 // Vite's preload tables are root-relative, unlike normal module imports.
 for (const name of ["GameCanvas-DAvpSf3L.js", "envTextureLoader-DEnELRmA.js"]) {
   const file = resolve(output, assetDirectory, name);
