@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Revisão responsiva · Meu Pet Virtual</title>
+<style>body{margin:0;background:#e4e9ef;color:#20324a;font:16px system-ui}header{padding:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}select{font:inherit;padding:8px}iframe{display:block;border:0;margin:0 16px 24px;box-shadow:0 4px 24px #20324a40;border-radius:16px}</style></head>
+<body><header><strong>Meu Pet Virtual · revisão local</strong><label>Tamanho <select aria-label="Tamanho da tela"><option value="390,844">Celular 390 × 844</option><option value="375,812">Celular 375 × 812</option><option value="844,390">Celular horizontal 844 × 390</option><option value="1366,768">Computador 1366 × 768</option></select></label><span>Partida de demonstração · sem dados de contas</span></header>
+<iframe title="Aventura em revisão" src="/qa-adventure.html" width="390" height="844"></iframe>
+<script type="module">if(import.meta.env.DEV){document.querySelector('select').onchange=(event)=>{const [w,h]=event.target.value.split(',');const frame=document.querySelector('iframe');frame.width=w;frame.height=h;};}else{document.body.replaceChildren();}</script>
+</body></html>
