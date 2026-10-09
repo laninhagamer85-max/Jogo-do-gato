@@ -21,6 +21,7 @@ O código editável antecede a v7. A v7 tem mudanças de ícones e painel de con
 - Diálogos de pausa/recompensa usam a tela móvel disponível e podem rolar, inclusive na horizontal.
 - Centralização da fase disponível passa a rolar somente o carrossel. A página não salta para baixo ao abrir o mapa.
 - Lockfile sincronizado com o patch Wouter já presente; nenhuma versão de dependência foi atualizada. Scripts de instalação de dependências continuam explicitamente bloqueados.
+- A configuração do patch aparece também em `package.json#pnpm` para o pnpm 10.4.1 fixado pelo projeto; o arquivo de workspace atende ao pnpm 11 usado pelo ambiente. Isso evita divergência na instalação com lockfile congelado.
 - Desenvolvimento do cliente: `pnpm dev`. O fluxo anterior com Express permanece em `pnpm dev:server`.
 
 ## Como executar
@@ -36,6 +37,7 @@ O build de recuperação verifica os 193 hashes antes de produzir qualquer saíd
 ## Verificações realizadas
 
 - Instalação com lockfile e verificação de dependências concluídas no ambiente de trabalho.
+- A compatibilidade do lockfile também foi conferida com o pnpm 10.4.1 do projeto, usando `install --lockfile-only --frozen-lockfile --ignore-scripts`.
 - Build Vite e TypeScript sem erros.
 - Revisão no navegador usando o componente real com partida de demonstração em quadros de 390 × 844, 375 × 812 e 844 × 390 px.
 - Conferidos: gato/textos, ausência de overflow horizontal global em 375 px, início da fase 1, renderização do cenário, dimensões dos controles, pausa e retorno ao mapa.
