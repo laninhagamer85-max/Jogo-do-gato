@@ -1,0 +1,14 @@
+{
+  "name": "Meu Pet Virtual — Uma Casa de Cada Vez",
+  "short_name": "Meu Pet",
+  "description": "Cuide do seu gatinho, decore casas, complete missões e explore dez capítulos.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#091630",
+  "theme_color": "#091630",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

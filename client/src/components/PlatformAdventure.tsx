@@ -10,6 +10,7 @@ import { PlatformerEngine, type PlatformerHud } from "@/game/PlatformerEngine";
 import { setPlatformAudioMix, startPlatformMusic, stopPlatformMusic, unlockPlatformAudio, type PlatformAudioMix } from "@/game/platformerAudio";
 import { getPlatformStage, getPlatformWorld } from "@/game/platformerLevels";
 import "./PlatformAdventure.css";
+import "./AdventureMobile.css";
 
 type Phase = "map" | "playing" | "paused" | "failed" | "won";
 type Completion = ReturnType<typeof completePlatformStage>;
@@ -93,7 +94,12 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
 
   useEffect(() => {
     if (phase !== "map") return;
-    document.getElementById(`pa-stage-${focusStage}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const card = document.getElementById(`pa-stage-${focusStage}`);
+    const carousel = stageCarouselRef.current;
+    if (card && carousel) {
+      // Center the unlocked stage horizontally without moving the whole mobile map.
+      carousel.scrollTo({ left: card.offsetLeft - carousel.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2, behavior: "smooth" });
+    }
   }, [phase, world, focusStage]);
 
   useEffect(() => {

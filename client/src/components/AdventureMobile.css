@@ -1,0 +1,125 @@
+/* Final mobile layer shared with the preserved v7 runtime. Keep after the legacy CSS. */
+@media (max-width: 900px) {
+  .platform-adventure { height: 100dvh; min-height: 100svh; overflow-y: auto; }
+  .platform-adventure .pa-topbar { flex: 0 0 auto; }
+  .platform-adventure .pa-map-layout { flex: 0 0 auto; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 16px 12px 24px; }
+  .platform-adventure .pa-world-story {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-areas: "pet kicker" "pet number" "pet title" "copy copy" "objective objective" "worldprogress worldprogress" "campaign campaign" "house house";
+    align-content: start; align-items: center; gap: 10px 14px; padding: 18px 16px; overflow: visible;
+  }
+  .platform-adventure .pa-world-story::after { display: none; }
+  .platform-adventure .pa-story-pet {
+    grid-area: pet; position: static; display: flex; flex-direction: column; align-self: center;
+    width: 104px; gap: 5px; margin: 0; padding: 0; border: 0; background: transparent; text-align: center;
+  }
+  .platform-adventure .pa-story-pet img { width: 104px; height: 108px; object-fit: contain; }
+  .platform-adventure .pa-story-pet b { max-width: 104px; white-space: normal; overflow-wrap: anywhere; font-size: 16px; line-height: 1.2; }
+  .platform-adventure .pa-story-pet small { margin-top: 4px; font-size: 12px; line-height: 1.3; }
+  .platform-adventure .pa-world-story > .pa-kicker { grid-area: kicker; display: inline-flex; font-size: 11px; line-height: 1.4; letter-spacing: .7px; }
+  .platform-adventure .pa-world-number { grid-area: number; display: block; font-size: 12px; letter-spacing: 1px; }
+  .platform-adventure .pa-world-story h1 { grid-area: title; max-width: none; margin: 0; font-size: 28px; line-height: 1.1; overflow-wrap: anywhere; }
+  .platform-adventure .pa-world-story-copy { grid-area: copy; display: block; max-height: none; overflow: visible; margin-top: 4px; font-size: 15px; line-height: 1.55; }
+  .platform-adventure .pa-current-objective { grid-area: objective; display: flex; gap: 10px; margin: 0; padding: 12px; }
+  .platform-adventure .pa-current-objective > span { width: 34px; height: 34px; flex: 0 0 34px; }
+  .platform-adventure .pa-current-objective > span svg { width: 20px; height: 20px; }
+  .platform-adventure .pa-current-objective small { font-size: 11px; line-height: 1.4; }
+  .platform-adventure .pa-current-objective strong { font-size: 15px; line-height: 1.4; }
+  .platform-adventure .pa-world-progress { grid-area: worldprogress; display: block; margin-top: 3px; }
+  .platform-adventure .pa-world-progress > div:first-child { font-size: 13px; }
+  .platform-adventure .pa-progress-track { height: 8px; margin-top: 8px; }
+  .platform-adventure .pa-campaign-progress { grid-area: campaign; display: flex; gap: 10px; margin: 0; padding: 10px; }
+  .platform-adventure .pa-campaign-progress > svg { width: 22px; height: 22px; }
+  .platform-adventure .pa-campaign-progress > span strong { font-size: 15px; }
+  .platform-adventure .pa-campaign-progress > span small { font-size: 12px; }
+  .platform-adventure .pa-campaign-progress > i { width: 40px; height: 40px; font-size: 12px; }
+  .platform-adventure .pa-house-link { grid-area: house; display: flex; gap: 8px; margin: 0; padding: 0; font-size: 13px; line-height: 1.45; }
+  .platform-adventure .pa-house-link svg { width: 22px; height: 22px; flex: 0 0 22px; }
+  .platform-adventure .pa-map-card { min-width: 0; align-self: start; overflow: visible; padding: 16px 12px; }
+  .platform-adventure .pa-map-heading { flex-wrap: wrap; gap: 10px; }
+  .platform-adventure .pa-map-heading .pa-kicker { font-size: 11px; }
+  .platform-adventure .pa-map-heading h2 { font-size: 22px; line-height: 1.2; }
+  .platform-adventure .pa-collectible-key { font-size: 12px; }
+  .platform-adventure .pa-world-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; margin-top: 14px; scroll-snap-type: x proximity; }
+  .platform-adventure .pa-world-tabs button { flex: 0 0 90px; min-height: 90px; padding: 8px 4px; scroll-snap-align: start; }
+  .platform-adventure .pa-world-tabs button > span { font-size: 16px; }
+  .platform-adventure .pa-world-tabs button i { height: 28px; font-size: 26px; line-height: 28px; }
+  .platform-adventure .pa-world-tabs button small { font-size: 12px; line-height: 1.4; white-space: normal; }
+  .platform-adventure .pa-map-world-caption { flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .platform-adventure .pa-map-world-caption > div > span { font-size: 11px; }
+  .platform-adventure .pa-map-world-caption strong { font-size: 17px; line-height: 1.3; }
+  .platform-adventure .pa-map-mascot-label { max-width: none; font-size: 12px; line-height: 1.4; }
+  .platform-adventure .pa-map-story-step { font-size: 11px; }
+  .platform-adventure .pa-stage-carousel-shell { flex-wrap: wrap; gap: 8px; }
+  .platform-adventure .pa-stage-carousel { flex: 1 0 100%; order: -1; gap: 12px; padding: 10px 4px 14px; }
+  .platform-adventure .pa-stage-tile { flex: 0 0 156px; min-height: 214px; padding: 15px 10px; }
+  .platform-adventure .pa-stage-number { font-size: 17px; }
+  .platform-adventure .pa-reward-art { width: 64px; height: 64px; margin: 8px auto; }
+  .platform-adventure .pa-stage-tile strong { font-size: 14px; line-height: 1.3; }
+  .platform-adventure .pa-stage-tile small { font-size: 12px; line-height: 1.4; }
+  .platform-adventure .pa-ready-pill { padding: 6px 12px; font-size: 12px; }
+  .platform-adventure .pa-stage-stars { font-size: 18px; }
+  .platform-adventure .pa-carousel-arrow { width: 44px; height: 44px; flex: 0 0 44px; }
+  .platform-adventure .pa-carousel-arrow:last-child { margin-left: auto; }
+  .platform-adventure .pa-swipe-hint { font-size: 12px; line-height: 1.5; }
+  .platform-adventure .pa-map-foot { flex-wrap: wrap; gap: 10px; padding-top: 12px; font-size: 12px; }
+  .platform-adventure .pa-map-foot > button { min-height: 44px; padding: 8px; font-size: 14px; }
+  .platform-adventure .pa-icon-button, .platform-adventure .pa-pause-button, .platform-adventure .pa-modal-close { width: 44px; height: 44px; min-height: 44px; flex-shrink: 0; }
+  .platform-adventure .pa-mode-switch > span, .platform-adventure .pa-mode-switch > button { min-height: 44px; font-size: 13px; }
+  .platform-adventure .pa-back-map { min-height: 44px; padding: 8px 10px; font-size: 13px; }
+  .platform-adventure .pa-game-stage { font-size: 11px; }
+  .platform-adventure .pa-game-heading h1 { font-size: 20px; line-height: 1.2; }
+  .platform-adventure .pa-game-heading p { max-width: none; font-size: 13px; line-height: 1.4; }
+  .platform-adventure .pa-live-coins, .platform-adventure .pa-live-items { font-size: 15px; }
+  .platform-adventure .pa-live-coins small, .platform-adventure .pa-live-items small { font-size: 12px; }
+  .platform-adventure .pa-live-items i { font-size: 24px; }
+  .platform-adventure .pa-level-progress > span, .platform-adventure .pa-level-progress > small { font-size: 11px; }
+  .platform-adventure .pa-direction-controls button { width: 64px; height: 64px; }
+  .platform-adventure .pa-jump-control { width: 76px; height: 76px; }
+  .platform-adventure .pa-jump-control small { font-size: 12px; }
+  .platform-adventure .pa-play-footer { flex-wrap: wrap; gap: 8px; font-size: 12px; }
+  .platform-adventure .pa-play-footer button { min-height: 44px; font-size: 13px; }
+  .platform-adventure .pa-game-overlay { position: fixed; inset: 0; padding: 16px; grid-template-rows: minmax(0, 1fr); }
+  .platform-adventure .pa-guide-modal, .platform-adventure .pa-creator-modal, .platform-adventure .pa-end-card { max-height: calc(100dvh - 32px); overflow-y: auto; padding: 28px 20px 20px; }
+  .platform-adventure .pa-guide-modal h2, .platform-adventure .pa-creator-modal h2, .platform-adventure .pa-end-card h2 { font-size: 26px; line-height: 1.2; }
+  .platform-adventure .pa-guide-steps strong { font-size: 15px; }
+  .platform-adventure .pa-guide-steps small, .platform-adventure .pa-guide-note, .platform-adventure .pa-end-card p, .platform-adventure .pa-creator-modal p { font-size: 14px; line-height: 1.5; }
+  .platform-adventure .pa-primary-action, .platform-adventure .pa-secondary-action { min-height: 48px; font-size: 15px; line-height: 1.3; }
+}
+
+@media (max-width: 620px) and (orientation: portrait) {
+  .platform-adventure .pa-topbar { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "brand creator" "modes modes" "actions actions"; gap: 8px; padding: 12px; }
+  .platform-adventure .pa-brand strong { font-size: 18px; }
+  .platform-adventure .pa-brand small { font-size: 10px; letter-spacing: .7px; }
+  .platform-adventure .pa-creator-badge { min-height: 44px; max-width: 132px; }
+  .platform-adventure .pa-creator-badge small { font-size: 9px; }
+  .platform-adventure .pa-creator-badge strong { font-size: 12px; }
+  .platform-adventure .pa-mode-switch { display: flex; justify-content: center; }
+  .platform-adventure .pa-mode-switch > span, .platform-adventure .pa-mode-switch > button { flex: 1; justify-content: center; }
+  .platform-adventure .pa-top-actions { display: flex; width: 100%; justify-content: space-between; gap: 6px; }
+  .platform-adventure .pa-pet-level { min-height: 44px; }
+  .platform-adventure .pa-pet-level span, .platform-adventure .pa-wallet strong { font-size: 13px; }
+  .platform-adventure .pa-pet-level small { font-size: 10px; }
+  .platform-adventure .pa-wallet { min-height: 44px; }
+  .platform-adventure .pa-play-layout { flex: 0 0 auto; padding: 8px 10px 16px; }
+  .platform-adventure .pa-game-heading { flex-wrap: wrap; gap: 10px; padding-bottom: 12px; }
+  .platform-adventure .pa-game-status { width: 100%; justify-content: space-between; }
+  .platform-adventure .pa-playfield { flex: 0 0 auto; height: max(340px, 48dvh); min-height: 340px; }
+  .platform-adventure.pa-in-game .pa-topbar { grid-template-areas: "brand actions"; }
+  .platform-adventure.pa-in-game .pa-mode-switch, .platform-adventure.pa-in-game .pa-creator-badge, .platform-adventure.pa-in-game .pa-pet-level, .platform-adventure.pa-in-game .pa-wallet { display: none; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .platform-adventure .pa-map-layout { grid-template-columns: minmax(250px,.85fr) minmax(0,1.4fr); align-items: start; }
+  .platform-adventure .pa-world-story { grid-template-columns: 88px minmax(0,1fr); gap: 10px; padding: 14px; }
+  .platform-adventure .pa-story-pet { width: 88px; }
+  .platform-adventure .pa-story-pet img { width: 88px; height: 92px; }
+  .platform-adventure .pa-world-story h1 { font-size: 24px; }
+  .platform-adventure .pa-topbar { grid-template-columns: minmax(140px,1fr) auto auto; min-height: 56px; gap: 8px; }
+  .platform-adventure .pa-pet-level, .platform-adventure .pa-wallet { display: none; }
+  .platform-adventure .pa-play-layout { min-height: 310px; }
+  .platform-adventure .pa-game-heading { min-height: 76px; gap: 10px; }
+  .platform-adventure .pa-playfield { min-height: 220px; }
+  .platform-adventure .pa-play-footer { display: none; }
+}
