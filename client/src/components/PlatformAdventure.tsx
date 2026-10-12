@@ -11,6 +11,8 @@ import { setPlatformAudioMix, startPlatformMusic, stopPlatformMusic, unlockPlatf
 import { getPlatformStage, getPlatformWorld } from "@/game/platformerLevels";
 import "./PlatformAdventure.css";
 import "./AdventureMobile.css";
+import "./AdventureEntry.css";
+import { getAdventureEntry } from "@/game/adventureEntry";
 
 type Phase = "map" | "playing" | "paused" | "failed" | "won";
 type Completion = ReturnType<typeof completePlatformStage>;
@@ -54,9 +56,11 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const [attempt, setAttempt] = useState(0);
   const [reward, setReward] = useState<Completion | null>(null);
   const [rewardStep, setRewardStep] = useState(0);
-  const [helpOpen, setHelpOpen] = useState(!state.tutorialComplete);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [creatorOpen, setCreatorOpen] = useState(false);
+  const adventureRef = useRef<HTMLDivElement>(null);
+  const mapHeadingRef = useRef<HTMLHeadingElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageCarouselRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<PlatformerEngine | null>(null);
@@ -64,6 +68,8 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const currentStage = useMemo(() => getPlatformStage(stageId)!, [stageId]);
   const chapter = getPlatformWorld(world)!;
   const completed = state.platformProgress.completedStages;
+  const entry = getAdventureEntry(state.platformProgress);
+  const entryWorld = getPlatformWorld(entry.world)!;
   const currentWorldStages = Array.from({ length: 10 }, (_, index) => (world - 1) * 10 + index + 1);
   const worldDone = currentWorldStages.filter((id) => completed.includes(id)).length;
   const totalDone = completed.length;
@@ -75,6 +81,10 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     : world * 10;
 
   useEffect(() => { completeStageRef.current = onCompleteStage; }, [onCompleteStage]);
+
+  useEffect(() => {
+    if (phase === "map") adventureRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [phase]);
 
   useEffect(() => {
     setPlatformAudioMix(audioMix);
@@ -212,13 +222,19 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   }, [qaAutoPilot, qaStageLimit, phase, reward, rewardStep, finalRewardStep, stageId, state.platformProgress.unlockedStage]);
 
   function beginStage(id: number) {
-    if (id > state.platformProgress.unlockedStage) return;
+    if (!getPlatformStage(id) || id > state.platformProgress.unlockedStage) return;
     setStageId(id);
     setWorld(Math.ceil(id / 10));
     setHud(START_HUD);
     setReward(null);
     setRewardStep(0);
     setPhase("playing");
+  }
+
+  function chooseStage() {
+    const heading = mapHeadingRef.current;
+    heading?.focus({ preventScroll: true });
+    heading?.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
 
   function replayStage() {
@@ -273,7 +289,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     </button>;
   }
 
-  return <div className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
+  return <div ref={adventureRef} className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
     <header className="pa-topbar">
       <div className="pa-brand"><span><PawPrint size={24} fill="currentColor" /></span><div><strong>Meu Pet Virtual</strong><small>AVENTURA DA TURMA</small></div></div>
       <div className="pa-mode-switch" aria-label="Modo do jogo"><span className="pa-mode-active"><Gamepad2 size={15} /> Aventura <b>100</b></span><button type="button" onClick={onGoToHouse}><HomeIcon size={15} /> Minha Casa</button></div>
@@ -290,20 +306,37 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     </header>
 
     {phase === "map" ? <main className="pa-map-layout">
-      <aside className="pa-world-story" style={{ "--pa-accent": PLATFORM_PALETTE(world).accent } as React.CSSProperties}>
-        <span className="pa-kicker"><Map size={13} /> MAPA DA AVENTURA</span>
-        <div className="pa-story-pet"><img src={GAME_ASSETS.characters[state.profile?.characterId ?? "menino-prata"]} alt={state.profile?.name ?? "Seu gatinho"} /><span><b>{state.profile?.name ?? "Seu pet"}</b><small>pronto para explorar</small></span></div>
-        <span className="pa-world-number">MUNDO {String(world).padStart(2, "0")} <i>·</i> 10</span>
-        <h1>{chapter.location}</h1>
-        <p className="pa-world-story-copy">{chapter.story}</p>
-        <div className="pa-current-objective"><span><Sparkles size={15} /></span><div><small>DESAFIO DA VEZ</small><strong>{state.platformProgress.unlockedStage <= 100 ? (getPlatformStage(state.platformProgress.unlockedStage)?.subtitle ?? "Todos os mundos celebram!") : "A jornada completa!"}</strong></div></div>
-        <div className="pa-world-progress"><div><span>Fases deste mundo</span><strong>{worldDone}/10</strong></div><div className="pa-progress-track"><i style={{ width: `${worldDone * 10}%` }} /></div></div>
-        <div className="pa-campaign-progress"><Trophy size={16} /><span><strong>{totalDone} / 100</strong><small>aventuras concluídas</small></span><i>{Math.round(totalDone)}%</i></div>
-        <div className="pa-house-link"><Gamepad2 size={15} /><span>Minijogos e cuidados na casa ainda dão <b>XP e moedas</b> para ajudar seu pet a evoluir.</span></div>
+      <aside className="pa-entry-card" aria-labelledby="pa-entry-name">
+        <div className="pa-entry-overview">
+          <img className="pa-entry-pet" src={GAME_ASSETS.characters[state.profile?.characterId ?? "menino-prata"]} alt="" />
+          <div className="pa-entry-intro">
+            <span className="pa-entry-kicker">{entry.campaignComplete ? "AVENTURA COMPLETA" : "PRÓXIMA AVENTURA"}</span>
+            <h1 id="pa-entry-name">{state.profile?.name ?? "Seu gatinho"}</h1>
+            <p id="pa-entry-stage">Fase {entry.stageId} · {entryWorld.location}</p>
+            <p className="pa-entry-progress">{totalDone} de 100 fases concluídas</p>
+          </div>
+        </div>
+        <div className="pa-entry-actions">
+          <button className="pa-entry-play" type="button" aria-describedby="pa-entry-stage" onClick={() => beginStage(entry.stageId)}>
+            <Play size={21} fill="currentColor" aria-hidden="true" /> {entry.label}
+          </button>
+          <button className="pa-entry-map" type="button" onClick={chooseStage}><Map size={18} aria-hidden="true" /> Escolher fase</button>
+        </div>
+        <details className="pa-entry-details">
+          <summary>Progresso e história do mundo</summary>
+          <div className="pa-entry-detail-content">
+            <h2>Mundo {world} · {chapter.location}</h2>
+            <p>{chapter.story}</p>
+            <p><strong>Fases deste mundo: {worldDone} de 10</strong></p>
+            <progress value={worldDone} max={10} aria-label={`Fases concluídas no mundo ${world}`} />
+            <p>{entry.campaignComplete ? "Você completou a campanha! Escolha uma fase para jogar novamente." : `Próximo desafio: ${getPlatformStage(entry.stageId)?.subtitle}`}</p>
+            <p>Minijogos e cuidados na casa dão XP e moedas para ajudar seu pet a evoluir.</p>
+          </div>
+        </details>
       </aside>
 
       <section className="pa-map-card" aria-label="Mapa de fases">
-        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin">✦</span> Moedas + itens temáticos</span></div>
+        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2 ref={mapHeadingRef} className="pa-map-title" tabIndex={-1}>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin">✦</span> Moedas + itens temáticos</span></div>
         <div className="pa-world-tabs" role="tablist" aria-label="Mundos da campanha">
           {Array.from({ length: 10 }, (_, index) => index + 1).map((worldId) => {
             const worldData = getPlatformWorld(worldId)!;

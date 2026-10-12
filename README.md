@@ -13,6 +13,11 @@ O projeto reúne o código React/TypeScript recuperado, as 158 mídias da public
 - `pnpm build:recovery`: gera `out/` preservando a v7 e aplicando somente as correções móveis desta revisão.
 - `pnpm dev:server`: fluxo anterior com Express.
 
-Não houve nova publicação online nesta etapa. Os 100 estágios ainda precisam de testes reais na conta de teste.
+A revisão móvel foi publicada como versão 8 em 09/10/2026. As alterações de entrada da Aventura de 12/10/2026 estão somente na fonte editável e aguardam validação visual e conciliação com os recursos publicados. Não publicar o build normal antes dessas verificações. O build de recuperação não inclui o novo componente de entrada.
+
+- `node --import tsx scripts/verify-adventure-entry.ts`: verifica seleção da próxima fase, replay e imutabilidade do progresso, sem navegador ou conta. Não executa as fases.
+- `docs/evolution/state.json` e `docs/evolution/runs/2026-10-12.md`: estado e limites da revisão.
+
+Os 100 estágios ainda precisam de testes reais na conta de teste.
 
 ![Revisão móvel da aventura em uma partida de demonstração](recovery/review-mobile-20261009.jpg)
