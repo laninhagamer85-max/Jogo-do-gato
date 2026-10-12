@@ -23,7 +23,9 @@
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "last_observed_version": 8,
     "attempted_in_this_cycle": false,
-    "status": "not_published"
+    "status": "preparing_authorized_release",
+    "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad"
   },
   "verification": {
     "typescript": "passed",
