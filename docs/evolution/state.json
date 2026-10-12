@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "project": "Meu Pet Virtual",
+  "updated_date": "2026-10-12",
+  "timezone": "America/Sao_Paulo",
+  "status": "awaiting_validation",
+  "active_run": null,
+  "collaboration": {
+    "repository": "laninhagamer85-max/Jogo-do-gato",
+    "branch": "recovery/mobile-review-20261009",
+    "pull_request": 4,
+    "base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
+    "implementation_commit": "524be68b1be8f3d001483e5e52785830b269ab86"
+  },
+  "current_improvement": {
+    "id": "adventure-entry-without-page-scroll",
+    "title": "Entrada compacta com Jogar/Continuar aventura",
+    "implementation_status": "implemented_in_editable_source",
+    "acceptance_status": "pending_browser_validation"
+  },
+  "publication": {
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "last_observed_version": 8,
+    "attempted_in_this_cycle": false,
+    "status": "not_published"
+  },
+  "verification": {
+    "typescript": "passed",
+    "vite_client_build": "passed",
+    "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
+    "production_qa_page_exclusion": "passed",
+    "browser": "not_run_control_browser_unavailable",
+    "viewports": {
+      "375x667": "not_tested",
+      "375x812": "not_tested",
+      "390x844": "not_tested",
+      "844x390": "not_tested",
+      "1366x768": "not_tested"
+    },
+    "real_online_phases_completed_in_cycle": 0
+  },
+  "blockers": [
+    {
+      "code": "browser_qa_unavailable",
+      "detail": "Managed Linux sem skill/control-browser disponível. Não foi iniciado servidor de preview nem instalado/improvisado navegador."
+    },
+    {
+      "code": "published_source_parity_pending",
+      "detail": "A fonte editável ainda precisa conciliar painel de conta e atlas da v7/v8. O build de recuperação preservado não incorpora a nova entrada."
+    }
+  ],
+  "next_actions": [
+    "Conferir diferenças de conta/atlas entre fonte editável e publicação e reconciliar sem regressões.",
+    "Validar a revisão em navegador suportado nos cinco viewports; conferir clique, foco, próximo estágio, replay, guia, pausa e retorno.",
+    "Publicar uma única revisão no mesmo Site somente após equivalência e validação.",
+    "Depois evoluir terreno, patas e fase piloto com escadas; ainda não iniciados neste ciclo."
+  ],
+  "rollback": {
+    "code_base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
+    "instructions": "Se necessário, reverter somente o commit da implementação; preservar commits posteriores e não fazer reset/force-push.",
+    "production_changed": false
+  },
+  "latest_report": "docs/evolution/runs/2026-10-12.md"
+}
