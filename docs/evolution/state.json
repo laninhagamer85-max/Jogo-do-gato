@@ -3,14 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-12",
   "timezone": "America/Sao_Paulo",
-  "status": "awaiting_validation",
+  "status": "published_with_validation_limits",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "recovery/mobile-review-20261009",
     "pull_request": 4,
     "base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
-    "implementation_commit": "524be68b1be8f3d001483e5e52785830b269ab86"
+    "implementation_commit": "524be68b1be8f3d001483e5e52785830b269ab86",
+    "release_commit": "8f6065e0cde1b465635fe2e68d2b44b5302be8d8"
   },
   "current_improvement": {
     "id": "adventure-entry-without-page-scroll",
@@ -21,11 +22,15 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 8,
-    "attempted_in_this_cycle": false,
-    "status": "preparing_authorized_release",
+    "last_observed_version": 9,
+    "attempted_in_this_cycle": true,
+    "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad"
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
+    "deployment_id": "appgdep_6acd10eb20708191913501884dea82f7",
+    "site_commit": "0f5bfc3158285ba4a3ff180e2e402a1dca00cad8",
+    "published_at": "2026-10-12T13:55:28-03:00"
   },
   "verification": {
     "typescript": "passed",
@@ -55,15 +60,15 @@
     }
   ],
   "next_actions": [
-    "Validar painel de conta, atlas, login/saída e isolamento do progresso em navegador suportado com perfil de teste.",
-    "Validar a revisão em navegador suportado nos cinco viewports; conferir clique, foco, próximo estágio, replay, guia, pausa e retorno.",
-    "Publicar uma única revisão no mesmo Site somente após equivalência e validação.",
-    "Depois evoluir terreno, patas e fase piloto com escadas; ainda não iniciados neste ciclo."
+    "Testar v9 em navegador suportado: login isolado, conta/saída, entrada nos cinco viewports, jogar/pausar/retomar/mapa e preservação de progresso.",
+    "Reverter para v8 se houver regressão impeditiva confirmada.",
+    "Depois validar melhorias de terreno, patas e fase piloto."
   ],
   "rollback": {
     "code_base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
-    "instructions": "Se necessário, reverter somente o commit da implementação; preservar commits posteriores e não fazer reset/force-push.",
-    "production_changed": false
+    "instructions": "Se uma regressão exigir retorno, publicar a versão salva v8 pelo fluxo oficial no mesmo Site; conferir primeiro se não houve publicação concorrente. Não resetar Git nem alterar dados de jogadores.",
+    "production_changed": true,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad"
   },
   "latest_report": "docs/evolution/runs/2026-10-12.md",
   "source_reconciliation": {
