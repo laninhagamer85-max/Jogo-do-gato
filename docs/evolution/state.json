@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-12",
   "timezone": "America/Sao_Paulo",
-  "status": "published_with_validation_limits",
+  "status": "preparing_authorized_release",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,10 +14,10 @@
     "release_commit": "8f6065e0cde1b465635fe2e68d2b44b5302be8d8"
   },
   "current_improvement": {
-    "id": "adventure-entry-without-page-scroll",
-    "title": "Entrada compacta com Jogar/Continuar aventura",
-    "implementation_status": "implemented_in_editable_source",
-    "acceptance_status": "pending_browser_validation"
+    "id": "home-contact-shadows-and-responsive-framing",
+    "title": "Sombra de contato e enquadramento da casa",
+    "implementation_status": "implemented",
+    "acceptance_status": "browser_validation_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -26,7 +26,7 @@
     "attempted_in_this_cycle": true,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad",
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
     "deployment_id": "appgdep_6acd10eb20708191913501884dea82f7",
     "site_commit": "0f5bfc3158285ba4a3ff180e2e402a1dca00cad8",
@@ -60,9 +60,8 @@
     }
   ],
   "next_actions": [
-    "Testar v9 em navegador suportado: login isolado, conta/saída, entrada nos cinco viewports, jogar/pausar/retomar/mapa e preservação de progresso.",
-    "Reverter para v8 se houver regressão impeditiva confirmada.",
-    "Depois validar melhorias de terreno, patas e fase piloto."
+    "Conferir visualmente sombras, entrada da casa, troca de companheiro e rotação retrato/paisagem.",
+    "Continuar refinamento de terreno e patas na Aventura, com fase piloto."
   ],
   "rollback": {
     "code_base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
