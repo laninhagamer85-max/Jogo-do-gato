@@ -38,7 +38,9 @@
       "844x390": "not_tested",
       "1366x768": "not_tested"
     },
-    "real_online_phases_completed_in_cycle": 0
+    "real_online_phases_completed_in_cycle": 0,
+    "account_save_isolation": "passed_fake_storage_only",
+    "atlas_integrity": "passed_original_png_hash_and_region_bounds"
   },
   "blockers": [
     {
@@ -46,12 +48,12 @@
       "detail": "Managed Linux sem skill/control-browser disponível. Não foi iniciado servidor de preview nem instalado/improvisado navegador."
     },
     {
-      "code": "published_source_parity_pending",
-      "detail": "A fonte editável ainda precisa conciliar painel de conta e atlas da v7/v8. O build de recuperação preservado não incorpora a nova entrada."
+      "code": "source_parity_validation_pending",
+      "detail": "Painel de conta e atlas restaurados na fonte; falta equivalência visual e teste de autenticação em perfil isolado antes de substituir v8."
     }
   ],
   "next_actions": [
-    "Conferir diferenças de conta/atlas entre fonte editável e publicação e reconciliar sem regressões.",
+    "Validar painel de conta, atlas, login/saída e isolamento do progresso em navegador suportado com perfil de teste.",
     "Validar a revisão em navegador suportado nos cinco viewports; conferir clique, foco, próximo estágio, replay, guia, pausa e retorno.",
     "Publicar uma única revisão no mesmo Site somente após equivalência e validação.",
     "Depois evoluir terreno, patas e fase piloto com escadas; ainda não iniciados neste ciclo."
@@ -61,5 +63,11 @@
     "instructions": "Se necessário, reverter somente o commit da implementação; preservar commits posteriores e não fazer reset/force-push.",
     "production_changed": false
   },
-  "latest_report": "docs/evolution/runs/2026-10-12.md"
+  "latest_report": "docs/evolution/runs/2026-10-12.md",
+  "source_reconciliation": {
+    "status": "implemented_pending_browser_and_isolated_auth_validation",
+    "account_dialog": "restored_in_source",
+    "icon_atlas": "49_regions_67_symbol_mappings_restored",
+    "real_account_actions_performed": false
+  }
 }

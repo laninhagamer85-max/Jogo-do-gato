@@ -59,3 +59,7 @@ Criar um ramo a partir desta revisão e trabalhar por PR, sem substituir `main` 
 6. Registrar testes por fase: dispositivo, dificuldade, bugs, recompensa e se o resultado veio de simulação ou de uma partida realmente concluída na conta online.
 
 As cinco referências originais continuam no registro de retomada do projeto. Não estão embutidas neste ramo; as mídias aqui são as usadas pela v7. Não declarar a implementação das novas referências como concluída.
+
+## Continuação de 12/10/2026
+
+Painel de conta, componente SVG do atlas e desenho Canvas dos itens/perigos foram restaurados na fonte de colaboração. Consulte `docs/evolution/runs/2026-10-12.md`. A implementação ainda aguarda validação real em navegador e conta isolada; não publicar o build padrão antes dessa conferência. A cópia v7 e o build de recuperação permanecem intactos.

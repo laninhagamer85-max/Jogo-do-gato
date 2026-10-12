@@ -1,3 +1,4 @@
+import { drawPetSymbol } from "./drawPetSymbol";
 import { GAME_ASSETS } from "./assets";
 import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface, type PlatformWorldItem } from "./platformerLevels";
 import type { PetProfile } from "./PetGame";
@@ -594,8 +595,7 @@ export class PlatformerEngine {
     ctx.shadowBlur = 0;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = '17px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
-    ctx.fillText(this.stage.mascot.collectibleIcon, x, item.y + bob + 1);
+    drawPetSymbol(ctx, this.stage.mascot.collectibleIcon, x, item.y + bob, 21);
     ctx.restore();
   }
 
@@ -677,8 +677,7 @@ export class PlatformerEngine {
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.font = '15px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
-    ctx.fillText(this.stage.mascot.hazardIcon, x + hazard.width / 2, hazard.y - 1);
+    drawPetSymbol(ctx, this.stage.mascot.hazardIcon, x + hazard.width / 2, hazard.y - 10, 19);
     ctx.fillStyle = "#e95671";
     ctx.strokeStyle = "#a8375d";
     ctx.lineWidth = 2;
