@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-12",
+  "updated_date": "2026-10-13",
   "timezone": "America/Sao_Paulo",
-  "status": "published_with_validation_limits",
+  "status": "implemented_pending_browser_validation",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "recovery/mobile-review-20261009",
     "pull_request": 4,
-    "base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
-    "implementation_commit": "524be68b1be8f3d001483e5e52785830b269ab86",
+    "base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
+    "implementation_commit": "b044f19da926f0b34247be34ab64a658921b064c",
     "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f"
   },
   "current_improvement": {
-    "id": "home-contact-shadows-and-responsive-framing",
-    "title": "Sombra de contato e enquadramento da casa",
+    "id": "stage-1-proportional-soil-depth",
+    "title": "Terra proporcional e profundidade nas bordas da fase 1",
     "implementation_status": "implemented",
     "acceptance_status": "browser_validation_pending"
   },
@@ -23,7 +23,7 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "last_observed_version": 10,
-    "attempted_in_this_cycle": true,
+    "attempted_in_this_cycle": false,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
     "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
@@ -34,9 +34,8 @@
   },
   "verification": {
     "typescript": "passed",
-    "vite_client_build": "passed",
-    "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
-    "production_qa_page_exclusion": "passed",
+    "vite_client_build": "passed_with_existing_large_chunk_warning",
+    "terrain_geometry_and_draw_commands": "passed_not_playtest",
     "browser": "not_run_control_browser_unavailable",
     "viewports": {
       "375x667": "not_tested",
@@ -45,9 +44,7 @@
       "844x390": "not_tested",
       "1366x768": "not_tested"
     },
-    "real_online_phases_completed_in_cycle": 0,
-    "account_save_isolation": "passed_fake_storage_only",
-    "atlas_integrity": "passed_original_png_hash_and_region_bounds"
+    "real_online_phases_completed_in_cycle": 0
   },
   "blockers": [
     {
@@ -56,20 +53,21 @@
     },
     {
       "code": "source_parity_validation_pending",
-      "detail": "Painel de conta e atlas restaurados na fonte; falta equivalência visual e teste de autenticação em perfil isolado antes de substituir v8."
+      "detail": "Painel de conta e atlas restaurados e publicados na v9/v10 sob autorização anterior; equivalência visual e autenticação isolada continuam pendentes."
     }
   ],
   "next_actions": [
-    "Conferir visualmente sombras, entrada da casa, troca de companheiro e rotação retrato/paisagem.",
-    "Continuar refinamento de terreno e patas na Aventura, com fase piloto."
+    "Validar entrada da Aventura e terreno da fase 1 em perfil isolado nos cinco tamanhos de tela, incluindo câmera, saltos e bordas.",
+    "Registrar tentativas, mortes, tempo e dificuldades do playtest real; publicar somente após aprovação.",
+    "Após validar a fase piloto, considerar expansão e animação das patas."
   ],
   "rollback": {
-    "code_base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
-    "instructions": "Conferir publicação concorrente e restaurar v9 pelo fluxo oficial se necessário. V8 também preservada. Sem reset de Git ou alteração de saves.",
-    "production_changed": true,
+    "code_base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
+    "instructions": "Nenhum deploy neste ciclo. Para retirar o piloto da fonte, reverter apenas o commit b044f19, preservando mudanças concorrentes. A v10 continua pública; versões anteriores permanecem disponíveis.",
+    "production_changed": false,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a"
   },
-  "latest_report": "docs/evolution/runs/2026-10-12.md",
+  "latest_report": "docs/evolution/runs/2026-10-13.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

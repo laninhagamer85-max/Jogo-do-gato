@@ -63,3 +63,7 @@ As cinco referências originais continuam no registro de retomada do projeto. N�
 ## Continuação de 12/10/2026
 
 Painel de conta, componente SVG do atlas e desenho Canvas dos itens/perigos foram restaurados na fonte de colaboração. Consulte `docs/evolution/runs/2026-10-12.md`. A implementação ainda aguarda validação real em navegador e conta isolada; não publicar o build padrão antes dessa conferência. A cópia v7 e o build de recuperação permanecem intactos.
+
+## Atualização de 13/10/2026
+
+O histórico acima descreve a recuperação anterior. A fonte recebeu o painel de conta e atlas, publicados na v9; a v10 acrescentou sombras/enquadramento da casa em 12/10. A equivalência visual e autenticação isolada permanecem pendentes. O build de release atual é `scripts/build-sites-release.mjs`; o build preservado da v7 continua como recuperação histórica. O piloto de terreno da fase 1 de 13/10 está apenas no ramo, sem deploy. Consultar `docs/evolution/runs/2026-10-13.md` antes de publicar.

@@ -1,23 +1,22 @@
 # Meu Pet Virtual — Web Agência AD
 
-Ramo de retomada e revisão móvel de 09/10/2026, preparado para colaboração com o Manus.
+Ramo de colaboração `recovery/mobile-review-20261009`, com o Manus, no PR #4.
 
 **Comece por [Retomada e instruções para o Manus](recovery/RETOMADA-MANUS.md).**
 
-O projeto reúne o código React/TypeScript recuperado, as 158 mídias da publicação e uma cópia íntegra da distribuição v7. A fonte recuperada é anterior à v7; as diferenças de ícones e painel de conta estão documentadas e ainda precisam ser conciliadas.
+O projeto reúne React/TypeScript, mídias da publicação e a distribuição v7 preservada. Painel de conta e atlas de ícones foram restaurados na fonte em 12/10/2026. A versão pública confirmada em 13/10/2026 é a **v10**, incluindo entrada compacta da Aventura e sombras/enquadramento da casa. A equivalência visual e autenticação em perfil isolado ainda precisam de validação real.
 
-- `pnpm dev`: cliente de desenvolvimento.
-- `/qa-review.html`: demonstração local da aventura, sem contas nem partidas reais.
+- `pnpm dev`: cliente de desenvolvimento; para Sites seguir as regras de preview com navegador suportado.
+- `/qa-review.html`: fixture local da Aventura, sem contas nem partidas reais; excluída da produção.
 - `pnpm check`: verificação TypeScript.
-- `pnpm build`: build do código editável, ainda sujeito à conciliação.
-- `pnpm build:recovery`: gera `out/` preservando a v7 e aplicando somente as correções móveis desta revisão.
-- `pnpm dev:server`: fluxo anterior com Express.
+- `pnpm build`: release estático da fonte editável com assets antigos preservados, via `scripts/build-sites-release.mjs`.
+- `pnpm build:recovery`: recuperação histórica da v7 com ajustes móveis; não inclui as melhorias recentes.
+- `pnpm dev:server` e `pnpm build:server`: fluxo anterior com Express.
 
-A revisão móvel foi publicada como versão 8 em 09/10/2026. As alterações de entrada da Aventura de 12/10/2026 estão somente na fonte editável e aguardam validação visual e conciliação com os recursos publicados. Não publicar o build normal antes dessas verificações. O build de recuperação não inclui o novo componente de entrada.
+A revisão de 13/10/2026 melhora proporções da terra e sombras das bordas apenas na fase 1. **Está somente na fonte, pendente de inspeção visual e playtest antes de publicar.**
 
-- `node --import tsx scripts/verify-adventure-entry.ts`: verifica seleção da próxima fase, replay e imutabilidade do progresso, sem navegador ou conta. Não executa as fases.
-- `docs/evolution/state.json` e `docs/evolution/runs/2026-10-12.md`: estado e limites da revisão.
+- `node --import tsx scripts/verify-adventure-entry.ts`: seleção da próxima fase, replay e imutabilidade do progresso; não joga as fases.
+- `node --import tsx scripts/verify-pilot-terrain.ts`: proporções, ancoragem na câmera, limites de desenho e isolamento do piloto; não substitui teste visual.
+- [Estado](docs/evolution/state.json) e [relatório atual](docs/evolution/runs/2026-10-13.md): testes, limites e próxima ação.
 
-Os 100 estágios ainda precisam de testes reais na conta de teste.
-
-![Revisão móvel da aventura em uma partida de demonstração](recovery/review-mobile-20261009.jpg)
+As 100 fases ainda precisam de auditoria gradual com playtests reais em perfil isolado.
