@@ -1,3 +1,4 @@
+import { drawPilotTerrain, drawPilotDepth, usesPilotTerrain } from "./pilotTerrain";
 import { drawPetSymbol } from "./drawPetSymbol";
 import { GAME_ASSETS } from "./assets";
 import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface, type PlatformWorldItem } from "./platformerLevels";
@@ -459,14 +460,18 @@ export class PlatformerEngine {
     ctx.fillRect(x, surface.y, width, height);
 
     if (this.terrainImage.complete && this.terrainImage.naturalWidth > 0) {
-      const tileWidth = 260;
-      const firstTile = Math.floor(surface.x / tileWidth) * tileWidth;
-      const grassHeight = Math.min(38, height);
-      for (let tileX = firstTile; tileX < surface.x + width; tileX += tileWidth) {
-        const screenX = tileX - this.cameraX;
-        ctx.drawImage(this.terrainImage, 0, 0, 1024, 190, screenX, surface.y, tileWidth + 1, grassHeight);
-        if (height > grassHeight) {
-          ctx.drawImage(this.terrainImage, 0, 165, 1024, 520, screenX, surface.y + grassHeight - 2, tileWidth + 1, height - grassHeight + 2);
+      if (usesPilotTerrain(this.stage.id)) {
+        drawPilotTerrain(ctx, this.terrainImage, surface, this.cameraX, this.width);
+      } else {
+        const tileWidth = 260;
+        const firstTile = Math.floor(surface.x / tileWidth) * tileWidth;
+        const grassHeight = Math.min(38, height);
+        for (let tileX = firstTile; tileX < surface.x + width; tileX += tileWidth) {
+          const screenX = tileX - this.cameraX;
+          ctx.drawImage(this.terrainImage, 0, 0, 1024, 190, screenX, surface.y, tileWidth + 1, grassHeight);
+          if (height > grassHeight) {
+            ctx.drawImage(this.terrainImage, 0, 165, 1024, 520, screenX, surface.y + grassHeight - 2, tileWidth + 1, height - grassHeight + 2);
+          }
         }
       }
     } else if (this.platformImage.complete && this.platformImage.naturalWidth > 0) {
@@ -478,6 +483,7 @@ export class PlatformerEngine {
     ctx.fillRect(x, surface.y, width, height);
     ctx.globalAlpha = 1;
     this.drawThemedTerrainTop(ctx, x, surface.y, width, height);
+    if (usesPilotTerrain(this.stage.id)) drawPilotDepth(ctx, surface, this.cameraX);
     ctx.restore();
   }
 
