@@ -38,3 +38,25 @@ describe('forest camera and contextual hints', () => {
     expect(state).toEqual(before);
   });
 });
+
+// Presentation geometry only; this does not replace touch/browser QA.
+describe('immersive exploration pilot', () => {
+  it('fills both panel dimensions while close and remains at least 48px per tile', () => {
+    for (const [w,h] of [[375,500],[844,260],[768,800],[1366,600]]) {
+      const view = forestView(w,h,{x:7,y:4});
+      expect(view.tile).toBeGreaterThanOrEqual(48);
+      expect(view.boardWidth).toBeGreaterThanOrEqual(w);
+      expect(view.boardHeight).toBeGreaterThanOrEqual(h);
+    }
+  });
+  it('allows independent inspection without moving the player or losing edge limits', () => {
+    const player = Object.freeze({x:2.5,y:2.5});
+    const close = forestView(375,500,player);
+    const remote = forestView(375,500,player,false,{x:14,y:8});
+    expect(remote.left).toBeLessThan(close.left);
+    expect(remote.top).toBeLessThan(close.top);
+    expect(remote.left + remote.boardWidth).toBeGreaterThanOrEqual(375);
+    expect(remote.top + remote.boardHeight).toBeGreaterThanOrEqual(500);
+    expect(player).toEqual({x:2.5,y:2.5});
+  });
+});

@@ -52,6 +52,7 @@ export type ForestGameState = {
   guards: ForestGuardState[];
   simMs: number;
   walkPhase: number;
+  walking: boolean;
   actions: number;
   steps: number;
   invulnerableUntil: number;
@@ -168,7 +169,7 @@ export function createForestGameState(chapter = 1, room: 1 | 2 = 1, actions = 0,
       const start = guard.route[0]; const next = guard.route[1] ?? start;
       return { id: guard.id, ...center(start), routeIndex: 0, from: start, to: next, progress: 0, lured: false, settled: false };
     }),
-    simMs: 0, walkPhase: 0, actions, steps, invulnerableUntil: 0, bumps: 0, message: "Explore com calma. O objetivo desta sala aparece acima do mapa.", chapterComplete: false,
+    simMs: 0, walkPhase: 0, walking: false, actions, steps, invulnerableUntil: 0, bumps: 0, message: "Explore com calma. O objetivo desta sala aparece acima do mapa.", chapterComplete: false,
   };
 }
 
@@ -344,8 +345,9 @@ export function stepForestGame(previous: ForestGameState, input: ForestInput, de
   const nowCell = cell(Math.floor(player.x), Math.floor(player.y));
   const stepCrossed = !sameCell(wasCell, nowCell);
   if (stepCrossed) state = { ...state, steps: state.steps + 1 };
-  const walkPhase = moved ? state.walkPhase + dt * 10 : state.walkPhase * Math.max(0, 1 - dt * 12);
-  state = { ...state, player, facing, walkPhase, message: moved ? state.message : state.message };
+  const distance = Math.hypot(player.x - previous.player.x, player.y - previous.player.y);
+  const walkPhase = state.walkPhase + distance / 1.4;
+  state = { ...state, player, facing, walkPhase, walking: moved && distance > 0.00001, message: moved ? state.message : state.message };
 
   const keysToCollect = spec.keys.filter((key) => !state.collectedKeys.includes(key.id) && Math.hypot(player.x - (key.x + 0.5), player.y - (key.y + 0.5)) < 0.38);
   if (keysToCollect.length) {

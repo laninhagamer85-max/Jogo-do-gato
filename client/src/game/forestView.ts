@@ -3,13 +3,13 @@ import { FOREST_MAP, getForestRoom, type ForestGameState } from './forestPuzzle'
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
 /** Camera is presentation only; puzzle coordinates never depend on viewport size. */
-export function forestView(width: number, height: number, player: { x: number; y: number }, overview = false) {
+export function forestView(width: number, height: number, player: { x: number; y: number }, overview = false, focus = player) {
   const fit = Math.min(width / FOREST_MAP.columns, height / FOREST_MAP.rows);
-  const tile = overview ? fit : Math.max(fit, Math.min(48, width / 7, height / 6));
+  const tile = overview ? fit : Math.max(48, width / 8, height / 7);
   const boardWidth = tile * FOREST_MAP.columns;
   const boardHeight = tile * FOREST_MAP.rows;
-  const left = boardWidth <= width ? (width - boardWidth) / 2 : -clamp(player.x * tile - width / 2, 0, boardWidth - width);
-  const top = boardHeight <= height ? (height - boardHeight) / 2 : -clamp(player.y * tile - height / 2, 0, boardHeight - height);
+  const left = boardWidth <= width ? (width - boardWidth) / 2 : -clamp(focus.x * tile - width / 2, 0, boardWidth - width);
+  const top = boardHeight <= height ? (height - boardHeight) / 2 : -clamp(focus.y * tile - height / 2, 0, boardHeight - height);
   return { tile, boardWidth, boardHeight, left, top };
 }
 

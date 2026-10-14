@@ -43,7 +43,9 @@ describe("Bosque dos Caminhos campaign map", () => {
     const walking = stepForestGame(initial, { right: true }, 0.05).state;
     expect(walking.walkPhase).toBeGreaterThan(initial.walkPhase);
     const settled = stepForestGame(walking, {}, 0.05).state;
-    expect(settled.walkPhase).toBeLessThan(walking.walkPhase);
+    expect(settled.walkPhase).toBe(walking.walkPhase);
+    expect(walking.walking).toBe(true);
+    expect(settled.walking).toBe(false);
     expect(settled.walkPhase).toBeGreaterThanOrEqual(0);
   });
 

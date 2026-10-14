@@ -1,103 +1,86 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-14",
+  "updated_date": "2026-10-12",
   "timezone": "America/Sao_Paulo",
-  "status": "published_visual_acceptance_pending",
-  "active_run": null,
+  "status": "preparing_authorized_release",
+  "active_run": "2026-10-14-walk-camera-pilot",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "fix/game-ux-controls-20261014",
-    "pull_request": 8,
-    "base_commit": "d57861a58ad16d905d044ab8ffceb952b69ef7bb",
-    "implementation_commit": "7ab60750f47220e5b8642c387bf72368153b8219",
-    "release_commit": "7080924fe9a151036cbc81e3ba802e4e4d34c34b",
-    "published_source_branch": "feat/pet-motion-20261014",
-    "published_source_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
-    "published_source_pr": 6
+    "branch": "recovery/mobile-review-20261009",
+    "pull_request": 4,
+    "base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
+    "implementation_commit": "524be68b1be8f3d001483e5e52785830b269ab86",
+    "release_commit": "8f6065e0cde1b465635fe2e68d2b44b5302be8d8"
   },
   "current_improvement": {
-    "id": "game-ux-thumb-controls-exit-safety-pet-consistency",
+    "id": "home-contact-shadows-and-responsive-framing",
+    "title": "Sombra de contato e enquadramento da casa",
     "implementation_status": "implemented",
     "acceptance_status": "browser_validation_pending"
-  },
-  "in_review_update": {
-    "id": "bosque-dos-caminhos-final-qa",
-    "status": "pr_7_open_pending_integration_decision",
-    "branch": "feat/forest-path-chapter1-20261014",
-    "base_branch": "feat/pet-motion-20261014",
-    "base_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
-    "tested_commit": "1a9f31e325cebe5fbb707783810922ec2c5def72",
-    "pull_request": 7,
-    "pull_request_url": "https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7",
-    "report": "docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md",
-    "verification": {
-      "typescript": "passed",
-      "offline_tests": "73/73_passed_12_files",
-      "build": "passed_with_chunk_warning_839KB_1322KB",
-      "qa_bundle": "fixture_and_telemetry_strings_absent",
-      "browser_playthrough": "6_rooms_ui_driven_synthetic_inputs_not_human",
-      "full_playthrough_viewport": "390x844",
-      "all_chapter_unlocks": "organic; all_three_marked_complete",
-      "real_accounts_or_saves_accessed": false,
-      "physical_mobile": "not_tested",
-      "authenticated_staging_persistence": "not_tested"
-    }
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 14,
+    "last_observed_version": 9,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_4f86c4a6f1c8819191d750d5298c0905",
-    "deployment_id": "appgdep_6acff95e29988191b4f7f76bc7150708",
-    "site_commit": "7ab48d7f0d0670d7fbad6eba1e191d0f9fb08ed8",
-    "published_at": "2026-10-14T18:51:45-03:00",
-    "authorization": "David explicitly authorized publication of PR8 with visual QA pending and requested version on opening."
+    "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
+    "deployment_id": "appgdep_6acd10eb20708191913501884dea82f7",
+    "site_commit": "0f5bfc3158285ba4a3ff180e2e402a1dca00cad8",
+    "published_at": "2026-10-12T13:55:28-03:00"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "81/81_passed",
-    "build": "passed_existing_chunk_warning",
-    "browser": "live_onboarding_version_14_confirmed_screenshot; gameplay_and_responsive_acceptance_pending",
-    "physical_mobile": "not_run",
-    "real_playthroughs": 0
+    "vite_client_build": "passed",
+    "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
+    "production_qa_page_exclusion": "passed",
+    "browser": "not_run_control_browser_unavailable",
+    "viewports": {
+      "375x667": "not_tested",
+      "375x812": "not_tested",
+      "390x844": "not_tested",
+      "844x390": "not_tested",
+      "1366x768": "not_tested"
+    },
+    "real_online_phases_completed_in_cycle": 0,
+    "account_save_isolation": "passed_fake_storage_only",
+    "atlas_integrity": "passed_original_png_hash_and_region_bounds"
   },
   "blockers": [
     {
-      "code": "browser_visual_gate",
-      "detail": "No control-browser capability; managed Sites forbids alternative preview browser. Actual layout, modal focus/multitouch and animation acceptance remain pending."
+      "code": "browser_qa_unavailable",
+      "detail": "Managed Linux sem skill/control-browser disponível. Não foi iniciado servidor de preview nem instalado/improvisado navegador."
+    },
+    {
+      "code": "source_parity_validation_pending",
+      "detail": "Painel de conta e atlas restaurados na fonte; falta equivalência visual e teste de autenticação em perfil isolado antes de substituir v8."
     }
   ],
   "next_actions": [
-    "Validate gameplay, touch controls, exit dialog, pet animation and required mobile/tablet/desktop viewports in isolated supported browser.",
-    "Use v13 rollback if regression confirmed; keep recurring task paused."
+    "Conferir visualmente sombras, entrada da casa, troca de companheiro e rotação retrato/paisagem.",
+    "Continuar refinamento de terreno e patas na Aventura, com fase piloto."
   ],
   "rollback": {
+    "code_base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
+    "instructions": "Se uma regressão exigir retorno, publicar a versão salva v8 pelo fluxo oficial no mesmo Site; conferir primeiro se não houve publicação concorrente. Não resetar Git nem alterar dados de jogadores.",
     "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2cca64c99c4881919ba593b887dcceee",
-    "instructions": "Restore saved v13 through official Sites flow after checking concurrent deployments; preserve saves."
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad"
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-v14-release.md",
-  "latest_review_report": "docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md",
-  "continuation": {
-    "checked_date": "2026-10-14",
-    "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",
-    "recurrence": "paused_missing_required_browser",
-    "tests_this_cycle": [
-      "terrain_geometry_and_draw_commands_passed",
-      "adventure_entry_101_input_states_passed",
-      "typescript_passed"
-    ],
-    "build_this_cycle": "not_repeated_unchanged_source_last_pass_2026-10-13",
-    "resume_condition": "Disponibilizar control-browser no ambiente de Sites, retomar validação isolada e reativar a rotina após resolver o bloqueio.",
-    "release_resolution": "Manus external browser acceptance resolves stage-1 gate for exact runtime; recurrence remains paused."
-  },
+  "latest_report": "docs/evolution/runs/2026-10-14-walk-camera-pilot.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
     "icon_atlas": "49_regions_67_symbol_mappings_restored",
     "real_account_actions_performed": false
+  },
+  "pilot_review": {
+    "status": "implemented_awaiting_visual_validation",
+    "variant": "menino-prata",
+    "scope": "walk atlas, immersive controls, map inspection",
+    "publication": "not_attempted_v14_preserved",
+    "offline_tests": 84
   }
 }

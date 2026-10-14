@@ -1,3 +1,4 @@
+import { PET_WALK_PILOT, walkFrame } from "./petWalkAtlas";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import "@babylonjs/core/Shaders/default.vertex.js";
@@ -116,6 +117,18 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
   const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
   let characterTexture = kittenMaterial.diffuseTexture as Texture;
+  let activeCharacter = saved.characterId;
+  let homeWalkPhase = 0;
+  let homeWalkTexture: Texture | null = null;
+  const prepareWalkTexture = () => {
+    homeWalkTexture?.dispose(); homeWalkTexture = null;
+    if (activeCharacter !== 'menino-prata') return;
+    homeWalkTexture = new Texture(PET_WALK_PILOT, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
+    homeWalkTexture.hasAlpha = true;
+    homeWalkTexture.uScale = .25; homeWalkTexture.vScale = .25;
+    homeWalkTexture.vOffset = 0; // Last atlas row: three-quarter right-facing walk.
+  };
+  prepareWalkTexture();
   kitten.position.set(0, -1.12, 0);
   let currentSkin = saved.skin;
   const applySkin = (skinId: string) => {
@@ -291,6 +304,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const profile = (event as PetProfileEvent).detail;
     const gender = profile?.gender;
     const characterId = profile?.characterId;
+    activeCharacter = characterId;
+    homeWalkPhase = 0; prepareWalkTexture();
     if (characterId && GAME_ASSETS.characters[characterId]) {
       const texture = new Texture(GAME_ASSETS.characters[characterId], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
       texture.hasAlpha = true;
@@ -329,16 +344,21 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const distance = Math.hypot(dx, dy);
     if (!sleeping && distance > 0.045) {
       const step = Math.min(distance, delta * 0.00215);
+      homeWalkPhase += step / 1.6;
       positionX += (dx / distance) * step;
       positionY += (dy / distance) * step;
       walking = true;
     } else {
-      positionX = targetX;
-      positionY = targetY;
+      if (!sleeping) { positionX = targetX; positionY = targetY; }
       walking = false;
     }
+    const pilotWalking = walking && activeCharacter === 'menino-prata' && homeWalkTexture?.isReady();
+    if (pilotWalking && homeWalkTexture) homeWalkTexture.uOffset = walkFrame(homeWalkPhase) / 4;
+    const visibleTexture = pilotWalking ? homeWalkTexture : characterTexture;
+    kittenMaterial.diffuseTexture = visibleTexture;
+    kittenMaterial.emissiveTexture = visibleTexture;
     const elapsed = now - reactionStart;
-    const wave = Math.sin(now / (sleeping ? 1200 : walking ? 145 : 520)) * (sleeping ? 0.026 : walking ? 0.045 : 0.075);
+    const wave = Math.sin(now / (sleeping ? 1200 : walking ? 145 : 520)) * (sleeping ? 0.026 : walking ? 0 : 0.075);
     let jump = 0;
     let moveX = 0;
     const reactionDuration = reactionKind === "select" ? 1550 : 1000;
@@ -376,7 +396,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
         window.dispatchEvent(new CustomEvent("pet:hitbox", { detail: hitbox }));
       }
     }
-    kitten.rotation.z = (walking ? (targetX < positionX ? 1 : -1) * 0.13 : 0) + Math.sin(now / 1450) * (sleeping ? 0.012 : 0.028) + (reactionKind === "level" && elapsed < 1250 ? Math.sin(now / 58) * 0.045 : 0);
+    kitten.rotation.z = (walking && !pilotWalking ? (targetX < positionX ? 1 : -1) * 0.13 : 0) + Math.sin(now / 1450) * (sleeping ? 0.012 : 0.028) + (reactionKind === "level" && elapsed < 1250 ? Math.sin(now / 58) * 0.045 : 0);
     const pulse = 1 + Math.max(0, 1 - elapsed / (reactionKind === "select" ? 1450 : 900)) * (reactionKind === "level" ? 0.045 : reactionKind === "select" ? 0.12 : 0.02);
     const scale = (petWidth / 3.35) * pulse;
     const blinkPhase = (now % 4100);
@@ -384,7 +404,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const requestedBlinkElapsed = now - blinkTriggerStart;
     const requestedBlink = requestedBlinkElapsed >= 0 && requestedBlinkElapsed < 260 ? Math.sin((requestedBlinkElapsed / 260) * Math.PI) : 0;
     const blink = Math.max(idleBlink, requestedBlink);
-    kitten.scaling.set(scale * (1 + blink * 0.07), scale * (1 - blink * 0.055), 1);
+    kitten.scaling.set((pilotWalking && dx < 0 ? -1 : 1) * scale * (1 + blink * 0.07), scale * (1 - blink * 0.055), 1);
     const accessoryScale = petWidth / 3.35;
     boyHat.mesh.position.set(positionX + moveX - 0.12 * accessoryScale, positionY + wave + jump + 1.42 * accessoryScale, -0.22);
     boyHat.mesh.rotation.z = kitten.rotation.z * 0.65;
@@ -413,6 +433,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       window.removeEventListener("pet:decorations", onDecorations);
       window.removeEventListener("pet:move", onMove);
       window.removeEventListener("pet:blink", onPetBlink as EventListener);
+      homeWalkTexture?.dispose();
       scene.onBeforeRenderObservable.remove(renderObserver);
       scene.dispose();
     },
