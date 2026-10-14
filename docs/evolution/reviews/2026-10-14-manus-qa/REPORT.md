@@ -2,6 +2,12 @@
 
 ## Decisão
 
+**Atualização após continuação no PR #5: APROVADO o aceite funcional da fase 1.** Uma partida guiada pelo agente chegou normalmente ao portal com 3 vidas, sem teleporte, invulnerabilidade ou chamada de vitória; foram verificados diálogo, 195 moedas, Torre de escalada, duas sardinhas, mapa e início orgânico da fase 2 por toque emulado. A física não foi alterada. **Sem publicação ou merge; não é aprovação das 100 fases.**
+
+Leia o [relatório completo de aceite da fase 1](ACCEPTANCE-STAGE1.md), com commits, métricas, investigação das mortes, 50 testes offline e pendências restantes. **QA-04 está resolvida neste recorte.** Integração escolhida, aparelho real, conclusão integral por toque e auditorias históricas fora da Aventura continuam pendentes.
+
+### Registro histórico da primeira rodada, preservado abaixo
+
 **REPROVADA para publicação nesta etapa.** A revisão original do PR #4 apresenta uma falha de rotação que reposiciona o gato de uma plataforma elevada no chão inferior e pode causar dano injusto. A correção foi implementada e revalidada em ramo próprio, mas a conclusão da fase 1 e o fluxo de vitória/recompensa ainda não foram comprovados por uma partida concluída.
 
 **Candidato corrigido: aprovação técnica parcial, não autorização de publicação.** Layout, terreno amostrado, apoio na rotação, controles, pausa e HUD foram verificados. Não houve deploy, merge, force-push, login, acesso a contas ou alteração de saves reais. A referência pública permanece a **v10**, conforme a solicitação e o estado do repositório; o site de produção não foi aberto para jogar nem modificado.
@@ -73,7 +79,7 @@ Essa medição verifica o alinhamento matemático do apoio com a silhueta desenh
 | QA-01 | Alta / bloqueadora | Em 390×844, gato apoiado na plataforma flutuante em x≈1.240,47, pés em y=202,03. Ao girar para 844×390, o motor procurava a primeira superfície pelo centro X, selecionava o chão inferior, causava colisão com inimigo e retornava a x=66 com 2 vidas. | Corrigida: preservar o índice da superfície efetiva de apoio, com a mesma sobreposição usada na física, inclusive nas duas bordas. Reteste 390→844→390 manteve plataforma flutuante, X e 3 vidas. |
 | QA-02 | Alta, identificada por código/regressão | `visibilitychange` chamava `setPaused(document.hidden)` e podia desfazer a pausa explícita ao voltar à aba. Não foi apresentado como teste em celular real. | Corrigida: visibilidade só limpa controles ao ocultar e reinicia o relógio de quadro; a pausa escolhida pelo jogador permanece. Teste unitário e ciclo de visibilidade **simulado** no navegador passaram. |
 | QA-03 | Baixa / estado visual | Efeito React reiniciava o HUD ao entrar em `playing`, inclusive ao retomar uma pausa. | Corrigida: resets permanecem em início/replay, não na retomada. Navegador coletou 1 moeda por salto e confirmou `1/28` imediatamente após continuar. |
-| QA-04 | Bloqueadora de aceite, não bug de física comprovado | Nenhum dos percursos medidos atingiu o portal. O guiado corrigido perdeu duas vidas em encontros com inimigos e a última em queda no vão; os roteiros automatizados também falharam. | Pendente: playtest concluído da fase 1 e revisão do fluxo de vitória/recompensa. Não alterar dificuldade silenciosamente nem substituir esse aceite por teleporte ou chamada direta de vitória. |
+| QA-04 | Bloqueadora inicial de aceite, não bug de física comprovado | Nenhum dos percursos da primeira rodada atingiu o portal. **Retificação pela telemetria na continuação: o guiado corrigido perdeu uma vida em inimigo e duas em quedas**, não duas em inimigos; os roteiros automatizados também falharam. | **Resolvida na seção 12** por conclusão normal da fase 1 e fluxo orgânico de vitória/recompensa/mapa/fase 2. A física não foi alterada. |
 
 Durante a implementação intermediária, a revisão independente e a observação do navegador detectaram remoção inadvertida do guard do assistente `autoplay`. Foi corrigida em commit normal `b9353d4`; o estado final preserva o opt-in DEV existente. Um teste de navegador confirmou que o gato **não se move sozinho sem `autoplay=1`**. Ensaios nessa versão intermediária foram invalidados e não entram na matriz de aceite ou contagem de percursos abaixo.
 
@@ -164,3 +170,18 @@ Os scripts de navegador do pacote utilizam Python Playwright com conexão CDP ao
 - PR #4 continua aberto com HEAD `b60d71857036e750476eb491b782e14f74d50e55` após a criação do PR #5.
 - Vídeo curto: **19 segundos**, MP4/H.264, 640×480, sem áudio. Cortes do vídeo original entre 31–40 s e do percurso corrigido entre 12–22 s; resolução normalizada antes dos cortes para preservar a rotação sem artefatos de exportação.
 - Decisão final permanece **reprovação para publicação**, com correções e evidências prontas para revisão e pendência de conclusão da fase 1.
+
+## 12. Continuação — aceite da fase 1 resolvido
+
+A reprovação e os seis percursos acima descrevem a **rodada inicial**. A continuação solicitada pelo usuário acrescentou uma tentativa completa guiada no commit `c65876826dd54d53586781278f30b60f29875c8a`: **1 conclusão, 0 perdas de vida, 3 vidas no portal, 33,5053 s de motor, 623,9965 s de parede**, 13 moedas e 2 itens coletados. O jogo concedeu **2 estrelas, 195 moedas, Torre de escalada e Sardinha crocante ×2**. O mapa passou a fase 2 por conclusão orgânica; o botão principal, acionado por toque emulado, iniciou a fase 2 sem modificar progresso.
+
+A investigação demonstrou contatos laterais válidos nos fracassos do bot e um salto tardio após perder apoio no vão de 85 px. O reteste lançou em x=4.562,34 e pousou em x=4.789,29 com 3 vidas. **Nenhuma mudança de física/dificuldade foi feita.** As 800 amostras apoiadas têm diferença máxima de 0 px e nenhuma superfície ausente.
+
+O commit **`4df546807c789f2475ca0381ca97df4cb97095e5`** acrescenta 11 testes de contratos existentes e um helper de QA local. TypeScript, **50/50 testes offline**, invariantes, paridade falsa, Python e build passaram. O helper corrigido foi smoke-testado sem vencer fase. O runtime permanece idêntico ao commit jogado. A fase 2 apenas foi iniciada e pausada; não foi concluída.
+
+- [Aceite completo e pendências restantes](ACCEPTANCE-STAGE1.md).
+- [Vídeo editado da conclusão](evidence/acceptance/Meu-Pet-Conclusao-Fase-1.mp4), quadro completo, sem aceleração; pausas longas removidas.
+- [Resumo verificável e hashes](evidence/acceptance/acceptance-summary.json).
+- [Vitória](evidence/acceptance/organic-victory.png), [decoração/itens](evidence/acceptance/organic-decoration-reward.png), [moedas](evidence/acceptance/organic-coin-reward.png), [mapa orgânico](evidence/acceptance/organic-map-return.png), [fase 2 por toque](evidence/acceptance/organic-touch-phase2.png).
+
+**QA-04 resolvida; aprovação funcional limitada da fase 1, sem autorização de publicação.** PR #4 preservado. PR #5 continua em rascunho, sem merge. A v10 permanece a referência pública, não modificada.
