@@ -76,6 +76,7 @@ export class PlatformerEngine {
   private portalImage = new Image();
   private roomImage = new Image();
   private walkCycle = 0;
+  private groundTravel = 0;
   private walkAtlas = new Image();
   private idleImage = new Image();
   private observer: ResizeObserver | null = null;
@@ -269,6 +270,7 @@ export class PlatformerEngine {
       }
     }
 
+    this.groundTravel = wasGrounded && this.player.grounded ? Math.abs(this.player.x - previousX) : 0;
     if (wasGrounded && this.player.grounded) this.walkCycle = (this.walkCycle + Math.abs(this.player.x - previousX) * Math.PI * 2 / 108) % (Math.PI * 2);
 
     for (const coin of this.layout.coins) {
@@ -792,7 +794,7 @@ export class PlatformerEngine {
       ctx.save();
       ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT);
       ctx.scale(this.player.facing < 0 ? -1 : 1, 1);
-      if (pose.state === 'idle' || pose.state === 'land') ctx.drawImage(this.idleImage, -36, -68, 72, 68);
+      if (this.player.grounded && this.groundTravel < .001) ctx.drawImage(this.idleImage, -36, -68, 72, 68);
       else drawWalkFrame(ctx, this.walkAtlas, 0, this.player.grounded ? this.walkCycle / (Math.PI * 2) : 0.25, -49, -82, 98, 90);
       ctx.restore(); return;
     }

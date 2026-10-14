@@ -332,3 +332,18 @@ describe('consistent pet renderer and distance-driven gait', () => {
     h.engine.dispose();
   });
 });
+
+describe('silver kitten atlas pilot', () => {
+  it('returns to the original seated art when held movement is blocked', () => {
+    const h=harness(); h.engine.setSoundEnabled(false); h.stand(0);
+    Object.assign(h.internals.walkAtlas,{complete:true,naturalWidth:1254,naturalHeight:1254});
+    Object.assign(h.internals.idleImage,{complete:true,naturalWidth:768,naturalHeight:768});
+    h.engine.setInput('right',true); h.internals.update(1/60,17);
+    h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
+    h.internals.player.x=0; h.engine.setInput('right',false); h.engine.setInput('left',true);
+    h.internals.update(1/60,34); h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+    h.engine.dispose();
+  });
+});

@@ -362,7 +362,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     let jump = 0;
     let moveX = 0;
     const reactionDuration = reactionKind === "select" ? 1550 : 1000;
-    if (!sleeping && elapsed >= 0 && elapsed < reactionDuration) {
+    if (!sleeping && reactionKind !== "walk" && elapsed >= 0 && elapsed < reactionDuration) {
       const progress = elapsed / reactionDuration;
       if (reactionKind === "level") {
         jump = Math.max(0, Math.sin(progress * Math.PI * 4)) * (1 - progress) * 0.52;

@@ -79,8 +79,10 @@
   "pilot_review": {
     "status": "implemented_awaiting_visual_validation",
     "variant": "menino-prata",
-    "scope": "walk atlas, immersive controls, map inspection",
+    "scope": "silver walk across three modes, camera safe region, inspection input guards",
     "publication": "not_attempted_v14_preserved",
-    "offline_tests": 84
+    "offline_tests": 87,
+    "branch": "fix/pet-walk-camera-20261014",
+    "pull_request": 9
   }
 }

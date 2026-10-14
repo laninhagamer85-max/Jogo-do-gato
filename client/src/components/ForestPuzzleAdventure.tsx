@@ -36,13 +36,13 @@ function drawCell(ctx: CanvasRenderingContext2D, x: number, y: number, size: num
   ctx.fillStyle = color;
   ctx.fillRect(x * size, y * size, size + 0.5, size + 0.5);
 }
-function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, state: ForestGameState, pet: HTMLImageElement, backgrounds: Map<number, HTMLImageElement>, now: number, overview: boolean, focus?: { x: number; y: number }, walkAtlas?: HTMLImageElement) {
+function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, state: ForestGameState, pet: HTMLImageElement, backgrounds: Map<number, HTMLImageElement>, now: number, overview: boolean, focus?: { x: number; y: number }, walkAtlas?: HTMLImageElement, controlsHeight = 0) {
   const spec = getForestRoom(state.chapter, state.room);
   const theme = CHAPTER_THEMES[state.chapter] ?? CHAPTER_THEMES[1];
-  const { tile, boardWidth, boardHeight, left, top } = forestView(width, height, state.player, overview, focus);
+  const { tile, boardWidth, boardHeight, left, top } = forestView(width, height, state.player, overview, focus, { top: 44, bottom: controlsHeight + 8 });
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = theme.background;
-  ctx.fillRect(left, top, boardWidth, boardHeight);
+  ctx.fillRect(0, 0, width, height);
   const background = backgrounds.get(state.chapter);
   if (background?.complete && background.naturalWidth > 0) {
     const scale = Math.max(boardWidth / background.naturalWidth, boardHeight / background.naturalHeight);
@@ -206,6 +206,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   const [showHelp, setShowHelp] = useState(false);
   const [uiMessage, setUiMessage] = useState("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const controlsElementRef = useRef<HTMLElement>(null);
   const stateRef = useRef<ForestGameState | null>(null);
   const heldRef = useRef<Held>({ ...EMPTY_HELD });
   const pendingActionRef = useRef(false);
@@ -250,6 +251,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   }, []);
   const setOverlaySafe = useCallback((value: Overlay) => { overlayRef.current = value; setOverlay(value); }, []);
   const stopHeld = useCallback(() => {
+    dragRef.current = null;
     heldRef.current = { ...EMPTY_HELD }; controlsRef.current.clear();
     pendingActionRef.current = false; pendingUseRef.current = false; lastFrameRef.current = 0;
     for (const timer of tapTimersRef.current) window.clearTimeout(timer);
@@ -273,15 +275,16 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
     const pet = new Image(); pet.src = GAME_ASSETS.characters[characterId];
     const backgrounds = new Map<number, HTMLImageElement>();
     for (const chapter of FOREST_CHAPTERS) { const image = new Image(); image.src = chapter.image; backgrounds.set(chapter.id, image); }
-    let width = 1; let height = 1; let dpr = 1;
+    let width = 1; let height = 1; let dpr = 1; let controlsHeight = 0;
     const resize = () => {
+      controlsHeight = controlsElementRef.current?.getBoundingClientRect().height ?? 0;
       const rect = canvas.getBoundingClientRect(); width = Math.max(1, rect.width); height = Math.max(1, rect.height);
       dpr = Math.min(2, window.devicePixelRatio || 1); canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     const draw = (now: number) => {
       const current = gameRef.current;
-      if (current) drawRoom(ctx, width, height, current, pet, backgrounds, now, overviewRef.current, cameraFocusRef.current ?? undefined, walkAtlas);
+      if (current) drawRoom(ctx, width, height, current, pet, backgrounds, now, overviewRef.current, cameraFocusRef.current ?? undefined, walkAtlas, controlsHeight);
       else { ctx.clearRect(0, 0, width, height); }
     };
     const loop = (now: number) => {
@@ -317,7 +320,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
       draw(now); animationRef.current = window.requestAnimationFrame(loop);
     };
     const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(resize) : null;
-    resize(); observer?.observe(canvas); window.addEventListener("resize", resize);
+    resize(); observer?.observe(canvas); if (controlsElementRef.current) observer?.observe(controlsElementRef.current); window.addEventListener("resize", resize);
     animationRef.current = window.requestAnimationFrame(loop);
     return () => {
       window.cancelAnimationFrame(animationRef.current); observer?.disconnect(); window.removeEventListener("resize", resize);
@@ -340,8 +343,8 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
       else if (["arrowdown", "s"].includes(key)) { controlsRef.current.keyDown(key, "down"); syncHeld(); }
       else if (["arrowleft", "a"].includes(key)) { controlsRef.current.keyDown(key, "left"); syncHeld(); }
       else if (["arrowright", "d"].includes(key)) { controlsRef.current.keyDown(key, "right"); syncHeld(); }
-      else if (!event.repeat && ["e", " "].includes(key)) pendingActionRef.current = true;
-      else if (!event.repeat && ["f", "q"].includes(key)) pendingUseRef.current = true;
+      else if (!event.repeat && ["e", " "].includes(key)) triggerAction(false);
+      else if (!event.repeat && ["f", "q"].includes(key)) triggerAction(true);
       else if (!event.repeat && ["escape", "p"].includes(key) && stateRef.current) {
         setOverlaySafe(overlayRef.current === "pause" ? null : "pause"); stopHeld();
       }
@@ -487,7 +490,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
             </div>
           </div>}
         </div>
-        <aside className="forest-game-controls" aria-label="Controles do jogo">
+        <aside ref={controlsElementRef} className="forest-game-controls" aria-label="Controles do jogo">
           <div className="forest-game-pet"><img src={petImage} alt="" /><span><small>COM VOCÊ</small><strong>{petName}</strong></span></div>
           <div className="forest-status-row"><span className={game.collectedKeys.length ? "done" : ""}><KeyRound size={14} /> {game.collectedKeys.length} chave(s)</span><span className={game.carriedObjectId ? "done" : ""}><span aria-hidden="true">▰</span> {game.carriedObjectId ? "carregando" : "patinhas livres"}</span></div>
           <div className="forest-dpad" aria-label="Controles de movimento">

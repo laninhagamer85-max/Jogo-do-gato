@@ -60,3 +60,20 @@ describe('immersive exploration pilot', () => {
     expect(player).toEqual({x:2.5,y:2.5});
   });
 });
+
+describe('camera avoids overlaid controls and HUD', () => {
+  it('keeps the pet centre above controls at the bottom edge after rotation', () => {
+    for (const [w,h,bottom] of [[375,500,140],[844,240,112],[768,800,150],[1366,600,150]]) {
+      const bottomInset = Math.min(bottom,h*.45);
+      for (const y of [.5,4.5,7.5]) {
+        const v = forestView(w,h,{x:7,y},false,undefined,{top:44,bottom});
+        const sy = y*v.tile+v.top;
+        expect(sy).toBeGreaterThan(44);
+        expect(sy).toBeLessThan(h-bottomInset);
+      }
+      const overview=forestView(w,h,{x:7,y:4},true,undefined,{top:44,bottom});
+      expect(overview.top).toBeGreaterThanOrEqual(44);
+      expect(overview.top+overview.boardHeight).toBeLessThanOrEqual(h-bottomInset+.001);
+    }
+  });
+});

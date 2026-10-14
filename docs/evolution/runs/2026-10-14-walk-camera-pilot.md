@@ -17,7 +17,7 @@ Asset: client/public/manus-storage/menino-prata-walk-pilot-v1.png. Gerado como n
 Consultadas em 14/10/2026: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events (captura/liberação/cancelamento por dedo); https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/pointer-events (overlay permite passagem fora de botões).
 
 ## Verificação
-TypeScript passou. 84 testes offline passaram, incluindo preenchimento da câmera, foco independente, interrupção da caminhada e seleção de quadros. Integração Firebase não aprovada: credencial de staging ausente. Nenhuma credencial solicitada ou alterada. Build aprovado com aviso existente de chunks grandes. Testes são simulados, não partidas.
+TypeScript passou. 87 testes offline passaram, incluindo preenchimento da câmera, foco independente, interrupção da caminhada e seleção de quadros. Integração Firebase não aprovada: credencial de staging ausente. Nenhuma credencial solicitada ou alterada. Build aprovado com aviso existente de chunks grandes. Testes são simulados, não partidas.
 
 Ambiente gerenciado sem control-browser: não iniciar preview nem navegador alternativo. A skill exige inspeção de animação antes de publicar. Sem playtest, vídeo, celular físico ou medições de ergonomia/FPS. Não declarar aprovação em retrato/paisagem. Precisam ser conferidos cortes dos frames, alinhamento das patas, fidelidade à v12, salto, câmera e botões encobrindo objetos, multitouch, arraste e retorno após rotação.
 
@@ -28,3 +28,11 @@ Nenhum deploy nesta revisão; v14 permanece no ar. Rollback da fonte: retirar ap
 
 ## Extensão autorizada para Minha Casa
 Reutiliza atlas prata no deslocamento já existente por pet:move. Ao chegar ao destino/dormir volta à textura original sentada. Frame por distância, direção horizontal espelhada, sem oscilação de salto na caminhada. Sem movimento automático adicional, sem alteração dos botões/cuidados/economia. Babylon UV, virada, contato no chão e WebGL ainda exigem QA visual. Demais variantes inalteradas.
+
+## Continuação — revisão de segurança da câmera e entrada
+- Área útil da câmera desconta altura real dos controles (ResizeObserver) e HUD: o pet e a visão geral ficam acima do overlay, inclusive junto à borda inferior. Canvas permanece ocupando o painel.
+- E/F durante inspeção passam pelo mesmo bloqueio das ações de toque, evitando ação pendente inesperada ao retomar. Drag é limpo com blur/pausa.
+- Aventura usa deslocamento real para voltar à pose sentada quando o comando segue pressionado na borda.
+- Minha Casa não aplica mais reação de salto ao comando de caminhar.
+- Novos testes simulados: área útil com rotação/visão geral; fase imóvel em colisão; seleção da imagem sentada na borda com input mantido. TypeScript e 87 testes passaram. Novo build aprovado, com aviso existente de chunks grandes.
+- Navegador suportado continua ausente; sem preview alternativo ou publicação. Não ampliar conteúdo antes do aceite visual do piloto.
