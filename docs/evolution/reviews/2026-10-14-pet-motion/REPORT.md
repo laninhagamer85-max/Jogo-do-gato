@@ -2,6 +2,7 @@
 
 **Estado:** protótipo funcional em revisão — **não publicado e ainda não aprovado para release**
 **Ramo:** `feat/pet-motion-20261014`, derivado do PR #5
+**Revisão:** [PR #6 (draft)](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/6)
 **Commit de runtime testado:** `0338794415abfecdb2d65177a12ec65e18046e7e`
 **Ambiente:** fixture local `qa-review.html`, Browser Sandbox, perfil/partida sintéticos e em memória. Sem login, backend de contas, saves reais ou alteração da versão pública.
 
