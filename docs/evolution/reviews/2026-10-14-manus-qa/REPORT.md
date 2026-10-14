@@ -157,3 +157,10 @@ pnpm build
 Os scripts de navegador do pacote utilizam Python Playwright com conexão CDP ao navegador de QA; seus caminhos de trabalho estão explicitados no código. Não executar esses roteiros contra produção nem fornecer logins/saves reais.
 
 **Nenhuma publicação realizada. Nenhuma rotina reativada. Nenhum merge automático.**
+
+## 11. Entrega confirmada
+
+- **PR separado [#5 — QA: corrigir apoio na rotação e preservar pausa da Aventura](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/5)**, aberto em rascunho, com base no ramo de revisão. Sem merge.
+- PR #4 continua aberto com HEAD `b60d71857036e750476eb491b782e14f74d50e55` após a criação do PR #5.
+- Vídeo curto: **19 segundos**, MP4/H.264, 640×480, sem áudio. Cortes do vídeo original entre 31–40 s e do percurso corrigido entre 12–22 s; resolução normalizada antes dos cortes para preservar a rotação sem artefatos de exportação.
+- Decisão final permanece **reprovação para publicação**, com correções e evidências prontas para revisão e pendência de conclusão da fase 1.
