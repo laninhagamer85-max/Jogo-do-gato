@@ -74,7 +74,7 @@ export class PlatformerEngine {
   private terrainImage = new Image();
   private portalImage = new Image();
   private roomImage = new Image();
-  private idleImage = new Image();
+  private walkCycle = 0;
   private observer: ResizeObserver | null = null;
   private resizeFallback: () => void;
   private keyDown: (event: KeyboardEvent) => void;
@@ -96,7 +96,6 @@ export class PlatformerEngine {
     this.terrainImage.src = GAME_ASSETS.platformer.terrain;
     this.portalImage.src = GAME_ASSETS.platformer.portal;
     this.roomImage.src = GAME_ASSETS.levels[this.stage.world - 1] ?? GAME_ASSETS.levels[0];
-  this.idleImage.src = GAME_ASSETS.characters[profile.characterId] ?? GAME_ASSETS.characters["menino-prata"];
     this.resizeFallback = () => this.resize(canvas);
     this.keyDown = (event) => this.handleKey(event, true);
     this.keyUp = (event) => this.handleKey(event, false);
@@ -238,6 +237,7 @@ export class PlatformerEngine {
     this.invulnerableFor = Math.max(0, this.invulnerableFor - dt);
     const wasGrounded = this.player.grounded;
     const previousBottom = this.player.y + PLAYER_HEIGHT;
+    const previousX = this.player.x;
     const direction = Number(this.input.right) - Number(this.input.left);
     this.player.vx = direction * MOVE_SPEED;
     if (direction) this.player.facing = direction;
@@ -263,6 +263,8 @@ export class PlatformerEngine {
         if (!wasGrounded) this.landingFor = 0.16;
       }
     }
+
+    if (wasGrounded && this.player.grounded) this.walkCycle = (this.walkCycle + Math.abs(this.player.x - previousX) * Math.PI * 2 / 108) % (Math.PI * 2);
 
     for (const coin of this.layout.coins) {
       if (!coin.collected && Math.abs(this.player.x + PLAYER_WIDTH / 2 - coin.x) < 30 && Math.abs(this.player.y + PLAYER_HEIGHT / 2 - coin.y) < 37) {
@@ -777,26 +779,11 @@ export class PlatformerEngine {
       verticalSpeed: this.player.vy,
       elapsed: this.elapsed,
       landingFor: this.landingFor,
+      walkCycle: this.walkCycle,
     });
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
-    // The old running illustration is a single still pose; drawing it every frame made the
-    // pet look frozen. Keep the selected character art for idle and use the articulated
-    // Canvas cat below whenever it is moving, airborne, or landing.
-    if (pose.state === "idle" && this.idleImage.complete && this.idleImage.naturalWidth > 0) {
-      ctx.save();
-      ctx.fillStyle = "rgba(26,37,48,.2)";
-      ctx.beginPath();
-      const heightFromGround = Math.max(0, -this.player.vy) * 0.012;
-      ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, Math.max(12, 31 - heightFromGround * 2), 6, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - pose.bobY);
-      ctx.scale((this.player.facing < 0 ? -1 : 1) * pose.scaleX, pose.scaleY);
-      ctx.rotate(pose.rotation);
-      ctx.drawImage(this.idleImage, -36, -68, 72, 68);
-      ctx.restore();
-      return;
-    }
-    const runCycle = this.elapsed * 13.5;
+    // One renderer for all states: no portrait/cartoon swap at rest.
+    const runCycle = this.walkCycle;
     ctx.save();
     ctx.fillStyle = "rgba(26,37,48,.18)";
     ctx.beginPath();
@@ -806,7 +793,7 @@ export class PlatformerEngine {
     ctx.scale((this.player.facing < 0 ? -1 : 1) * pose.scaleX, pose.scaleY);
     ctx.rotate(pose.rotation);
     const appearance = this.catAppearance();
-    const stride = pose.state === "run" ? Math.sin(this.elapsed * 13.5) * 7 : pose.state === "idle" ? Math.sin(this.elapsed * 2.1) * 1.4 : -4;
+    const stride = pose.state === "run" ? Math.sin(runCycle) * 7 : pose.state === "idle" ? 0 : -4;
 
     // Tail, behind the body. The wave reads as a run cycle rather than a seated portrait.
     ctx.lineCap = "round";
@@ -834,8 +821,11 @@ export class PlatformerEngine {
       ctx.ellipse(startX + swing * 1.22 + 2, -1.8, 5, 3.2, 0, 0, Math.PI * 2);
       ctx.fill();
     };
-    legStroke(-12, -stride, appearance.shadow);
-    legStroke(10, stride, appearance.fur);
+    // Diagonal pairs alternate; rear legs remain a slightly darker plane.
+    legStroke(-14, -stride, appearance.shadow);
+    legStroke(8, stride, appearance.shadow);
+    legStroke(-10, stride, appearance.fur);
+    legStroke(12, -stride, appearance.fur);
 
     const body = ctx.createLinearGradient(-18, -37, 20, -10);
     body.addColorStop(0, appearance.furLight);
