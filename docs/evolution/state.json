@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-14",
   "timezone": "America/Sao_Paulo",
-  "status": "blocked_browser_validation",
+  "status": "published_prototype_with_accepted_limits",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,70 +11,78 @@
     "pull_request": 4,
     "base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
     "implementation_commit": "b044f19da926f0b34247be34ab64a658921b064c",
-    "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f"
+    "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f",
+    "published_source_branch": "feat/pet-motion-20261014",
+    "published_source_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
+    "published_source_pr": 6
   },
   "current_improvement": {
-    "id": "stage-1-proportional-soil-depth",
-    "title": "Terra proporcional e profundidade nas bordas da fase 1",
-    "implementation_status": "implemented",
-    "acceptance_status": "browser_validation_pending"
+    "id": "pet-motion-forest-exploration-prototype",
+    "implementation_status": "published",
+    "acceptance_status": "user_accepted_prototype_limits_external_browser_QA"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 10,
-    "attempted_in_this_cycle": false,
+    "last_observed_version": 12,
+    "attempted_in_this_cycle": true,
     "status": "succeeded",
-    "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d24da8bdb9788191b29c16f725343df1",
-    "deployment_id": "appgdep_6acd48ca34a08191b60020ff7a334fc0",
-    "site_commit": "02c867b9ea4b63b32159a914dda8e35bb0aed403",
-    "published_at": "2026-10-12T17:53:50-03:00"
+    "authorization": "David relayed explicit approval of chain #4–#6 including prototype limitations on 2026-10-14.",
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
+    "deployment_id": "appgdep_6acfb4c402f08191966514c9a43d6ad4",
+    "site_commit": "47a07c607879a443b2fe9b2686795e118a2495ba",
+    "published_at": "2026-10-14T16:59:10.706299+00:00"
   },
   "verification": {
     "typescript": "passed",
-    "vite_client_build": "passed_with_existing_large_chunk_warning",
-    "terrain_geometry_and_draw_commands": "passed_not_playtest",
-    "browser": "not_run_control_browser_unavailable",
+    "offline_tests": "60/60_passed",
+    "build": "passed_existing_chunk_warning",
+    "browser": "Manus isolated Browser Sandbox, tested runtime 0338794; subsequent diff documentation only",
+    "local_browser": "unavailable_not_repeated",
+    "phase1": "1_agent_guided_completion_0_deaths_keyboard",
+    "phase2": "organic_unlock_and_touch_start_only",
     "viewports": {
-      "375x667": "not_tested",
-      "375x812": "not_tested",
-      "390x844": "not_tested",
-      "844x390": "not_tested",
-      "1366x768": "not_tested"
+      "375x667": "external_layout_passed_not_full_playthrough_each",
+      "375x812": "external_layout_passed_not_full_playthrough_each",
+      "390x844": "external_layout_passed_not_full_playthrough_each",
+      "844x390": "external_layout_passed_not_full_playthrough_each",
+      "1366x768": "external_layout_passed_not_full_playthrough_each"
     },
-    "real_online_phases_completed_in_cycle": 0
+    "online_phases_completed": 0,
+    "physical_mobile": "not_tested",
+    "firebase_integration": "not_run_staging_credentials_absent",
+    "forest_puzzle": "1_room_solved_21_arrow_inputs_external_browser"
   },
   "blockers": [
     {
-      "code": "browser_qa_unavailable",
-      "detail": "Managed Linux sem skill/control-browser disponível. Não foi iniciado servidor de preview nem instalado/improvisado navegador."
-    },
-    {
-      "code": "source_parity_validation_pending",
-      "detail": "Painel de conta e atlas restaurados e publicados na v9/v10 sob autorização anterior; equivalência visual e autenticação isolada continuam pendentes."
+      "code": "remaining_coverage",
+      "detail": "Physical mobile/touch completion and isolated account authentication remain untested; local managed browser absent. External Manus browser evidence accepted for unchanged runtime."
     }
   ],
   "next_actions": [
-    "Validar entrada da Aventura e terreno da fase 1 em perfil isolado nos cinco tamanhos de tela, incluindo câmera, saltos e bordas.",
-    "Registrar tentativas, mortes, tempo e dificuldades do playtest real; publicar somente após aprovação.",
-    "Após validar a fase piloto, considerar expansão e animação das patas."
+    "Test experimental puzzle on physical mobile and inspect D-pad/dialog in landscape.",
+    "Develop complete original pet walk frames and validate before replacing prototype poses.",
+    "Keep recurrence paused until separately resumed."
   ],
   "rollback": {
-    "code_base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
-    "instructions": "Nenhum deploy neste ciclo. Para retirar o piloto da fonte, reverter apenas o commit b044f19, preservando mudanças concorrentes. A v10 continua pública; versões anteriores permanecem disponíveis.",
-    "production_changed": false,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a"
+    "production_changed": true,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
+    "instructions": "Restore v11 through official Sites flow after checking concurrent deployments; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-14.md",
+  "latest_report": "docs/evolution/runs/2026-10-14-sites-prototype-release.md",
   "continuation": {
     "checked_date": "2026-10-14",
     "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",
     "recurrence": "paused_missing_required_browser",
-    "tests_this_cycle": ["terrain_geometry_and_draw_commands_passed", "adventure_entry_101_input_states_passed", "typescript_passed"],
+    "tests_this_cycle": [
+      "terrain_geometry_and_draw_commands_passed",
+      "adventure_entry_101_input_states_passed",
+      "typescript_passed"
+    ],
     "build_this_cycle": "not_repeated_unchanged_source_last_pass_2026-10-13",
-    "resume_condition": "Disponibilizar control-browser no ambiente de Sites, retomar validação isolada e reativar a rotina após resolver o bloqueio."
+    "resume_condition": "Disponibilizar control-browser no ambiente de Sites, retomar validação isolada e reativar a rotina após resolver o bloqueio.",
+    "release_resolution": "Manus external browser acceptance resolves stage-1 gate for exact runtime; recurrence remains paused."
   },
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
