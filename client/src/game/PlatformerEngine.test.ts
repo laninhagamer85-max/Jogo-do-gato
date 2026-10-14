@@ -122,3 +122,110 @@ describe("PlatformerEngine resize and explicit pause", () => {
     h.engine.dispose();
   });
 });
+
+// Synthetic unit fixtures only. They are not live browser runs or acceptance victories.
+describe("PlatformerEngine existing gameplay contracts", () => {
+  it("accepts a grounded jump once, and releases only excessive upward velocity", () => {
+    const h = harness(); h.engine.setSoundEnabled(false); h.stand(0);
+    h.engine.setInput("jump", true); h.internals.update(0, 1);
+    expect(h.internals.player.vy).toBe(-655);
+    expect(h.internals.player.grounded).toBe(false);
+    expect(h.internals.jumpLatched).toBe(true);
+    h.internals.update(1 / 60, 17);
+    expect(h.internals.player.vy).toBeGreaterThan(-655);
+    h.engine.setInput("jump", false);
+    expect(h.internals.player.vy).toBe(-360);
+    expect(h.internals.jumpLatched).toBe(false);
+    h.internals.player.vy = -250;
+    h.engine.setInput("jump", false);
+    expect(h.internals.player.vy).toBe(-250);
+    h.engine.dispose();
+  });
+
+  it("accepts jump before leaving the final edge, but not after walking off it", () => {
+    for (const jumpFirst of [true, false]) {
+      const h = harness(); h.engine.setSoundEnabled(false);
+      const index = h.internals.layout.surfaces.findIndex((s: any) => s.x === 4301.400000000001);
+      const surface = h.internals.layout.surfaces[index];
+      h.stand(index, surface.x + surface.width - 9.5);
+      h.engine.setInput("right", true);
+      if (!jumpFirst) h.internals.update(1 / 60, 17);
+      h.engine.setInput("jump", true); h.internals.update(1 / 60, 34);
+      expect(h.internals.player.vy < 0).toBe(jumpFirst);
+      expect(h.internals.player.grounded).toBe(false);
+      h.engine.dispose();
+    }
+  });
+
+  it("lands at a visible edge only while the contracted 7px margin overlaps", () => {
+    for (const inside of [true, false]) {
+      const h = harness(); h.engine.setSoundEnabled(false);
+      const s = h.internals.layout.surfaces[0];
+      Object.assign(h.internals.player, { x: s.x + s.width - (inside ? 10 : 7), y: s.y - 62, vy: 240, grounded: false });
+      h.internals.update(1 / 60, 17);
+      expect(h.internals.player.grounded).toBe(inside);
+      if (inside) expect(h.internals.player.y + 60).toBe(s.y);
+      h.engine.dispose();
+    }
+  });
+
+  it("stomps on descending contact from above without losing a heart", () => {
+    const h = harness(); h.engine.setSoundEnabled(false);
+    const enemy = h.internals.layout.enemies[0];
+    Object.assign(h.internals.player, { x: enemy.x - 26, y: enemy.y - 20 + 1 - 60, vy: 300, grounded: false });
+    h.internals.update(1 / 60, 17);
+    expect(h.internals.defeatedEnemyIds.has(enemy.id)).toBe(true);
+    expect(h.internals.hearts).toBe(3);
+    expect(h.internals.player.vy).toBeCloseTo(-655 * 0.52);
+    h.engine.dispose();
+  });
+
+  it("treats lower/lateral enemy contact as damage, not as a stomp", () => {
+    const h = harness(); h.engine.setSoundEnabled(false);
+    const enemy = h.internals.layout.enemies[0];
+    Object.assign(h.internals.player, { x: enemy.x - 26, y: enemy.y - 50, vy: 0, grounded: false });
+    h.internals.update(1 / 60, 17);
+    expect(h.internals.defeatedEnemyIds.has(enemy.id)).toBe(false);
+    expect(h.internals.hearts).toBe(2);
+    expect(h.internals.player.x).toBe(h.internals.layout.start.x);
+    expect(h.internals.invulnerableFor).toBe(1.45);
+    h.engine.dispose();
+  });
+
+  it("loses a heart and respawns when falling below height plus 110", () => {
+    const h = harness(); h.engine.setSoundEnabled(false);
+    h.internals.player.y = h.internals.height + 111;
+    h.internals.player.grounded = false;
+    h.internals.update(0, 1);
+    expect(h.internals.hearts).toBe(2);
+    expect(h.internals.player.x).toBe(h.internals.layout.start.x);
+    expect(h.internals.player.vy).toBe(-120);
+    expect(h.callbacks.onLose).not.toHaveBeenCalled();
+    h.engine.dispose();
+  });
+
+  it("counts a coin and a world item only once", () => {
+    const h = harness(); h.engine.setSoundEnabled(false);
+    const coin = h.internals.layout.coins[0];
+    Object.assign(h.internals.player, { x: coin.x - 26, y: coin.y - 30 });
+    h.internals.update(0, 1); h.internals.update(0, 2);
+    expect(h.internals.coinsCollected).toBe(1);
+    const token = h.internals.layout.worldItems[0];
+    Object.assign(h.internals.player, { x: token.x - 26, y: token.y - 30 });
+    h.internals.update(0, 3); h.internals.update(0, 4);
+    expect(h.internals.worldItemsCollected).toBe(1);
+    expect(h.callbacks.onCollectible).toHaveBeenCalledTimes(1);
+    expect(h.callbacks.onCollectible).toHaveBeenCalledWith(1, h.internals.layout.worldItems.length);
+    h.engine.dispose();
+  });
+
+  it("crossing the portal invokes the normal callback and stops future frames", () => {
+    const h = harness(); h.engine.setSoundEnabled(false);
+    // Position is synthetic in this stubbed unit test, never in the browser playthrough.
+    h.internals.player.x = h.internals.layout.goalX - 52;
+    h.internals.update(0, 1); h.internals.frame(17);
+    expect(h.callbacks.onWin).toHaveBeenCalledTimes(1);
+    expect(h.callbacks.onWin).toHaveBeenCalledWith(h.internals.coinsCollected, 3, h.internals.layout.coins.length, 0, h.internals.layout.worldItems.length);
+    expect(h.internals.running).toBe(false);
+  });
+});
