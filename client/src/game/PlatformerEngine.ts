@@ -4,6 +4,7 @@ import { GAME_ASSETS } from "./assets";
 import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface, type PlatformWorldItem } from "./platformerLevels";
 import type { PetProfile } from "./PetGame";
 import { playPlatformSfx } from "./platformerAudio";
+import { getPetMotionPose } from "./platformerAnimation";
 
 type InputAction = "left" | "right" | "jump";
 export type PlatformerHud = { hearts: number; coins: number; totalCoins: number; worldItems: number; totalWorldItems: number; progress: number; checkpoint: boolean };
@@ -60,6 +61,7 @@ export class PlatformerEngine {
   private defeatedEnemyIds = new Set<number>();
   private checkpointReached = false;
   private invulnerableFor = 0;
+  private landingFor = 0;
   private paused = false;
   private running = false;
   private jumpLatched = false;
@@ -73,6 +75,7 @@ export class PlatformerEngine {
   private portalImage = new Image();
   private roomImage = new Image();
   private playerImage = new Image();
+  private idleImage = new Image();
   private observer: ResizeObserver | null = null;
   private resizeFallback: () => void;
   private keyDown: (event: KeyboardEvent) => void;
@@ -95,6 +98,7 @@ export class PlatformerEngine {
     this.portalImage.src = GAME_ASSETS.platformer.portal;
     this.roomImage.src = GAME_ASSETS.levels[this.stage.world - 1] ?? GAME_ASSETS.levels[0];
     this.playerImage.src = GAME_ASSETS.platformer.cats[profile.characterId] ?? GAME_ASSETS.platformer.cats["menino-prata"];
+    this.idleImage.src = GAME_ASSETS.characters[profile.characterId] ?? GAME_ASSETS.characters["menino-prata"];
     this.resizeFallback = () => this.resize(canvas);
     this.keyDown = (event) => this.handleKey(event, true);
     this.keyUp = (event) => this.handleKey(event, false);
@@ -232,7 +236,9 @@ export class PlatformerEngine {
 
   private update(dt: number, now: number) {
     this.elapsed += dt;
+    this.landingFor = Math.max(0, this.landingFor - dt);
     this.invulnerableFor = Math.max(0, this.invulnerableFor - dt);
+    const wasGrounded = this.player.grounded;
     const previousBottom = this.player.y + PLAYER_HEIGHT;
     const direction = Number(this.input.right) - Number(this.input.left);
     this.player.vx = direction * MOVE_SPEED;
@@ -256,6 +262,7 @@ export class PlatformerEngine {
         this.player.y = surface.y - PLAYER_HEIGHT;
         this.player.vy = 0;
         this.player.grounded = true;
+        if (!wasGrounded) this.landingFor = 0.16;
       }
     }
 
@@ -766,21 +773,28 @@ export class PlatformerEngine {
 
   private drawPlayer(ctx: CanvasRenderingContext2D) {
     const x = this.player.x - this.cameraX;
-    const moving = this.player.grounded && Math.abs(this.player.vx) > 0;
-    const runCycle = this.elapsed * 17;
-    const bounce = moving ? Math.abs(Math.sin(runCycle)) * 2.2 : this.player.grounded ? Math.sin(this.elapsed * 2.1) * 0.7 : 0;
-    const bodyLean = moving ? -0.045 : this.player.grounded ? 0 : this.player.vy < 0 ? -0.13 : 0.1;
+    const pose = getPetMotionPose({
+      grounded: this.player.grounded,
+      horizontalSpeed: this.player.vx,
+      verticalSpeed: this.player.vy,
+      elapsed: this.elapsed,
+      landingFor: this.landingFor,
+    });
+    const runCycle = this.elapsed * 13.5;
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
-    if (this.playerImage.complete && this.playerImage.naturalWidth > 0) {
+    const sprite = pose.sprite === "rest" ? this.idleImage : this.playerImage;
+    if (sprite.complete && sprite.naturalWidth > 0) {
       ctx.save();
       ctx.fillStyle = "rgba(26,37,48,.2)";
       ctx.beginPath();
-      ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, Math.max(14, 31 - Math.max(0, -this.player.vy) * .012), 6, 0, 0, Math.PI * 2);
+      const heightFromGround = Math.max(0, -this.player.vy) * 0.012;
+      ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, Math.max(12, 31 - heightFromGround * 2), 6, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - bounce);
-      ctx.scale(this.player.facing < 0 ? -1 : 1, moving ? 1 + Math.sin(runCycle * 2) * .018 : 1);
-      ctx.rotate(bodyLean);
-      ctx.drawImage(this.playerImage, -55, -72, 110, 73);
+      ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - pose.bobY);
+      ctx.scale((this.player.facing < 0 ? -1 : 1) * pose.scaleX, pose.scaleY);
+      ctx.rotate(pose.rotation);
+      if (pose.sprite === "rest") ctx.drawImage(sprite, -36, -68, 72, 68);
+      else ctx.drawImage(sprite, -55, -72, 110, 73);
       ctx.restore();
       return;
     }
@@ -789,11 +803,11 @@ export class PlatformerEngine {
     ctx.beginPath();
     ctx.ellipse(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT + 5, Math.max(14, 25 - Math.max(0, -this.player.vy) * 0.012), 6, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - bounce);
-    ctx.scale(this.player.facing < 0 ? -1 : 1, 1);
-    ctx.rotate(bodyLean);
+    ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - pose.bobY);
+    ctx.scale((this.player.facing < 0 ? -1 : 1) * pose.scaleX, pose.scaleY);
+    ctx.rotate(pose.rotation);
     const appearance = this.catAppearance();
-    const stride = moving ? Math.sin(runCycle) * 7 : this.player.grounded ? Math.sin(this.elapsed * 2.1) * 1.4 : -4;
+    const stride = pose.state === "run" ? Math.sin(this.elapsed * 13.5) * 7 : pose.state === "idle" ? Math.sin(this.elapsed * 2.1) * 1.4 : -4;
 
     // Tail, behind the body. The wave reads as a run cycle rather than a seated portrait.
     ctx.lineCap = "round";
@@ -913,7 +927,7 @@ export class PlatformerEngine {
       ctx.fill();
     }
 
-    if (moving) {
+    if (pose.state === "run") {
       ctx.globalAlpha = 0.42;
       ctx.strokeStyle = "#fff2be";
       ctx.lineWidth = 2;
