@@ -98,7 +98,11 @@ export class PlatformerEngine {
     this.resizeFallback = () => this.resize(canvas);
     this.keyDown = (event) => this.handleKey(event, true);
     this.keyUp = (event) => this.handleKey(event, false);
-    this.visibilityChange = () => this.setPaused(document.hidden);
+    this.visibilityChange = () => {
+      // Visibility suspends frames, but must not override the player's explicit pause.
+      if (document.hidden) this.input = { left: false, right: false, jump: false };
+      this.lastFrame = 0;
+    };
 
     this.resize(canvas);
     if (typeof ResizeObserver !== "undefined") {
@@ -167,6 +171,13 @@ export class PlatformerEngine {
     const oldHeight = this.height;
     const isFirstResize = oldHeight <= 1;
     const wasGrounded = this.player.grounded;
+    // A floating platform may share X with ground below. Preserve the actual support,
+    // including edge landings where the player's centre is outside the platform.
+    const supportIndex = wasGrounded ? this.layout.surfaces.findIndex((surface) =>
+      this.player.x + PLAYER_WIDTH - 7 > surface.x &&
+      this.player.x + 7 < surface.x + surface.width &&
+      Math.abs(this.player.y + PLAYER_HEIGHT - surface.y) < 2,
+    ) : -1;
     const rect = canvas.getBoundingClientRect();
     this.width = Math.max(1, rect.width);
     this.height = Math.max(1, rect.height);
@@ -185,7 +196,7 @@ export class PlatformerEngine {
       this.player.grounded = false;
     } else if (!wasGrounded) this.player.y *= this.height / oldHeight;
     if (!isFirstResize && wasGrounded) {
-      const surface = this.findSurfaceAt(this.player.x + PLAYER_WIDTH / 2);
+      const surface = supportIndex >= 0 ? this.layout.surfaces[supportIndex] : undefined;
       if (surface) this.player.y = surface.y - PLAYER_HEIGHT;
     }
     this.cameraX = Math.max(0, Math.min(this.layout.worldWidth - this.width, this.player.x - this.width * 0.34));

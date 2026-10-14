@@ -168,11 +168,6 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
 
   useEffect(() => {
     if (phase !== "playing") return;
-    setHud(START_HUD);
-  }, [phase, stageId, attempt]);
-
-  useEffect(() => {
-    if (!qaAutoPilot || phase !== "playing") return;
     let jumpReleaseTimer: number | null = null;
     const interval = window.setInterval(() => {
       const engine = engineRef.current;
