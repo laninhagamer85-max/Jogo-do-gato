@@ -21,6 +21,29 @@
     "implementation_status": "published",
     "acceptance_status": "user_accepted_prototype_limits_external_browser_QA"
   },
+  "in_review_update": {
+    "id": "bosque-dos-caminhos-final-qa",
+    "status": "pr_7_open_pending_integration_decision",
+    "branch": "feat/forest-path-chapter1-20261014",
+    "base_branch": "feat/pet-motion-20261014",
+    "base_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
+    "tested_commit": "1a9f31e325cebe5fbb707783810922ec2c5def72",
+    "pull_request": 7,
+    "pull_request_url": "https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7",
+    "report": "docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md",
+    "verification": {
+      "typescript": "passed",
+      "offline_tests": "73/73_passed_12_files",
+      "build": "passed_with_chunk_warning_839KB_1322KB",
+      "qa_bundle": "fixture_and_telemetry_strings_absent",
+      "browser_playthrough": "6_rooms_ui_driven_synthetic_inputs_not_human",
+      "full_playthrough_viewport": "390x844",
+      "all_chapter_unlocks": "organic; all_three_marked_complete",
+      "real_accounts_or_saves_accessed": false,
+      "physical_mobile": "not_tested",
+      "authenticated_staging_persistence": "not_tested"
+    }
+  },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -61,8 +84,10 @@
     }
   ],
   "next_actions": [
-    "Test experimental puzzle on physical mobile and inspect D-pad/dialog in landscape.",
-    "Develop complete original pet walk frames and validate before replacing prototype poses.",
+    "Review the separate Bosque PR; keep v12 live and do not merge or publish without an explicit decision.",
+    "Test controls, rotation, safe areas and audio on a physical mobile device.",
+    "Validate versioned progress migration/persistence with an isolated staging profile.",
+    "Decide whether production requires full four-direction sprite sheets instead of procedural walk cadence.",
     "Keep recurrence paused until separately resumed."
   ],
   "rollback": {
@@ -71,6 +96,7 @@
     "instructions": "Restore v11 through official Sites flow after checking concurrent deployments; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-14-sites-prototype-release.md",
+  "latest_review_report": "docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md",
   "continuation": {
     "checked_date": "2026-10-14",
     "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",

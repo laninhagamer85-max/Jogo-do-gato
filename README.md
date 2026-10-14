@@ -10,7 +10,7 @@ A versão pública mais recente observada no Site existente é a **v12**, public
 
 A atualização **Bosque dos Caminhos** está em branch própria, derivada do runtime publicado na v12. O plano é oferecer três capítulos originais com duas salas cada, exploração top-down, puzzles gentis, movimento visível do pet, áudio original e progresso versionado por perfil. A Aventura lateral continua disponível e não é substituída.
 
-**Esta atualização ainda não foi publicada.** Os PRs #4–#6 permanecem preservados; o Bosque está em branch e PR separados. Não fazer merge, force-push ou deploy nesta rodada. Consulte o [plano](docs/evolution/plans/2026-10-14-bosque-dos-caminhos.md), o [TODO](TODO.md), o [estado da evolução](docs/evolution/state.json) e o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md).
+**Esta atualização ainda não foi publicada.** Os PRs #4–#6 permanecem preservados; o Bosque está no [PR #7](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7), separado e baseado no PR #6. Não fazer merge, force-push ou deploy nesta rodada. Consulte o [plano](docs/evolution/plans/2026-10-14-bosque-dos-caminhos.md), o [TODO](TODO.md), o [estado da evolução](docs/evolution/state.json) e o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md).
 
 ## Desenvolvimento e validação
 

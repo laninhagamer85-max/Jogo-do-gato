@@ -89,3 +89,8 @@ As linhas de QA/pendências da seção acima registravam o ponto anterior à con
 - Seleção/layout foram medidos em **375×667, 375×812, 390×844, 844×390 e 1366×768**; o playthrough completo foi em 390×844. TypeScript, **73 testes offline**, build e `git diff --check` passaram. O build não contém páginas QA nem strings/atributos de telemetria; segue o aviso de chunks maiores que 500 kB. O clipe MP4 de 6,65 s é silencioso e serve como evidência visual.
 - Permanecem pendentes: validação em aparelho físico, persistência/migração em perfil de staging e decisão sobre spritesheets direcionais completos para a etapa de produção. A animação procedural de caminhada é aceita apenas como estado do protótipo até essa decisão.
 - A v12 permanece no Site existente. Os PRs #4–#6 seguem preservados; esta atualização será proposta em PR separado contra `feat/pet-motion-20261014`, sem merge nem deploy automático. Consulte o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md) e as [evidências](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/evidence/).
+
+
+### Atualização após abertura do PR — 14/10/2026
+
+O PR [#7 — Bosque dos Caminhos](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7) está **aberto** contra `feat/pet-motion-20261014`, head do PR #6. O head testado é `1a9f31e325cebe5fbb707783810922ec2c5def72`. PRs #4–#6 não foram modificados; não houve merge nem publicação desta atualização. A v12 segue no Site existente até decisão explícita.
