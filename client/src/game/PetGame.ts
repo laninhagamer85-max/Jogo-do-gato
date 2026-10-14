@@ -1,5 +1,6 @@
 import { DECORATIONS, getDecorationLockReason, getDecorationStageId, type DecorationId } from "./decorations";
 import { PLATFORM_MASCOTS, getPlatformMascot, type PlatformMascotId } from "./platformerLevels";
+import { createInitialForestProgress, normalizeForestProgress } from "./forestProgress";
 
 export { DECORATIONS, getDecorationLockReason, getDecorationStageId } from "./decorations";
 export type { DecorationDefinition, DecorationId } from "./decorations";
@@ -62,6 +63,7 @@ export type GameState = {
   roomDecorations: Record<string, DecorationPlacement[]>;
   gifts: SurpriseGift[];
   platformProgress: PlatformProgress;
+  forestPathProgress: Record<string, unknown>;
 };
 
 export const MAX_LEVEL = 10;
@@ -104,6 +106,7 @@ export const INITIAL_GAME_STATE: GameState = {
   roomDecorations: {},
   gifts: [],
   platformProgress: { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} },
+  forestPathProgress: createInitialForestProgress(),
 };
 
 export const PET_CHARACTERS: Array<{ id: PetCharacterId; gender: PetGender; name: string; description: string; icon: string }> = [
@@ -201,6 +204,7 @@ export function createInitialGameState(): GameState {
     roomDecorations: {},
     gifts: [],
     platformProgress: { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} },
+    forestPathProgress: createInitialForestProgress(),
   };
 }
 
@@ -226,6 +230,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     return Number.isFinite(number) ? clamp(number, min, max) : fallback;
   };
   const platformProgress = normalizePlatformProgress(parsed.platformProgress);
+  const forestProgress = normalizeForestProgress(parsed.forestPathProgress);
   const earnedWorldMascots = PLATFORM_MASCOTS.filter((mascot) => platformProgress.completedStages.includes(mascot.world * 10)).map((mascot) => mascot.id);
   const ownedCompanions = Array.from(new Set([...rawOwnedCompanions, ...earnedWorldMascots]));
   const active = isCompanionId(parsed.activeCompanionId) && ownedCompanions.includes(parsed.activeCompanionId) ? parsed.activeCompanionId : null;
@@ -299,6 +304,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     roomDecorations,
     gifts,
     platformProgress,
+    forestPathProgress: forestProgress.supported ? forestProgress.progress : parsed.forestPathProgress as Record<string, unknown>,
   };
 }
 

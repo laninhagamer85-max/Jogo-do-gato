@@ -25,6 +25,7 @@ import {
 } from "@/game/PetGame";
 import { CAMPAIGN_LEVELS, getCampaignLevel, MINI_GAMES, type MiniGameId } from "@/game/levels";
 import { getPlatformMascot, PLATFORM_MASCOTS } from "@/game/platformerLevels";
+import { completeForestChapter, normalizeForestProgress } from "@/game/forestProgress";
 import { playCompanionVoice, playMatchSound, playPetVoice, stopPetVoice, type PetVoiceCue } from "@/game/audio";
 import { GAME_ASSETS } from "@/game/assets";
 import { loadPlatformAudioMix, savePlatformAudioMix, setPlatformAudioMix, type PlatformAudioMix } from "@/game/platformerAudio";
@@ -888,6 +889,11 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
       onGoToHouse={closeAdventure}
       onCompleteTutorial={completeAdventureTutorial}
       onCompleteStage={completeAdventureStage}
+      onCompleteForestChapter={(chapter, actions) => setGame((current) => {
+        const parsed = normalizeForestProgress(current.forestPathProgress);
+        if (!parsed.supported) return current;
+        return { ...current, forestPathProgress: completeForestChapter(parsed.progress, chapter, actions) };
+      })}
     />;
   }
 

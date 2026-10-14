@@ -1,191 +1,405 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Home, KeyRound, Pause, Play, RotateCcw, Sparkles, Trees } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, CircleHelp, Compass, DoorOpen, Home, KeyRound, Pause, Play, RotateCcw, Trees, Volume2, VolumeX, X } from "lucide-react";
 import { GAME_ASSETS } from "@/game/assets";
-import { createForestPuzzleState, FOREST_PUZZLE, moveForestPuzzle, type Cell, type ForestPuzzleState } from "@/game/forestPuzzle";
+import { playPlatformSfx } from "@/game/platformerAudio";
+import {
+  createForestGameState, FOREST_CHAPTERS, FOREST_MAP, getForestRoom, stepForestGame,
+  type ForestDirection, type ForestGameState, type ForestInput,
+} from "@/game/forestPuzzle";
+import { normalizeForestProgress } from "@/game/forestProgress";
 import type { PetProfile } from "@/game/PetGame";
 import "./ForestPuzzleAdventure.css";
 
-type Props = { profile: PetProfile | null; onBack: () => void; onGoToHouse: () => void };
-type Direction = "up" | "down" | "left" | "right";
-const DELTAS: Record<Direction, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-const MOVE_DURATION = 150;
+type Overlay = "pause" | "room" | "chapter" | null;
+type Held = Record<ForestDirection, boolean>;
+type Props = {
+  profile: PetProfile | null;
+  savedProgress: Record<string, unknown>;
+  soundOn: boolean;
+  onToggleSound: () => void;
+  onCompleteChapter: (chapter: number, actions: number) => void;
+  onBack: () => void;
+  onGoToHouse: () => void;
+};
+const EMPTY_HELD: Held = { up: false, down: false, left: false, right: false };
+const CHAPTER_THEMES: Record<number, { background: string; soil: string; water: string; wall: string; accent: string }> = {
+  1: { background: "#416a3c", soil: "#916744", water: "#6aab78", wall: "#24553b", accent: "#e7bf59" },
+  2: { background: "#356d73", soil: "#80684a", water: "#44b7c8", wall: "#286551", accent: "#e8d58a" },
+  3: { background: "#353d6e", soil: "#615344", water: "#5584bd", wall: "#32395d", accent: "#efd279" },
+};
 
-function cellKey(x: number, y: number) { return `${x},${y}`; }
-
-function paintRoom(ctx: CanvasRenderingContext2D, width: number, height: number, state: ForestPuzzleState, pet: HTMLImageElement, now: number, motion: { from: { x: number; y: number }; startedAt: number }) {
-  const cell = Math.min(width / FOREST_PUZZLE.columns, height / FOREST_PUZZLE.rows);
-  const left = (width - cell * FOREST_PUZZLE.columns) / 2;
-  const top = (height - cell * FOREST_PUZZLE.rows) / 2;
+function drawCell(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, color: string) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x * size, y * size, size + 0.5, size + 0.5);
+}
+function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, state: ForestGameState, pet: HTMLImageElement, backgrounds: Map<number, HTMLImageElement>, now: number) {
+  const spec = getForestRoom(state.chapter, state.room);
+  const theme = CHAPTER_THEMES[state.chapter] ?? CHAPTER_THEMES[1];
+  const tile = Math.min(width / FOREST_MAP.columns, height / FOREST_MAP.rows);
+  const boardWidth = tile * FOREST_MAP.columns;
+  const boardHeight = tile * FOREST_MAP.rows;
+  const left = (width - boardWidth) / 2;
+  const top = (height - boardHeight) / 2;
   ctx.clearRect(0, 0, width, height);
-  const ground = ctx.createLinearGradient(0, top, 0, top + height);
-  ground.addColorStop(0, "#7ecb62"); ground.addColorStop(1, "#4d9b48");
-  ctx.fillStyle = ground; ctx.fillRect(left, top, cell * FOREST_PUZZLE.columns, cell * FOREST_PUZZLE.rows);
+  ctx.fillStyle = theme.background;
+  ctx.fillRect(left, top, boardWidth, boardHeight);
+  const background = backgrounds.get(state.chapter);
+  if (background?.complete && background.naturalWidth > 0) {
+    const scale = Math.max(boardWidth / background.naturalWidth, boardHeight / background.naturalHeight);
+    const drawnWidth = background.naturalWidth * scale;
+    const drawnHeight = background.naturalHeight * scale;
+    ctx.globalAlpha = 0.48;
+    ctx.drawImage(background, left + (boardWidth - drawnWidth) / 2, top + (boardHeight - drawnHeight) / 2, drawnWidth, drawnHeight);
+    ctx.globalAlpha = 1;
+  }
+  ctx.fillStyle = "rgba(20,40,29,.22)";
+  ctx.fillRect(left, top, boardWidth, boardHeight);
 
-  for (let y = 1; y < FOREST_PUZZLE.rows - 1; y++) for (let x = 1; x < FOREST_PUZZLE.columns - 1; x++) {
-    const px = left + x * cell; const py = top + y * cell;
-    ctx.fillStyle = (x + y) % 2 ? "rgba(225,255,178,.11)" : "rgba(20,85,45,.08)";
-    ctx.beginPath(); ctx.roundRect(px + cell * .08, py + cell * .08, cell * .84, cell * .84, cell * .16); ctx.fill();
-    ctx.fillStyle = "rgba(245,255,211,.22)";
-    ctx.beginPath(); ctx.arc(px + cell * (.24 + ((x * 17 + y * 13) % 5) * .1), py + cell * (.28 + ((y * 11 + x) % 4) * .11), Math.max(1.2, cell * .025), 0, Math.PI * 2); ctx.fill();
+  for (let y = 0; y < FOREST_MAP.rows; y++) for (let x = 0; x < FOREST_MAP.columns; x++) {
+    const key = `${x},${y}`;
+    const isWater = spec.water.some((item) => `${item.x},${item.y}` === key) && !spec.bridgeSockets.some((socket) => `${socket.x},${socket.y}` === key && state.placedBridges.includes(socket.id));
+    const isWall = spec.walls.some((item) => `${item.x},${item.y}` === key);
+    const px = left + x * tile; const py = top + y * tile;
+    if (isWater) {
+      const wave = Math.sin(now / 350 + x * 0.8 + y) * tile * 0.06;
+      ctx.fillStyle = theme.water; ctx.fillRect(px, py, tile + 0.5, tile + 0.5);
+      ctx.strokeStyle = "rgba(220,250,246,.32)"; ctx.lineWidth = Math.max(1, tile * 0.035);
+      ctx.beginPath(); ctx.moveTo(px + tile * 0.12, py + tile * (0.38 + wave / tile)); ctx.quadraticCurveTo(px + tile * 0.45, py + tile * 0.24, px + tile * 0.82, py + tile * 0.42); ctx.stroke();
+      continue;
+    }
+    if (isWall) {
+      ctx.fillStyle = theme.wall; ctx.fillRect(px, py, tile + 0.5, tile + 0.5);
+      ctx.fillStyle = "rgba(170,220,110,.40)";
+      for (const [cx, cy, radius] of [[0.22, 0.48, 0.3], [0.52, 0.31, 0.35], [0.78, 0.5, 0.27]] as const) {
+        ctx.beginPath(); ctx.arc(px + tile * cx, py + tile * cy, tile * radius, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = "rgba(10,42,29,.28)"; ctx.fillRect(px, py + tile * 0.82, tile, tile * 0.18);
+      continue;
+    }
+    ctx.fillStyle = (x + y) % 2 ? "rgba(220,248,176,.09)" : "rgba(15,55,37,.07)";
+    ctx.fillRect(px, py, tile, tile);
+    ctx.strokeStyle = "rgba(255,246,196,.08)"; ctx.lineWidth = 1;
+    ctx.strokeRect(px + tile * 0.12, py + tile * 0.12, tile * 0.76, tile * 0.76);
   }
 
-  const drawTree = (x: number, y: number) => {
-    const px = left + (x + .5) * cell; const py = top + (y + .5) * cell;
-    ctx.fillStyle = "rgba(28,65,35,.27)"; ctx.beginPath(); ctx.ellipse(px + 2, py + cell * .25, cell * .37, cell * .2, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#79502f"; ctx.fillRect(px - cell * .11, py + cell * .04, cell * .22, cell * .34);
-    ctx.fillStyle = "#226640"; ctx.beginPath(); ctx.arc(px, py - cell * .04, cell * .37, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#3f9e55"; ctx.beginPath(); ctx.arc(px - cell * .1, py - cell * .13, cell * .24, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#a4d95a"; ctx.beginPath(); ctx.arc(px - cell * .15, py - cell * .22, cell * .07, 0, Math.PI * 2); ctx.fill();
+  for (const plate of spec.plates) {
+    const px = left + (plate.x + 0.5) * tile; const py = top + (plate.y + 0.5) * tile;
+    const pressed = state.openGates.includes(plate.gateId);
+    ctx.fillStyle = pressed ? "#efd273" : "#715138";
+    ctx.beginPath(); ctx.ellipse(px, py + tile * 0.2, tile * 0.31, tile * 0.15, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = pressed ? "#fff0a3" : "#c5a76b"; ctx.lineWidth = Math.max(2, tile * 0.045);
+    ctx.beginPath(); ctx.ellipse(px, py + tile * 0.2, tile * 0.23, tile * 0.09, 0, 0, Math.PI * 2); ctx.stroke();
+  }
+
+  for (const gate of spec.gates) {
+    const px = left + gate.x * tile; const py = top + gate.y * tile;
+    if (state.openGates.includes(gate.id)) {
+      ctx.strokeStyle = "rgba(255,226,137,.92)"; ctx.lineWidth = Math.max(2, tile * 0.055);
+      ctx.beginPath(); ctx.arc(px + tile / 2, py + tile * 0.62, tile * 0.34, Math.PI, Math.PI * 2); ctx.stroke();
+    } else {
+      ctx.fillStyle = "#80502f"; ctx.fillRect(px + tile * 0.1, py + tile * 0.12, tile * 0.8, tile * 0.76);
+      ctx.strokeStyle = "#d5a65d"; ctx.lineWidth = Math.max(2, tile * 0.055);
+      for (let index = 1; index <= 3; index++) { ctx.beginPath(); ctx.moveTo(px + tile * index * 0.22, py + tile * 0.16); ctx.lineTo(px + tile * index * 0.22, py + tile * 0.86); ctx.stroke(); }
+    }
+  }
+
+  for (const socket of spec.bridgeSockets) if (state.placedBridges.includes(socket.id)) {
+    const px = left + socket.x * tile; const py = top + socket.y * tile;
+    ctx.fillStyle = "#8c5a33"; ctx.fillRect(px + tile * 0.08, py + tile * 0.18, tile * 0.84, tile * 0.64);
+    ctx.strokeStyle = "#e0b66f"; ctx.lineWidth = Math.max(1.5, tile * 0.035);
+    for (const offset of [0.28, 0.5, 0.72]) { ctx.beginPath(); ctx.moveTo(px + tile * offset, py + tile * 0.2); ctx.lineTo(px + tile * offset, py + tile * 0.8); ctx.stroke(); }
+  }
+
+  const drawLog = (x: number, y: number) => {
+    const px = left + (x + 0.5) * tile; const py = top + (y + 0.54) * tile;
+    ctx.fillStyle = "rgba(20,34,20,.3)"; ctx.beginPath(); ctx.ellipse(px, py + tile * 0.16, tile * 0.38, tile * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#8d5732"; ctx.beginPath(); ctx.roundRect(px - tile * 0.38, py - tile * 0.17, tile * 0.76, tile * 0.34, tile * 0.14); ctx.fill();
+    ctx.strokeStyle = "#d4a064"; ctx.lineWidth = Math.max(1.5, tile * 0.035);
+    ctx.beginPath(); ctx.ellipse(px - tile * 0.34, py, tile * 0.07, tile * 0.16, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - tile * 0.1, py - tile * 0.14); ctx.lineTo(px - tile * 0.1, py + tile * 0.14); ctx.stroke();
   };
-  for (let x = 0; x < FOREST_PUZZLE.columns; x++) { drawTree(x, 0); drawTree(x, FOREST_PUZZLE.rows - 1); }
-  for (let y = 1; y < FOREST_PUZZLE.rows - 1; y++) { drawTree(0, y); drawTree(FOREST_PUZZLE.columns - 1, y); }
-  for (let y = 1; y < FOREST_PUZZLE.rows - 1; y++) if (y !== FOREST_PUZZLE.gate.y) drawTree(FOREST_PUZZLE.gate.x, y);
-
-  const plateX = left + (FOREST_PUZZLE.pressurePlate.x + .5) * cell;
-  const plateY = top + (FOREST_PUZZLE.pressurePlate.y + .5) * cell;
-  ctx.fillStyle = state.gateOpen ? "rgba(255,218,93,.7)" : "rgba(110,83,51,.55)";
-  ctx.beginPath(); ctx.ellipse(plateX, plateY + cell * .22, cell * .3, cell * .13, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = state.gateOpen ? "#fff1a0" : "#c3ab75"; ctx.lineWidth = Math.max(2, cell * .055);
-  ctx.beginPath(); ctx.ellipse(plateX, plateY + cell * .22, cell * .23, cell * .085, 0, 0, Math.PI * 2); ctx.stroke();
-
-  if (!state.gateOpen) {
-    const gx = left + FOREST_PUZZLE.gate.x * cell; const gy = top + FOREST_PUZZLE.gate.y * cell;
-    ctx.fillStyle = "#754726"; ctx.fillRect(gx + cell * .07, gy + cell * .13, cell * .86, cell * .75);
-    ctx.strokeStyle = "#d39a51"; ctx.lineWidth = Math.max(2, cell * .07);
-    for (let i = 1; i <= 3; i++) { ctx.beginPath(); ctx.moveTo(gx + cell * i * .22, gy + cell * .14); ctx.lineTo(gx + cell * i * .22, gy + cell * .86); ctx.stroke(); }
-    ctx.fillStyle = "#ffe283"; ctx.beginPath(); ctx.arc(gx + cell * .73, gy + cell * .52, cell * .045, 0, Math.PI * 2); ctx.fill();
-  } else {
-    const gx = left + (FOREST_PUZZLE.gate.x + .5) * cell; const gy = top + (FOREST_PUZZLE.gate.y + .5) * cell;
-    ctx.strokeStyle = "rgba(255,236,151,.85)"; ctx.lineWidth = Math.max(2, cell * .045);
-    ctx.beginPath(); ctx.arc(gx, gy + cell * .1, cell * .31, Math.PI, Math.PI * 2); ctx.stroke();
+  for (const key of spec.keys) if (!state.collectedKeys.includes(key.id)) {
+    const px = left + (key.x + 0.5) * tile; const py = top + (key.y + 0.5) * tile + Math.sin(now / 280) * tile * 0.035;
+    ctx.save(); ctx.translate(px, py); ctx.rotate(-0.32); ctx.strokeStyle = "#ffdf65"; ctx.lineWidth = Math.max(2, tile * 0.065);
+    ctx.beginPath(); ctx.arc(-tile * 0.07, 0, tile * 0.13, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tile * 0.06, 0); ctx.lineTo(tile * 0.29, 0); ctx.lineTo(tile * 0.29, tile * 0.1); ctx.moveTo(tile * 0.2, 0); ctx.lineTo(tile * 0.2, tile * 0.08); ctx.stroke(); ctx.restore();
   }
 
-  const logX = left + (state.log.x + .5) * cell; const logY = top + (state.log.y + .55) * cell;
-  ctx.fillStyle = "rgba(28,56,34,.26)"; ctx.beginPath(); ctx.ellipse(logX, logY + cell * .2, cell * .38, cell * .16, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#91582e"; ctx.beginPath(); ctx.roundRect(logX - cell * .37, logY - cell * .17, cell * .74, cell * .34, cell * .17); ctx.fill();
-  ctx.strokeStyle = "#d49a55"; ctx.lineWidth = Math.max(2, cell * .055);
-  for (const offset of [-.2, 0, .2]) { ctx.beginPath(); ctx.moveTo(logX + cell * offset, logY - cell * .15); ctx.lineTo(logX + cell * offset, logY + cell * .15); ctx.stroke(); }
-  ctx.fillStyle = "#dfb16e"; ctx.beginPath(); ctx.ellipse(logX - cell * .34, logY, cell * .07, cell * .16, 0, 0, Math.PI * 2); ctx.fill();
-
-  if (!state.keyCollected) {
-    const kx = left + (FOREST_PUZZLE.key.x + .5) * cell; const ky = top + (FOREST_PUZZLE.key.y + .5) * cell + Math.sin(now / 250) * cell * .04;
-    ctx.save(); ctx.translate(kx, ky); ctx.rotate(-.25);
-    ctx.strokeStyle = "#ffdc58"; ctx.lineWidth = Math.max(2.5, cell * .07); ctx.beginPath(); ctx.arc(-cell * .08, 0, cell * .13, 0, Math.PI * 2); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cell * .05, 0); ctx.lineTo(cell * .28, 0); ctx.lineTo(cell * .28, cell * .09); ctx.moveTo(cell * .2, 0); ctx.lineTo(cell * .2, cell * .07); ctx.stroke(); ctx.restore();
+  for (const object of state.objects) {
+    if (object.id === state.carriedObjectId) continue;
+    const px = left + (object.x + 0.5) * tile; const py = top + (object.y + 0.5) * tile;
+    if (object.kind === "log") drawLog(object.x, object.y);
+    else if (object.kind === "plank") {
+      ctx.fillStyle = "#9d6938"; ctx.beginPath(); ctx.roundRect(px - tile * 0.34, py - tile * 0.15, tile * 0.68, tile * 0.3, tile * 0.07); ctx.fill();
+      ctx.strokeStyle = "#e7bf78"; ctx.lineWidth = Math.max(1, tile * 0.03); ctx.strokeRect(px - tile * 0.28, py - tile * 0.1, tile * 0.56, tile * 0.2);
+    } else if (object.kind === "stone") {
+      ctx.fillStyle = "#9aa39b"; ctx.beginPath(); ctx.ellipse(px, py, tile * 0.24, tile * 0.19, -0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.4)"; ctx.beginPath(); ctx.arc(px - tile * 0.07, py - tile * 0.05, tile * 0.04, 0, Math.PI * 2); ctx.fill();
+    } else if (object.kind === "bell") {
+      ctx.fillStyle = "#d5a94a"; ctx.beginPath(); ctx.arc(px, py - tile * 0.03, tile * 0.18, Math.PI, 0); ctx.lineTo(px + tile * 0.2, py + tile * 0.13); ctx.lineTo(px - tile * 0.2, py + tile * 0.13); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#fff0a2"; ctx.beginPath(); ctx.arc(px, py - tile * 0.2, tile * 0.07, 0, Math.PI * 2); ctx.fill();
+    }
   }
-  const ex = left + (FOREST_PUZZLE.exit.x + .5) * cell; const ey = top + (FOREST_PUZZLE.exit.y + .5) * cell;
-  const glow = ctx.createRadialGradient(ex, ey, cell * .03, ex, ey, cell * .48); glow.addColorStop(0, "rgba(255,239,155,.82)"); glow.addColorStop(1, "rgba(255,225,106,0)");
-  ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(ex, ey, cell * .48, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = "#ffe277"; ctx.lineWidth = Math.max(3, cell * .08); ctx.beginPath(); ctx.arc(ex, ey + cell * .08, cell * .27, Math.PI, 0); ctx.stroke();
-  ctx.fillStyle = "rgba(255,244,179,.38)"; ctx.fillRect(ex - cell * .25, ey + cell * .08, cell * .5, cell * .27);
 
-  const moveProgress = Math.min(1, Math.max(0, (now - motion.startedAt) / MOVE_DURATION));
-  const from = motion.from;
-  const px = left + (from.x + (state.player.x - from.x) * moveProgress + .5) * cell;
-  const py = top + (from.y + (state.player.y - from.y) * moveProgress + .5) * cell;
-  const stepping = moveProgress < 1;
-  const bob = stepping ? Math.sin(moveProgress * Math.PI) * cell * .07 : Math.sin(now / 450) * cell * .012;
+  const exitX = left + (spec.exit.x + 0.5) * tile; const exitY = top + (spec.exit.y + 0.5) * tile;
+  const glow = ctx.createRadialGradient(exitX, exitY, tile * 0.03, exitX, exitY, tile * 0.49);
+  glow.addColorStop(0, "rgba(255,240,173,.78)"); glow.addColorStop(1, "rgba(255,221,99,0)");
+  ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(exitX, exitY, tile * 0.49, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = theme.accent; ctx.lineWidth = Math.max(3, tile * 0.075); ctx.beginPath(); ctx.arc(exitX, exitY + tile * 0.08, tile * 0.27, Math.PI, 0); ctx.stroke();
+  ctx.fillStyle = "rgba(255,246,194,.38)"; ctx.fillRect(exitX - tile * 0.24, exitY + tile * 0.08, tile * 0.48, tile * 0.27);
+
+  for (const guard of state.guards) {
+    const gx = left + guard.x * tile; const gy = top + guard.y * tile;
+    ctx.fillStyle = "rgba(12,23,28,.28)"; ctx.beginPath(); ctx.ellipse(gx, gy + tile * 0.22, tile * 0.25, tile * 0.12, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = guard.lured ? "#b8ca76" : "#b7a776"; ctx.beginPath(); ctx.ellipse(gx, gy, tile * 0.23, tile * 0.22, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff9e2"; ctx.beginPath(); ctx.arc(gx - tile * 0.075, gy - tile * 0.02, tile * 0.055, 0, Math.PI * 2); ctx.arc(gx + tile * 0.075, gy - tile * 0.02, tile * 0.055, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#233a36"; ctx.beginPath(); ctx.arc(gx - tile * 0.075, gy - tile * 0.01, tile * 0.025, 0, Math.PI * 2); ctx.arc(gx + tile * 0.075, gy - tile * 0.01, tile * 0.025, 0, Math.PI * 2); ctx.fill();
+    if (guard.lured) { ctx.fillStyle = "#fff1a4"; ctx.font = `${Math.max(10, tile * 0.35)}px sans-serif`; ctx.textAlign = "center"; ctx.fillText("♪", gx, gy - tile * 0.3); }
+  }
+
+  const playerX = left + state.player.x * tile;
+  const playerY = top + state.player.y * tile;
+  const motionEnergy = Math.min(1, state.walkPhase * 0.7);
+  const movingBob = Math.sin(state.walkPhase * Math.PI * 2);
+  const bob = movingBob * tile * 0.105 * motionEnergy;
+  const sway = Math.cos(state.walkPhase * Math.PI * 2) * tile * 0.035 * motionEnergy;
+  const gaitSquash = Math.abs(movingBob) * motionEnergy;
+  ctx.fillStyle = "rgba(15,32,26,.35)"; ctx.beginPath(); ctx.ellipse(playerX + sway * 0.3, playerY + tile * 0.28, tile * (0.27 + gaitSquash * 0.025), tile * 0.11, 0, 0, Math.PI * 2); ctx.fill();
   if (pet.complete && pet.naturalWidth > 0) {
-    ctx.save(); ctx.translate(px, py - bob);
-    if (stepping) { const stretch = 1 + Math.sin(moveProgress * Math.PI) * .045; ctx.scale(stretch, 1 / stretch); }
-    ctx.shadowColor = "rgba(16,48,34,.35)"; ctx.shadowBlur = cell * .13; ctx.shadowOffsetY = cell * .045;
-    ctx.drawImage(pet, -cell * .37, -cell * .43, cell * .74, cell * .82);
+    ctx.save(); ctx.translate(playerX + sway, playerY - bob);
+    const facingScale = state.facing === "left" ? -1 : 1;
+    const bobScale = 1 + gaitSquash * 0.07;
+    const facingLean = state.facing === "left" ? -0.06 : state.facing === "right" ? 0.06 : 0;
+    ctx.rotate(facingLean + movingBob * motionEnergy * 0.045);
+    ctx.scale(facingScale * bobScale, 1 / bobScale);
+    ctx.shadowColor = "rgba(8,23,20,.35)"; ctx.shadowBlur = tile * 0.12; ctx.shadowOffsetY = tile * 0.04;
+    ctx.drawImage(pet, -tile * 0.33, -tile * 0.39, tile * 0.66, tile * 0.76);
     ctx.restore();
+  } else {
+    ctx.fillStyle = "#fff5df"; ctx.beginPath(); ctx.arc(playerX, top + state.player.y * tile, tile * 0.27, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#263a32"; ctx.font = `${tile * 0.34}px sans-serif`; ctx.textAlign = "center"; ctx.fillText("🐈", playerX, top + state.player.y * tile + tile * 0.12);
+  }
+  if (state.carriedObjectId) {
+    const item = state.objects.find((object) => object.id === state.carriedObjectId);
+    ctx.fillStyle = item?.kind === "plank" ? "#c58a45" : "#925b35";
+    ctx.beginPath(); ctx.roundRect(playerX - tile * 0.22, top + state.player.y * tile - tile * 0.49 - bob, tile * 0.44, tile * 0.11, tile * 0.05); ctx.fill();
   }
 }
 
-export default function ForestPuzzleAdventure({ profile, onBack, onGoToHouse }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stateRef = useRef<ForestPuzzleState>(createForestPuzzleState());
-  const movingFromRef = useRef<Cell>({ ...FOREST_PUZZLE.start });
-  const movingStartedRef = useRef(0);
-  const lastInputRef = useRef(0);
-  const pausedRef = useRef(false);
-  const [game, setGame] = useState(stateRef.current);
-  const [paused, setPaused] = useState(false);
-  const [hint, setHint] = useState(false);
-  const profileName = profile?.name ?? "Seu pet";
+export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
   const characterId = profile?.characterId ?? "menino-prata";
+  const petName = profile?.name ?? "Seu pet";
+  const progressRead = useMemo(() => normalizeForestProgress(savedProgress), [savedProgress]);
+  const supported = progressRead.supported;
+  const progress = supported ? progressRead.progress : null;
+  const unlockedChapter = progress?.unlockedChapter ?? 0;
+  const [selectedChapter, setSelectedChapter] = useState(Math.max(1, unlockedChapter));
+  const [game, setGame] = useState<ForestGameState | null>(null);
+  const [overlay, setOverlay] = useState<Overlay>(null);
+  const [summary, setSummary] = useState<ForestGameState | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
+  const [uiMessage, setUiMessage] = useState("");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stateRef = useRef<ForestGameState | null>(null);
+  const heldRef = useRef<Held>({ ...EMPTY_HELD });
+  const pendingActionRef = useRef(false);
+  const pendingUseRef = useRef(false);
+  const overlayRef = useRef<Overlay>(null);
+  const lastFrameRef = useRef(0);
+  const lastUiRef = useRef(0);
+  const completeReportedRef = useRef(false);
+  const onCompleteRef = useRef(onCompleteChapter);
+  const soundOnRef = useRef(soundOn);
+  const animationRef = useRef(0);
+  const gameRef = useRef<ForestGameState | null>(null);
 
-  const reset = useCallback(() => {
-    const initial = createForestPuzzleState(); stateRef.current = initial; setGame(initial);
-    movingFromRef.current = { ...initial.player }; movingStartedRef.current = performance.now();
-    pausedRef.current = false; setPaused(false); setHint(false); lastInputRef.current = 0;
-  }, []);
+  useEffect(() => { onCompleteRef.current = onCompleteChapter; }, [onCompleteChapter]);
+  useEffect(() => { soundOnRef.current = soundOn; }, [soundOn]);
+  useEffect(() => {
+    if (supported) setSelectedChapter((current) => Math.min(Math.max(1, current), progress?.unlockedChapter ?? 1));
+  }, [supported, progress?.unlockedChapter]);
 
-  const move = useCallback((direction: Direction) => {
-    if (pausedRef.current || stateRef.current.complete) return;
-    const now = performance.now();
-    if (now - lastInputRef.current < MOVE_DURATION * .83) return;
-    lastInputRef.current = now;
-    const before = stateRef.current;
-    const [dx, dy] = DELTAS[direction];
-    const next = moveForestPuzzle(before, dx, dy);
-    if (next === before) return;
-    movingFromRef.current = before.player; movingStartedRef.current = now;
-    stateRef.current = next; setGame(next);
+  const openGame = useCallback((chapter: number, room: 1 | 2 = 1) => {
+    const initial = createForestGameState(chapter, room);
+    stateRef.current = initial; gameRef.current = initial; setGame(initial); setSummary(null);
+    completeReportedRef.current = false; overlayRef.current = null; setOverlay(null); setUiMessage(initial.message);
   }, []);
+  const setOverlaySafe = useCallback((value: Overlay) => { overlayRef.current = value; setOverlay(value); }, []);
+  const stopHeld = useCallback(() => { heldRef.current = { ...EMPTY_HELD }; }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current; const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
     const pet = new Image(); pet.src = GAME_ASSETS.characters[characterId];
-    let raf = 0; let width = 1; let height = 1; let dpr = 1;
+    const backgrounds = new Map<number, HTMLImageElement>();
+    for (const chapter of FOREST_CHAPTERS) { const image = new Image(); image.src = chapter.image; backgrounds.set(chapter.id, image); }
+    let width = 1; let height = 1; let dpr = 1;
     const resize = () => {
       const rect = canvas.getBoundingClientRect(); width = Math.max(1, rect.width); height = Math.max(1, rect.height);
       dpr = Math.min(2, window.devicePixelRatio || 1); canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     const draw = (now: number) => {
-      paintRoom(ctx, width, height, stateRef.current, pet, now, { from: movingFromRef.current, startedAt: movingStartedRef.current });
-      raf = window.requestAnimationFrame(draw);
+      const current = gameRef.current;
+      if (current) drawRoom(ctx, width, height, current, pet, backgrounds, now);
+      else { ctx.clearRect(0, 0, width, height); }
     };
-    resize(); window.addEventListener("resize", resize); raf = window.requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); pet.onload = null; };
-  }, [characterId]);
+    const loop = (now: number) => {
+      const delta = lastFrameRef.current ? Math.min(0.05, Math.max(0, (now - lastFrameRef.current) / 1000)) : 0;
+      lastFrameRef.current = now;
+      const current = stateRef.current;
+      if (current && !overlayRef.current && !current.chapterComplete) {
+        const input: ForestInput = {
+          ...heldRef.current,
+          actionPressed: pendingActionRef.current,
+          usePressed: pendingUseRef.current,
+        };
+        pendingActionRef.current = false; pendingUseRef.current = false;
+        const result = stepForestGame(current, input, delta);
+        stateRef.current = result.state; gameRef.current = result.state;
+        if (soundOnRef.current) {
+          if (result.events.includes("bump")) playPlatformSfx("bump");
+          if (result.events.includes("key-collected")) playPlatformSfx("forest-key");
+          if (result.events.includes("gate-opened")) playPlatformSfx("forest-gate");
+          if (result.events.includes("bridge-placed")) playPlatformSfx("forest-bridge");
+          if (result.events.includes("room-cleared")) playPlatformSfx("forest-room");
+          if (result.events.includes("chapter-cleared")) playPlatformSfx("forest-chapter");
+        }
+        if (result.events.includes("room-cleared")) { setSummary(result.state); setOverlaySafe("room"); }
+        if (result.events.includes("chapter-cleared")) {
+          setSummary(result.state); setOverlaySafe("chapter");
+          if (!completeReportedRef.current) { completeReportedRef.current = true; onCompleteRef.current(result.state.chapter, result.state.actions); }
+        }
+        if (result.events.includes("bump")) setUiMessage(result.state.message);
+        if (result.events.includes("key-collected") || result.events.includes("gate-opened") || result.events.includes("bridge-placed")) setUiMessage(result.state.message);
+        if (now - lastUiRef.current > 140) { lastUiRef.current = now; setGame(result.state); setUiMessage(result.state.message); }
+      }
+      draw(now); animationRef.current = window.requestAnimationFrame(loop);
+    };
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(resize) : null;
+    resize(); observer?.observe(canvas); window.addEventListener("resize", resize);
+    animationRef.current = window.requestAnimationFrame(loop);
+    return () => {
+      window.cancelAnimationFrame(animationRef.current); observer?.disconnect(); window.removeEventListener("resize", resize);
+      pet.onload = null; backgrounds.forEach((image) => { image.onload = null; });
+    };
+  }, [characterId, openGame, setOverlaySafe, Boolean(game)]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
-      const direction: Direction | null = key === "arrowup" || key === "w" ? "up" : key === "arrowdown" || key === "s" ? "down" : key === "arrowleft" || key === "a" ? "left" : key === "arrowright" || key === "d" ? "right" : null;
-      if (direction) { event.preventDefault(); move(direction); }
-      if (key === "escape" || key === "p") { event.preventDefault(); setPaused((current) => { pausedRef.current = !current; return !current; }); }
+      if (["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d", " ", "e", "f", "q", "escape", "p"].includes(key)) event.preventDefault();
+      if (["arrowup", "w"].includes(key)) heldRef.current.up = true;
+      else if (["arrowdown", "s"].includes(key)) heldRef.current.down = true;
+      else if (["arrowleft", "a"].includes(key)) heldRef.current.left = true;
+      else if (["arrowright", "d"].includes(key)) heldRef.current.right = true;
+      else if (!event.repeat && ["e", " "].includes(key)) pendingActionRef.current = true;
+      else if (!event.repeat && ["f", "q"].includes(key)) pendingUseRef.current = true;
+      else if (!event.repeat && ["escape", "p"].includes(key) && stateRef.current) {
+        setOverlaySafe(overlayRef.current === "pause" ? null : "pause"); stopHeld();
+      }
     };
-    const onVisibility = () => { if (document.hidden) { pausedRef.current = true; setPaused(true); } };
-    window.addEventListener("keydown", onKeyDown); document.addEventListener("visibilitychange", onVisibility);
-    return () => { window.removeEventListener("keydown", onKeyDown); document.removeEventListener("visibilitychange", onVisibility); };
-  }, [move]);
+    const onKeyUp = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (["arrowup", "w"].includes(key)) heldRef.current.up = false;
+      else if (["arrowdown", "s"].includes(key)) heldRef.current.down = false;
+      else if (["arrowleft", "a"].includes(key)) heldRef.current.left = false;
+      else if (["arrowright", "d"].includes(key)) heldRef.current.right = false;
+    };
+    const onVisibility = () => { if (document.hidden && stateRef.current) { stopHeld(); setOverlaySafe("pause"); } };
+    const onBlur = () => stopHeld();
+    window.addEventListener("keydown", onKeyDown); window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", onBlur); document.addEventListener("visibilitychange", onVisibility);
+    return () => { window.removeEventListener("keydown", onKeyDown); window.removeEventListener("keyup", onKeyUp); window.removeEventListener("blur", onBlur); document.removeEventListener("visibilitychange", onVisibility); };
+  }, [setOverlaySafe, stopHeld]);
 
-  const togglePause = () => setPaused((current) => { pausedRef.current = !current; return !current; });
-  const step = (direction: Direction) => () => move(direction);
+  const setDirection = (direction: ForestDirection, value: boolean) => { heldRef.current[direction] = value; };
+  const onDirectionPointerDown = (direction: ForestDirection) => (event: ReactPointerEvent<HTMLButtonElement>) => {
+    event.preventDefault(); event.currentTarget.setPointerCapture?.(event.pointerId); setDirection(direction, true);
+  };
+  const onDirectionPointerUp = (direction: ForestDirection) => (event: ReactPointerEvent<HTMLButtonElement>) => {
+    event.preventDefault(); setDirection(direction, false);
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+  const accessibleTap = (direction: ForestDirection) => (event: ReactMouseEvent<HTMLButtonElement>) => {
+    if (event.detail === 0) setDirection(direction, true);
+    if (event.detail === 0) window.setTimeout(() => setDirection(direction, false), 180);
+  };
+  const pause = () => { stopHeld(); setOverlaySafe(overlayRef.current === "pause" ? null : "pause"); };
+  const returnToMap = () => { stateRef.current = null; gameRef.current = null; setGame(null); setSummary(null); setOverlaySafe(null); stopHeld(); };
+  const beginSelected = () => { if (supported && selectedChapter <= unlockedChapter) openGame(selectedChapter); };
+  const petImage = GAME_ASSETS.characters[characterId];
+  const currentSpec = game ? getForestRoom(game.chapter, game.room) : null;
+  const qaTelemetryEnabled = import.meta.env.DEV && typeof window !== "undefined" && ["/qa-review.html", "/qa-adventure.html"].includes(window.location.pathname);
+  const qaTelemetryAttributes = qaTelemetryEnabled ? {
+    "data-qa-player-x": game?.player.x.toFixed(2),
+    "data-qa-player-y": game?.player.y.toFixed(2),
+    "data-qa-bumps": game?.bumps,
+    "data-qa-keys": game?.collectedKeys.length,
+    "data-qa-bridges": game?.placedBridges.join(","),
+  } : {};
 
-  return <div className="forest-puzzle" role="application" aria-label="Exploração do Bosque">
-    <header className="forest-puzzle-topbar">
-      <div className="forest-puzzle-brand"><span aria-hidden="true">🐾</span><div><strong>Exploração</strong><small>AVENTURA DO BOSQUE</small></div></div>
-      <div className="forest-puzzle-actions">
-        <button type="button" onClick={onBack}><ArrowLeft size={17} /> Voltar à Aventura</button>
-        <button type="button" onClick={onGoToHouse}><Home size={17} /> Minha Casa</button>
+  return <div className="forest-adventure" role="application" aria-label="Bosque dos Caminhos, modo de exploração">
+    <header className="forest-adventure-topbar">
+      <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>Bosque dos Caminhos</strong><small>EXPLORAÇÃO E QUEBRA-CABEÇAS</small></div></div>
+      <div className="forest-adventure-top-actions">
+        <button type="button" onClick={onToggleSound} aria-label={soundOn ? "Silenciar efeitos" : "Ativar efeitos"} aria-pressed={soundOn} title={soundOn ? "Silenciar efeitos" : "Ativar efeitos"}>{soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}</button>
+        <button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
+        <button type="button" onClick={onGoToHouse}><Home size={16} /> Minha Casa</button>
       </div>
     </header>
-    <main className="forest-puzzle-main">
-      <section className="forest-puzzle-intro">
-        <div><span className="forest-puzzle-kicker"><Trees size={15} /> TRILHA 01 · BOSQUE DAS PATINHAS</span><h1>A trilha do tronco curioso</h1><p>{profileName} precisa abrir o portão, encontrar a chave dourada e alcançar a saída brilhante.</p></div>
-        <div className="forest-puzzle-objectives" aria-label="Objetivos da trilha"><span className={game.gateOpen ? "done" : ""}><i>1</i> Empurre o tronco até a placa</span><span className={game.keyCollected ? "done" : ""}><i><KeyRound size={13} /></i> Pegue a chave</span><span className={game.complete ? "done" : ""}><i><Sparkles size={13} /></i> Encontre a saída</span></div>
+    {!game ? <main className="forest-adventure-map">
+      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. Os guardiões são gentis: não há combate, vidas ou cronômetro.</p></div>
+        <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span></div>
       </section>
-      <section className="forest-puzzle-board" aria-label="Tabuleiro de quebra-cabeça">
-        <div className="forest-puzzle-canvas-wrap"><canvas ref={canvasRef} aria-label="Mapa visto de cima: mova o pet com as setas ou WASD; empurre o tronco até a placa dourada" />
-          {(paused || game.complete) && <div className="forest-puzzle-overlay" role="dialog" aria-modal="true"><div className="forest-puzzle-dialog"><span className="forest-puzzle-dialog-icon">{game.complete ? "✨" : "⏸"}</span><small>{game.complete ? "TRILHA CONCLUÍDA" : "JOGO PAUSADO"}</small><h2>{game.complete ? "Que aventura bonita!" : "Respire um pouquinho"}</h2><p>{game.complete ? `${profileName} abriu o caminho e encontrou a saída. Esta vitória vale só nesta sessão de teste.` : "O bosque fica esperando. Nenhuma partida ou progresso foi salvo."}</p>{game.complete ? <button type="button" className="forest-puzzle-primary" onClick={reset}><RotateCcw size={17} /> Jogar novamente</button> : <button type="button" className="forest-puzzle-primary" onClick={togglePause}><Play size={17} fill="currentColor" /> Continuar</button>}</div></div>}
+      {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
+      <section className="forest-chapter-grid" aria-label="Seleção de capítulos">
+        {FOREST_CHAPTERS.map((chapter) => {
+          const isLocked = !supported || chapter.id > unlockedChapter;
+          const isComplete = Boolean(progress?.completedChapters.includes(chapter.id));
+          return <button key={chapter.id} className={`forest-chapter-card ${selectedChapter === chapter.id ? "is-selected" : ""} ${isLocked ? "is-locked" : ""}`} type="button" disabled={isLocked} onClick={() => setSelectedChapter(chapter.id)} aria-pressed={selectedChapter === chapter.id}>
+            <span className="forest-chapter-art"><img src={chapter.image} alt="" loading="lazy" />{isLocked && <span className="forest-chapter-lock">🔒</span>}<span className="forest-chapter-number">CAPÍTULO {chapter.id}</span></span>
+            <span className="forest-chapter-copy"><strong>{chapter.name}</strong><small>{chapter.subtitle}</small><span className={isComplete ? "is-complete" : isLocked ? "is-locked" : "is-open"}>{isComplete ? <><Check size={13} /> Concluído</> : isLocked ? "Conclua o capítulo anterior" : "Disponível · 2 salas"}</span></span>
+          </button>;
+        })}
+      </section>
+      <div className="forest-map-actions"><button className="forest-primary" type="button" onClick={beginSelected} disabled={!supported || selectedChapter > unlockedChapter}><Play size={17} fill="currentColor" /> Entrar na trilha</button><div className="forest-save-note"><KeyRound size={15} /> Progresso próprio por capítulo; esta trilha não altera a Aventura lateral, moedas ou itens.</div></div>
+    </main> : <main className="forest-adventure-game">
+      <section className="forest-game-heading"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> CAPÍTULO {game.chapter} · SALA {game.room} DE 2</span><h1>{currentSpec?.title}</h1><p>{currentSpec?.objective}</p></div>
+        <div className="forest-game-metrics"><span><strong>{game.steps}</strong><small>passos</small></span><span><strong>{game.actions}</strong><small>ações</small></span><button type="button" onClick={pause} aria-label={overlay === "pause" ? "Retomar" : "Pausar"}>{overlay === "pause" ? <Play size={17} /> : <Pause size={17} />}</button></div>
+      </section>
+      <div className="forest-game-layout">
+        <div className="forest-canvas-wrap"><canvas ref={canvasRef} aria-label={`Mapa de cima: ${currentSpec?.title}. Setas ou WASD movem o pet; E interage; F usa o objeto.`}
+          {...qaTelemetryAttributes} />
+          <div className="forest-live-message" aria-live="polite">{uiMessage || game.message}</div>
+          {overlay && <div className="forest-overlay" role="dialog" aria-modal="true" aria-label={overlay === "pause" ? "Jogo pausado" : overlay === "room" ? "Sala concluída" : "Capítulo concluído"}>
+            <div className="forest-dialog">
+              <span className="forest-dialog-icon">{overlay === "pause" ? "Ⅱ" : overlay === "room" ? "↗" : "✦"}</span>
+              <small>{overlay === "pause" ? "PAUSADO" : overlay === "room" ? "SALA CONCLUÍDA" : "CAPÍTULO CONCLUÍDO"}</small>
+              <h2>{overlay === "pause" ? "O bosque espera" : overlay === "room" ? "Mais um caminho aberto!" : "Que aventura bonita!"}</h2>
+              <p>{overlay === "pause" ? "Descanse; o estado desta sala continua intacto." : overlay === "room" ? "A primeira sala terminou. A próxima já está pronta." : "Esta campanha tem progresso próprio; não há recompensa em moedas nesta modalidade."}</p>
+              {overlay === "pause" ? <button className="forest-primary" type="button" onClick={() => setOverlaySafe(null)}><Play size={16} fill="currentColor" /> Retomar</button>
+                : overlay === "room" ? <button className="forest-primary" type="button" onClick={() => { setOverlaySafe(null); setUiMessage(stateRef.current?.message ?? ""); }}><DoorOpen size={17} /> Entrar na sala 2</button>
+                : <div className="forest-dialog-actions"><button className="forest-primary" type="button" onClick={() => { const next = Math.min(3, (summary?.chapter ?? game.chapter) + 1); setSelectedChapter(next); returnToMap(); }}><Compass size={16} /> Ver capítulos</button><button className="forest-secondary" type="button" onClick={() => openGame(summary?.chapter ?? game.chapter)}><RotateCcw size={15} /> Rejogar capítulo</button></div>}
+              {overlay !== "pause" && <button className="forest-dialog-map" type="button" onClick={returnToMap}>Voltar à seleção de capítulos</button>}
+            </div>
+          </div>}
         </div>
-        <aside className="forest-puzzle-side">
-          <div className="forest-puzzle-pet"><img src={GAME_ASSETS.characters[characterId]} alt={profileName} /><div><small>AVENTUREIRO</small><strong>{profileName}</strong></div></div>
-          <div className="forest-puzzle-status"><small>CAMINHO</small><strong>{game.gateOpen ? "O portão está aberto!" : "Procure a placa dourada"}</strong><div><span className={game.gateOpen ? "done" : ""}>Portão</span><span className={game.keyCollected ? "done" : ""}>Chave</span><span className={game.complete ? "done" : ""}>Saída</span></div></div>
-          <div className="forest-puzzle-controls"><small>CONTROLES</small><div className="forest-puzzle-dpad"><button type="button" aria-label="Mover para cima" onClick={step("up")}><ArrowUp /></button><button type="button" aria-label="Mover para a esquerda" onClick={step("left")}><ArrowLeft /></button><button type="button" aria-label="Mover para baixo" onClick={step("down")}><ArrowDown /></button><button type="button" aria-label="Mover para a direita" onClick={step("right")}><ArrowRight /></button></div><p>Setas ou WASD no teclado; no celular, toque nas setas.</p></div>
-          <div className="forest-puzzle-footer-actions"><button type="button" onClick={togglePause} aria-label={paused ? "Retomar jogo" : "Pausar jogo"}>{paused ? <Play size={15} /> : <Pause size={15} />}{paused ? "Continuar" : "Pausar"}</button><button type="button" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
-          <button className="forest-puzzle-hint" type="button" aria-expanded={hint} onClick={() => setHint((current) => !current)}>{hint ? "Esconder dica" : "Precisa de uma dica?"}</button>
-          {hint && <p className="forest-puzzle-hint-copy">Chegue ao lado de cima do tronco e empurre-o para baixo, até a placa dourada. O portão fica aberto depois que a placa é acionada.</p>}
+        <aside className="forest-game-controls">
+          <div className="forest-game-pet"><img src={petImage} alt="" /><span><small>COM VOCÊ</small><strong>{petName}</strong></span></div>
+          <div className="forest-status-row"><span className={game.collectedKeys.length ? "done" : ""}><KeyRound size={14} /> {game.collectedKeys.length} chave(s)</span><span className={game.carriedObjectId ? "done" : ""}><span aria-hidden="true">▰</span> {game.carriedObjectId ? "carregando" : "patinhas livres"}</span></div>
+          <div className="forest-dpad" aria-label="Controles de movimento">
+            <button type="button" aria-label="Mover para cima" onPointerDown={onDirectionPointerDown("up")} onPointerUp={onDirectionPointerUp("up")} onPointerCancel={onDirectionPointerUp("up")} onLostPointerCapture={() => setDirection("up", false)} onClick={accessibleTap("up")}><ArrowUp /></button>
+            <button type="button" aria-label="Mover para a esquerda" onPointerDown={onDirectionPointerDown("left")} onPointerUp={onDirectionPointerUp("left")} onPointerCancel={onDirectionPointerUp("left")} onLostPointerCapture={() => setDirection("left", false)} onClick={accessibleTap("left")}><ArrowLeft /></button>
+            <button type="button" aria-label="Mover para baixo" onPointerDown={onDirectionPointerDown("down")} onPointerUp={onDirectionPointerUp("down")} onPointerCancel={onDirectionPointerUp("down")} onLostPointerCapture={() => setDirection("down", false)} onClick={accessibleTap("down")}><ArrowDown /></button>
+            <button type="button" aria-label="Mover para a direita" onPointerDown={onDirectionPointerDown("right")} onPointerUp={onDirectionPointerUp("right")} onPointerCancel={onDirectionPointerUp("right")} onLostPointerCapture={() => setDirection("right", false)} onClick={accessibleTap("right")}><ArrowRight /></button>
+          </div>
+          <div className="forest-action-buttons"><button type="button" onClick={() => { pendingActionRef.current = true; }}><span>E</span> Ação</button><button type="button" onClick={() => { pendingUseRef.current = true; }}><span>F</span> Usar / soltar</button></div>
+          <div className="forest-utility-buttons"><button type="button" onClick={() => setShowHelp((value) => !value)} aria-expanded={showHelp}><CircleHelp size={15} /> Como jogar</button><button type="button" onClick={pause}><Pause size={15} /> Pausar</button><button type="button" onClick={returnToMap}><X size={15} /> Sair</button></div>
+          {showHelp && <p className="forest-help-copy">Setas/WASD movem. E empurra ou pega o objeto à frente e aciona o sino. F coloca ou solta o objeto. Chaves são coletadas ao tocar nelas.</p>}
+          <p className="forest-safe-note">Sem combate, sem vidas e sem limite de tempo.</p>
         </aside>
-      </section>
-      <p className="forest-puzzle-session-note">Modo experimental · partida isolada nesta tela · sem conta, salvamento, moedas ou alteração da campanha.</p>
-    </main>
+      </div>
+    </main>}
   </div>;
 }

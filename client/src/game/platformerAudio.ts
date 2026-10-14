@@ -1,4 +1,6 @@
 export type PlatformAudioMix = { music: number; effects: number };
+export type PlatformMusicTheme = "adventure" | "forest";
+export type PlatformMusicPattern = { melody: number[]; bass: number[]; stepMs: number };
 
 export const PLATFORM_AUDIO_STORAGE_KEY = "meu-pet-platform-audio-v1";
 export const DEFAULT_PLATFORM_AUDIO_MIX: PlatformAudioMix = { music: 0.24, effects: 0.72 };
@@ -40,6 +42,24 @@ let currentMix = { ...DEFAULT_PLATFORM_AUDIO_MIX };
 let musicActive = false;
 let musicTimer: number | null = null;
 let musicStep = 0;
+let currentMusicTheme: PlatformMusicTheme = "adventure";
+
+const MUSIC_PATTERNS: Record<PlatformMusicTheme, PlatformMusicPattern> = {
+  adventure: {
+    melody: [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880, 698.46, 523.25, 659.25, 783.99, 987.77, 880, 698.46, 587.33, 659.25],
+    bass: [130.81, 130.81, 174.61, 196],
+    stepMs: 250,
+  },
+  forest: {
+    melody: [392, 440, 523.25, 440, 392, 329.63, 392, 523.25, 587.33, 523.25, 440, 392, 329.63, 392, 440, 392],
+    bass: [98, 130.81, 116.54, 146.83],
+    stepMs: 285,
+  },
+};
+
+export function getPlatformMusicPattern(theme: PlatformMusicTheme): PlatformMusicPattern {
+  return MUSIC_PATTERNS[theme];
+}
 
 function ensureAudioGraph() {
   if (typeof window === "undefined" || !window.AudioContext) return null;
@@ -92,8 +112,7 @@ function playMusicNote(frequency: number, duration: number, velocity: number, wa
 
 function scheduleMusicStep() {
   if (!musicActive || !context || context.state !== "running" || currentMix.music <= 0) return;
-  const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880, 698.46, 523.25, 659.25, 783.99, 987.77, 880, 698.46, 587.33, 659.25];
-  const bass = [130.81, 130.81, 174.61, 196];
+  const { melody, bass } = getPlatformMusicPattern(currentMusicTheme);
   const step = musicStep % melody.length;
   playMusicNote(melody[step], 0.19, 0.052, "triangle");
   if (step % 4 === 0) playMusicNote(bass[(step / 4) % bass.length], 0.31, 0.032, "sine");
@@ -104,7 +123,7 @@ function startMusicClock() {
   if (!musicActive || musicTimer !== null || !context || context.state !== "running") return;
   rampGain(musicBus, currentMix.music * 0.62);
   scheduleMusicStep();
-  musicTimer = window.setInterval(scheduleMusicStep, 250);
+  musicTimer = window.setInterval(scheduleMusicStep, getPlatformMusicPattern(currentMusicTheme).stepMs);
 }
 
 export function unlockPlatformAudio() {
@@ -117,7 +136,12 @@ export function unlockPlatformAudio() {
   } else startMusicClock();
 }
 
-export function startPlatformMusic() {
+export function startPlatformMusic(theme: PlatformMusicTheme = "adventure") {
+  if (theme !== currentMusicTheme) {
+    if (musicTimer !== null) { window.clearInterval(musicTimer); musicTimer = null; }
+    currentMusicTheme = theme;
+    musicStep = 0;
+  }
   musicActive = true;
   if (context?.state === "running") startMusicClock();
 }
@@ -131,7 +155,7 @@ export function stopPlatformMusic() {
   rampGain(musicBus, 0);
 }
 
-export type PlatformSfx = "jump" | "coin" | "hurt" | "bump" | "clear";
+export type PlatformSfx = "jump" | "coin" | "hurt" | "bump" | "clear" | "forest-key" | "forest-gate" | "forest-bridge" | "forest-room" | "forest-chapter";
 type Note = { from: number; to: number; at: number; duration: number; wave: OscillatorType; volume: number };
 
 const SFX_NOTES: Record<PlatformSfx, Note[]> = {
@@ -150,6 +174,29 @@ const SFX_NOTES: Record<PlatformSfx, Note[]> = {
     { from: 659, to: 659, at: 0.09, duration: 0.31, wave: "sine", volume: 0.045 },
     { from: 784, to: 784, at: 0.18, duration: 0.34, wave: "sine", volume: 0.05 },
     { from: 1047, to: 1047, at: 0.28, duration: 0.45, wave: "triangle", volume: 0.045 },
+  ],
+  "forest-key": [
+    { from: 740, to: 988, at: 0, duration: 0.13, wave: "sine", volume: 0.045 },
+    { from: 988, to: 1318.5, at: 0.085, duration: 0.2, wave: "triangle", volume: 0.034 },
+  ],
+  "forest-gate": [
+    { from: 220, to: 294, at: 0, duration: 0.16, wave: "triangle", volume: 0.038 },
+    { from: 440, to: 587.3, at: 0.13, duration: 0.19, wave: "sine", volume: 0.032 },
+  ],
+  "forest-bridge": [
+    { from: 164.8, to: 196, at: 0, duration: 0.18, wave: "triangle", volume: 0.04 },
+    { from: 392, to: 523.25, at: 0.12, duration: 0.2, wave: "sine", volume: 0.027 },
+  ],
+  "forest-room": [
+    { from: 392, to: 392, at: 0, duration: 0.2, wave: "sine", volume: 0.032 },
+    { from: 523.25, to: 523.25, at: 0.1, duration: 0.22, wave: "sine", volume: 0.035 },
+    { from: 659.25, to: 659.25, at: 0.2, duration: 0.25, wave: "triangle", volume: 0.035 },
+  ],
+  "forest-chapter": [
+    { from: 523.25, to: 523.25, at: 0, duration: 0.25, wave: "sine", volume: 0.04 },
+    { from: 659.25, to: 659.25, at: 0.1, duration: 0.28, wave: "sine", volume: 0.04 },
+    { from: 783.99, to: 783.99, at: 0.2, duration: 0.32, wave: "sine", volume: 0.044 },
+    { from: 1047, to: 1047, at: 0.31, duration: 0.4, wave: "triangle", volume: 0.042 },
   ],
 };
 

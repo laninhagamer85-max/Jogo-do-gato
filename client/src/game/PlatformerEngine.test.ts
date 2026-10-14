@@ -20,7 +20,13 @@ function harness() {
   vi.stubGlobal("ResizeObserver", undefined);
   vi.stubGlobal("Image", class { complete = false; naturalWidth = 0; src = ""; });
   const gradient = { addColorStop: vi.fn() };
-  const ctx = new Proxy({}, { get: (_target, key) => String(key).startsWith("create") ? () => gradient : vi.fn() });
+  const contextCalls = new Map<string, ReturnType<typeof vi.fn>>();
+  const ctx = new Proxy({}, { get: (_target, key) => {
+    if (String(key).startsWith("create")) return () => gradient;
+    const name = String(key);
+    if (!contextCalls.has(name)) contextCalls.set(name, vi.fn());
+    return contextCalls.get(name);
+  } });
   let size = { width: 368, height: 403 };
   const canvas = {
     clientHeight: size.height, width: 0, height: 0,
@@ -31,7 +37,7 @@ function harness() {
   const engine = new PlatformerEngine(canvas, 1, profile, callbacks);
   const internals = engine as any;
   return {
-    engine, internals, callbacks, documentStub,
+    engine, internals, callbacks, documentStub, contextCalls, context: ctx as CanvasRenderingContext2D,
     visibility: () => listeners.get("visibilitychange")!(),
     resize: (width: number, height: number) => { size = { width, height }; internals.resize(canvas); },
     stand: (index: number, x?: number) => {
@@ -140,6 +146,23 @@ describe("PlatformerEngine existing gameplay contracts", () => {
     h.internals.player.vy = -250;
     h.engine.setInput("jump", false);
     expect(h.internals.player.vy).toBe(-250);
+    h.engine.dispose();
+  });
+
+  it("renders articulated running frames instead of the still run illustration", () => {
+    const h = harness(); h.stand(0);
+    h.internals.player.vx = 220;
+    Object.assign(h.internals.idleImage, { complete: true, naturalWidth: 120 });
+    h.internals.elapsed = 0.2;
+    h.internals.drawPlayer(h.context);
+    const firstTailPose = h.contextCalls.get("bezierCurveTo")?.mock.calls.at(-1);
+    expect(firstTailPose).toBeDefined();
+    expect(h.contextCalls.get("drawImage")?.mock.calls.length ?? 0).toBe(0);
+    h.contextCalls.get("bezierCurveTo")?.mockClear();
+    h.internals.elapsed = 0.3;
+    h.internals.drawPlayer(h.context);
+    const nextTailPose = h.contextCalls.get("bezierCurveTo")?.mock.calls.at(-1);
+    expect(nextTailPose).not.toEqual(firstTailPose);
     h.engine.dispose();
   });
 

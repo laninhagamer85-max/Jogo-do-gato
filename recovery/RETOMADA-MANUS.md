@@ -67,3 +67,30 @@ Painel de conta, componente SVG do atlas e desenho Canvas dos itens/perigos fora
 ## Atualização de 13/10/2026
 
 O histórico acima descreve a recuperação anterior. A fonte recebeu o painel de conta e atlas, publicados na v9; a v10 acrescentou sombras/enquadramento da casa em 12/10. A equivalência visual e autenticação isolada permanecem pendentes. O build de release atual é `scripts/build-sites-release.mjs`; o build preservado da v7 continua como recuperação histórica. O piloto de terreno da fase 1 de 13/10 está apenas no ramo, sem deploy. Consultar `docs/evolution/runs/2026-10-13.md` antes de publicar.
+
+
+## Continuação: atualização Bosque dos Caminhos — 14/10/2026
+
+- **Versão pública:** v12 no Site existente, commit publicado `47a07c607879a443b2fe9b2686795e118a2495ba`. A atualização descrita abaixo está em desenvolvimento e não está publicada.
+- **Fonte/branch:** repositório `laninhagamer85-max/Jogo-do-gato`, branch local `feat/forest-path-chapter1-20261014`, derivada do runtime `feat/pet-motion-20261014` já publicado na v12. PRs #4–#6 são preservados; não fazer merge automático, force-push ou substituição.
+- **Escopo aprovado:** modalidade solo top-down original “Bosque dos Caminhos”, três capítulos com duas salas, puzzles gentis e progressão sem combate, vidas, cronômetro ou moeda. A Aventura lateral permanece; sua animação articulada de corrida/salto foi preservada. O modo novo tem cadência de caminhada visual ligada ao movimento, cenários próprios, música/efeitos Web Audio próprios no mixer atual e toggle de efeitos.
+- **Save:** progresso `forestPathProgress` versionado e aditivo dentro de `GameState` existente por conta/perfil. A fixture `/qa-review.html` usa estado sintético em memória, sem login ou saves reais; nenhum perfil real foi lido ou alterado.
+- **QA feita:** inputs normais automatizados no browser completaram as duas salas do capítulo 1 e liberaram o capítulo 2; na primeira sala do capítulo 2, teclado colocou a prancha na água e um pointer touch emulado moveu o pet, depois `pointercancel` soltou o D-pad. Pausa/retomada preservou a sala. Medições de tela/jogo e seleção em 375×667, 375×812, 390×844, 844×390 e 1366×768 não mostraram overflow horizontal ou botão de entrada cortado. Console sem erro reportado nesta interação. Isto não é uma partida humana nem conclusão dos seis mapas.
+- **Pendências antes de aceitar:** playthrough real guiado das seis salas; revisão visual final da cadência do pet; TypeScript/suíte offline/build/diff-check do estado final; teste em aparelho móvel físico e validação de persistência com perfil staging isolado; anexar capturas/vídeo ao relatório/PR.
+- **Regra de release:** não publicar nesta etapa. Não declarar as 100 fases laterais testadas. Revisar o plano `docs/evolution/plans/2026-10-14-bosque-dos-caminhos.md`, o checklist `TODO.md`, o estado `docs/evolution/state.json` e o relatório `docs/evolution/runs/` antes de decidir a próxima ação.
+
+
+## Resultado final da QA do Bosque — 14/10/2026
+
+As linhas de QA/pendências da seção acima registravam o ponto anterior à conclusão do capítulo 3 e estão supersedidas por este resultado:
+
+- A fixture isolada completou, por entradas de teclado/toque sintetizadas na UI normal, as seis salas em sequência. O desbloqueio dos capítulos 2 e 3 ocorreu organicamente; a sala final mostrou “Capítulo concluído” e a seleção confirmou os três capítulos como concluídos. Não houve teleporte, invulnerabilidade ou chamada direta de vitória; **não foi uma partida humana**, e nenhum login/save real foi usado.
+- Métricas exibidas na conclusão: C1S1 **24 passos/5 ações**; C1S2 **48/9**; C2S1 **17/2**; C2S2 **67/10**; C3S1 **21/4**; C3S2 **71/8**. O modo intencionalmente não tem relógio nem vidas; duração ativa e contatos com guardiões não foram instrumentados.
+- Seleção/layout foram medidos em **375×667, 375×812, 390×844, 844×390 e 1366×768**; o playthrough completo foi em 390×844. TypeScript, **73 testes offline**, build e `git diff --check` passaram. O build não contém páginas QA nem strings/atributos de telemetria; segue o aviso de chunks maiores que 500 kB. O clipe MP4 de 6,65 s é silencioso e serve como evidência visual.
+- Permanecem pendentes: validação em aparelho físico, persistência/migração em perfil de staging e decisão sobre spritesheets direcionais completos para a etapa de produção. A animação procedural de caminhada é aceita apenas como estado do protótipo até essa decisão.
+- A v12 permanece no Site existente. Os PRs #4–#6 seguem preservados; esta atualização será proposta em PR separado contra `feat/pet-motion-20261014`, sem merge nem deploy automático. Consulte o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md) e as [evidências](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/evidence/).
+
+
+### Atualização após abertura do PR — 14/10/2026
+
+O PR [#7 — Bosque dos Caminhos](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7) está **aberto** contra `feat/pet-motion-20261014`, head do PR #6. O head testado é `1a9f31e325cebe5fbb707783810922ec2c5def72`. PRs #4–#6 não foram modificados; não houve merge nem publicação desta atualização. A v12 segue no Site existente até decisão explícita.

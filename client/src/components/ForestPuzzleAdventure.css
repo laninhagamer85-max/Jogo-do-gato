@@ -1,139 +1,194 @@
-.forest-puzzle {
-  --forest-ink: #173a2b;
-  --forest-muted: #668070;
-  position: fixed; z-index: 80; inset: 0; display: flex; flex-direction: column; overflow: auto;
-  background: radial-gradient(ellipse at 10% 0%, rgb(119 201 104 / 24%), transparent 32%), linear-gradient(150deg,#102c28,#14382f 54%,#0c2826);
-  color: #f7fff4; font-family: "Nunito", "Trebuchet MS", sans-serif;
+.forest-adventure {
+  --fa-ink: #183a2d;
+  --fa-muted: #bdd1bc;
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  color: #f6fff2;
+  background: radial-gradient(ellipse at 8% 0%, rgb(135 198 91 / 22%), transparent 34%), linear-gradient(150deg, #102b27, #173d32 52%, #102b2b);
+  font-family: "Nunito", "Trebuchet MS", sans-serif;
 }
-.forest-puzzle button { color: inherit; font: inherit; cursor: pointer; }
-.forest-puzzle button:focus-visible { outline: 3px solid #ffe58b; outline-offset: 3px; }
-.forest-puzzle-topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:70px; padding:10px clamp(14px,3vw,36px); border-bottom:1px solid rgb(255 255 255 / 10%); background:rgb(6 23 22 / 43%); }
-.forest-puzzle-brand { display:flex; align-items:center; gap:10px; }
-.forest-puzzle-brand>span { display:grid; width:40px; height:40px; place-items:center; border:1px solid rgb(255 255 255 / 24%); border-radius:14px; background:linear-gradient(145deg,#ffe17a,#f5aa48); color:#4b3a23; font-size:22px; box-shadow:0 6px 18px rgb(0 0 0 / 20%); }
-.forest-puzzle-brand>div { display:flex; flex-direction:column; }
-.forest-puzzle-brand strong { font-family:"Baloo 2","Nunito",sans-serif; font-size:19px; font-weight:1000; line-height:1.05; }
-.forest-puzzle-brand small { margin-top:4px; color:#b6dbac; font-size:8px; font-weight:1000; letter-spacing:1.3px; }
-.forest-puzzle-actions { display:flex; gap:8px; }
-.forest-puzzle-actions button,.forest-puzzle-footer-actions button { display:inline-flex; min-height:42px; align-items:center; justify-content:center; gap:7px; padding:0 13px; border:1px solid rgb(255 255 255 / 16%); border-radius:12px; background:rgb(255 255 255 / 7%); font-size:12px; font-weight:900; transition:background .15s ease,transform .15s ease; }
-.forest-puzzle-actions button:hover,.forest-puzzle-footer-actions button:hover { background:rgb(255 255 255 / 14%); transform:translateY(-1px); }
-.forest-puzzle-main { width:min(1180px,100%); margin:0 auto; padding:clamp(14px,2.4vw,28px); }
-.forest-puzzle-intro { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:15px; }
-.forest-puzzle-kicker { display:inline-flex; align-items:center; gap:6px; color:#b8e59e; font-size:9px; font-weight:1000; letter-spacing:1px; }
-.forest-puzzle-intro h1 { margin:5px 0 4px; font-family:"Baloo 2","Nunito",sans-serif; font-size:clamp(23px,3vw,34px); font-weight:1000; letter-spacing:-.6px; line-height:1.08; }
-.forest-puzzle-intro p { margin:0; max-width:520px; color:#cfdfd0; font-size:12px; line-height:1.5; }
-.forest-puzzle-objectives { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
-.forest-puzzle-objectives span { display:inline-flex; align-items:center; gap:6px; min-height:31px; padding:4px 9px; border:1px solid rgb(255 255 255 / 12%); border-radius:99px; background:rgb(3 19 18 / 28%); color:#d0ddcf; font-size:9px; font-weight:850; }
-.forest-puzzle-objectives i { display:grid; width:19px; height:19px; place-items:center; border-radius:50%; background:rgb(255 255 255 / 12%); color:#ffe58c; font-size:9px; font-style:normal; }
-.forest-puzzle-objectives span.done { border-color:rgb(163 232 121 / 44%); background:rgb(116 190 72 / 18%); color:#e8ffd7; }
-.forest-puzzle-objectives span.done i { background:#6db344; color:#fff; }
-.forest-puzzle-board { display:grid; grid-template-columns:minmax(0,1fr) 245px; gap:14px; align-items:stretch; }
-.forest-puzzle-canvas-wrap { position:relative; min-width:0; overflow:hidden; aspect-ratio:13/9; border:1px solid rgb(230 255 217 / 25%); border-radius:20px; background:linear-gradient(145deg,#a9de72,#599d4b); box-shadow:0 18px 38px rgb(0 0 0 / 24%),inset 0 1px 0 rgb(255 255 255 / 30%); }
-.forest-puzzle-canvas-wrap>canvas { display:block; width:100%; height:100%; }
-.forest-puzzle-side { display:flex; flex-direction:column; gap:11px; padding:13px; border:1px solid rgb(255 255 255 / 13%); border-radius:20px; background:linear-gradient(155deg,rgb(39 74 55 / 92%),rgb(20 51 42 / 96%)); box-shadow:0 15px 35px rgb(0 0 0 / 17%); }
-.forest-puzzle-pet { display:flex; min-height:65px; align-items:center; gap:9px; padding:6px 9px; border:1px solid rgb(255 255 255 / 10%); border-radius:14px; background:rgb(5 26 20 / 28%); }
-.forest-puzzle-pet img { width:50px; height:52px; object-fit:contain; filter:drop-shadow(0 4px 6px rgb(0 0 0 / 23%)); }
-.forest-puzzle-pet div { display:flex; min-width:0; flex-direction:column; gap:3px; }
-.forest-puzzle-pet small,.forest-puzzle-status>small,.forest-puzzle-controls>small { color:#b8dbaa; font-size:8px; font-weight:1000; letter-spacing:.9px; }
-.forest-puzzle-pet strong { overflow:hidden; font-size:13px; font-weight:1000; text-overflow:ellipsis; white-space:nowrap; }
-.forest-puzzle-status { display:flex; flex-direction:column; gap:7px; padding:11px; border:1px solid rgb(255 255 255 / 10%); border-radius:14px; background:rgb(255 255 255 / 5%); }
-.forest-puzzle-status>strong { font-size:12px; }
-.forest-puzzle-status>div { display:flex; gap:5px; }
-.forest-puzzle-status>div span { flex:1; padding:5px 4px; border-radius:8px; background:rgb(0 0 0 / 15%); color:#bacbbb; font-size:8px; text-align:center; }
-.forest-puzzle-status>div span.done { background:rgb(126 195 79 / 28%); color:#eaffd9; }
-.forest-puzzle-controls { display:flex; flex-direction:column; align-items:center; gap:7px; padding:10px; border:1px solid rgb(255 255 255 / 9%); border-radius:14px; background:rgb(3 22 18 / 19%); }
-.forest-puzzle-controls>small { align-self:flex-start; }
-.forest-puzzle-dpad { display:grid; grid-template-columns:repeat(3,43px); grid-template-rows:repeat(2,39px); gap:4px; }
-.forest-puzzle-dpad button { display:grid; width:43px; height:39px; place-items:center; border:1px solid rgb(255 255 255 / 17%); border-radius:11px; background:linear-gradient(145deg,#679d55,#477e48); color:#f5ffdc; box-shadow:0 3px 0 #315b38; touch-action:manipulation; }
-.forest-puzzle-dpad button:active { transform:translateY(2px); box-shadow:0 1px 0 #315b38; }
-.forest-puzzle-dpad button:nth-child(1) { grid-column:2; grid-row:1; }
-.forest-puzzle-dpad button:nth-child(2) { grid-column:1; grid-row:2; }
-.forest-puzzle-dpad button:nth-child(3) { grid-column:2; grid-row:2; }
-.forest-puzzle-dpad button:nth-child(4) { grid-column:3; grid-row:2; }
-.forest-puzzle-controls p { margin:0; color:#c4d5c5; font-size:9px; line-height:1.4; text-align:center; }
-.forest-puzzle-footer-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-.forest-puzzle-footer-actions button { min-height:39px; padding:0 7px; font-size:10px; }
-.forest-puzzle-hint { min-height:38px; border:1px solid rgb(255 222 128 / 24%); border-radius:11px; background:rgb(255 217 110 / 9%); color:#ffe59a; font-size:10px; font-weight:950; }
-.forest-puzzle-hint-copy { margin:-4px 2px 0; color:#d5e5d3; font-size:10px; line-height:1.45; }
-.forest-puzzle-session-note { margin:12px 0 0; color:#a9c2aa; font-size:9px; text-align:center; }
-.forest-puzzle-overlay { position:absolute; inset:0; display:grid; place-items:center; padding:18px; background:rgb(8 24 20 / 65%); backdrop-filter:blur(3px); }
-.forest-puzzle-dialog { display:flex; width:min(370px,100%); flex-direction:column; align-items:center; padding:22px; border:1px solid rgb(255 255 255 / 20%); border-radius:22px; background:linear-gradient(150deg,#294d39,#193c32); box-shadow:0 20px 48px rgb(0 0 0 / 35%); text-align:center; }
-.forest-puzzle-dialog-icon { display:grid; width:50px; height:50px; place-items:center; border-radius:16px; background:rgb(255 224 125 / 15%); color:#ffe17b; font-size:27px; }
-.forest-puzzle-dialog small { margin-top:11px; color:#c3e7aa; font-size:9px; font-weight:1000; letter-spacing:1.2px; }
-.forest-puzzle-dialog h2 { margin:5px 0; font-family:"Baloo 2","Nunito",sans-serif; font-size:23px; }
-.forest-puzzle-dialog p { margin:0 0 15px; color:#d0dfd0; font-size:12px; line-height:1.5; }
-.forest-puzzle-primary { display:inline-flex; min-height:45px; align-items:center; justify-content:center; gap:7px; padding:0 18px; border:0; border-radius:12px; background:linear-gradient(135deg,#f8d965,#e7ae45); color:#42321e !important; font-size:12px; font-weight:1000; box-shadow:0 5px 14px rgb(0 0 0 / 20%); }
-@media (max-width:760px) {
-  .forest-puzzle-topbar { min-height:58px; padding:8px 11px; }
-  .forest-puzzle-brand>span { width:36px; height:36px; }
-  .forest-puzzle-brand strong { font-size:16px; }
-  .forest-puzzle-brand small { font-size:7px; letter-spacing:.8px; }
-  .forest-puzzle-actions { gap:5px; }
-  .forest-puzzle-actions button { min-height:40px; gap:5px; padding:0 9px; font-size:10px; }
-  .forest-puzzle-main { padding:12px 10px 20px; }
-  .forest-puzzle-intro { display:block; margin-bottom:10px; }
-  .forest-puzzle-intro h1 { font-size:24px; }
-  .forest-puzzle-intro p { font-size:11px; }
-  .forest-puzzle-objectives { justify-content:flex-start; margin-top:9px; }
-  .forest-puzzle-objectives span { min-height:29px; padding:3px 7px; font-size:8px; }
-  .forest-puzzle-board { grid-template-columns:minmax(0,1fr); gap:9px; }
-  .forest-puzzle-canvas-wrap { border-radius:14px; }
-  .forest-puzzle-side { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:9px; border-radius:15px; }
-  .forest-puzzle-pet { grid-column:1/-1; min-height:48px; }
-  .forest-puzzle-pet img { width:39px; height:42px; }
-  .forest-puzzle-status { gap:5px; padding:8px; }
-  .forest-puzzle-status>small,.forest-puzzle-controls>small { font-size:7px; }
-  .forest-puzzle-status>strong { font-size:10px; }
-  .forest-puzzle-status>div span { padding:4px 2px; font-size:7px; }
-  .forest-puzzle-controls { grid-column:2; grid-row:2 / span 2; align-self:stretch; justify-content:center; gap:5px; padding:6px; }
-  .forest-puzzle-controls>small { align-self:center; }
-  .forest-puzzle-dpad { grid-template-columns:repeat(3,39px); grid-template-rows:repeat(2,36px); gap:3px; }
-  .forest-puzzle-dpad button { width:39px; height:36px; }
-  .forest-puzzle-dpad button svg { width:18px; height:18px; }
-  .forest-puzzle-controls p { max-width:125px; font-size:8px; }
-  .forest-puzzle-footer-actions { grid-column:1; grid-row:3; }
-  .forest-puzzle-footer-actions button { min-height:36px; font-size:9px; }
-  .forest-puzzle-hint { grid-column:1/-1; min-height:36px; }
-  .forest-puzzle-hint-copy { grid-column:1/-1; }
-  .forest-puzzle-session-note { font-size:8px; }
+.forest-adventure button { color: inherit; font: inherit; cursor: pointer; }
+.forest-adventure button:focus-visible { outline: 3px solid #ffe08a; outline-offset: 3px; }
+.forest-adventure button:disabled { cursor: not-allowed; opacity: .58; }
+.forest-adventure-topbar { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 12px; padding: 8px clamp(12px, 3vw, 34px); border-bottom: 1px solid rgb(255 255 255 / 11%); background: rgb(6 23 22 / 46%); }
+.forest-adventure-brand { display: flex; min-width: 0; align-items: center; gap: 10px; }
+.forest-adventure-brand>span { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border: 1px solid rgb(255 255 255 / 22%); border-radius: 14px; background: linear-gradient(145deg, #9bd574, #4a9859); color: #153727; box-shadow: 0 6px 18px rgb(0 0 0 / 19%); }
+.forest-adventure-brand>div { display: flex; min-width: 0; flex-direction: column; }
+.forest-adventure-brand strong { overflow: hidden; font-family: "Baloo 2", "Nunito", sans-serif; font-size: 18px; font-weight: 1000; line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }
+.forest-adventure-brand small { margin-top: 4px; color: #b9dba8; font-size: 8px; font-weight: 1000; letter-spacing: 1.2px; }
+.forest-adventure-top-actions { display: flex; gap: 7px; }
+.forest-adventure-top-actions button,.forest-utility-buttons button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 6px; padding: 0 11px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 11px; background: rgb(255 255 255 / 7%); font-size: 11px; font-weight: 900; }
+.forest-adventure-top-actions button:hover,.forest-utility-buttons button:hover { background: rgb(255 255 255 / 14%); }
+.forest-adventure-map,.forest-adventure-game { width: min(1180px, 100%); margin: 0 auto; padding: clamp(12px, 2.5vw, 28px); }
+.forest-adventure-intro { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 17px; }
+.forest-adventure-eyebrow { display: inline-flex; align-items: center; gap: 6px; color: #c4e9a4; font-size: 9px; font-weight: 1000; letter-spacing: 1px; }
+.forest-adventure-intro h1,.forest-game-heading h1 { margin: 5px 0 4px; font-family: "Baloo 2", "Nunito", sans-serif; font-size: clamp(25px, 3vw, 36px); font-weight: 1000; letter-spacing: -.6px; line-height: 1.08; }
+.forest-adventure-intro p,.forest-game-heading p { max-width: 650px; margin: 0; color: #d0dfcd; font-size: 12px; line-height: 1.5; }
+.forest-adventure-pet-chip,.forest-game-pet { display: flex; min-width: 160px; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid rgb(255 255 255 / 13%); border-radius: 14px; background: rgb(4 24 19 / 30%); }
+.forest-adventure-pet-chip img,.forest-game-pet img { width: 44px; height: 48px; object-fit: contain; filter: drop-shadow(0 4px 5px rgb(0 0 0 / 25%)); }
+.forest-adventure-pet-chip span,.forest-game-pet span { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.forest-adventure-pet-chip small,.forest-game-pet small { color: #b9d9a6; font-size: 8px; font-weight: 1000; letter-spacing: .9px; }
+.forest-adventure-pet-chip strong,.forest-game-pet strong { overflow: hidden; font-size: 12px; font-weight: 1000; text-overflow: ellipsis; white-space: nowrap; }
+.forest-chapter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.forest-chapter-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; padding: 0; border: 1px solid rgb(255 255 255 / 16%); border-radius: 18px; background: linear-gradient(155deg, rgb(42 76 55 / 92%), rgb(20 48 41 / 96%)); text-align: left; box-shadow: 0 14px 30px rgb(0 0 0 / 17%); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+.forest-chapter-card:not(:disabled):hover { transform: translateY(-2px); border-color: rgb(228 214 140 / 65%); box-shadow: 0 18px 34px rgb(0 0 0 / 25%); }
+.forest-chapter-card.is-selected { border-color: #f1d37d; box-shadow: 0 0 0 2px rgb(241 211 125 / 20%), 0 16px 34px rgb(0 0 0 / 25%); }
+.forest-chapter-art { position: relative; display: block; aspect-ratio: 16 / 8; overflow: hidden; background: #315c3a; }
+.forest-chapter-art::after { position: absolute; inset: 35% 0 0; background: linear-gradient(transparent, rgb(8 24 18 / 68%)); content: ""; }
+.forest-chapter-art img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
+.forest-chapter-card:not(:disabled):hover .forest-chapter-art img { transform: scale(1.035); }
+.forest-chapter-lock { position: absolute; z-index: 1; top: 10px; right: 11px; font-size: 19px; filter: drop-shadow(0 2px 5px #000); }
+.forest-chapter-number { position: absolute; z-index: 1; bottom: 9px; left: 12px; color: #f6e5ac; font-size: 9px; font-weight: 1000; letter-spacing: 1px; text-shadow: 0 2px 5px #000; }
+.forest-chapter-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 11px 13px 13px; }
+.forest-chapter-copy>strong { font-family: "Baloo 2", "Nunito", sans-serif; font-size: 16px; font-weight: 1000; }
+.forest-chapter-copy>small { color: #cad9c4; font-size: 10px; }
+.forest-chapter-copy>span { display: inline-flex; align-items: center; gap: 4px; min-height: 20px; margin-top: 3px; color: #dcebd2; font-size: 9px; font-weight: 900; }
+.forest-chapter-copy>span.is-complete { color: #d7f5a9; }
+.forest-chapter-copy>span.is-locked { color: #b7bdb1; }
+.forest-chapter-copy>span.is-open { color: #f5df91; }
+.forest-adventure-version-note { margin: 0 0 12px; padding: 10px 12px; border: 1px solid rgb(242 192 106 / 35%); border-radius: 12px; background: rgb(160 112 39 / 16%); color: #ffe2ac; font-size: 11px; }
+.forest-map-actions { display: flex; align-items: center; gap: 13px; margin-top: 17px; }
+.forest-primary,.forest-secondary { display: inline-flex; min-height: 43px; align-items: center; justify-content: center; gap: 7px; padding: 0 16px; border: 0; border-radius: 12px; font-size: 11px; font-weight: 1000; }
+.forest-primary { background: linear-gradient(135deg, #f8dc77, #e3aa48); color: #40351d !important; box-shadow: 0 5px 14px rgb(0 0 0 / 19%); }
+.forest-secondary { border: 1px solid rgb(255 255 255 / 18%); background: rgb(255 255 255 / 8%); }
+.forest-save-note { display: inline-flex; align-items: center; gap: 7px; color: #b8cbb6; font-size: 10px; line-height: 1.4; }
+.forest-game-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.forest-game-heading h1 { font-size: clamp(21px, 2.5vw, 30px); }
+.forest-game-heading p { font-size: 11px; }
+.forest-game-metrics { display: flex; align-items: center; gap: 7px; }
+.forest-game-metrics>span { display: flex; min-width: 53px; flex-direction: column; align-items: center; padding: 5px 8px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 10px; background: rgb(255 255 255 / 6%); }
+.forest-game-metrics strong { font-size: 13px; }
+.forest-game-metrics small { color: #bfd2bc; font-size: 8px; }
+.forest-game-metrics button { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid rgb(255 255 255 / 14%); border-radius: 11px; background: rgb(255 255 255 / 8%); }
+.forest-game-layout { display: grid; grid-template-columns: minmax(0, 1fr) 235px; align-items: stretch; gap: 12px; }
+.forest-canvas-wrap { position: relative; min-width: 0; overflow: hidden; aspect-ratio: 14 / 8; border: 1px solid rgb(226 255 206 / 25%); border-radius: 18px; background: #355d39; box-shadow: 0 17px 34px rgb(0 0 0 / 24%), inset 0 1px 0 rgb(255 255 255 / 20%); }
+.forest-canvas-wrap>canvas { display: block; width: 100%; height: 100%; }
+.forest-live-message { position: absolute; right: 9px; bottom: 8px; left: 9px; overflow: hidden; padding: 6px 9px; border: 1px solid rgb(255 255 255 / 13%); border-radius: 9px; background: rgb(7 27 21 / 75%); color: #f5f4df; font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+.forest-game-controls { display: flex; min-width: 0; flex-direction: column; gap: 9px; padding: 10px; border: 1px solid rgb(255 255 255 / 13%); border-radius: 17px; background: linear-gradient(155deg, rgb(41 73 55 / 93%), rgb(19 48 41 / 97%)); }
+.forest-game-pet { min-width: 0; min-height: 48px; padding: 3px 7px; }
+.forest-game-pet img { width: 37px; height: 40px; }
+.forest-status-row { display: flex; justify-content: space-between; gap: 5px; }
+.forest-status-row>span { display: inline-flex; min-width: 0; align-items: center; gap: 4px; padding: 5px 6px; border-radius: 8px; background: rgb(255 255 255 / 7%); color: #cddcca; font-size: 8px; font-weight: 850; }
+.forest-status-row>span.done { background: rgb(126 195 79 / 22%); color: #e5ffd4; }
+.forest-dpad { display: grid; width: max-content; grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(2, 37px); gap: 4px; align-self: center; }
+.forest-dpad button { display: grid; width: 42px; height: 37px; place-items: center; border: 1px solid rgb(255 255 255 / 18%); border-radius: 10px; background: linear-gradient(145deg, #679c57, #3d7549); color: #f7ffdf; box-shadow: 0 3px 0 #31583a; touch-action: none; user-select: none; }
+.forest-dpad button:active { transform: translateY(2px); box-shadow: 0 1px 0 #31583a; }
+.forest-dpad button:nth-child(1) { grid-column: 2; grid-row: 1; }
+.forest-dpad button:nth-child(2) { grid-column: 1; grid-row: 2; }
+.forest-dpad button:nth-child(3) { grid-column: 2; grid-row: 2; }
+.forest-dpad button:nth-child(4) { grid-column: 3; grid-row: 2; }
+.forest-action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.forest-action-buttons button { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 6px; padding: 0 5px; border: 1px solid rgb(255 255 255 / 14%); border-radius: 10px; background: rgb(255 255 255 / 7%); font-size: 9px; font-weight: 900; }
+.forest-action-buttons button span { display: grid; width: 20px; height: 20px; place-items: center; border-radius: 6px; background: rgb(255 225 139 / 18%); color: #ffe59b; font-size: 9px; }
+.forest-utility-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
+.forest-utility-buttons button { min-height: 32px; flex: 1 1 auto; gap: 4px; padding: 0 6px; font-size: 8px; }
+.forest-help-copy,.forest-safe-note { margin: 0; color: #c1d3be; font-size: 9px; line-height: 1.45; }
+.forest-safe-note { margin-top: auto; color: #c8e4b1; text-align: center; }
+.forest-overlay { position: absolute; z-index: 3; inset: 0; display: grid; place-items: center; padding: 14px; background: rgb(8 24 20 / 68%); backdrop-filter: blur(3px); }
+.forest-dialog { display: flex; width: min(370px, 100%); flex-direction: column; align-items: center; padding: 19px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 20px; background: linear-gradient(150deg, #294d39, #193c32); box-shadow: 0 20px 48px rgb(0 0 0 / 35%); text-align: center; }
+.forest-dialog-icon { display: grid; width: 45px; height: 45px; place-items: center; border-radius: 15px; background: rgb(255 224 125 / 15%); color: #ffe17b; font-size: 24px; font-weight: 1000; }
+.forest-dialog>small { margin-top: 9px; color: #c3e7aa; font-size: 8px; font-weight: 1000; letter-spacing: 1.2px; }
+.forest-dialog h2 { margin: 5px 0; font-family: "Baloo 2", "Nunito", sans-serif; font-size: 21px; }
+.forest-dialog p { margin: 0 0 13px; color: #d0dfd0; font-size: 11px; line-height: 1.45; }
+.forest-dialog-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.forest-dialog-map { margin-top: 11px; border: 0; background: transparent; color: #d9e9d2 !important; font-size: 9px; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 760px) {
+  .forest-adventure-topbar { min-height: 55px; padding: 6px 10px; }
+  .forest-adventure-brand>span { width: 35px; height: 35px; }
+  .forest-adventure-brand strong { font-size: 15px; }
+  .forest-adventure-brand small { font-size: 7px; letter-spacing: .75px; }
+  .forest-adventure-top-actions { gap: 4px; }
+  .forest-adventure-top-actions button { min-height: 37px; gap: 4px; padding: 0 7px; font-size: 9px; }
+  .forest-adventure-top-actions button svg { width: 14px; }
+  .forest-adventure-map,.forest-adventure-game { padding: 10px 9px 17px; }
+  .forest-adventure-intro { align-items: flex-start; margin-bottom: 10px; }
+  .forest-adventure-intro h1 { font-size: 24px; }
+  .forest-adventure-intro p { font-size: 10px; line-height: 1.4; }
+  .forest-adventure-pet-chip { min-width: 0; padding: 4px 6px; }
+  .forest-adventure-pet-chip img { width: 34px; height: 38px; }
+  .forest-adventure-pet-chip small { font-size: 7px; }
+  .forest-adventure-pet-chip strong { max-width: 75px; font-size: 10px; }
+  .forest-chapter-grid { grid-template-columns: 1fr; gap: 8px; }
+  .forest-chapter-card { display: grid; grid-template-columns: 115px minmax(0, 1fr); border-radius: 13px; }
+  .forest-chapter-art { height: 82px; aspect-ratio: auto; }
+  .forest-chapter-copy { justify-content: center; gap: 2px; padding: 7px 9px; }
+  .forest-chapter-copy>strong { font-size: 13px; }
+  .forest-chapter-copy>small { font-size: 9px; }
+  .forest-chapter-copy>span { min-height: 16px; margin-top: 1px; font-size: 8px; }
+  .forest-chapter-number { bottom: 5px; left: 7px; font-size: 7px; }
+  .forest-chapter-lock { top: 4px; right: 6px; font-size: 15px; }
+  .forest-map-actions { align-items: stretch; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .forest-map-actions .forest-primary { width: 100%; }
+  .forest-save-note { font-size: 9px; }
+  .forest-game-heading { align-items: center; margin-bottom: 8px; }
+  .forest-game-heading h1 { font-size: 20px; }
+  .forest-game-heading p { max-width: 330px; font-size: 9px; }
+  .forest-game-metrics { gap: 4px; }
+  .forest-game-metrics>span { min-width: 38px; padding: 4px; }
+  .forest-game-metrics button { width: 34px; height: 34px; }
+  .forest-game-layout { grid-template-columns: 1fr; gap: 7px; }
+  .forest-canvas-wrap { border-radius: 13px; }
+  .forest-game-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; padding: 7px; border-radius: 13px; }
+  .forest-game-pet { grid-column: 1 / -1; min-height: 37px; }
+  .forest-game-pet img { width: 30px; height: 33px; }
+  .forest-status-row { grid-column: 1; flex-direction: column; justify-content: center; }
+  .forest-status-row>span { font-size: 8px; }
+  .forest-dpad { grid-column: 2; grid-row: 2 / span 3; grid-template-columns: repeat(3, 38px); grid-template-rows: repeat(2, 34px); gap: 3px; }
+  .forest-dpad button { width: 38px; height: 34px; }
+  .forest-action-buttons { grid-column: 1; }
+  .forest-utility-buttons { grid-column: 1 / -1; }
+  .forest-utility-buttons button { min-height: 30px; }
+  .forest-help-copy,.forest-safe-note { grid-column: 1 / -1; font-size: 8px; }
+  .forest-live-message { right: 5px; bottom: 5px; left: 5px; padding: 5px 7px; font-size: 8px; }
 }
-@media (max-width:760px) and (max-height:700px) and (orientation:portrait) {
-  .forest-puzzle-topbar { min-height:52px; }
-  .forest-puzzle-main { padding-top:8px; padding-bottom:12px; }
-  .forest-puzzle-intro { margin-bottom:7px; }
-  .forest-puzzle-intro h1 { margin-top:3px; font-size:21px; }
-  .forest-puzzle-intro p { font-size:10px; line-height:1.35; }
-  .forest-puzzle-objectives { gap:4px; margin-top:6px; }
-  .forest-puzzle-objectives span { min-height:27px; }
-  .forest-puzzle-board { gap:6px; }
-  .forest-puzzle-canvas-wrap { border-radius:12px; }
-  .forest-puzzle-side { gap:6px; padding:7px; }
-  .forest-puzzle-session-note { margin-top:7px; }
+@media (max-width: 760px) and (max-height: 700px) and (orientation: portrait) {
+  .forest-adventure-topbar { min-height: 49px; }
+  .forest-adventure-map,.forest-adventure-game { padding-top: 7px; }
+  .forest-adventure-intro { margin-bottom: 7px; }
+  .forest-adventure-intro h1 { margin-top: 3px; font-size: 21px; }
+  .forest-adventure-intro p { font-size: 9px; }
+  .forest-chapter-art { height: 68px; }
+  .forest-chapter-grid { gap: 6px; }
+  .forest-chapter-copy { padding-top: 5px; padding-bottom: 5px; }
+  .forest-chapter-copy>strong { font-size: 12px; }
+  .forest-game-heading { margin-bottom: 5px; }
+  .forest-game-heading h1 { font-size: 18px; }
+  .forest-canvas-wrap { border-radius: 11px; }
+  .forest-game-controls { gap: 5px; padding: 5px; }
+  .forest-dpad { grid-template-columns: repeat(3, 35px); grid-template-rows: repeat(2, 31px); }
+  .forest-dpad button { width: 35px; height: 31px; }
+  .forest-action-buttons button { min-height: 33px; }
 }
-@media (min-width:761px) and (max-height:520px) and (orientation:landscape) {
-  .forest-puzzle-topbar { min-height:48px; padding-top:4px; padding-bottom:4px; }
-  .forest-puzzle-brand>span { width:34px; height:34px; }
-  .forest-puzzle-main { padding:7px 14px; }
-  .forest-puzzle-intro { align-items:center; gap:8px; margin-bottom:7px; }
-  .forest-puzzle-intro h1 { margin:2px 0; font-size:20px; }
-  .forest-puzzle-intro p { display:none; }
-  .forest-puzzle-objectives { gap:4px; }
-  .forest-puzzle-objectives span { min-height:26px; padding:3px 7px; font-size:8px; }
-  .forest-puzzle-board { grid-template-columns:minmax(0,1fr) 220px; gap:9px; }
-  .forest-puzzle-canvas-wrap { height:min(56vh,218px); aspect-ratio:auto; border-radius:14px; }
-  .forest-puzzle-side { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; padding:8px; border-radius:14px; }
-  .forest-puzzle-pet { grid-column:1/-1; min-height:42px; padding:3px 7px; }
-  .forest-puzzle-pet img { width:35px; height:37px; }
-  .forest-puzzle-status { grid-column:1; grid-row:2; gap:4px; padding:6px; }
-  .forest-puzzle-controls { grid-column:2; grid-row:2/4; gap:4px; padding:5px; }
-  .forest-puzzle-dpad { grid-template-columns:repeat(3,35px); grid-template-rows:repeat(2,31px); gap:2px; }
-  .forest-puzzle-dpad button { width:35px; height:31px; }
-  .forest-puzzle-dpad button svg { width:17px; height:17px; }
-  .forest-puzzle-controls p { max-width:120px; font-size:8px; }
-  .forest-puzzle-footer-actions { grid-column:1; grid-row:3; gap:4px; }
-  .forest-puzzle-footer-actions button { min-height:33px; font-size:9px; }
-  .forest-puzzle-hint { min-height:31px; grid-column:1/-1; }
-  .forest-puzzle-session-note { margin-top:5px; }
+@media (min-width: 761px) and (max-height: 520px) and (orientation: landscape) {
+  .forest-adventure-topbar { min-height: 46px; padding-top: 4px; padding-bottom: 4px; }
+  .forest-adventure-brand>span { width: 32px; height: 32px; }
+  .forest-adventure-map,.forest-adventure-game { padding: 6px 12px; }
+  .forest-adventure-intro { margin-bottom: 8px; }
+  .forest-adventure-intro h1 { font-size: 22px; }
+  .forest-adventure-intro p { font-size: 9px; }
+  .forest-chapter-grid { gap: 8px; }
+  .forest-chapter-art { aspect-ratio: 16 / 6; }
+  .forest-game-heading { margin-bottom: 5px; }
+  .forest-game-heading h1 { font-size: 19px; }
+  .forest-game-heading p { display: none; }
+  .forest-game-layout { grid-template-columns: minmax(0, 1fr) 205px; gap: 8px; }
+  .forest-canvas-wrap { height: min(58vh, 225px); aspect-ratio: auto; border-radius: 13px; }
+  .forest-game-controls { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px; padding: 6px; }
+  .forest-game-pet { grid-column: 1 / -1; min-height: 34px; }
+  .forest-game-pet img { width: 28px; height: 30px; }
+  .forest-status-row { grid-column: 1; flex-direction: column; }
+  .forest-dpad { grid-column: 2; grid-row: 2 / span 3; grid-template-columns: repeat(3, 32px); grid-template-rows: repeat(2, 28px); gap: 2px; }
+  .forest-dpad button { width: 32px; height: 28px; }
+  .forest-action-buttons { grid-column: 1; }
+  .forest-action-buttons button { min-height: 30px; font-size: 8px; }
+  .forest-utility-buttons { grid-column: 1 / -1; }
+  .forest-utility-buttons button { min-height: 27px; font-size: 7px; }
+  .forest-safe-note { grid-column: 1 / -1; font-size: 7px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .forest-puzzle *, .forest-puzzle *::before, .forest-puzzle *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; }
+  .forest-adventure *, .forest-adventure *::before, .forest-adventure *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
