@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-14",
   "timezone": "America/Sao_Paulo",
-  "status": "published_with_validation_limits",
+  "status": "published_prototype_with_accepted_limits",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -12,33 +12,33 @@
     "base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
     "implementation_commit": "b044f19da926f0b34247be34ab64a658921b064c",
     "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f",
-    "published_source_branch": "fix/qa-adventure-rotation-20261014",
-    "published_source_commit": "609b1d0934ef62137017a9bd4ca86868eb23fcf2",
-    "published_source_pr": 5
+    "published_source_branch": "feat/pet-motion-20261014",
+    "published_source_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
+    "published_source_pr": 6
   },
   "current_improvement": {
-    "id": "manus-stage1-terrain-rotation-pause",
+    "id": "pet-motion-forest-exploration-prototype",
     "implementation_status": "published",
-    "acceptance_status": "external_browser_stage1_accepted"
+    "acceptance_status": "user_accepted_prototype_limits_external_browser_QA"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 11,
+    "last_observed_version": 12,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
-    "authorization": "David requested validating and publishing the updated Manus revision on 2026-10-14.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d24da8bdb9788191b29c16f725343df1",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
-    "deployment_id": "appgdep_6acf8a138e048191bd527d5efb51817f",
-    "site_commit": "8faea77b76aebd0d6d8861c6cab21d2c2944e4b0",
-    "published_at": "2026-10-14T13:56:56.652209+00:00"
+    "authorization": "David relayed explicit approval of chain #4–#6 including prototype limitations on 2026-10-14.",
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
+    "deployment_id": "appgdep_6acfb4c402f08191966514c9a43d6ad4",
+    "site_commit": "47a07c607879a443b2fe9b2686795e118a2495ba",
+    "published_at": "2026-10-14T16:59:10.706299+00:00"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "50/50_passed",
+    "offline_tests": "60/60_passed",
     "build": "passed_existing_chunk_warning",
-    "browser": "Manus_external_Chromium_QA_runtime_hashes_match",
+    "browser": "Manus isolated Browser Sandbox, tested runtime 0338794; subsequent diff documentation only",
     "local_browser": "unavailable_not_repeated",
     "phase1": "1_agent_guided_completion_0_deaths_keyboard",
     "phase2": "organic_unlock_and_touch_start_only",
@@ -51,7 +51,8 @@
     },
     "online_phases_completed": 0,
     "physical_mobile": "not_tested",
-    "firebase_integration": "not_run_staging_credentials_absent"
+    "firebase_integration": "not_run_staging_credentials_absent",
+    "forest_puzzle": "1_room_solved_21_arrow_inputs_external_browser"
   },
   "blockers": [
     {
@@ -60,15 +61,16 @@
     }
   ],
   "next_actions": [
-    "Test v11 on physical mobile, multitouch/rotation/background; complete a touch playthrough in isolated data.",
-    "Audit remaining phases gradually; keep daily routine paused until browser availability/recurrence decision."
+    "Test experimental puzzle on physical mobile and inspect D-pad/dialog in landscape.",
+    "Develop complete original pet walk frames and validate before replacing prototype poses.",
+    "Keep recurrence paused until separately resumed."
   ],
   "rollback": {
     "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d24da8bdb9788191b29c16f725343df1",
-    "instructions": "Restore v10 through official Sites flow only if necessary; check concurrent publications first. Preserve saves."
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
+    "instructions": "Restore v11 through official Sites flow after checking concurrent deployments; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-sites-release.md",
+  "latest_report": "docs/evolution/runs/2026-10-14-sites-prototype-release.md",
   "continuation": {
     "checked_date": "2026-10-14",
     "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",
