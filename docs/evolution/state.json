@@ -12,33 +12,33 @@
     "base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
     "implementation_commit": "b044f19da926f0b34247be34ab64a658921b064c",
     "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f",
-    "published_source_branch": "feat/pet-motion-20261014",
-    "published_source_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
-    "published_source_pr": 6
+    "published_source_branch": "feat/forest-path-chapter1-20261014",
+    "published_source_commit": "d57861a58ad16d905d044ab8ffceb952b69ef7bb",
+    "published_source_pr": 7
   },
   "current_improvement": {
-    "id": "pet-motion-forest-exploration-prototype",
+    "id": "bosque-dos-caminhos-three-chapters-six-rooms",
     "implementation_status": "published",
-    "acceptance_status": "user_accepted_prototype_limits_external_browser_QA"
+    "acceptance_status": "external_browser_prototype_QA_user_requested_publish"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 12,
+    "last_observed_version": 13,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
-    "authorization": "David relayed explicit approval of chain #4–#6 including prototype limitations on 2026-10-14.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
-    "deployment_id": "appgdep_6acfb4c402f08191966514c9a43d6ad4",
-    "site_commit": "47a07c607879a443b2fe9b2686795e118a2495ba",
-    "published_at": "2026-10-14T16:59:10.706299+00:00"
+    "authorization": "David requested verifying and publishing Manus final update on 2026-10-14.",
+    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2cca64c99c4881919ba593b887dcceee",
+    "deployment_id": "appgdep_6acfd30349348191bbe94dbbe1d902f9",
+    "site_commit": "2ad7a348712bacfeb2391ef8b92a979e71dc8135",
+    "published_at": "2026-10-14T19:08:08.137739+00:00"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "60/60_passed",
+    "offline_tests": "73/73_passed",
     "build": "passed_existing_chunk_warning",
-    "browser": "Manus isolated Browser Sandbox, tested runtime 0338794; subsequent diff documentation only",
+    "browser": "External Manus UI-driven fixture completion of 6 rooms; exact PR7 client hashes verified",
     "local_browser": "unavailable_not_repeated",
     "phase1": "1_agent_guided_completion_0_deaths_keyboard",
     "phase2": "organic_unlock_and_touch_start_only",
@@ -52,7 +52,8 @@
     "online_phases_completed": 0,
     "physical_mobile": "not_tested",
     "firebase_integration": "not_run_staging_credentials_absent",
-    "forest_puzzle": "1_room_solved_21_arrow_inputs_external_browser"
+    "forest_puzzle": "3_chapters_6_rooms_completed_external_browser_390x844_other_viewports_layout_only",
+    "qa_exclusion": "passed_pages_and_attributes_absent"
   },
   "blockers": [
     {
@@ -61,16 +62,16 @@
     }
   ],
   "next_actions": [
-    "Test experimental puzzle on physical mobile and inspect D-pad/dialog in landscape.",
-    "Develop complete original pet walk frames and validate before replacing prototype poses.",
-    "Keep recurrence paused until separately resumed."
+    "Physical mobile test: controls, rotation, safe areas and Web Audio.",
+    "Isolated staging validation of forest progress migration/persistence; do not touch real players.",
+    "Develop final directional animation; audit remaining lateral phases gradually."
   ],
   "rollback": {
     "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
-    "instructions": "Restore v11 through official Sites flow after checking concurrent deployments; preserve saves."
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
+    "instructions": "Restore v12 through official Sites flow after checking concurrent publications; preserve player saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-sites-prototype-release.md",
+  "latest_report": "docs/evolution/runs/2026-10-14-sites-bosque-release.md",
   "continuation": {
     "checked_date": "2026-10-14",
     "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",
