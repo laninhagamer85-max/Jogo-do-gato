@@ -1,7 +1,7 @@
 import PetSymbol from "@/components/PetSymbol";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import {
-  ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Coins, Gamepad2, Heart, Home as HomeIcon,
+  ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Coins, Compass, Gamepad2, Heart, Home as HomeIcon,
   LockKeyhole, Map, Pause, PawPrint, Play, RotateCcw, Settings, Sparkles, Star, Trophy, Volume2, VolumeX, X,
 } from "lucide-react";
 import { GAME_ASSETS } from "@/game/assets";
@@ -14,6 +14,7 @@ import "./PlatformAdventure.css";
 import "./AdventureMobile.css";
 import "./AdventureEntry.css";
 import { getAdventureEntry } from "@/game/adventureEntry";
+import ForestPuzzleAdventure from "@/components/ForestPuzzleAdventure";
 
 type Phase = "map" | "playing" | "paused" | "failed" | "won";
 type Completion = ReturnType<typeof completePlatformStage>;
@@ -53,6 +54,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const [world, setWorld] = useState(initialWorld);
   const [stageId, setStageId] = useState(state.platformProgress.unlockedStage <= 100 ? state.platformProgress.unlockedStage : 100);
   const [phase, setPhase] = useState<Phase>("map");
+  const [forestMode, setForestMode] = useState(false);
   const [hud, setHud] = useState<PlatformerHud>(START_HUD);
   const [attempt, setAttempt] = useState(0);
   const [reward, setReward] = useState<Completion | null>(null);
@@ -285,10 +287,12 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     </button>;
   }
 
+  if (forestMode) return <ForestPuzzleAdventure profile={state.profile} onBack={() => setForestMode(false)} onGoToHouse={onGoToHouse} />;
+
   return <div ref={adventureRef} className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
     <header className="pa-topbar">
       <div className="pa-brand"><span><PawPrint size={24} fill="currentColor" /></span><div><strong>Meu Pet Virtual</strong><small>AVENTURA DA TURMA</small></div></div>
-      <div className="pa-mode-switch" aria-label="Modo do jogo"><span className="pa-mode-active"><Gamepad2 size={15} /> Aventura <b>100</b></span><button type="button" onClick={onGoToHouse}><HomeIcon size={15} /> Minha Casa</button></div>
+      <div className="pa-mode-switch" aria-label="Modo do jogo"><span className="pa-mode-active"><Gamepad2 size={15} /> Aventura <b>100</b></span><button type="button" onClick={() => setForestMode(true)}><Compass size={15} /> Exploração</button><button type="button" onClick={onGoToHouse}><HomeIcon size={15} /> Minha Casa</button></div>
       <button className="pa-creator-badge" type="button" onClick={() => setCreatorOpen(true)} aria-label="Conheça Allana Gabriela, idealizadora do Meu Pet Virtual">
         <span className="pa-creator-emblem" aria-hidden="true"><PetSymbol symbol="✦" /></span><span><small>IDEIA QUE VIROU JOGO</small><strong>Allana Gabriela</strong></span><ChevronRight size={15} />
       </button>

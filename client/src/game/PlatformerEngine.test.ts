@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlatformerEngine } from "./PlatformerEngine";
+import { getPetMotionPose } from "./platformerAnimation";
 import { createInitialGameState, setPetProfile } from "./PetGame";
 
 // The DOM/Canvas are stubs. These are engine regressions, not rendered playtests.
@@ -227,5 +228,55 @@ describe("PlatformerEngine existing gameplay contracts", () => {
     expect(h.callbacks.onWin).toHaveBeenCalledTimes(1);
     expect(h.callbacks.onWin).toHaveBeenCalledWith(h.internals.coinsCollected, 3, h.internals.layout.coins.length, 0, h.internals.layout.worldItems.length);
     expect(h.internals.running).toBe(false);
+  });
+});
+
+describe("pet presentation-only animation", () => {
+  const base = { grounded: true, horizontalSpeed: 0, verticalSpeed: 0, elapsed: 0, landingFor: 0 };
+
+  it("uses a resting portrait and a gentle breathing cycle while idle", () => {
+    const early = getPetMotionPose({ ...base, elapsed: 0.1 });
+    const later = getPetMotionPose({ ...base, elapsed: 0.8 });
+    expect(early.state).toBe("idle");
+    expect(early.sprite).toBe("rest");
+    expect(later.scaleY).not.toBe(early.scaleY);
+  });
+
+  it("switches to the running pose and visibly cycles the stride while moving", () => {
+    const first = getPetMotionPose({ ...base, horizontalSpeed: 300, elapsed: 0.1 });
+    const second = getPetMotionPose({ ...base, horizontalSpeed: 300, elapsed: 0.3 });
+    expect(first.state).toBe("run");
+    expect(first.sprite).toBe("run");
+    expect(second.bobY).not.toBe(first.bobY);
+    expect(second.rotation).not.toBe(first.rotation);
+  });
+
+  it("distinguishes ascent, descent and landing poses", () => {
+    const rising = getPetMotionPose({ ...base, grounded: false, verticalSpeed: -450 });
+    const falling = getPetMotionPose({ ...base, grounded: false, verticalSpeed: 480 });
+    const landing = getPetMotionPose({ ...base, landingFor: 0.08 });
+    expect(rising.state).toBe("rise");
+    expect(rising.scaleY).toBeGreaterThan(1);
+    expect(falling.state).toBe("fall");
+    expect(falling.scaleY).toBeLessThan(1);
+    expect(landing.state).toBe("land");
+    expect(landing.scaleY).toBeLessThan(1);
+    expect(landing.scaleX).toBeGreaterThan(1);
+  });
+
+  it("keeps visual transforms finite and bounded at extreme animation inputs", () => {
+    for (const input of [
+      { ...base, horizontalSpeed: 300, elapsed: 1e4 },
+      { ...base, grounded: false, verticalSpeed: -900 },
+      { ...base, grounded: false, verticalSpeed: 900 },
+      { ...base, landingFor: 0.001 },
+    ]) {
+      const pose = getPetMotionPose(input);
+      expect(Object.values(pose).every((value) => typeof value !== "number" || Number.isFinite(value))).toBe(true);
+      expect(pose.scaleX).toBeGreaterThan(0.8);
+      expect(pose.scaleX).toBeLessThan(1.2);
+      expect(pose.scaleY).toBeGreaterThan(0.8);
+      expect(pose.scaleY).toBeLessThan(1.2);
+    }
   });
 });
