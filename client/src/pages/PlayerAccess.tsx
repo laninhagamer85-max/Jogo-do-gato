@@ -1,3 +1,4 @@
+import ReleaseBadge from "@/components/ReleaseBadge";
 import { useEffect, useState, type FormEvent } from "react";
 import { browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, reload, sendEmailVerification, sendPasswordResetEmail, setPersistence, signInWithEmailAndPassword, signInWithPopup, signOut, type User } from "firebase/auth";
 import { Eye, EyeOff, PawPrint } from "lucide-react";
@@ -55,7 +56,7 @@ export default function PlayerAccess() {
   const inputClass = "pet-entry-input player-access-input";
   const buttonClass = "pet-entry-submit player-access-submit";
   return <main className="pet-entry-shell player-access"><div className="pet-entry-wrap">
-    <header className="pet-entry-topbar"><a href="/" className="pet-entry-brand"><span className="pet-entry-brand-mark"><PawPrint size={25}/></span><span><strong>Meu Pet</strong><small>VIRTUAL</small></span></a><span className="pet-entry-safe">Acesso à aventura</span></header>
+    <header className="pet-entry-topbar"><a href="/" className="pet-entry-brand"><span className="pet-entry-brand-mark"><PawPrint size={25}/></span><span><strong>Meu Pet</strong><small>VIRTUAL</small></span></a><ReleaseBadge /></header>
     <div className="pet-entry-layout"><aside className="pet-entry-hero"><div className="pet-entry-copy"><span className="pet-entry-kicker">CUIDADO, HISTÓRIA E AVENTURA</span><h1>Seu pet está esperando por você!</h1><p>Entre para cuidar do seu amigo e continuar a aventura no seu próprio ritmo.</p><div className="pet-entry-pills"><span>Cuidar</span><span>Explorar</span><span>Evoluir</span></div></div><div className="pet-entry-scene"><div className="pet-entry-speech">Miau! Que bom que voltou!</div><div className="pet-entry-pedestal"/><img src={GAME_ASSETS.characters["menina-calico"]} alt="Gatinha calico do Meu Pet Virtual" className="pet-entry-mascot"/></div><p className="pet-entry-footnote">Uma aventura para todas as idades.</p></aside><section className="pet-entry-card">
     <PawPrint className="mx-auto mb-3 text-[#334a73]" size={38} aria-hidden="true" />
     <h1 className="text-center text-3xl font-semibold text-[#293b60]">Meu Pet Virtual</h1>
