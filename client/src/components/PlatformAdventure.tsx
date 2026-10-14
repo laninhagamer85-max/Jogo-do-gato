@@ -28,6 +28,7 @@ type Props = {
   onGoToHouse: () => void;
   onCompleteTutorial: () => void;
   onCompleteStage: (stageId: number, stars: number, coins: number, worldItemsCollected: number) => Completion;
+  onCompleteForestChapter: (chapter: number, actions: number) => void;
 };
 
 const START_HUD: PlatformerHud = { hearts: 3, coins: 0, totalCoins: 0, worldItems: 0, totalWorldItems: 0, progress: 0, checkpoint: false };
@@ -44,7 +45,7 @@ function formatStars(stars: number) {
   return `${"★".repeat(stars)}${"☆".repeat(Math.max(0, 3 - stars))}`;
 }
 
-export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMixChange, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage }: Props) {
+export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMixChange, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage, onCompleteForestChapter }: Props) {
   const qaAutoPilot = useMemo(() => import.meta.env.DEV && new URLSearchParams(window.location.search).get("autoplay") === "1", []);
   const qaStageLimit = useMemo(() => {
     const requested = Number(new URLSearchParams(window.location.search).get("qa-stages"));
@@ -94,7 +95,10 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   }, [audioMix]);
 
   useEffect(() => {
-    startPlatformMusic();
+    startPlatformMusic(forestMode ? "forest" : "adventure");
+  }, [forestMode]);
+
+  useEffect(() => {
     const unlock = () => unlockPlatformAudio();
     window.addEventListener("pointerdown", unlock, { capture: true, passive: true });
     window.addEventListener("keydown", unlock, { capture: true });
@@ -287,7 +291,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     </button>;
   }
 
-  if (forestMode) return <ForestPuzzleAdventure profile={state.profile} onBack={() => setForestMode(false)} onGoToHouse={onGoToHouse} />;
+  if (forestMode) return <ForestPuzzleAdventure profile={state.profile} savedProgress={state.forestPathProgress} soundOn={soundOn} onToggleSound={onToggleSound} onCompleteChapter={onCompleteForestChapter} onBack={() => setForestMode(false)} onGoToHouse={onGoToHouse} />;
 
   return <div ref={adventureRef} className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
     <header className="pa-topbar">

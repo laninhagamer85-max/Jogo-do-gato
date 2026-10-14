@@ -229,3 +229,16 @@ A largura do progresso de missão em paisagem usa `clamp(120px, 23vw, 190px)` pa
 - Em retrato, o bloco da missão fica abaixo do nível; ao lado, os atalhos sempre visíveis Aventura (100 fases) e Minijogos (11 jogos). Felicidade/Fome/Higiene/Energia começam visíveis com recolher/expandir; Cuidar permanece expandido, com ações em coluna; Mochila começa recolhida, ao lado, e abre a lista utilizável sem modal. Decorações não aparecem na lista de consumíveis.
 - O mapa da Aventura conserva no celular a estrutura do desktop: identificação do pet, mundo/casa, descrição, desafio/objetivo, progresso do mundo/campanha, troféus e faixa/carrossel de fases.
 - QA demo: retrato 375×812 e 390×844; paisagem 844×390 e 667×375; desktop 1280×720. Seções do mapa visíveis dentro dos cartões, barra de história sem overflow nas duas orientações móveis, controles recolhíveis e mochila verificados, saves inalterados e console sem erros. Não publicar.
+
+
+## Follow-up de gameplay: Bosque dos Caminhos (14/10/2026)
+- Plano completo: [campanha top-down original](docs/evolution/plans/2026-10-14-bosque-dos-caminhos.md). O escopo aprovado é solo, três capítulos com duas salas cada, arte/áudio originais, controles touch/teclado e progresso versionado no save atual.
+- Movimento do pet deve parecer natural e responder ao deslocamento físico; animações não controlam colisão. Sem cronômetro, combate punitivo, recompensa econômica ou modo online.
+- Release-base: Site existente na v12. Implementação em branch próprio; esta atualização não usa WebDev, não cria Site alternativo, não altera os PRs #4–#6 e não é publicada nesta etapa.
+- Aceite: [TODO.md](TODO.md); manter distinção entre testes automatizados, percurso jogado e cobertura não realizada.
+
+
+## Execução do Bosque dos Caminhos — 14/10/2026
+A exploração ficou integrada ao seletor da Aventura, mantendo a campanha lateral. O runtime usa um estado de jogo separado por sala, três cenários originais, seis mapas com interações determinísticas, persistência versionada no `GameState` existente e um tema Web Audio original do Bosque com efeitos ligados aos eventos reais do jogo; o mute/mixer existente continua sendo a fonte das preferências. A corrida e o salto da aventura lateral preservam a animação articulada de v12; no modo top-down, o retrato do perfil recebe balanço/escala sincronizados com o deslocamento, sem controlar colisão.
+
+QA de desenvolvimento: conclusão automatizada pelas duas salas do capítulo 1, desbloqueio orgânico do capítulo 2 e colocação de ponte na primeira sala do capítulo 2; pausa/retomada e pointer-cancel emulada; layout e tela de seleção medidos em 375×667, 375×812, 390×844, 844×390 e 1366×768, sem overflow horizontal nem botão de entrada cortado. Estes resultados são testes automatizados/guidos no browser, não uma partida humana. A rodada não declara os seis mapas concluídos, nem testa aparelho físico, perfil autenticado/staging ou as 100 fases laterais. Resultado final e commit serão registrados em `docs/evolution/runs/` antes de qualquer decisão de publicação; v12 permanece a versão pública.

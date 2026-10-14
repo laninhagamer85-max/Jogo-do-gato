@@ -74,7 +74,6 @@ export class PlatformerEngine {
   private terrainImage = new Image();
   private portalImage = new Image();
   private roomImage = new Image();
-  private playerImage = new Image();
   private idleImage = new Image();
   private observer: ResizeObserver | null = null;
   private resizeFallback: () => void;
@@ -97,8 +96,7 @@ export class PlatformerEngine {
     this.terrainImage.src = GAME_ASSETS.platformer.terrain;
     this.portalImage.src = GAME_ASSETS.platformer.portal;
     this.roomImage.src = GAME_ASSETS.levels[this.stage.world - 1] ?? GAME_ASSETS.levels[0];
-    this.playerImage.src = GAME_ASSETS.platformer.cats[profile.characterId] ?? GAME_ASSETS.platformer.cats["menino-prata"];
-    this.idleImage.src = GAME_ASSETS.characters[profile.characterId] ?? GAME_ASSETS.characters["menino-prata"];
+  this.idleImage.src = GAME_ASSETS.characters[profile.characterId] ?? GAME_ASSETS.characters["menino-prata"];
     this.resizeFallback = () => this.resize(canvas);
     this.keyDown = (event) => this.handleKey(event, true);
     this.keyUp = (event) => this.handleKey(event, false);
@@ -780,10 +778,11 @@ export class PlatformerEngine {
       elapsed: this.elapsed,
       landingFor: this.landingFor,
     });
-    const runCycle = this.elapsed * 13.5;
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
-    const sprite = pose.sprite === "rest" ? this.idleImage : this.playerImage;
-    if (sprite.complete && sprite.naturalWidth > 0) {
+    // The old running illustration is a single still pose; drawing it every frame made the
+    // pet look frozen. Keep the selected character art for idle and use the articulated
+    // Canvas cat below whenever it is moving, airborne, or landing.
+    if (pose.state === "idle" && this.idleImage.complete && this.idleImage.naturalWidth > 0) {
       ctx.save();
       ctx.fillStyle = "rgba(26,37,48,.2)";
       ctx.beginPath();
@@ -793,11 +792,11 @@ export class PlatformerEngine {
       ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT - pose.bobY);
       ctx.scale((this.player.facing < 0 ? -1 : 1) * pose.scaleX, pose.scaleY);
       ctx.rotate(pose.rotation);
-      if (pose.sprite === "rest") ctx.drawImage(sprite, -36, -68, 72, 68);
-      else ctx.drawImage(sprite, -55, -72, 110, 73);
+      ctx.drawImage(this.idleImage, -36, -68, 72, 68);
       ctx.restore();
       return;
     }
+    const runCycle = this.elapsed * 13.5;
     ctx.save();
     ctx.fillStyle = "rgba(26,37,48,.18)";
     ctx.beginPath();

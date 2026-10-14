@@ -1,22 +1,25 @@
 # Meu Pet Virtual — Web Agência AD
 
-Ramo de colaboração `recovery/mobile-review-20261009`, com o Manus, no PR #4.
+**Retomada e instruções:** [recovery/RETOMADA-MANUS.md](recovery/RETOMADA-MANUS.md).
 
-**Comece por [Retomada e instruções para o Manus](recovery/RETOMADA-MANUS.md).**
+## Estado da publicação
 
-O projeto reúne React/TypeScript, mídias da publicação e a distribuição v7 preservada. Painel de conta e atlas de ícones foram restaurados na fonte em 12/10/2026. A versão pública confirmada em 13/10/2026 é a **v10**, incluindo entrada compacta da Aventura e sombras/enquadramento da casa. A equivalência visual e autenticação em perfil isolado ainda precisam de validação real.
+A versão pública mais recente observada no Site existente é a **v12**, publicada em 14/10/2026 a partir do commit `47a07c607879a443b2fe9b2686795e118a2495ba`. Ela reúne a revisão da Aventura e o protótipo inicial de Exploração. O repositório continua sendo a fonte de trabalho; esta documentação não publica nem altera o Site.
 
-- `pnpm dev`: cliente de desenvolvimento; para Sites seguir as regras de preview com navegador suportado.
-- `/qa-review.html`: fixture local da Aventura, sem contas nem partidas reais; excluída da produção.
+## Atualização em desenvolvimento
+
+A atualização **Bosque dos Caminhos** está em branch própria, derivada do runtime publicado na v12. O plano é oferecer três capítulos originais com duas salas cada, exploração top-down, puzzles gentis, movimento visível do pet, áudio original e progresso versionado por perfil. A Aventura lateral continua disponível e não é substituída.
+
+**Esta atualização ainda não foi publicada.** Os PRs #4–#6 permanecem preservados; o Bosque está em branch e PR separados. Não fazer merge, force-push ou deploy nesta rodada. Consulte o [plano](docs/evolution/plans/2026-10-14-bosque-dos-caminhos.md), o [TODO](TODO.md), o [estado da evolução](docs/evolution/state.json) e o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md).
+
+## Desenvolvimento e validação
+
+- `pnpm dev`: inicia apenas a aplicação local de desenvolvimento.
+- `/qa-review.html`: fixture de revisão em memória; não autentica nem lê/grava partidas reais e é excluída do build público.
 - `pnpm check`: verificação TypeScript.
-- `pnpm build`: release estático da fonte editável com assets antigos preservados, via `scripts/build-sites-release.mjs`.
-- `pnpm build:recovery`: recuperação histórica da v7 com ajustes móveis; não inclui as melhorias recentes.
+- `pnpm exec vitest run --exclude '**/*.integration.test.ts'`: testes offline pertinentes, sem integrar contas reais.
+- `pnpm build`: produz os arquivos estáticos locais da fonte; **não publica**.
+- `pnpm build:recovery`: recuperação histórica da v7 com ajustes móveis; não é a versão atual.
 - `pnpm dev:server` e `pnpm build:server`: fluxo anterior com Express.
 
-A revisão de 13/10/2026 melhora proporções da terra e sombras das bordas apenas na fase 1. **Está somente na fonte, pendente de inspeção visual e playtest antes de publicar.**
-
-- `node --import tsx scripts/verify-adventure-entry.ts`: seleção da próxima fase, replay e imutabilidade do progresso; não joga as fases.
-- `node --import tsx scripts/verify-pilot-terrain.ts`: proporções, ancoragem na câmera, limites de desenho e isolamento do piloto; não substitui teste visual.
-- [Estado](docs/evolution/state.json) e [relatório atual](docs/evolution/runs/2026-10-13.md): testes, limites e próxima ação.
-
-As 100 fases ainda precisam de auditoria gradual com playtests reais em perfil isolado.
+A QA desta atualização cobre o modo novo e regressões selecionadas da Aventura. Um playthrough UI-driven das seis salas foi concluído na fixture isolada com teclado/toque sintetizados; isso não é uma partida humana nem um save real. **Não declarar as 100 fases laterais testadas**. Testes em aparelho físico e persistência autenticada em staging permanecem pendentes; consulte o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md).

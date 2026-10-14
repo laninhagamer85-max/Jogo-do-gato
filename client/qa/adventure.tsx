@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import PlatformAdventure from "../src/components/PlatformAdventure";
 import { createInitialGameState, setPetProfile, completePlatformStage } from "../src/game/PetGame";
+import { completeForestChapter, normalizeForestProgress } from "../src/game/forestProgress";
 import "../src/index.css";
 import "../src/components/AdventureMobile.css";
 
@@ -22,7 +23,12 @@ function Review() {
       const completion = completePlatformStage(state, stage, stars, coins, items);
       setState(completion.state);
       return completion;
-    }} />;
+    }}
+    onCompleteForestChapter={(chapter, actions) => setState((current) => {
+      const parsed = normalizeForestProgress(current.forestPathProgress);
+      if (!parsed.supported) return current;
+      return { ...current, forestPathProgress: completeForestChapter(parsed.progress, chapter, actions) };
+    })} />;
 }
 
 if (import.meta.env.DEV) createRoot(document.getElementById("root")!).render(<Review />);
