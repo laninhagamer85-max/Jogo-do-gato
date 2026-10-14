@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-13",
+  "updated_date": "2026-10-14",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_pending_browser_validation",
+  "status": "blocked_browser_validation",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -67,7 +67,15 @@
     "production_changed": false,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a"
   },
-  "latest_report": "docs/evolution/runs/2026-10-13.md",
+  "latest_report": "docs/evolution/runs/2026-10-14.md",
+  "continuation": {
+    "checked_date": "2026-10-14",
+    "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",
+    "recurrence": "paused_missing_required_browser",
+    "tests_this_cycle": ["terrain_geometry_and_draw_commands_passed", "adventure_entry_101_input_states_passed", "typescript_passed"],
+    "build_this_cycle": "not_repeated_unchanged_source_last_pass_2026-10-13",
+    "resume_condition": "Disponibilizar control-browser no ambiente de Sites, retomar validação isolada e reativar a rotina após resolver o bloqueio."
+  },
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
