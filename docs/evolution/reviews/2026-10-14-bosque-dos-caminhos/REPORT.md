@@ -1,13 +1,13 @@
 # Relatório de QA — Bosque dos Caminhos
 
-**Data:** 14/10/2026 (America/Sao_Paulo)  
-**Conclusão:** QA funcional do protótipo concluída; **recomendado para revisão de integração**, não para aprovação de release/produção.  
-**Projeto:** `laninhagamer85-max/Jogo-do-gato`  
-**Branch:** `feat/forest-path-chapter1-20261014`  
-**Base:** `feat/pet-motion-20261014`, commit `d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103`  
-**Commit de código testado:** `1a9f31e325cebe5fbb707783810922ec2c5def72` (a execução de teste/build usou a mesma árvore de código imediatamente antes do commit; não houve alteração de código depois).  
-**PR de revisão:** [#7 — Bosque dos Caminhos](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7), aberto contra `feat/pet-motion-20261014` (head do PR #6).  
-**Site:** v12 continua sendo a versão pública observada; esta atualização não foi publicada nem mesclada. PRs #4–#6 permanecem abertos e preservados; o PR #7 é separado, sem merge/deploy automático.
+- **Data:** 14/10/2026 (America/Sao_Paulo)
+- **Conclusão:** QA funcional do protótipo concluída; **recomendado para revisão de integração**, não para aprovação de release/produção.
+- **Projeto:** `laninhagamer85-max/Jogo-do-gato`
+- **Branch:** `feat/forest-path-chapter1-20261014`
+- **Base:** `feat/pet-motion-20261014`, commit `d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103`
+- **Commit de código testado:** `1a9f31e325cebe5fbb707783810922ec2c5def72` (a execução de teste/build usou a mesma árvore de código imediatamente antes do commit; não houve alteração de código depois).
+- **PR de revisão:** [#7 — Bosque dos Caminhos](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7), aberto contra `feat/pet-motion-20261014` (head do PR #6).
+- **Site:** v12 continua sendo a versão pública observada; esta atualização não foi publicada nem mesclada. PRs #4–#6 permanecem abertos e preservados; o PR #7 é separado, sem merge/deploy automático.
 
 ## Resumo executivo
 
@@ -28,7 +28,7 @@ Os contadores abaixo são os valores exibidos pela própria interface na conclus
 | Capítulo 3 · Sala 1 — A porta de cobre | Concluída | 21 | 4 | [captura](evidence/chapter3-room1-cleared.webp) |
 | Capítulo 3 · Sala 2 — O guardião sonolento | Capítulo concluído | 71 | 8 | [captura](evidence/chapter3-room2-cleared.webp) |
 
-**Tentativas/retries:** uma sequência de progressão pelos seis espaços foi registrada; nenhum reinício de sala foi observado nas capturas. O modo não tem vidas ou estado de morte; contatos com guardiões geram recuperação segura. A contagem de contatos não foi preservada por sala, portanto não se afirma “zero colisões”.  
+**Tentativas/retries:** uma sequência de progressão pelos seis espaços foi registrada; nenhum reinício de sala foi observado nas capturas. O modo não tem vidas ou estado de morte; contatos com guardiões geram recuperação segura. A contagem de contatos não foi preservada por sala, portanto não se afirma “zero colisões”.
 **Tempo:** não há relógio no jogo. Tempo ativo não foi instrumentado. As capturas da sequência final cobrem aproximadamente 18:00–18:37 UTC, incluindo inspeção de telas, espera e capturas; esse intervalo não deve ser interpretado como duração de gameplay.
 
 A evidência de desbloqueio mostra os capítulos 1 e 2 concluídos e o 3 liberado; a captura final confirma os três concluídos:
