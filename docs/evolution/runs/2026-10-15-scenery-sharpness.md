@@ -14,4 +14,4 @@ Verificação: TypeScript aprovado, 178 testes offline em 25 arquivos. Novas ver
 
 Limites: sem control-browser, não houve inspeção real do jogo, benchmark de desempenho em aparelho nem partida online. Capturas do usuário comprovam o problema anterior, não a correção. Publicação para revisão do usuário autorizada na conversa; aguardando retorno visual em retrato e horizontal. Nenhum save real alterado. Uma sala piloto; sem alegação de 60 salas ou 100 fases auditadas.
 
-Publicação: em preparação. Rollback produto 1.9.11, Sites 30. Próximo: David conferir nitidez, escala e passagens; depois continuar itens/adversários/biomas.
+Publicação: succeeded, produto 1.9.12 / Sites 31, https://meupet.aquimeusite.chatgpt.site, às 14:49:47 America/Sao_Paulo de 15/10/2026. Fonte Sites 0bcabb67a2948eb748c00ec78a594956892ab7a8; GitHub c25fd753fe0614dc9c75b025a25ad294feaded76; deployment appgdep_6ad1121b6b8c81919907f41c7d9e42dc. Rollback produto 1.9.11, Sites 30. Próximo: David conferir nitidez, escala e passagens; depois continuar itens/adversários/biomas.
