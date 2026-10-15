@@ -52,10 +52,10 @@
     }
   ],
   "next_actions": [
-    "Conferir piso contínuo, água, obstáculos, pontes e objetos nos três capítulos, em retrato e paisagem, com navegador suportado e perfil isolado.",
-    "Após aceite visual publicar correção; atribuir nova versão de produto somente no fechamento.",
-    "Definir regras de progressão/economia e construir sala piloto de combate, coleta e inventário; depois ampliar capítulo 1 para dez salas.",
-    "Manter pendências da Minha Casa (retrato/indicadores), sem misturar alterações nesta revisão."
+    "Validar visualmente a correção do piso contínuo já salva, preservando a 1.9.4 até o aceite.",
+    "Implementar sala piloto conforme docs/evolution/exploration-product-rules.md: progressão separada, HP/dano, coleta, checkpoint e proteção dos desbloqueios.",
+    "Depois expandir o capítulo 1 para dez salas e os demais capítulos até seis, com mapas e desafios distintos.",
+    "Preservar saves e regras dos demais modos; conferir UX em retrato/paisagem."
   ],
   "rollback": {
     "production_changed": false,
@@ -149,14 +149,27 @@
     "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
   },
   "exploration_expansion": {
-    "status": "requirements_recorded_not_implemented",
-    "chapter_one_room_target": 10,
-    "combat_inventory_loot_respawn": "requested_not_implemented",
-    "product_decisions_pending": [
-      "nível compartilhado com Minha Casa ou separado",
-      "regra de perda de coleta quando HP acaba",
-      "destino das cartas de decoração",
-      "quantidade final de capítulos"
+    "status": "product_rules_confirmed_not_implemented",
+    "chapters": 6,
+    "rooms_per_chapter": 10,
+    "total_rooms": 60,
+    "combat_progression": "separate_from_house_level",
+    "defeat": "last_safe_point_preserve_permanent_items_partial_current_room_common_material_loss",
+    "initial_loss_rule": {
+      "fraction": 0.1,
+      "rounding": "floor",
+      "scope": "current_room_attempt_common_materials_only",
+      "status": "initial_default_not_user_specified_percentage"
+    },
+    "decoration_cards": "permanent_exploration_unlocks_visible_elsewhere_not_sold",
+    "feedback": "damage_negative_red_on_target_healing_positive_green_xp_separate",
+    "specification": "docs/evolution/exploration-product-rules.md",
+    "product_decisions_pending": [],
+    "balance_pending": [
+      "HP/attack/defense curves",
+      "level-up HP restoration",
+      "respawn intervals and rare-drop rates",
+      "safe-point HP restoration"
     ]
   }
 }
