@@ -17,3 +17,12 @@ Referência técnica reaproveitada: https://developer.mozilla.org/en-US/docs/Web
 Fonte exata anterior: 87be0e9ba507ec48a97b5f237c0812fae2974250, produto 1.9.9 / Sites 28. Ramo de colaboração feat/exploration-combat-pilot-20261015, sem merge/force-push.
 Publicação em preparação. Rollback 1.9.9 preservado.
 Próximo: David repetir a sala e avaliar cor, simplicidade, leitura de itens e ausência do efeito de ladrilhos ao mover/zoom. Após aceite, seguir com cenários e biomas distintos e desafios próprios, um piloto por vez.
+
+## Publicação confirmada
+1.9.10 / Sites 29 publicada em 15/10/2026 às 13:32:08 (America/Sao_Paulo).
+URL: https://meupet.aquimeusite.chatgpt.site/
+GitHub código: f85f4cca7972bc4ebc0fb56d49081135778e2551
+Source commit: 97308fed0d76fe8cbaa728d6c41cec62ae38ab7a
+Versão salva: appgprj_6ac40994d8d881919d46203a60801e46~appgver_f0aaaff933e481919546f44b87d0d3e9
+Deployment: appgdep_6ad0ffda57f08191bb35b00f2f1b67bc — succeeded.
+Pacote oficial validado com gzip antes do envio; 380 arquivos no tar normalizado, 91904000 bytes. Um único deploy desta revisão. Validação visual do usuário pendente; 165 testes offline e build aprovados.
