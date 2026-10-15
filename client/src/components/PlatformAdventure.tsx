@@ -145,7 +145,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
           onLose: () => setPhase("failed"),
         });
       }
-      engineRef.current.setViewZoom(1+zoomStep*.15);
+      engineRef.current.setViewZoom(1+zoomStep*.25);
       engineRef.current.setSoundEnabled(soundOn);
       engineRef.current.setPaused(phase === "paused" || settingsOpen);
     } else if (engineRef.current) {
@@ -372,10 +372,10 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       <section className="pa-playfield" aria-label={`Fase ${stageId}: ${currentStage.subtitle}`}>
         <canvas ref={canvasRef} className="pa-canvas" aria-label="Jogo de plataforma: use as setas para correr, espaço para pular e alcance o portal dourado" />
         <div className="pa-canvas-vignette" aria-hidden="true" />
-        <div className="pa-zoom-controls" role="group" aria-label="Zoom da visão do jogo">
-          <button type="button" disabled={zoomStep === 0} onClick={() => setZoomStep(step => Math.max(0,step-1))} aria-label="Diminuir zoom da visão">−</button>
-          <output aria-live="polite" aria-label="Zoom atual">{100+zoomStep*15}%</output>
-          <button type="button" disabled={zoomStep === 2} onClick={() => setZoomStep(step => Math.min(2,step+1))} aria-label="Aumentar zoom da visão">+</button>
+        <div className="pa-zoom-controls" role="group" aria-label="Tamanho visual do pet">
+          <button type="button" disabled={zoomStep === 0} onClick={() => setZoomStep(step => Math.max(0,step-1))} aria-label="Diminuir tamanho do pet">−</button>
+          <output aria-live="polite" aria-label="Tamanho atual do pet">{100+zoomStep*25}%</output>
+          <button type="button" disabled={zoomStep === 4} onClick={() => setZoomStep(step => Math.min(4,step+1))} aria-label="Aumentar tamanho do pet">+</button>
         </div>
         <div className="pa-level-progress"><span>{hud.checkpoint ? "MARCO ATIVADO" : "RUMO AO PORTAL"}</span><div><i style={{ width: `${hud.progress}%` }} /></div><small>{hud.progress}%</small></div>
         <div className="pa-touch-controls" aria-label="Controles de toque">

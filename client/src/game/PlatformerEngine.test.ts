@@ -379,15 +379,15 @@ describe('remaining character walk integration', () => {
   }
 });
 
-describe('optional camera zoom',()=>{
+describe('optional pet size',()=>{
   it('clamps at the approved normal size and preserves simulation, progress and input',()=>{
     const h=harness();h.stand(0);h.internals.coinsCollected=3;
     h.engine.setInput('right',true);
     const before={player:{...h.internals.player},layout:h.internals.layout,camera:h.internals.cameraX,hearts:h.internals.hearts};
-    for(const value of [1.15,1.3,.2,9,NaN,1]) {
+    for(const value of [1.25,1.5,1.75,2,.2,9,NaN,1]) {
       h.engine.setViewZoom(value);
       expect(h.internals.viewZoom).toBeGreaterThanOrEqual(1);
-      expect(h.internals.viewZoom).toBeLessThanOrEqual(1.3);
+      expect(h.internals.viewZoom).toBeLessThanOrEqual(2);
       expect(h.internals.player).toEqual(before.player);
       expect(h.internals.layout).toBe(before.layout);
       expect(h.internals.cameraX).toBe(before.camera);
@@ -396,6 +396,24 @@ describe('optional camera zoom',()=>{
       expect(h.internals.input.right).toBe(true);
     }
     h.resize(844,390);expect(h.internals.viewZoom).toBe(1);
+    h.engine.dispose();
+  });
+});
+
+describe('pet-only presentation scaling',()=>{
+  it('scales after scenery drawing and before the pet, preserving the contact anchor',()=>{
+    const h=harness();h.stand(0);const order:string[]=[];
+    for(const method of ['drawRoomBackground','drawGapWarnings','drawPlatform','drawHazard','drawCheckpoint','drawCoin','drawWorldItem','drawEnemy','drawGoal'])h.internals[method]=()=>order.push('world');
+    h.internals.drawPlayer=()=>order.push('pet');
+    h.contextCalls.get('scale')?.mockImplementation(()=>order.push('scale'));
+    // Ensure the proxy has created the method before replacing it.
+    h.context.scale(1,1);order.length=0;
+    h.contextCalls.get('scale')!.mockImplementation(()=>order.push('scale'));
+    h.engine.setViewZoom(2);
+    expect(order.lastIndexOf('world')).toBeLessThan(order.indexOf('scale'));
+    expect(order.indexOf('scale')).toBeLessThan(order.indexOf('pet'));
+    const point={x:h.internals.player.x-h.internals.cameraX+26,y:h.internals.player.y+60};
+    expect(h.contextCalls.get('translate')?.mock.calls.at(-1)).toEqual([-point.x,-point.y]);
     h.engine.dispose();
   });
 });
