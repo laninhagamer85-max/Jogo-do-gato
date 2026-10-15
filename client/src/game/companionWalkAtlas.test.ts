@@ -25,4 +25,10 @@ describe('Sol walking tied to actual displacement', () => {
     expect(companionWalkAtlas('tico')).toBeUndefined();
     expect(companionWalkAtlas(null)).toBeUndefined();
   });
+  it('faces the planned first leg while keeping paws and position still during anticipation', () => {
+    const point = { x: 1, y: -1 };
+    const gait = advanceCompanionGait({ ...idle, phase: 0.5 }, point, point, { x: 0, y: -1 });
+    expect(gait).toEqual({ phase: 0, moving: false, direction: { row: 0, mirror: true } });
+    expect(point).toEqual({ x: 1, y: -1 });
+  });
 });
