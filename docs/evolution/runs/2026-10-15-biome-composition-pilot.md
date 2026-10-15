@@ -44,3 +44,7 @@ A execução inicial da suíte completa também encontrou **um teste de integra�
 Próximo passo: iniciar preview com navegador suportado; conferir 375×667, 375×812, 390×844, 844×390 e desktop; avaliar nitidez, transições, escala das pedras, ondulação, todos os cantos/zoom, coleta/combate/ponto seguro/saída e recarga de perfil isolado. Corrigir a arte conforme a inspeção e somente então preparar o próximo número e uma publicação oficial. Após aceite, ampliar o kit de variantes e compor dez salas distintas do capítulo 1 antes dos demais biomas. A meta de seis capítulos × dez salas continua pendente; esta revisão não implementa 60 salas.
 
 Commit da implementação: `869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd` (GitHub). A publicação Sites não recebeu push/deploy desta implementação.
+
+## Publicação para teste autorizada posteriormente
+
+David solicitou explicitamente: **“Publique para me testar”**, em 15/10/2026, após ser informado da falta de navegador e da pendência visual. Esta instrução autoriza publicar para revisão no aparelho, sem converter testes offline em aceite visual. Versão de produto preparada: **1.9.17**. A validação visual/animada continua pendente; rollback preservado na 1.9.16 / Sites 35. Não houve nova alteração de mecânica desde os 201 testes aprovados; somente o número de produto para distinguir esta entrega. Build e pacote serão refeitos pelo fluxo oficial antes do deploy.

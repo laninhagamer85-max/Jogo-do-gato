@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_awaiting_visual_validation",
+  "status": "preparing_user_review_publication",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -17,18 +17,18 @@
   "current_improvement": {
     "id": "layered-clearing-pond-composition",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_awaiting_supported_browser"
+    "acceptance_status": "offline_verified_user_visual_review_authorized"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.16",
+    "product_version": "1.9.17",
     "last_observed_version": 35,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
-    "deployment_id": "appgdep_6ad11f4948608191b60a53e95d2bb038",
-    "site_commit": "5c802bc84578f650694f556831662a8114318cee",
-    "published_at": "2026-10-15T18:45:52.719784+00:00",
+    "status": "preparing",
+    "version_id": null,
+    "deployment_id": null,
+    "site_commit": null,
+    "published_at": null,
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -53,15 +53,14 @@
     "Supported control-browser unavailable; real visual/physics QA required before publication of this revision."
   ],
   "next_actions": [
-    "Validar composição piloto em navegador suportado: cinco viewports, margens/cantos/zoom, movimento, coleta, combate, recarga, saída e acessibilidade.",
-    "Após corrigir e aprovar a inspeção visual, atualizar número do produto e publicar uma revisão pelo fluxo oficial de Sites.",
-    "Completar variantes do kit, então compor dez salas distintas do capítulo 1 antes dos demais biomas."
+    "David: testar a 1.9.17 na sala piloto de combate; conferir lago/terra/areia, escala, nitidez e ondulação em retrato e paisagem, toque/joystick, coleta, saída e recarga.",
+    "Concluir validação visual antes de expandir a composição aos capítulos e completar o kit de variantes."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.15",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
-    "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
+    "production_changed": false,
+    "product_version": "1.9.16",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
+    "instructions": "Reimplantar 1.9.16 se necessário, preservando saves; não sobrescrever publicação posterior."
   },
   "latest_report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
   "source_reconciliation": {
@@ -177,8 +176,8 @@
   },
   "user_review_authorization": {
     "date": "2026-10-15",
-    "text": "Publique, eu vou digitar e passar um relatório.",
-    "scope": "publish combat pilot for user playtest; no browser validation claim"
+    "text": "Publique para me testar",
+    "scope": "publish layered biome pilot as 1.9.17 for David to test after disclosure of missing supported browser; not visual acceptance"
   },
   "pilot_user_acceptance": {
     "version": "1.9.5",
@@ -204,7 +203,7 @@
   },
   "biome_composition_pilot": {
     "date": "2026-10-15",
-    "status": "implemented_awaiting_visual_validation",
+    "status": "preparing_user_review_publication",
     "code_commit": "869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd",
     "source_base": "5c802bc84578f650694f556831662a8114318cee",
     "report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
@@ -219,8 +218,9 @@
     "cache": "one combined static visible buffer; no per-material cache churn",
     "save_verification": "fake player and loot relocation preserves earned state; no real saves read/written",
     "art_validation": "not_observed_in_browser",
-    "publication_attempted": false,
+    "publication_attempted": true,
     "public_product_version_unchanged": "1.9.16",
-    "variant_kit": "four/three/three material variants not created in this revision"
+    "variant_kit": "four/three/three material variants not created in this revision",
+    "product_version": "1.9.17"
   }
 }
