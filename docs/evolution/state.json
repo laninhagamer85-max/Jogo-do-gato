@@ -11,28 +11,28 @@
     "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
     "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "2e57fcdced8cf9e91bcc1c978b516d5d693759f7"
+    "code_commit": "9d4d82b537c2fd90e59659e7db46eab926e230fa"
   },
   "current_improvement": {
-    "id": "immersive-combat-controls-art-sound-drops",
+    "id": "single-world-inventory-attack-correction",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_visual_audio_review"
+    "acceptance_status": "offline_verified_pending_user_visual_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.8",
-    "last_observed_version": 27,
+    "product_version": "1.9.9",
+    "last_observed_version": 28,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_14c779ff1d90819184b04fba60f48c4f",
-    "deployment_id": "appgdep_6ad0e9be35d8819193636d4c9564422f",
-    "site_commit": "e14c79260fdb91b9f4bf7f004efee95f82ea7df7",
-    "published_at": "2026-10-15T11:57:36-03:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a6e84b7735e0819182305e0aa48954e2",
+    "deployment_id": "appgdep_6ad0fa105514819181d600b3f11dc3b2",
+    "site_commit": "87be0e9ba507ec48a97b5f237c0812fae2974250",
+    "published_at": "2026-10-15T13:07:20-03:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "154/154_passed_23_files",
+    "offline_tests": "158/158_passed_23_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -48,16 +48,16 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: repetir a sala piloto e validar arte dos inimigos, direcional multitouch, patada/som e queda/coleta em retrato e horizontal.",
-    "Priorizar correções do relatório antes de expandir capítulos."
+    "David: repetir a sala e conferir chão único, bloqueios, golpe, mochila e controles em retrato/horizontal.",
+    "Após aceite da base, consolidar itens ilustrados e animações próprias, depois novos adversários por bioma e mapas com desafios."
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.9.7",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191",
-    "instructions": "Reimplantar versão anterior se necessário, sem editar saves."
+    "product_version": "1.9.8",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_14c779ff1d90819184b04fba60f48c4f",
+    "instructions": "Reimplantar a 1.9.8 se houver regressão relevante; preservar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-immersive-combat.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-single-world-inventory.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
