@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
-    "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
-    "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
+    "base_commit": "48ee2e84da978986a310726f6ec33557967fe8e9",
+    "source_site_commit": "ad6369b33c3f0cf0bfacd75979c81c033abf0e1a",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "894468514c842c95b2ec80a6b1eb4d9429b37909"
+    "code_commit": "d7def4b1a64447e7fb9af4de59459b5fe862e033"
   },
   "current_improvement": {
     "id": "unframed-world-ground-pilot-rollout",
@@ -21,15 +21,14 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.14",
-    "last_observed_version": 33,
+    "product_version": "1.9.15",
+    "last_observed_version": 34,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8a0d04b05f8c8191adb17a677a4758b7",
-    "deployment_id": "appgdep_6ad115b070588191984bcf0d274d3cf4",
-    "site_commit": "1ba82a6d107fd2a45ef0ae488e5b5756f455558b",
-    "published_at": "2026-10-15T18:04:56.611551+00:00",
-    "attempted_in_this_cycle": true,
-    "target_product_version": "1.9.15"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
+    "deployment_id": "appgdep_6ad11b4c134c81918c0f0ebe1a592f8c",
+    "site_commit": "ad6369b33c3f0cf0bfacd75979c81c033abf0e1a",
+    "published_at": "2026-10-15T18:29:03.337159+00:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -54,7 +53,7 @@
     "Água animada, adversários próprios, recompensas raras compartilhadas e cartas por bioma conforme exploration-campaign-rollout.md."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.14",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8a0d04b05f8c8191adb17a677a4758b7",
     "instructions": "Reimplantar 1.9.14 se necessário, preservando saves."

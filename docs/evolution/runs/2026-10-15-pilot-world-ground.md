@@ -18,4 +18,4 @@ Limites: control-browser indisponível; inspeção de movimento, nitidez, contro
 
 Pesquisa de 15/10/2026: MDN https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection (geometria independente da arte) e https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas (limitar detalhes à região visível e agrupar traços). Referência de arte: clearing.webp existente, somente estilo do chão.
 
-Publicação em preparação. Rollback produto 1.9.14 / Sites 33. Depois do aceite: capítulo 1 com dez salas próprias, sem avançar os saves do usuário artificialmente.
+Publicação succeeded, produto 1.9.15 / Sites 34, https://meupet.aquimeusite.chatgpt.site em 15/10/2026 às 15:29:03 America/Sao_Paulo. Fonte Sites ad6369b33c3f0cf0bfacd75979c81c033abf0e1a; GitHub d7def4b1a64447e7fb9af4de59459b5fe862e033; deployment appgdep_6ad11b4c134c81918c0f0ebe1a592f8c. Rollback produto 1.9.14 / Sites 33. Depois do aceite: capítulo 1 com dez salas próprias, sem avançar os saves do usuário artificialmente.
