@@ -1,3 +1,4 @@
+import { petWalkAtlas, drawWalkFrame } from "./petWalkAtlas";
 import { drawPilotTerrain, drawPilotDepth, usesPilotTerrain } from "./pilotTerrain";
 import { drawPetSymbol } from "./drawPetSymbol";
 import { GAME_ASSETS } from "./assets";
@@ -53,6 +54,7 @@ export class PlatformerEngine {
   private dpr = 1;
   private player = { x: 0, y: 0, vx: 0, vy: 0, grounded: false, facing: 1 };
   private cameraX = 0;
+  private viewZoom = 1;
   private hearts = 3;
   private coinsCollected = 0;
   private collectedCoinIds = new Set<number>();
@@ -75,6 +77,9 @@ export class PlatformerEngine {
   private portalImage = new Image();
   private roomImage = new Image();
   private walkCycle = 0;
+  private groundTravel = 0;
+  private walkAtlas = new Image();
+  private idleImage = new Image();
   private observer: ResizeObserver | null = null;
   private resizeFallback: () => void;
   private keyDown: (event: KeyboardEvent) => void;
@@ -88,6 +93,9 @@ export class PlatformerEngine {
     this.ctx = ctx;
     this.stage = getPlatformStage(stageId) ?? getPlatformStage(1)!;
     this.profile = profile;
+    this.idleImage.src = GAME_ASSETS.characters[profile.characterId];
+    const atlas = petWalkAtlas(profile.characterId);
+    if (atlas) this.walkAtlas.src = atlas;
     this.callbacks = callbacks;
     this.layout = createPlatformLayout(stageId, Math.max(180, canvas.clientHeight));
     this.player.x = this.layout.start.x;
@@ -115,6 +123,12 @@ export class PlatformerEngine {
     document.addEventListener("visibilitychange", this.visibilityChange);
     this.running = true;
     this.raf = window.requestAnimationFrame(this.frame);
+  }
+
+  /** Presentation only. Zoom never resizes the simulation or rebuilds the layout. */
+  setViewZoom(value: number) {
+    this.viewZoom = Number.isFinite(value) ? Math.max(1,Math.min(2,value)) : 1;
+    this.render();
   }
 
   setInput(action: InputAction, pressed: boolean) {
@@ -264,6 +278,7 @@ export class PlatformerEngine {
       }
     }
 
+    this.groundTravel = wasGrounded && this.player.grounded ? Math.abs(this.player.x - previousX) : 0;
     if (wasGrounded && this.player.grounded) this.walkCycle = (this.walkCycle + Math.abs(this.player.x - previousX) * Math.PI * 2 / 108) % (Math.PI * 2);
 
     for (const coin of this.layout.coins) {
@@ -356,6 +371,7 @@ export class PlatformerEngine {
     const width = this.width;
     const height = this.height;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    ctx.save();
     this.drawRoomBackground(ctx, width, height);
     this.drawGapWarnings(ctx, height);
     for (const surface of this.layout.surfaces) this.drawPlatform(ctx, surface);
@@ -365,7 +381,15 @@ export class PlatformerEngine {
     for (const item of this.layout.worldItems) if (!item.collected) this.drawWorldItem(ctx, item);
     for (const enemy of this.layout.enemies) if (!this.defeatedEnemyIds.has(enemy.id)) this.drawEnemy(ctx, enemy.x, enemy.y, enemy.direction);
     this.drawGoal(ctx);
+    // Only the selected character grows; all terrain/background stays at normal scale.
+    ctx.save();
+    const anchorX=this.player.x-this.cameraX+PLAYER_WIDTH/2;
+    const anchorY=this.player.y+PLAYER_HEIGHT;
+    ctx.translate((1-this.viewZoom)*anchorX,(1-this.viewZoom)*anchorY);
+    ctx.scale(this.viewZoom,this.viewZoom);
     this.drawPlayer(ctx);
+    ctx.restore();
+    ctx.restore();
   }
 
   private drawRoomBackground(ctx: CanvasRenderingContext2D, width: number, height: number) {
@@ -782,7 +806,16 @@ export class PlatformerEngine {
       walkCycle: this.walkCycle,
     });
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
-    // One renderer for all states: no portrait/cartoon swap at rest.
+    // Pilot art is opt-in to the matching variant; never recolor other pets.
+    if (petWalkAtlas(this.profile.characterId) && this.walkAtlas.complete && this.walkAtlas.naturalWidth > 0 && this.idleImage.complete && this.idleImage.naturalWidth > 0) {
+      ctx.save();
+      ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT);
+      ctx.scale(this.player.facing < 0 ? -1 : 1, 1);
+      if (this.player.grounded && this.groundTravel < .001) ctx.drawImage(this.idleImage, -30.6, -57.8, 61.2, 57.8);
+      else drawWalkFrame(ctx, this.walkAtlas, 0, this.player.grounded ? this.walkCycle / (Math.PI * 2) : 0.25, -41.65, -76.5, 83.3, 76.5);
+      ctx.restore(); return;
+    }
+    // Legacy articulated fallback remains until each matching atlas is approved.
     const runCycle = this.walkCycle;
     ctx.save();
     ctx.fillStyle = "rgba(26,37,48,.18)";

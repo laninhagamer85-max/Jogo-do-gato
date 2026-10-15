@@ -717,3 +717,12 @@
   .pa-jump-control span { font-size: 30px; }
   .pa-jump-control small { font-size: 6px; }
 }
+
+/* Camera zoom changes presentation only; controls retain their approved touch size. */
+.pa-zoom-controls { position:absolute; z-index:5; top:8px; right:max(8px,env(safe-area-inset-right)); display:flex; align-items:center; gap:2px; padding:2px; border:1px solid rgb(255 255 255 / 40%); border-radius:14px; background:rgb(13 37 57 / 90%); color:white; }
+.pa-zoom-controls button { width:44px; height:44px; min-width:44px; min-height:44px; border:0; border-radius:10px; background:#244c65; color:white; font:700 26px/1 sans-serif; touch-action:manipulation; }
+.pa-zoom-controls button:disabled { opacity:.4; cursor:default; }
+.pa-zoom-controls button:focus-visible { outline:3px solid #ffe08a; outline-offset:2px; }
+.pa-zoom-controls output { min-width:38px; text-align:center; font:700 12px/1.2 sans-serif; }
+.pa-playfield .pa-level-progress { left:8px; transform:none; width:calc(100% - 160px); max-width:340px; }
+@media(max-width:400px) { .pa-playfield .pa-level-progress > span { display:none; } }

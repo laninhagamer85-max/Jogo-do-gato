@@ -43,7 +43,9 @@ describe("Bosque dos Caminhos campaign map", () => {
     const walking = stepForestGame(initial, { right: true }, 0.05).state;
     expect(walking.walkPhase).toBeGreaterThan(initial.walkPhase);
     const settled = stepForestGame(walking, {}, 0.05).state;
-    expect(settled.walkPhase).toBeLessThan(walking.walkPhase);
+    expect(settled.walkPhase).toBe(walking.walkPhase);
+    expect(walking.walking).toBe(true);
+    expect(settled.walking).toBe(false);
     expect(settled.walkPhase).toBeGreaterThanOrEqual(0);
   });
 
@@ -146,5 +148,17 @@ describe("Bosque dos Caminhos campaign map", () => {
     expect(result.events).not.toContain("room-cleared");
     expect(result.state.room).toBe(1);
     expect(result.state.message).toMatch(/chave|prancha/i);
+  });
+});
+
+describe('walking into a blocked edge', () => {
+  it('stops animation phase at collision even while movement remains held', () => {
+    let state = createForestGameState(1,1);
+    for(let i=0;i<30;i++) state=stepForestGame(state,{up:true},.05).state;
+    const before=state;
+    const after=stepForestGame(before,{up:true},.05).state;
+    expect(after.player).toEqual(before.player);
+    expect(after.walkPhase).toBe(before.walkPhase);
+    expect(after.walking).toBe(false);
   });
 });

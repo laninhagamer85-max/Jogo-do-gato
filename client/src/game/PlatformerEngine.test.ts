@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlatformerEngine } from "./PlatformerEngine";
 import { getPetMotionPose } from "./platformerAnimation";
-import { createInitialGameState, setPetProfile } from "./PetGame";
+import { createInitialGameState, setPetProfile, type PetCharacterId } from "./PetGame";
 
 // The DOM/Canvas are stubs. These are engine regressions, not rendered playtests.
-function harness() {
+function harness(characterId: PetCharacterId = "menino-prata") {
   const listeners = new Map<string, () => void>();
   const documentStub = {
     hidden: false,
@@ -32,7 +32,7 @@ function harness() {
     clientHeight: size.height, width: 0, height: 0,
     getContext: () => ctx, getBoundingClientRect: () => size,
   } as unknown as HTMLCanvasElement;
-  const profile = setPetProfile(createInitialGameState(), { name: "QA", age: 2, gender: "menino", characterId: "menino-prata" }).profile!;
+  const profile = setPetProfile(createInitialGameState(), { name: "QA", age: 2, gender: characterId.startsWith("menina") ? "menina" : "menino", characterId }).profile!;
   const callbacks = { onHud: vi.fn(), onCollectible: vi.fn(), onWin: vi.fn(), onLose: vi.fn() };
   const engine = new PlatformerEngine(canvas, 1, profile, callbacks);
   const internals = engine as any;
@@ -329,6 +329,91 @@ describe('consistent pet renderer and distance-driven gait', () => {
     h.internals.update(1 / 60, 34); expect(h.internals.walkCycle).toBe(cycle);
     h.internals.player.x = 0; h.engine.setInput('left', true);
     h.internals.update(1 / 60, 51); expect(h.internals.walkCycle).toBe(cycle);
+    h.engine.dispose();
+  });
+});
+
+describe('silver kitten atlas pilot', () => {
+  it('returns to the original seated art when held movement is blocked', () => {
+    const h=harness(); h.engine.setSoundEnabled(false); h.stand(0);
+    Object.assign(h.internals.walkAtlas,{complete:true,naturalWidth:1254,naturalHeight:1254});
+    Object.assign(h.internals.idleImage,{complete:true,naturalWidth:768,naturalHeight:768});
+    h.engine.setInput('right',true); h.internals.update(1/60,17);
+    h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
+    h.internals.player.x=0; h.engine.setInput('right',false); h.engine.setInput('left',true);
+    h.internals.update(1/60,34); h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+    h.engine.dispose();
+  });
+});
+
+describe('black kitten pilot integration', () => {
+  it('uses its own atlas while moving and its own portrait while resting', () => {
+    const h=harness('menino-preto'); h.engine.setSoundEnabled(false); h.stand(0);
+    expect(h.internals.walkAtlas.src).toContain('menino-preto-walk');
+    expect(h.internals.idleImage.src).toContain('boy-preto');
+    Object.assign(h.internals.walkAtlas,{complete:true,naturalWidth:1254,naturalHeight:1254});
+    Object.assign(h.internals.idleImage,{complete:true,naturalWidth:768,naturalHeight:768});
+    h.engine.setInput('right',true); h.internals.update(1/60,17); h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
+    h.engine.setInput('right',false); h.internals.update(1/60,34); h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+    h.engine.dispose();
+  });
+});
+
+describe('remaining character walk integration', () => {
+  for(const id of ['menino-laranja','menina-creme','menina-calico','menina-azul'] as const) {
+    it(`preserves ${id} identity across movement and seated state`, () => {
+      const h=harness(id);h.engine.setSoundEnabled(false);h.stand(0);
+      expect(h.internals.walkAtlas.src).toContain(id+'-walk');
+      Object.assign(h.internals.walkAtlas,{complete:true,naturalWidth:1254,naturalHeight:1254});
+      Object.assign(h.internals.idleImage,{complete:true,naturalWidth:768,naturalHeight:768});
+      h.engine.setInput('right',true);h.internals.update(1/60,17);h.internals.drawPlayer(h.context);
+      expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
+      h.engine.setInput('right',false);h.internals.update(1/60,34);h.internals.drawPlayer(h.context);
+      expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+      h.engine.dispose();
+    });
+  }
+});
+
+describe('optional pet size',()=>{
+  it('clamps at the approved normal size and preserves simulation, progress and input',()=>{
+    const h=harness();h.stand(0);h.internals.coinsCollected=3;
+    h.engine.setInput('right',true);
+    const before={player:{...h.internals.player},layout:h.internals.layout,camera:h.internals.cameraX,hearts:h.internals.hearts};
+    for(const value of [1.25,1.5,1.75,2,.2,9,NaN,1]) {
+      h.engine.setViewZoom(value);
+      expect(h.internals.viewZoom).toBeGreaterThanOrEqual(1);
+      expect(h.internals.viewZoom).toBeLessThanOrEqual(2);
+      expect(h.internals.player).toEqual(before.player);
+      expect(h.internals.layout).toBe(before.layout);
+      expect(h.internals.cameraX).toBe(before.camera);
+      expect(h.internals.hearts).toBe(before.hearts);
+      expect(h.internals.coinsCollected).toBe(3);
+      expect(h.internals.input.right).toBe(true);
+    }
+    h.resize(844,390);expect(h.internals.viewZoom).toBe(1);
+    h.engine.dispose();
+  });
+});
+
+describe('pet-only presentation scaling',()=>{
+  it('scales after scenery drawing and before the pet, preserving the contact anchor',()=>{
+    const h=harness();h.stand(0);const order:string[]=[];
+    for(const method of ['drawRoomBackground','drawGapWarnings','drawPlatform','drawHazard','drawCheckpoint','drawCoin','drawWorldItem','drawEnemy','drawGoal'])h.internals[method]=()=>order.push('world');
+    h.internals.drawPlayer=()=>order.push('pet');
+    h.contextCalls.get('scale')?.mockImplementation(()=>order.push('scale'));
+    // Ensure the proxy has created the method before replacing it.
+    h.context.scale(1,1);order.length=0;
+    h.contextCalls.get('scale')!.mockImplementation(()=>order.push('scale'));
+    h.engine.setViewZoom(2);
+    expect(order.lastIndexOf('world')).toBeLessThan(order.indexOf('scale'));
+    expect(order.indexOf('scale')).toBeLessThan(order.indexOf('pet'));
+    const point={x:h.internals.player.x-h.internals.cameraX+26,y:h.internals.player.y+60};
+    expect(h.contextCalls.get('translate')?.mock.calls.at(-1)).toEqual([-point.x,-point.y]);
     h.engine.dispose();
   });
 });

@@ -38,3 +38,42 @@ describe('forest camera and contextual hints', () => {
     expect(state).toEqual(before);
   });
 });
+
+// Presentation geometry only; this does not replace touch/browser QA.
+describe('immersive exploration pilot', () => {
+  it('fills both panel dimensions while close and remains at least 48px per tile', () => {
+    for (const [w,h] of [[375,500],[844,260],[768,800],[1366,600]]) {
+      const view = forestView(w,h,{x:7,y:4});
+      expect(view.tile).toBeGreaterThanOrEqual(48);
+      expect(view.boardWidth).toBeGreaterThanOrEqual(w);
+      expect(view.boardHeight).toBeGreaterThanOrEqual(h);
+    }
+  });
+  it('allows independent inspection without moving the player or losing edge limits', () => {
+    const player = Object.freeze({x:2.5,y:2.5});
+    const close = forestView(375,500,player);
+    const remote = forestView(375,500,player,false,{x:14,y:8});
+    expect(remote.left).toBeLessThan(close.left);
+    expect(remote.top).toBeLessThan(close.top);
+    expect(remote.left + remote.boardWidth).toBeGreaterThanOrEqual(375);
+    expect(remote.top + remote.boardHeight).toBeGreaterThanOrEqual(500);
+    expect(player).toEqual({x:2.5,y:2.5});
+  });
+});
+
+describe('camera avoids overlaid controls and HUD', () => {
+  it('keeps the pet centre above controls at the bottom edge after rotation', () => {
+    for (const [w,h,bottom] of [[375,500,140],[844,240,112],[768,800,150],[1366,600,150]]) {
+      const bottomInset = Math.min(bottom,h*.45);
+      for (const y of [.5,4.5,7.5]) {
+        const v = forestView(w,h,{x:7,y},false,undefined,{top:44,bottom});
+        const sy = y*v.tile+v.top;
+        expect(sy).toBeGreaterThan(44);
+        expect(sy).toBeLessThan(h-bottomInset);
+      }
+      const overview=forestView(w,h,{x:7,y:4},true,undefined,{top:44,bottom});
+      expect(overview.top).toBeGreaterThanOrEqual(44);
+      expect(overview.top+overview.boardHeight).toBeLessThanOrEqual(h-bottomInset+.001);
+    }
+  });
+});
