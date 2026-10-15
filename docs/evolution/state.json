@@ -14,9 +14,9 @@
     "release_commit": "8f6065e0cde1b465635fe2e68d2b44b5302be8d8"
   },
   "current_improvement": {
-    "id": "companion-independent-roaming",
+    "id": "sol-house4-gait-and-separation",
     "implementation_status": "implemented",
-    "acceptance_status": "user_requested_publish_for_mobile_review_without_local_browser"
+    "acceptance_status": "user_mobile_review_requested_no_local_browser"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -59,17 +59,17 @@
     }
   ],
   "next_actions": [
-    "Obtain user mobile report for 1.9 roaming",
-    "Complete own companion paw animation and directions",
-    "Validate all six pets visually",
-    "Continue portrait room layout and indicators, then expedition expansion"
+    "David mobile review of Sol gait, gentle roaming and detours",
+    "Expand own directional art to remaining house friends in later cycles",
+    "Validate six main pets visually",
+    "Portrait room layout and indicator audit"
   ],
   "rollback": {
     "production_changed": true,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b7d8ac1804588191aa00c7a123247c13",
     "instructions": "Restaurar v15 pelo fluxo oficial, após checar concorrência."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-companion-roaming.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-sol-walk.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -105,5 +105,20 @@
     "github_branch": "fix/companion-room-roaming-20261015",
     "github_code_commit": "f462070cd2653105dacacb499399ac9a1e46948f",
     "authorization": "David explicitly requested publishing on 2026-10-15 to inspect on his phone and report back, after being told paws and browser validation remain pending."
+  },
+  "sol_walk": {
+    "product_version": "1.9.1",
+    "status": "preparing_publication",
+    "offline_tests": 116,
+    "typescript": "passed_before_final_packaging",
+    "browser": "not_run_control_browser_unavailable",
+    "art": "original_generated_16_frames_4_directions_alpha",
+    "speed_world_units_per_second": 0.8,
+    "pause_ms": [
+      4000,
+      8000
+    ],
+    "collision": "visibility_graph_around_main_pet_footprint",
+    "rollout": "Sol_house4_only"
   }
 }
