@@ -16,3 +16,7 @@ Inspeção jogável da nova arte/layout NÃO executada: control-browser indispon
 Sem alterações na economia, progressão ou estrutura do save. Sem edição de partidas reais. Seis capítulos × dez salas e cartas permanentes continuam pendentes.
 Referências técnicas deste piloto: MDN https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events e https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection (consultadas em 15/10/2026). Nenhum asset externo incorporado.
 Publicação em preparação pelo mesmo Site; versão anterior 1.9.5 / Sites 24 preservada para rollback. Próximo: relatório em retrato e horizontal, legibilidade dos números, alcance dos botões e uso de itens.
+
+## Resultado final desta tentativa
+Implementação e 140 testes concluídos; GitHub código 50e5e02eb0cde48520d75540d6671b0a441da8d6. Fonte exata enviada ao Sites: 018464cb7155bae0863e970c78cfc5500d11cb1d.
+Nada novo publicado. save_site_version rejeitou os pacotes como invalid_archive. Empacotador oficial retornou sucesso e gzip validou na execução produtora; a leitura posterior detectou arquivo truncado. Refeito com gzip padrão e compressão -9; o transporte ainda foi rejeitado. Sem versão salva e sem deploy para 1.9.6. A 1.9.5 / Sites 24 permanece pública. Retomar infraestrutura de pacote/transporte, preservando este código.
