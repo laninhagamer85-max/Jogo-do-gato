@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_publication_blocked",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -21,23 +21,14 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.5",
-    "last_observed_version": 24,
-    "status": "unchanged_1.9.5",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_e24f36c761d88191a9edd4d82c2f9557",
-    "deployment_id": "appgdep_6ad0bf1340308191a53fd5e516ec7dce",
-    "site_commit": "efc78f0488dc41f39a2960007d29fc1c62274ab1",
-    "published_at": "2026-10-15T08:55:26-03:00",
-    "attempted_in_this_cycle": true,
-    "target_product_version": "1.9.6",
-    "failed_attempt": {
-      "target_product_version": "1.9.6",
-      "stage": "save_site_version_archive_upload",
-      "error_code": "invalid_archive",
-      "site_source_commit": "018464cb7155bae0863e970c78cfc5500d11cb1d",
-      "saved_version_id": null,
-      "deployment_attempted": false
-    }
+    "product_version": "1.9.6",
+    "last_observed_version": 25,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0e7b980080ec819188afe869f6152dce",
+    "deployment_id": "appgdep_6ad0c693c860819189beb07cba5d40ce",
+    "site_commit": "018464cb7155bae0863e970c78cfc5500d11cb1d",
+    "published_at": "2026-10-15T09:27:22-03:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -55,15 +46,10 @@
     },
     "real_online_phases_completed_in_cycle": 0
   },
-  "blockers": [
-    {
-      "code": "archive_transport_or_integrity",
-      "detail": "Official packager completes and gzip validates in producing process, but subsequent save rejects invalid/incomplete archive. Rebuilt using default and stronger compression; no deploy initiated. 1.9.5 remains live."
-    }
-  ],
+  "blockers": [],
   "next_actions": [
-    "Retomar empacotamento/transporte do release 1.9.6 sem refazer arte nem publicar versão anterior por engano.",
-    "Após gravação válida, publicar a revisão para relatório do usuário; nenhum aceite visual da nova interface foi declarado."
+    "Receber relatório do usuário da 1.9.6 em retrato e horizontal: ícones, uso rápido, números e integração dos inimigos.",
+    "Corrigir regressões antes de expandir o número de salas."
   ],
   "rollback": {
     "production_changed": true,
