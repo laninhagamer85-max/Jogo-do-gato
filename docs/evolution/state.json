@@ -3,36 +3,39 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_user_batch_review_pending",
+  "status": "implemented_awaiting_visual_validation",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "fix/companion-room-roaming-20261015",
-    "base_commit": "f27f6eb7be59fbb893a8fcf82945f5de486a1098"
+    "branch": "fix/exploration-continuous-floor-20261015",
+    "base_commit": "2a55e4dc210b3433bd85c6c84e9de9311205a944",
+    "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
+    "coordination_branch": "recovery/mobile-review-20261009"
   },
   "current_improvement": {
-    "id": "all-twelve-companions-walk",
+    "id": "exploration-continuous-floor",
     "implementation_status": "implemented",
-    "acceptance_status": "user_batch_review_pending"
+    "acceptance_status": "browser_validation_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.4",
     "last_observed_version": 23,
-    "status": "succeeded",
+    "status": "unchanged",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
     "deployment_id": "appgdep_6ad09396f0d08191832779184e1f62b2",
     "site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
     "published_at": "2026-10-15T05:49:53-03:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "vite_client_build": "passed_existing_chunk_warning",
-    "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
-    "production_qa_page_exclusion": "passed",
-    "browser": "live_login_version_1.9.4_confirmed; companion_gameplay_pending_user",
+    "offline_tests": "125/125_passed_21_files",
+    "build": "passed_existing_chunk_warning",
+    "entry_selection": "passed_101_input_states_not_playthroughs",
+    "published_parity": "passed_fake_storage_only",
+    "browser": "not_run_required_control_browser_unavailable",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -40,31 +43,27 @@
       "844x390": "not_tested",
       "1366x768": "not_tested"
     },
-    "real_online_phases_completed_in_cycle": 0,
-    "account_save_isolation": "passed_fake_storage_only",
-    "atlas_integrity": "passed_original_png_hash_and_region_bounds",
-    "offline_tests": "125/125_passed_21_files",
-    "companion_atlas_static": "12_atlases_192_subject_components_passed"
+    "real_online_phases_completed_in_cycle": 0
   },
   "blockers": [
     {
-      "code": "batch_visual_review_pending",
-      "detail": "Lote autorizado por David para publicar e testar depois. Inspeção estática e testes lógicos aprovados; sem playtest dos dez novos amigos."
+      "code": "browser_visual_gate",
+      "detail": "Ambiente managed-linux sem control-browser. Não foi iniciado preview alternativo. O pedido deste ciclo exige validação visual antes de publicação."
     }
   ],
   "next_actions": [
-    "David: conferir os amiguinhos disponíveis na conta; caminhada, direções, repouso e desvio do gato. Não desbloquear casas artificialmente.",
-    "Corrigir qualquer regressão do lote antes de ampliar recursos.",
-    "Retomar layout vertical da Minha Casa, organização de painéis e auditoria dos indicadores.",
-    "Depois: ampliar salas, biomas e dificuldade da Exploração."
+    "Conferir piso contínuo, água, obstáculos, pontes e objetos nos três capítulos, em retrato e paisagem, com navegador suportado e perfil isolado.",
+    "Após aceite visual publicar correção; atribuir nova versão de produto somente no fechamento.",
+    "Definir regras de progressão/economia e construir sala piloto de combate, coleta e inventário; depois ampliar capítulo 1 para dez salas.",
+    "Manter pendências da Minha Casa (retrato/indicadores), sem misturar alterações nesta revisão."
   ],
   "rollback": {
-    "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6705501060008191987f1f00a18e99b9",
-    "product_version": "1.9.3",
-    "instructions": "Restaurar versão salva 1.9.3 pelo fluxo oficial, checando concorrência e preservando saves."
+    "production_changed": false,
+    "product_version": "1.9.4",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
+    "instructions": "Publicação atual preservada; correção visual isolada no ramo de revisão, sem alterar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-all-companions-walk.md",
+  "latest_report": "docs/evolution/runs/2026-10-15.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -148,5 +147,16 @@
     "authorization": "David explicitly requested applying to all friends and testing afterwards on 2026-10-15.",
     "browser_gameplay": "pending_user_review; not observed in this environment",
     "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
+  },
+  "exploration_expansion": {
+    "status": "requirements_recorded_not_implemented",
+    "chapter_one_room_target": 10,
+    "combat_inventory_loot_respawn": "requested_not_implemented",
+    "product_decisions_pending": [
+      "nível compartilhado com Minha Casa ou separado",
+      "regra de perda de coleta quando HP acaba",
+      "destino das cartas de decoração",
+      "quantidade final de capítulos"
+    ]
   }
 }

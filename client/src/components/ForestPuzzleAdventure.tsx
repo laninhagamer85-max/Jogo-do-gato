@@ -76,10 +76,8 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
       ctx.fillStyle = "rgba(10,42,29,.28)"; ctx.fillRect(px, py + tile * 0.82, tile, tile * 0.18);
       continue;
     }
-    ctx.fillStyle = (x + y) % 2 ? "rgba(220,248,176,.09)" : "rgba(15,55,37,.07)";
-    ctx.fillRect(px, py, tile, tile);
-    ctx.strokeStyle = "rgba(255,246,196,.08)"; ctx.lineWidth = 1;
-    ctx.strokeRect(px + tile * 0.12, py + tile * 0.12, tile * 0.76, tile * 0.76);
+    // Walkable ground keeps the continuous room background painted above.
+    // Only water and solid obstacles need cell-specific drawing.
   }
 
   for (const plate of spec.plates) {
