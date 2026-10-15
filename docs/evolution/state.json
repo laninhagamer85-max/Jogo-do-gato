@@ -179,5 +179,22 @@
     "version": "1.9.5",
     "date": "2026-10-15",
     "result": "David completed and approved pilot playtest; requested visual refinements and simpler item use."
+  },
+  "biome_composition_research": {
+    "date": "2026-10-15",
+    "status": "research_and_skill_saved",
+    "report": "docs/evolution/biome-composition-research-2026-10-15.md",
+    "skill": "criar-cenarios-biomas-2d",
+    "skill_commit": "1c36cc6",
+    "skill_validation": "structural_passed_and_independent_read_only_planning",
+    "findings": [
+      "Connected terrain boundaries and restrained material variants",
+      "Reusable layered pond/shore/rock/path compositions with explicit geometry",
+      "Current one-buffer-per-context terrain cache must support multi-material compositions without repeated eviction; shared memory budget needed",
+      "Keep dynamic water outside static terrain cache"
+    ],
+    "game_implementation": "not_started_in_this_research_step",
+    "publication": "no_new_game_deploy",
+    "next_action": "Integrar uma composição piloto com grama, terra, areia, lago e margens, adaptar cache e validar antes de expandir aos capítulos."
   }
 }
