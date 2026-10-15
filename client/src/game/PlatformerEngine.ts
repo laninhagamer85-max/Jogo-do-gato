@@ -1,4 +1,4 @@
-import { PET_WALK_PILOT, drawWalkFrame } from "./petWalkAtlas";
+import { petWalkAtlas, drawWalkFrame } from "./petWalkAtlas";
 import { drawPilotTerrain, drawPilotDepth, usesPilotTerrain } from "./pilotTerrain";
 import { drawPetSymbol } from "./drawPetSymbol";
 import { GAME_ASSETS } from "./assets";
@@ -93,7 +93,8 @@ export class PlatformerEngine {
     this.stage = getPlatformStage(stageId) ?? getPlatformStage(1)!;
     this.profile = profile;
     this.idleImage.src = GAME_ASSETS.characters[profile.characterId];
-    if (profile.characterId === 'menino-prata') this.walkAtlas.src = PET_WALK_PILOT;
+    const atlas = petWalkAtlas(profile.characterId);
+    if (atlas) this.walkAtlas.src = atlas;
     this.callbacks = callbacks;
     this.layout = createPlatformLayout(stageId, Math.max(180, canvas.clientHeight));
     this.player.x = this.layout.start.x;
@@ -790,12 +791,12 @@ export class PlatformerEngine {
     });
     if (this.invulnerableFor > 0 && Math.floor(this.elapsed * 12) % 2 === 0) return;
     // Pilot art is opt-in to the matching variant; never recolor other pets.
-    if (this.profile.characterId === 'menino-prata' && this.walkAtlas.complete && this.walkAtlas.naturalWidth > 0 && this.idleImage.complete && this.idleImage.naturalWidth > 0) {
+    if (petWalkAtlas(this.profile.characterId) && this.walkAtlas.complete && this.walkAtlas.naturalWidth > 0 && this.idleImage.complete && this.idleImage.naturalWidth > 0) {
       ctx.save();
       ctx.translate(x + PLAYER_WIDTH / 2, this.player.y + PLAYER_HEIGHT);
       ctx.scale(this.player.facing < 0 ? -1 : 1, 1);
-      if (this.player.grounded && this.groundTravel < .001) ctx.drawImage(this.idleImage, -36, -68, 72, 68);
-      else drawWalkFrame(ctx, this.walkAtlas, 0, this.player.grounded ? this.walkCycle / (Math.PI * 2) : 0.25, -49, -82, 98, 90);
+      if (this.player.grounded && this.groundTravel < .001) ctx.drawImage(this.idleImage, -30.6, -57.8, 61.2, 57.8);
+      else drawWalkFrame(ctx, this.walkAtlas, 0, this.player.grounded ? this.walkCycle / (Math.PI * 2) : 0.25, -41.65, -76.5, 83.3, 76.5);
       ctx.restore(); return;
     }
     // Legacy articulated fallback remains until each matching atlas is approved.

@@ -36,3 +36,13 @@ Reutiliza atlas prata no deslocamento já existente por pet:move. Ao chegar ao d
 - Minha Casa não aplica mais reação de salto ao comando de caminhar.
 - Novos testes simulados: área útil com rotação/visão geral; fase imóvel em colisão; seleção da imagem sentada na borda com input mantido. TypeScript e 87 testes passaram. Novo build aprovado, com aviso existente de chunks grandes.
 - Navegador suportado continua ausente; sem preview alternativo ou publicação. Não ampliar conteúdo antes do aceite visual do piloto.
+
+## Publicação de teste autorizada
+David pediu explicitamente publicar para fazer o teste por conta própria após informação do bloqueio de navegador. A autorização substitui o gate prévio nesta entrega; não equivale a aprovação visual. Preparar v15 com badge central, rollback v14 e escopo piloto prata. Não declarar testes reais concluídos.
+
+## Variante preta e preparação v15
+David informou usar menino-preto durante preparação do pacote, antes de qualquer save/deploy. Primeiro pacote prata foi descartado para publicação; não foi salvo como versão nem implantado. Criado atlas próprio do gato preto com boné amarelo, olhos âmbar, peito/patas/brilho branco e coleira verde. Registro por variante compartilhado pelos três modos, sem substituir o pet selecionado. Outros quatro personagens ainda sem atlas novo.
+
+Asset client/public/manus-storage/menino-preto-walk-pilot-v1.png gerado pela ferramenta integrada com referência boy-preto_954326d9.webp; 4x4 quadros laterais/frente/costas/lateral em perspectiva, fundo transparente. Inspeção estática apenas; alinhamento/recortes e movimento continuam pendentes do teste do usuário. Novos testes cobrem seleção da arte preta e retorno à própria imagem parada. 89 testes offline e TypeScript passaram.
+
+Publicação v15 autorizada com teste visual posterior pelo usuário; rollback v14 preservado. Registrar resultado nativo antes de declarar publicado.

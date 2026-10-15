@@ -1,4 +1,4 @@
-import { PET_WALK_PILOT, drawWalkFrame } from "@/game/petWalkAtlas";
+import { petWalkAtlas, drawWalkFrame } from "@/game/petWalkAtlas";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, CircleHelp, Compass, DoorOpen, Home, KeyRound, Pause, Play, RotateCcw, Trees, Volume2, VolumeX } from "lucide-react";
 import { GAME_ASSETS } from "@/game/assets";
@@ -169,7 +169,7 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
     ctx.save(); ctx.translate(playerX, playerY);
     if (state.facing === 'left') ctx.scale(-1, 1);
     const row = state.facing === 'up' ? 2 : state.facing === 'down' ? 1 : 3;
-    drawWalkFrame(ctx, walkAtlas, row, state.walkPhase, -tile * .43, -tile * .5, tile * .86, tile * .86);
+    drawWalkFrame(ctx, walkAtlas, row, state.walkPhase, -tile * .43, -tile * .566, tile * .86, tile * .86);
     ctx.restore();
   } else if (pet.complete && pet.naturalWidth > 0) {
     ctx.save(); ctx.translate(playerX + sway, playerY - bob);
@@ -270,7 +270,8 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   useEffect(() => {
     const canvas = canvasRef.current; const ctx = canvas?.getContext("2d");
     const walkAtlas = new Image();
-    if (characterId === 'menino-prata') walkAtlas.src = PET_WALK_PILOT;
+    const atlas = petWalkAtlas(characterId);
+    if (atlas) walkAtlas.src = atlas;
     if (!canvas || !ctx) return;
     const pet = new Image(); pet.src = GAME_ASSETS.characters[characterId];
     const backgrounds = new Map<number, HTMLImageElement>();

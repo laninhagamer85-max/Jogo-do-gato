@@ -117,3 +117,5 @@ Os assets são selecionados pelo `characterId` já salvo no perfil. As plataform
 Sons gerados pelo Web Audio API, sem arquivos adicionais: moedas (arpejo agudo), salto (tom ascendente), impacto em monstro (bump curto), vida perdida (descida grave) e conclusão (acorde/arpejo de quatro notas). Todos respeitam o botão de som existente.
 ## Piloto de caminhada — 14/10/2026
 - `client/public/manus-storage/menino-prata-walk-pilot-v1.png`: atlas 4x4 gerado com ferramenta de imagem integrada, referência `boy-prata_33684c26.webp` do projeto. Preserva boné/coleira ciano e identidade do gato prata; não é arte de Disney/Capcom. Prompt e limites de validação no relatório `docs/evolution/runs/2026-10-14-walk-camera-pilot.md`. Apenas variante prata, aprovação visual pendente.
+
+- `client/public/manus-storage/menino-preto-walk-pilot-v1.png`: atlas 4x4 de caminhada, gerado pela ferramenta integrada com referência original `boy-preto_954326d9.webp`; boné amarelo, olhos âmbar e coleira verde. Arte por variante, validação visual pendente.

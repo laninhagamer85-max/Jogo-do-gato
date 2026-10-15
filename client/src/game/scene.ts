@@ -1,4 +1,5 @@
-import { PET_WALK_PILOT, walkFrame } from "./petWalkAtlas";
+import { cleanWalkAtlas, homeWalkDirection } from "./petFrameCleanup";
+import { petWalkAtlas, walkFrame } from "./petWalkAtlas";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import "@babylonjs/core/Shaders/default.vertex.js";
@@ -120,13 +121,22 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   let activeCharacter = saved.characterId;
   let homeWalkPhase = 0;
   let homeWalkTexture: Texture | null = null;
+  let atlasLoadGeneration = 0;
   const prepareWalkTexture = () => {
+    const generation = ++atlasLoadGeneration;
     homeWalkTexture?.dispose(); homeWalkTexture = null;
-    if (activeCharacter !== 'menino-prata') return;
-    homeWalkTexture = new Texture(PET_WALK_PILOT, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
-    homeWalkTexture.hasAlpha = true;
-    homeWalkTexture.uScale = .25; homeWalkTexture.vScale = .25;
-    homeWalkTexture.vOffset = 0; // Last atlas row: three-quarter right-facing walk.
+    const atlas = petWalkAtlas(activeCharacter); if (!atlas) return;
+    const image = new Image();
+    image.onload = () => {
+      if (generation !== atlasLoadGeneration || scene.isDisposed) return;
+      const cleaned = cleanWalkAtlas(image);
+      const canvas = document.createElement('canvas'); canvas.width=canvas.height=1024;
+      canvas.getContext('2d')?.drawImage(cleaned,0,0,1024,1024);
+      const texture = new DynamicTexture('pet-walk-clean',canvas,scene,false,Texture.BILINEAR_SAMPLINGMODE);
+      texture.hasAlpha=true; texture.uScale=.25; texture.vScale=.25; texture.update();
+      homeWalkTexture=texture;
+    };
+    image.src=atlas;
   };
   prepareWalkTexture();
   kitten.position.set(0, -1.12, 0);
@@ -352,8 +362,12 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       if (!sleeping) { positionX = targetX; positionY = targetY; }
       walking = false;
     }
-    const pilotWalking = walking && activeCharacter === 'menino-prata' && homeWalkTexture?.isReady();
-    if (pilotWalking && homeWalkTexture) homeWalkTexture.uOffset = walkFrame(homeWalkPhase) / 4;
+    const pilotWalking = walking && Boolean(petWalkAtlas(activeCharacter)) && homeWalkTexture?.isReady();
+    const walkDirection = homeWalkDirection(dx,dy);
+    if (pilotWalking && homeWalkTexture) {
+      homeWalkTexture.uOffset = walkFrame(homeWalkPhase) / 4;
+      homeWalkTexture.vOffset = (3-walkDirection.row) / 4;
+    }
     const visibleTexture = pilotWalking ? homeWalkTexture : characterTexture;
     kittenMaterial.diffuseTexture = visibleTexture;
     kittenMaterial.emissiveTexture = visibleTexture;
@@ -404,7 +418,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const requestedBlinkElapsed = now - blinkTriggerStart;
     const requestedBlink = requestedBlinkElapsed >= 0 && requestedBlinkElapsed < 260 ? Math.sin((requestedBlinkElapsed / 260) * Math.PI) : 0;
     const blink = Math.max(idleBlink, requestedBlink);
-    kitten.scaling.set((pilotWalking && dx < 0 ? -1 : 1) * scale * (1 + blink * 0.07), scale * (1 - blink * 0.055), 1);
+    kitten.scaling.set((pilotWalking && walkDirection.mirror ? -1 : 1) * scale * (1 + blink * 0.07), scale * (1 - blink * 0.055), 1);
     const accessoryScale = petWidth / 3.35;
     boyHat.mesh.position.set(positionX + moveX - 0.12 * accessoryScale, positionY + wave + jump + 1.42 * accessoryScale, -0.22);
     boyHat.mesh.rotation.z = kitten.rotation.z * 0.65;
@@ -433,7 +447,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       window.removeEventListener("pet:decorations", onDecorations);
       window.removeEventListener("pet:move", onMove);
       window.removeEventListener("pet:blink", onPetBlink as EventListener);
-      homeWalkTexture?.dispose();
+      atlasLoadGeneration++; homeWalkTexture?.dispose();
       scene.onBeforeRenderObservable.remove(renderObserver);
       scene.dispose();
     },

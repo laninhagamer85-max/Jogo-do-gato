@@ -4,7 +4,7 @@ import { getPetMotionPose } from "./platformerAnimation";
 import { createInitialGameState, setPetProfile } from "./PetGame";
 
 // The DOM/Canvas are stubs. These are engine regressions, not rendered playtests.
-function harness() {
+function harness(characterId: "menino-prata" | "menino-preto" = "menino-prata") {
   const listeners = new Map<string, () => void>();
   const documentStub = {
     hidden: false,
@@ -32,7 +32,7 @@ function harness() {
     clientHeight: size.height, width: 0, height: 0,
     getContext: () => ctx, getBoundingClientRect: () => size,
   } as unknown as HTMLCanvasElement;
-  const profile = setPetProfile(createInitialGameState(), { name: "QA", age: 2, gender: "menino", characterId: "menino-prata" }).profile!;
+  const profile = setPetProfile(createInitialGameState(), { name: "QA", age: 2, gender: "menino", characterId }).profile!;
   const callbacks = { onHud: vi.fn(), onCollectible: vi.fn(), onWin: vi.fn(), onLose: vi.fn() };
   const engine = new PlatformerEngine(canvas, 1, profile, callbacks);
   const internals = engine as any;
@@ -343,6 +343,21 @@ describe('silver kitten atlas pilot', () => {
     expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
     h.internals.player.x=0; h.engine.setInput('right',false); h.engine.setInput('left',true);
     h.internals.update(1/60,34); h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+    h.engine.dispose();
+  });
+});
+
+describe('black kitten pilot integration', () => {
+  it('uses its own atlas while moving and its own portrait while resting', () => {
+    const h=harness('menino-preto'); h.engine.setSoundEnabled(false); h.stand(0);
+    expect(h.internals.walkAtlas.src).toContain('menino-preto-walk');
+    expect(h.internals.idleImage.src).toContain('boy-preto');
+    Object.assign(h.internals.walkAtlas,{complete:true,naturalWidth:1254,naturalHeight:1254});
+    Object.assign(h.internals.idleImage,{complete:true,naturalWidth:768,naturalHeight:768});
+    h.engine.setInput('right',true); h.internals.update(1/60,17); h.internals.drawPlayer(h.context);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
+    h.engine.setInput('right',false); h.internals.update(1/60,34); h.internals.drawPlayer(h.context);
     expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
     h.engine.dispose();
   });

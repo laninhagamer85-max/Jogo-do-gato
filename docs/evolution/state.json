@@ -4,7 +4,7 @@
   "updated_date": "2026-10-12",
   "timezone": "America/Sao_Paulo",
   "status": "preparing_authorized_release",
-  "active_run": "2026-10-14-walk-camera-pilot",
+  "active_run": "2026-10-14-v16-sprite-corrections",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "recovery/mobile-review-20261009",
@@ -22,14 +22,14 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 9,
+    "last_observed_version": 15,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
     "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "deployment_id": "appgdep_6acd10eb20708191913501884dea82f7",
-    "site_commit": "0f5bfc3158285ba4a3ff180e2e402a1dca00cad8",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_af6642d34c4081918f211308ba287fae",
+    "deployment_id": "appgdep_6ad01353da7481919d96b2b91c618d23",
+    "site_commit": "e5070490c14c3d354c834f607c0438e64141346d",
     "published_at": "2026-10-12T13:55:28-03:00"
   },
   "verification": {
@@ -69,7 +69,7 @@
     "production_changed": true,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad"
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-walk-camera-pilot.md",
+  "latest_report": "docs/evolution/runs/2026-10-14-v16-sprite-corrections.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -77,11 +77,14 @@
     "real_account_actions_performed": false
   },
   "pilot_review": {
-    "status": "implemented_awaiting_visual_validation",
-    "variant": "menino-prata",
+    "status": "preparing_followup_for_user_visual_test",
+    "variant": [
+      "menino-prata",
+      "menino-preto"
+    ],
     "scope": "silver walk across three modes, camera safe region, inspection input guards",
-    "publication": "not_attempted_v14_preserved",
-    "offline_tests": 87,
+    "publication": "preparing_v15_user_authorized_post_publish_visual_test",
+    "offline_tests": 92,
     "branch": "fix/pet-walk-camera-20261014",
     "pull_request": 9
   }
