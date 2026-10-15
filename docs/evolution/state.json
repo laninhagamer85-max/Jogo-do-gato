@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "publishing_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,9 +14,9 @@
     "code_commit": "08295a37ba7dd372874c78ad448992cde40e70fa"
   },
   "current_improvement": {
-    "id": "completed-pilot-replay",
+    "id": "immersive-combat-controls-art-sound-drops",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_review"
+    "acceptance_status": "offline_verified_pending_user_visual_audio_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -28,15 +28,16 @@
     "deployment_id": "appgdep_6ad0dd193dac8191955a12ae5aa1f08a",
     "site_commit": "9f03845c5a7ca3de0b3874e08b2583a906abbc13",
     "published_at": "2026-10-15T11:03:28-03:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": true,
+    "target_product_version": "1.9.8"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "144/144_passed_22_files",
+    "offline_tests": "154/154_passed_23_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable; publishing under continuing user review authorization",
+    "browser": "not_run_control_browser_unavailable; user review authorization continues",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -57,7 +58,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
     "instructions": "Retornar à versão 1.9.4 / Sites 23, sem alterar saves de jogadores."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-pilot-replay.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-immersive-combat.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

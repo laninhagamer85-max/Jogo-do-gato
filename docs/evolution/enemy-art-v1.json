@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-15",
+  "asset": "client/public/forest-adventure/enemies-illustrated-v1.png",
+  "sha256": "995bf8760f388b034d78e21551499f81b77109cca64b45b189229fabcbd07a58",
+  "origin": "original generated artwork using built-in image generation; inspected alpha and sprite grid",
+  "atlas": {
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 2,
+    "characters": [
+      "forest beetle",
+      "woodland caterpillar"
+    ],
+    "poses": "four walk/crawl poses per character; horizontal mirroring; not sixteen look directions"
+  },
+  "prompt": "Original 4-column 2-row transparent 2D game enemy animation atlas. Top row: same cute moss emerald and amber forest beetle, 4 grounded alternating walk poses. Bottom row: same plump sage velvet woodland caterpillar, 4 crawl poses. Premium illustrated storybook sprites, softly painted sculptural volume and warm forest light, matching a fluffy kitten and lush painted forest. Equal cells, consistent size/placement. No UI, text, third-party characters or watermarks.",
+  "cleanup_prompt": "Preserve all eight creatures and positions; remove atmospheric background outside silhouettes; true alpha transparency."
+}

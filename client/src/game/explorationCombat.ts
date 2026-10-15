@@ -17,7 +17,7 @@ export const PILOT_ENEMIES = [
   { id: 'caterpillar', name: 'Lagarta', level: 3, hp: 80, attack: 16, defense: 3, xp: 55, item: 'ambar' as CombatItem, quantity: 2, x: 10.5, y: 3 },
 ];
 export type CombatEnemy = CombatPoint & { id: string; hp: number; generation: number; attackAt: number; respawnAt: number };
-export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity: number };
+export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity: number; bornAt?: number; landedAt?: number };
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
   version: 1; revision: number; time: number; xp: number; hp: number; energy: number;
@@ -87,7 +87,7 @@ export function readCombatState(value: unknown): CombatRead {
     const l = object(v); const id = String(l.id); const item = String(l.item) as CombatItem;
     const p = { x: number(l.x, 0), y: number(l.y, 0) };
     if (!allowedLoot.has(id) || !Object.prototype.hasOwnProperty.call(COMBAT_ITEMS, item) || !pilotWalkable(p, s.gateOpen)) return [];
-    allowedLoot.delete(id); return [{ id, item, ...p, quantity: Math.floor(number(l.quantity, 1, 1, 20)) }];
+    allowedLoot.delete(id); return [{ id, item, ...p, bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), quantity: Math.floor(number(l.quantity, 1, 1, 20)) }];
   }) : [];
   if (s.hp === 0) return { supported: true, state: defeatCombat(s) };
   return { supported: true, state: s };
@@ -133,7 +133,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) s.energy -= 25;
-    s.attackAt = s.time + (power ? 1000 : 500); s.strikeUntil = s.time + 220;
+    s.attackAt = s.time + (power ? 1000 : 500); s.strikeUntil = s.time + 320;
     for (const enemy of s.enemies) {
       const def = PILOT_ENEMIES.find(e => e.id === enemy.id)!; const range = distance(s.player, enemy);
       const dot = range ? ((enemy.x - s.player.x) * s.facing.x + (enemy.y - s.player.y) * s.facing.y) / range : 1;
@@ -145,7 +145,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
         feedback(s, s.player, `+${def.xp} XP`, 'xp');
         const increase = combatMaxHp(s.xp) - oldMax; s.hp += increase;
         if (combatLevel(s.xp) > oldLevel) { feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
-        s.loot.push({ id: `${enemy.id}:${enemy.generation}`, x: enemy.x, y: enemy.y, item: def.item, quantity: def.quantity });
+        s.loot.push({ id: `${enemy.id}:${enemy.generation}`, x: enemy.x, y: enemy.y, item: def.item, quantity: def.quantity, bornAt: s.time, landedAt: s.time + 500 });
         if (random(s) < .12 && !s.equipmentOwned) { s.equipmentOwned = true; feedback(s, s.player, 'Broche encontrado', 'info'); }
         s.message = `${def.name} superado. Aproxime-se para coletar ${COMBAT_ITEMS[def.item]}.`;
       }
@@ -175,7 +175,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
     s.collectedNodes.push(node.id); s.bag[node.item] += node.quantity; s.message = `+${node.quantity} ${COMBAT_ITEMS[node.item]}.`;
     feedback(s, node, `+${node.quantity} ${COMBAT_ITEMS[node.item]}`, 'info');
   }
-  s.loot = s.loot.filter(l => { if (distance(s.player, l) >= .65) return true; s.bag[l.item] += l.quantity; feedback(s, l, `+${l.quantity} ${COMBAT_ITEMS[l.item]}`, 'info'); return false; });
+  s.loot = s.loot.filter(l => { if (s.time < (l.landedAt ?? 0) || distance(s.player, l) >= .65) return true; s.bag[l.item] += l.quantity; feedback(s, l, `+${l.quantity} ${COMBAT_ITEMS[l.item]}`, 'info'); return false; });
   if (input.interact && distance(s.player, PILOT_MARKER) < 1.2) {
     if (s.stock.fibra + s.bag.fibra >= 6 && s.defeated >= 1) { s.gateOpen = true; s.message = 'Marco ativado. Siga até a saída dourada.'; }
     else s.message = 'O marco pede 6 fibras e um encontro vencido. Os materiais não serão consumidos.';

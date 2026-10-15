@@ -429,7 +429,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     "data-qa-bridges": game?.placedBridges.join(","),
   } : {};
 
-  if (combatPilot) return <ExplorationCombatPilot profile={profile} progress={combatProgress} onSave={onSaveCombatProgress} onBack={() => setCombatPilot(false)} />;
+  if (combatPilot) return <ExplorationCombatPilot soundOn={soundOn} onToggleSound={onToggleSound} profile={profile} progress={combatProgress} onSave={onSaveCombatProgress} onBack={() => setCombatPilot(false)} />;
 
   return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label="Bosque dos Caminhos, modo de exploração">
     <header className="forest-adventure-topbar">

@@ -155,10 +155,13 @@ export function stopPlatformMusic() {
   rampGain(musicBus, 0);
 }
 
-export type PlatformSfx = "jump" | "coin" | "hurt" | "bump" | "clear" | "forest-key" | "forest-gate" | "forest-bridge" | "forest-room" | "forest-chapter";
+export type PlatformSfx = "paw" | "combat-power" | "combat-pickup" | "jump" | "coin" | "hurt" | "bump" | "clear" | "forest-key" | "forest-gate" | "forest-bridge" | "forest-room" | "forest-chapter";
 type Note = { from: number; to: number; at: number; duration: number; wave: OscillatorType; volume: number };
 
 const SFX_NOTES: Record<PlatformSfx, Note[]> = {
+  paw: [{ from: 700, to: 160, at: 0, duration: .11, wave: "triangle", volume: .032 }, { from: 160, to: 92, at: .06, duration: .08, wave: "sine", volume: .028 }],
+  "combat-power": [{ from: 190, to: 570, at: 0, duration: .19, wave: "triangle", volume: .03 }, { from: 440, to: 165, at: .1, duration: .14, wave: "sine", volume: .032 }],
+  "combat-pickup": [{ from: 660, to: 880, at: 0, duration: .09, wave: "sine", volume: .024 }],
   jump: [{ from: 390, to: 650, at: 0, duration: 0.14, wave: "sine", volume: 0.045 }],
   coin: [
     { from: 820, to: 1120, at: 0, duration: 0.12, wave: "sine", volume: 0.055 },
