@@ -1,8 +1,9 @@
-import { combatStick } from "@/game/combatPresentation";
+import CombatInventory from "./CombatInventory";
+import ExplorationJoystick from "./ExplorationJoystick";
 import { playPlatformSfx, unlockPlatformAudio } from "@/game/platformerAudio";
 import ExplorationItemIcon from "./ExplorationItemIcon";
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { Backpack, Map, Pause, Play, Shield, Sparkles, ZoomIn, ZoomOut, Volume2, VolumeX, PawPrint } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Backpack, Map, Pause, Play, Shield, Sparkles, ZoomIn, ZoomOut, Volume2, VolumeX, PawPrint, X } from 'lucide-react';
 import { GAME_ASSETS } from '@/game/assets';
 import type { PetProfile } from '@/game/PetGame';
 import { ForestControls } from '@/game/forestControls';
@@ -26,11 +27,10 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const zoomRef = useRef(zoom), lastSaved = useRef('');
   const accessibleTimers = useRef(new Set<number>());
   const stick = useRef({ x: 0, y: 0, pointer: -1 });
-  const [stickDisplay, setStickDisplay] = useState({ x: 0, y: 0 });
   const soundRef = useRef(soundOn); soundRef.current = soundOn;
   const char = profile?.characterId ?? 'menino-preto';
   saveRef.current = onSave; zoomRef.current = zoom;
-  function clear() { stick.current = { x: 0, y: 0, pointer: -1 }; setStickDisplay({ x: 0, y: 0 }); controls.current.clear(); route.current = []; pending.current = { attack: false, power: false, interact: false }; for (const id of accessibleTimers.current) window.clearTimeout(id); accessibleTimers.current.clear(); }
+  function clear() { stick.current = { x: 0, y: 0, pointer: -1 }; controls.current.clear(); route.current = []; pending.current = { attack: false, power: false, interact: false }; for (const id of accessibleTimers.current) window.clearTimeout(id); accessibleTimers.current.clear(); }
   function persist() { if (!initial.supported) return; const snapshot = combatSnapshot(current.current), key = JSON.stringify(snapshot); if (key !== lastSaved.current) { lastSaved.current = key; saveRef.current(snapshot); } }
   function openPanel(value: Panel) { clear(); persist(); panelRef.current = value; setPanel(value); }
   function change(next: CombatState) { if (next === current.current) return; current.current = next; setGame(next); persist(); }
@@ -48,14 +48,15 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   useEffect(() => {
     if (!initial.supported) return;
     const el = canvas.current, ctx = el?.getContext('2d'); if (!el || !ctx) return;
+    const props = new Image(); props.src = '/forest-adventure/woodland-props-v1.png';
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
+    const bg = new Image(); bg.src = '/forest-adventure/ground-continuous-v1.png';
     let assetsReady = false;
-    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth) { assetsReady = true; setAssetStatus('ready'); } };
-    pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets;
-    pet.onerror = atlas.onerror = enemies.onerror = () => { assetsReady = false; setAssetStatus('error'); };
+    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && bg.naturalWidth) { assetsReady = true; setAssetStatus('ready'); } };
+    pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; bg.onload = checkAssets;
+    pet.onerror = atlas.onerror = enemies.onerror = props.onerror = bg.onerror = () => { assetsReady = false; setAssetStatus('error'); };
     checkAssets();
-    const bg = new Image(); bg.src = '/forest-adventure/backgrounds/clearing.webp';
     let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const resize = () => { const r = el.getBoundingClientRect(); w = Math.max(1, r.width); h = Math.max(1, r.height); const dpr = Math.min(2, window.devicePixelRatio || 1); el.width = Math.round(w * dpr); el.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
@@ -84,7 +85,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         if (changedEvent || now - savedAt > 1000) { persist(); savedAt = now; }
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
       }
-      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies);
+      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props);
       frame = window.requestAnimationFrame(loop);
     };
     frame = window.requestAnimationFrame(loop);
@@ -111,21 +112,6 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     window.addEventListener('keydown', down); window.addEventListener('keyup', up); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', hidden);
     return () => { clear(); window.removeEventListener('keydown', down); window.removeEventListener('keyup', up); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', hidden); };
   }, [initial.supported]);
-  const updateStick = (event: PointerEvent<HTMLButtonElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const value = combatStick(event.clientX - rect.left - rect.width / 2, event.clientY - rect.top - rect.height / 2, rect.width * .32);
-    stick.current = { ...value, pointer: event.pointerId }; setStickDisplay(value);
-  };
-  const startStick = (event: PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault(); if (panelRef.current || current.current.completed) return;
-    unlockPlatformAudio(); route.current = []; overviewRef.current = false; setOverview(false);
-    event.currentTarget.setPointerCapture(event.pointerId); updateStick(event);
-  };
-  const releaseStick = (event: PointerEvent<HTMLButtonElement>) => {
-    if (stick.current.pointer !== event.pointerId) return;
-    stick.current = { x: 0, y: 0, pointer: -1 }; setStickDisplay({ x: 0, y: 0 });
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-  };
   const fibers = game.stock.fibra + game.bag.fibra;
   const canUse = (item: 'erva' | 'fruta') => !game.completed && game.stock[item] + game.bag[item] > 0 && (item === 'erva' ? game.hp < combatMaxHp(game.xp) : game.energy < 100);
   const useItem = (item: 'erva' | 'fruta') => { if (!panelRef.current && !overviewRef.current) change(consumeCombatItem(current.current, item)); };
@@ -150,15 +136,16 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         {(['erva', 'fruta'] as const).map(item => <button key={item} disabled={!canUse(item) || Boolean(panel) || overview} onClick={() => useItem(item)} aria-label={`Usar ${COMBAT_ITEMS[item]}, ${game.stock[item] + game.bag[item]} disponível, recupera até ${item === 'erva' ? '35 HP' : '30 de energia'}`} title={item === 'erva' ? 'Usar erva: até +35 HP' : 'Usar fruta: até +30 energia'}><ExplorationItemIcon item={item} size={30}/><span>{game.stock[item] + game.bag[item]}</span><small>{item === 'erva' ? 'Curar' : 'Energia'}</small></button>)}
       </div>}
       {!game.completed && <div className="combat-controls">
-        <button type="button" className="combat-joystick" aria-label="Mover o pet: arraste o direcional ou use as setas do teclado" disabled={Boolean(panel) || overview} onPointerDown={startStick} onPointerMove={event => { if (stick.current.pointer === event.pointerId) updateStick(event); }} onPointerUp={releaseStick} onPointerCancel={releaseStick} onLostPointerCapture={releaseStick}><span className="combat-stick-ring"/><span className="combat-stick-knob" style={{ transform: `translate(${stickDisplay.x * 29}px, ${stickDisplay.y * 29}px)` }}/></button>
+        <ExplorationJoystick disabled={Boolean(panel) || overview || game.completed} onChange={value=>{stick.current={...value,pointer:-1};if(value.x||value.y){route.current=[];}}}/>
+
         <div className="combat-actions">{(['attack', 'power', 'interact'] as const).map((kind, index) => <button className={`combat-action-${kind}`} key={kind} disabled={Boolean(panel) || overview || (kind === 'power' && game.energy < 25)} aria-label={['Patada, E ou espaço', 'Poder, Q, custa 25 de energia', 'Interagir com marco, F'][index]} onPointerDown={e => { e.preventDefault(); action(kind); }} onClick={e => { if (e.detail === 0) action(kind); }}>{index === 0 ? <PawPrint /> : index === 1 ? <Sparkles /> : <Shield />}<span>{['Atacar', 'Poder', 'Marco'][index]}</span></button>)}</div>
       </div>}
       {game.completed && <div className="combat-victory"><h2>Sala piloto concluída!</h2><p>Coleta guardada. Você pode repetir para explorar e testar novamente, mantendo seu nível, inventário e broche. O bônus de conclusão não é entregue outra vez.</p><button onClick={replay}>Repetir sala piloto</button><button onClick={leave}>Voltar aos capítulos</button></div>}
     </div>
-    <dialog ref={dialog} className="combat-dialog" aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
-      <h2 id="combat-dialog-title">{modalTitle}</h2>
-      {panel === 'inventory' ? <><p>Materiais da sala podem perder 10% na derrota. Estoque guardado e equipamentos são preservados.</p><div className="combat-inventory-grid">{(Object.keys(COMBAT_ITEMS) as CombatItem[]).map(item => <div className="combat-item-card" key={item}><ExplorationItemIcon item={item} size={48}/><strong>{COMBAT_ITEMS[item]}</strong><span>{game.stock[item] + game.bag[item]} no total</span><small>{game.bag[item]} na sala · {game.stock[item]} guardado(s)</small>{(item === 'erva' || item === 'fruta') && <button disabled={!canUse(item)} onClick={() => { change(consumeCombatItem(current.current, item)); openPanel(null); }}>Usar · {item === 'erva' ? '+35 HP' : '+30 energia'}</button>}</div>)}</div><p>Ataque: {combatAttack(game)} · retornos ao ponto seguro: {game.deaths}</p><button className="combat-equipment" disabled={!game.equipmentOwned} onClick={() => change(equipCombatCharm(current.current))}><ExplorationItemIcon item="broche" size={35}/>{game.equipmentOwned ? game.equipmentOn ? 'Retirar Broche (+4 ataque)' : 'Equipar Broche (+4 ataque)' : 'Broche: conquiste ao concluir a sala'}</button></> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>Arraste o direcional, use WASD/Setas ou toque no chão para mover. E/Espaço: patada à frente. Q: poder ao redor. F: marco. I: mochila.</p><p>Consiga seis fibras e vença um besouro. Ative o marco e siga até a saída. Nv 3 indica um adversário mais forte. O círculo do acampamento é seguro.</p></>}
-      <div className="combat-dialog-actions"><button autoFocus onClick={() => openPanel(null)}><Play size={16} />{panel === 'exit' ? 'Continuar aqui' : 'Retomar'}</button>{panel === 'exit' ? <button onClick={leave}>Salvar e voltar</button> : <button onClick={() => openPanel('exit')}>Voltar aos capítulos</button>}</div>
+    <dialog ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
+      <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel === 'inventory' && <button onClick={() => openPanel(null)} aria-label="Fechar mochila e retomar"><X size={20}/></button>}</header>
+      {panel === 'inventory' ? <CombatInventory game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>Arraste o direcional, use WASD/Setas ou toque no chão para mover. E/Espaço: patada à frente. Q: poder ao redor. F: marco. I: mochila.</p><p>Consiga seis fibras e vença um besouro. Ative o marco e siga até a saída. Nv 3 indica um adversário mais forte. O círculo do acampamento é seguro.</p></>}
+      {panel !== 'inventory' && <div className="combat-dialog-actions"><button autoFocus onClick={() => openPanel(null)}><Play size={16} />{panel === 'exit' ? 'Continuar aqui' : 'Retomar'}</button>{panel === 'exit' ? <button onClick={leave}>Salvar e voltar</button> : <button onClick={() => openPanel('exit')}>Voltar aos capítulos</button>}</div>}
     </dialog>
   </section>;
 }

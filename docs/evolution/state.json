@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "publishing_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,9 +14,9 @@
     "code_commit": "2e57fcdced8cf9e91bcc1c978b516d5d693759f7"
   },
   "current_improvement": {
-    "id": "immersive-combat-controls-art-sound-drops",
+    "id": "single-world-inventory-attack-correction",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_visual_audio_review"
+    "acceptance_status": "offline_verified_pending_user_visual_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -28,11 +28,12 @@
     "deployment_id": "appgdep_6ad0e9be35d8819193636d4c9564422f",
     "site_commit": "e14c79260fdb91b9f4bf7f004efee95f82ea7df7",
     "published_at": "2026-10-15T11:57:36-03:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": true,
+    "target_product_version": "1.9.9"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "154/154_passed_23_files",
+    "offline_tests": "158/158_passed_23_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -57,7 +58,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191",
     "instructions": "Reimplantar versão anterior se necessário, sem editar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-immersive-combat.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-single-world-inventory.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

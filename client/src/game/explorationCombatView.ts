@@ -1,3 +1,4 @@
+import { drawExplorationGround, drawWoodlandProp } from "./explorationScenery";
 import { combatAttackPose, combatLootLift } from "./combatPresentation";
 import { combatLevel, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
@@ -11,33 +12,22 @@ export function combatView(width: number, height: number, player: CombatPoint, z
   return { tile, left, top };
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement) {
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
-  ctx.clearRect(0, 0, width, height); ctx.fillStyle = '#386146'; ctx.fillRect(0, 0, width, height);
-  const bw = PILOT_SIZE.width * t, bh = PILOT_SIZE.height * t;
-  if (background.complete && background.naturalWidth) {
-    const scale = Math.max(width / background.naturalWidth, height / background.naturalHeight);
-    ctx.drawImage(background, (width - background.naturalWidth * scale) / 2, (height - background.naturalHeight * scale) / 2, background.naturalWidth * scale, background.naturalHeight * scale);
-    ctx.drawImage(background, v.left, v.top, bw, bh);
-  }
-  ctx.fillStyle = 'rgba(20,50,30,.36)'; ctx.fillRect(v.left, v.top, bw, bh);
-  // The collision rectangle remains exact; foliage covers its flat prototype appearance.
-  const foliage = (x: number, y: number) => {
-    const p = point({x,y});
-    const rock = ctx.createLinearGradient(p.x,p.y,p.x+t,p.y+t);rock.addColorStop(0,'#7a8560');rock.addColorStop(1,'#425d3a');
-    ctx.fillStyle=rock;ctx.beginPath();ctx.roundRect(p.x,p.y,t,t,t*.18);ctx.fill();
-    for(let i=0;i<6;i++){const cx=p.x+t*(.18+(i%3)*.31),cy=p.y+t*(.2+Math.floor(i/3)*.4);const leaf=ctx.createRadialGradient(cx-t*.06,cy-t*.08,0,cx,cy,t*.32);leaf.addColorStop(0,i%2?'#75934e':'#628448');leaf.addColorStop(1,'#2f5334');ctx.fillStyle=leaf;ctx.beginPath();ctx.ellipse(cx,cy,t*.28,t*.32,i*.7,0,Math.PI*2);ctx.fill();}
-  };
-  for(let x=0;x<PILOT_SIZE.width;x++){foliage(x,0);foliage(x,PILOT_SIZE.height-1);}
-  for(let y=1;y<PILOT_SIZE.height-1;y++){foliage(0,y);foliage(PILOT_SIZE.width-1,y);}
-  for (const wall of PILOT_WALLS) foliage(wall.x,wall.y);
+  ctx.clearRect(0, 0, width, height);
+  drawExplorationGround(ctx,width,height,background,v.left,v.top,t);
+  const scenery:{x:number;y:number;index:number}[]=[];
+  for(let x=0;x<PILOT_SIZE.width;x++){scenery.push({x:x+.5,y:.9,index:x%3===0?0:3},{x:x+.5,y:PILOT_SIZE.height-.1,index:x%3===0?2:1});}
+  for(let y=1;y<PILOT_SIZE.height-1;y++){scenery.push({x:.5,y:y+.9,index:y%2?0:3},{x:PILOT_SIZE.width-.5,y:y+.9,index:y%2?3:0});}
+  for(const wall of PILOT_WALLS)scenery.push({x:wall.x+.5,y:wall.y+.9,index:(wall.x+wall.y)%3===0?2:0});
+  if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2});
   const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Seguro', camp.x, camp.y - t * .6);
-  const marker = point(PILOT_MARKER); ctx.fillStyle = state.gateOpen ? '#f6d77d' : '#8b8d72'; ctx.beginPath(); ctx.roundRect(marker.x - t * .2, marker.y - t * .4, t * .4, t * .6, t * .1); ctx.fill();
-  ctx.fillStyle = '#243927'; ctx.font = `bold ${t * .22}px sans-serif`; ctx.fillText('6', marker.x, marker.y);
-  if (!state.gateOpen) { const g = point({ x: 9, y: 4 }); ctx.fillStyle = '#9c7244'; ctx.fillRect(g.x, g.y, t, t); ctx.strokeStyle = '#e9c989'; ctx.strokeRect(g.x + 3, g.y + 3, t - 6, t - 6); }
+  const marker = point(PILOT_MARKER);
+  if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8);
+  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
   const exit = point(PILOT_EXIT); ctx.strokeStyle = state.gateOpen ? '#ffe4a2' : '#80907c'; ctx.lineWidth = Math.max(3, t * .06); ctx.beginPath(); ctx.arc(exit.x, exit.y, t * .4, 0, Math.PI * 2); ctx.stroke();
   for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) drawGroundItem(ctx,n.item,point(n),t*.35,0);
   for (const loot of state.loot) {
@@ -46,9 +36,10 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     drawGroundItem(ctx,loot.item,{x:p.x,y:p.y-lift*t},t*.44,lift);
     ctx.fillStyle='#f3eac6';ctx.font='500 10px sans-serif';ctx.textAlign='center';ctx.fillText(`×${loot.quantity}`,p.x,p.y-t*.37-lift*t);
   }
-  const entities = [...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
+    if(entity.type==='prop'){if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,entity.p.index,p.x,p.y,t);continue;}
     ctx.fillStyle = 'rgba(10,24,15,.3)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + t * .07, t * .28, t * .10, 0, 0, Math.PI * 2); ctx.fill();
     if (entity.type === 'enemy') {
       const enemy = entity.p as CombatState['enemies'][number], def = PILOT_ENEMIES.find(e => e.id === enemy.id)!;
@@ -76,13 +67,10 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);
       if (attack.active) {
-        // Articulated near foreleg follows facing; the foot remains attached to its shoulder.
-        ctx.save();ctx.translate(px,py-t*.35);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));
-        const coat=pet.src.includes('preto')?'#554c43':pet.src.includes('laranja')?'#cc9a62':pet.src.includes('azul')?'#8d9da5':'#ded3b6';
-        const reach=t*(.20+Math.max(0,attack.reach)*.32);
-        ctx.strokeStyle=coat;ctx.lineWidth=t*.13;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(t*.05,t*.06);ctx.quadraticCurveTo(reach*.48,t*.13,reach,0);ctx.stroke();
-        const paw=ctx.createRadialGradient(reach-t*.025,-t*.025,0,reach,0,t*.1);paw.addColorStop(0,'#f5ead5');paw.addColorStop(1,coat);ctx.fillStyle=paw;ctx.beginPath();ctx.ellipse(reach,0,t*.10,t*.075,-.2,0,Math.PI*2);ctx.fill();
-        ctx.globalAlpha=.5*Math.max(0,attack.reach);ctx.strokeStyle='#ead5a1';ctx.lineWidth=Math.max(1,t*.018);for(let i=-1;i<=1;i++){ctx.beginPath();ctx.arc(t*.08,0,t*(.48+i*.045),-.42,.42);ctx.stroke();}ctx.restore();
+        // A short swipe in front of the body, never a synthetic limb over the face.
+        ctx.save();ctx.translate(px+state.facing.x*t*.35,py+state.facing.y*t*.28-t*.03);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));
+        ctx.globalAlpha=.55*Math.max(0,attack.reach);ctx.strokeStyle='#ecdfb2';ctx.lineWidth=Math.max(1,t*.018);ctx.lineCap='round';
+        for(let i=-1;i<=1;i++){ctx.beginPath();ctx.arc(0,0,t*(.27+i*.035),-.48,.48);ctx.stroke();}ctx.restore();
       }
 
     }

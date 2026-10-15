@@ -1,3 +1,5 @@
+import ExplorationJoystick from "./ExplorationJoystick";
+import { forestStickDirection } from "@/game/combatPresentation";
 import ExplorationCombatPilot from "./ExplorationCombatPilot";
 import { forestTapPath, forestRouteInput } from "@/game/forestTapNavigation";
 import { petWalkAtlas, drawWalkFrame } from "@/game/petWalkAtlas";
@@ -523,12 +525,12 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
         <aside ref={controlsElementRef} className="forest-game-controls" aria-label="Controles do jogo">
           <div className="forest-game-pet"><img src={petImage} alt="" /><span><small>COM VOCÊ</small><strong>{petName}</strong></span></div>
           <div className="forest-status-row"><span className={game.collectedKeys.length ? "done" : ""}><KeyRound size={14} /> {game.collectedKeys.length} chave(s)</span><span className={game.carriedObjectId ? "done" : ""}><span aria-hidden="true">▰</span> {game.carriedObjectId ? "carregando" : "patinhas livres"}</span></div>
-          <div className="forest-dpad" aria-label="Controles de movimento">
-            <button type="button" aria-label="Mover para cima" onPointerDown={onDirectionPointerDown("up")} onPointerUp={releasePointer} onPointerCancel={releasePointer} onLostPointerCapture={releasePointer} onClick={accessibleTap("up")}><ArrowUp /></button>
-            <button type="button" aria-label="Mover para a esquerda" onPointerDown={onDirectionPointerDown("left")} onPointerUp={releasePointer} onPointerCancel={releasePointer} onLostPointerCapture={releasePointer} onClick={accessibleTap("left")}><ArrowLeft /></button>
-            <button type="button" aria-label="Mover para baixo" onPointerDown={onDirectionPointerDown("down")} onPointerUp={releasePointer} onPointerCancel={releasePointer} onLostPointerCapture={releasePointer} onClick={accessibleTap("down")}><ArrowDown /></button>
-            <button type="button" aria-label="Mover para a direita" onPointerDown={onDirectionPointerDown("right")} onPointerUp={releasePointer} onPointerCancel={releasePointer} onLostPointerCapture={releasePointer} onClick={accessibleTap("right")}><ArrowRight /></button>
-          </div>
+          <ExplorationJoystick disabled={Boolean(overlay) || inspecting || overview} onChange={value=>{
+            controlsRef.current.keyUp('shared-exploration-stick');
+            const direction=forestStickDirection(value);
+            if(direction&&!overlayRef.current){followPet();controlsRef.current.keyDown('shared-exploration-stick',direction);}
+            syncHeld();
+          }}/>
           <div className="forest-action-buttons"><button type="button" onPointerDown={(event) => { event.preventDefault(); triggerAction(false); }} onClick={(event) => { if (event.detail === 0) triggerAction(false); }}><span>E</span> {forestActionLabel(game)}</button><button type="button" disabled={!game.carriedObjectId || Boolean(overlay) || inspecting || overview} onPointerDown={(event) => { event.preventDefault(); triggerAction(true); }} onClick={(event) => { if (event.detail === 0) triggerAction(true); }}><span>F</span> Usar / soltar</button></div>
           <div className="forest-utility-buttons"><button type="button" onClick={() => setShowHelp((value) => !value)} aria-expanded={showHelp}><CircleHelp size={15} /> Como jogar</button><button type="button" onClick={pause}><Pause size={15} /> Pausar</button></div>
           {showHelp && <p className="forest-help-copy">Setas/WASD movem. E empurra ou pega o objeto à frente e aciona o sino. F coloca ou solta o objeto. Chaves são coletadas ao tocar nelas.</p>}

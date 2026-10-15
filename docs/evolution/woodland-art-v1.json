@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-15",
+  "assets": [
+    {
+      "path": "client/public/forest-adventure/ground-continuous-v1.png",
+      "sha256": "3d11b137c61fa2fdd98234fb5bc330662433201b3bccf76c943b8fe84537654f",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "method": "built-in image generation; original art; static visual inspection",
+      "prompt": "Original seamless overhead woodland grass and moss texture, soft storybook painting, uniform light, no edge frame, paths, objects or characters."
+    },
+    {
+      "path": "client/public/forest-adventure/woodland-props-v1.png",
+      "sha256": "da9290cbad7dc8decc67a3fc72d43435d14d04d7fd04c89c8caf3becdd7c5303",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "method": "built-in image generation; original art; static visual inspection",
+      "prompt": "Original transparent 3-column 2-row woodland scenery atlas: mossy rocks, fern, fallen log, irregular leafy shrub, rooted tree base, blank rustic sign. Organic illustrated texture, no round geometric ball hedges, no UI, no characters or third-party artwork."
+    }
+  ],
+  "runtime_ground": "single camera-anchored plane, mirrored texture edges to remove seams; no repeated full framed background",
+  "collision": "existing conservative logical footprints preserved"
+}

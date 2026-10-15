@@ -17,3 +17,9 @@ export function combatLootLift(time: number, bornAt: number | undefined, landedA
   const phase = Math.max(0, Math.min(1, (time - bornAt) / (landedAt - bornAt)));
   return Math.sin(phase * Math.PI) * .6;
 }
+
+/** Puzzle rooms keep one cardinal direction; combat may use the analog diagonal. */
+export function forestStickDirection(value:{x:number;y:number}):'up'|'down'|'left'|'right'|null {
+  if(!Number.isFinite(value.x)||!Number.isFinite(value.y)||Math.hypot(value.x,value.y)<.14)return null;
+  return Math.abs(value.x)>Math.abs(value.y)?value.x>0?'right':'left':value.y>0?'down':'up';
+}
