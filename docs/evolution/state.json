@@ -15,21 +15,23 @@
   },
   "current_improvement": {
     "id": "sol-anticipation-before-walk",
-    "implementation_status": "implemented",
+    "implementation_status": "published_for_user_review",
     "acceptance_status": "user_mobile_review_requested"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 17,
+    "last_observed_version": 21,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
     "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_c6299f408bd8819183fc410295f606ff",
-    "deployment_id": "appgdep_6ad022046c608191b61e8913bede7b46",
-    "site_commit": "6a29673c6499be16f6ad5c2c9150ca6dc665a5a1",
-    "published_at": "2026-10-14T21:45:19-03:00"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
+    "deployment_id": "appgdep_6ad088b6eea48191b128f8c88be01487",
+    "site_commit": "c2ee904450f7576cbf14451105c935598a7c84b5",
+    "published_at": "2026-10-15T08:03:26.541391+00:00",
+    "product_version": "1.9.2",
+    "source_commit": "c2ee904450f7576cbf14451105c935598a7c84b5"
   },
   "verification": {
     "typescript": "passed",
@@ -125,8 +127,15 @@
     "product_version": "1.9.2",
     "hold_ms": 1000,
     "offline_tests": 122,
-    "status": "preparing_publication",
+    "status": "succeeded",
     "browser": "not_run_control_browser_unavailable",
-    "decoration_depth": "shared_floor_contact_sorting"
+    "decoration_depth": "shared_floor_contact_sorting",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
+    "deployment_id": "appgdep_6ad088b6eea48191b128f8c88be01487",
+    "source_commit": "c2ee904450f7576cbf14451105c935598a7c84b5",
+    "published_at": "2026-10-15T08:03:26.541391+00:00",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "typescript": "passed",
+    "build": "passed_existing_chunk_warning"
   }
 }
