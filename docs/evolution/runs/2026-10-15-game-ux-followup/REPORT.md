@@ -39,6 +39,7 @@ Estas são **medições automatizadas em browser**, não medições em telemóve
 - `pnpm check` — passou (TypeScript).
 - `pnpm exec vitest run --exclude '**/*.integration.test.ts'` — **81/81 testes**, 14 ficheiros passaram.
 - `pnpm build` — passou.
+- Os assets de produção não incluem `qa-review.html`, `qa-adventure.html`, `qaAutoPilot` ou atributos `data-qa-*`.
 - `git diff --check` — passou.
 - Console: sem erros JavaScript. A fixture local não fornece `/favicon.ico` (404); a auditoria de respostas HTTP não encontrou falha de asset do jogo.
 - O build continua a avisar sobre chunks acima de 500 kB (**843,70 kB** e **1.322,04 kB** minificados) e a configuração `pnpm` em `package.json` contém chaves depreciadas. Não foram alterados nesta correção.
