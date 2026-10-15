@@ -3,9 +3,10 @@ import {PILOT_BIOME,biomeBlocks,insideRegion,pondComposition,touchesRegion} from
 import {PILOT_CAMP,PILOT_NODES,PILOT_ENEMIES,PILOT_MARKER,PILOT_EXIT,pilotRoute,clearPilotWalkLine,pilotWalkable,createCombatState,readCombatState,stepCombat} from './explorationCombat';
 import {drawBiomeStatic,drawBiomeWater} from './biomeCompositionView';
 import {drawExplorationGround} from './explorationScenery';
+import {terrainCacheStats,TERRAIN_CACHE_PIXELS} from './terrainTexture';
 import {combatView} from './explorationCombatView';
 
-describe('layered clearing composition and shared shoreline',()=>{
+describe('experimental composition library, removed from live pilot after user rejection',()=>{
   const water=PILOT_BIOME.regions.find(r=>r.material==='water')!;
   it('places a reusable pond in world space without mutating its source module',()=>{
     const a=pondComposition('a',{x:0,y:0}),b=pondComposition('b',{x:4,y:3},2);
@@ -15,7 +16,7 @@ describe('layered clearing composition and shared shoreline',()=>{
   });
   it('blocks the visible water and its contact edge while keeping dry sand walkable',()=>{
     expect(biomeBlocks({x:8.6,y:7.65},0)).toBe(true);
-    for(const p of water.polygon){expect(touchesRegion(p,0,water.polygon)).toBe(true);expect(pilotWalkable(p,true,0)).toBe(false);}
+    for(const p of water.polygon){expect(touchesRegion(p,0,water.polygon)).toBe(true);expect(biomeBlocks(p,0)).toBe(true);}
     const sand=PILOT_BIOME.regions.find(r=>r.material==='sand')!;
     expect(sand.polygon.some(p=>!biomeBlocks(p,.22)&&pilotWalkable(p,true))).toBe(true);
     expect(insideRegion(PILOT_CAMP,water.polygon)).toBe(false);
@@ -27,19 +28,19 @@ describe('layered clearing composition and shared shoreline',()=>{
       route.forEach((p,i)=>expect(clearPilotWalkLine(i?route[i-1]:PILOT_CAMP,p,true)).toBe(true));
     }
     const route=pilotRoute({x:6.5,y:7.5},{x:11.5,y:7.5},true);
-    expect(route.length).toBeGreaterThan(5);route.forEach((p,i)=>expect(clearPilotWalkLine(i?route[i-1]:{x:6.5,y:7.5},p,true)).toBe(true));
-    expect(pilotRoute(PILOT_CAMP,{x:8.6,y:7.65},true)).toEqual([]);
+    expect(route.length).toBe(5);route.forEach((p,i)=>expect(clearPilotWalkLine(i?route[i-1]:{x:6.5,y:7.5},p,true)).toBe(true));
+    expect(pilotRoute(PILOT_CAMP,{x:8.6,y:7.65},true).length).toBeGreaterThan(0);
   });
-  it('prevents continuous movement from entering water without taking damage',()=>{
+  it('removes the invisible water barrier with the rejected pond art',()=>{
     let s=createCombatState();s.player={x:6.5,y:7.5};s.enemies=[];s.gateOpen=true;
-    for(let i=0;i<80;i++){s=stepCombat(s,{dx:1},50);expect(biomeBlocks(s.player,.22)).toBe(false);}
-    expect(s.player.x).toBeLessThan(8);expect(s.hp).toBe(100);expect(s.deaths).toBe(0);
+    for(let i=0;i<80;i++)s=stepCombat(s,{dx:1},50);
+    expect(s.player.x).toBeGreaterThan(12);expect(s.hp).toBe(100);expect(s.deaths).toBe(0);
   });
-  it('relocates old saves and drops covered by the new lake without losing progress',()=>{
+  it('preserves position, drops and progress in the now walkable old lake area',()=>{
     const s=createCombatState();s.player={x:8.6,y:7.65};s.hp=73;s.xp=120;s.bag.fibra=9;s.stock.ambar=4;s.equipmentOwned=true;
     s.enemies[0]={...s.enemies[0],hp:0,x:8.6,y:7.65};s.loot=[{id:'beetle:0',x:8.6,y:7.65,item:'fibra',quantity:3}];
     const parsed=readCombatState(s);expect(parsed.supported).toBe(true);if(!parsed.supported)return;
-    const a=parsed.state;expect(pilotWalkable(a.player,false)).toBe(true);expect(pilotWalkable(a.loot[0],false)).toBe(true);
+    const a=parsed.state;expect(a.player).toEqual(s.player);expect(pilotWalkable(a.loot[0],false)).toBe(true);expect(a.loot[0].x).toBe(s.loot[0].x);
     expect(a.hp).toBe(73);expect(a.xp).toBe(120);expect(a.bag).toEqual(s.bag);expect(a.stock).toEqual(s.stock);expect(a.equipmentOwned).toBe(true);expect(a.deaths).toBe(0);expect(a.loot[0].quantity).toBe(3);
   });
 });
@@ -71,9 +72,10 @@ describe('composition draw commands and cache (not browser rendering)',()=>{
     try{
       const {ctx}=recordingContext();
       const image={complete:true,naturalWidth:1254,naturalHeight:1254} as HTMLImageElement;
-      for(let frame=0;frame<10;frame++)drawExplorationGround(ctx,390,844,image,-frame,-frame,100,undefined,true);
-      expect(created).toBe(2); // one feathered source and one combined visible surface
-      drawExplorationGround(ctx,390,844,image,-9,-9,100,undefined,false);expect(created).toBe(3);
+      drawExplorationGround(ctx,390,844,image,0,0,100,undefined,true);const cold=created;
+      for(let frame=1;frame<10;frame++)drawExplorationGround(ctx,390,844,image,-frame,-frame,100,undefined,true);
+      expect(created).toBe(cold);
+      drawExplorationGround(ctx,390,844,image,-9,-9,100,undefined,false);expect(created).toBeGreaterThan(cold);
     }finally{vi.unstubAllGlobals();}
   });
   it('covers all five formats and four map corners with one bounded combined buffer',()=>{
@@ -83,10 +85,10 @@ describe('composition draw commands and cache (not browser rendering)',()=>{
       for(const [w,h] of [[375,667],[375,812],[390,844],[844,390],[1366,768]])for(const zoom of [1,2])for(const overview of [false,true])for(const p of [{x:1.22,y:1.22},{x:12.78,y:1.22},{x:1.22,y:8.78},{x:12.78,y:8.78}]){
         const {ctx,commands}=recordingContext(),v=combatView(w,h,p,zoom,overview);
         drawExplorationGround(ctx,w,h,image,v.left,v.top,v.tile,undefined,true);
-        const draws=commands.filter(c=>c[0]==='drawImage');expect(draws).toHaveLength(1);
-        const [buffer,x,y,width,height]=draws[0].slice(1) as [HTMLCanvasElement,number,number,number,number];
-        expect(x).toBeLessThanOrEqual(.00001);expect(y).toBeLessThanOrEqual(.00001);expect(x+width).toBeGreaterThanOrEqual(w-.00001);expect(y+height).toBeGreaterThanOrEqual(h-.00001);
-        expect(buffer.width*buffer.height).toBeLessThanOrEqual(8_010_000);
+        const draws=commands.filter(c=>c[0]==='drawImage');expect(draws.length).toBeGreaterThan(0);
+        const rectangles=draws.map(c=>c.slice(-4) as number[]);
+        for(let y=.01;y<h;y+=h/10)for(let x=.01;x<w;x+=w/10)expect(rectangles.some(([dx,dy,dw,dh])=>x>=dx-.00001&&y>=dy-.00001&&x<=dx+dw+.00001&&y<=dy+dh+.00001)).toBe(true);
+        expect(terrainCacheStats(ctx).pixels).toBeLessThanOrEqual(TERRAIN_CACHE_PIXELS);
       }
     }finally{vi.unstubAllGlobals();}
   });

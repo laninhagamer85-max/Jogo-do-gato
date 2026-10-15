@@ -12,17 +12,8 @@ export function terrainPatches(bounds:TerrainBounds,material=GRASS_MATERIAL){
  for(let y=Math.floor((bounds.top-pad)/material.step);y<=Math.ceil((bounds.top+bounds.height+pad)/material.step);y++)for(let x=Math.floor((bounds.left-pad)/material.step);x<=Math.ceil((bounds.left+bounds.width+pad)/material.step);x++)patches.push(terrainPatch(x,y,material));
  return patches;
 }
-export function terrainBufferPlan(width:number,height:number,left:number,top:number,tile:number,dpr:number){
- const x=Math.floor((-left/tile-.75)*2)/2,y=Math.floor((-top/tile-.75)*2)/2;
- const right=Math.ceil(((width-left)/tile+.75)*2)/2,bottom=Math.ceil(((height-top)/tile+.75)*2)/2;
- const w=right-x,h=bottom-y,pixelsPerUnit=Math.min(tile*dpr,Math.sqrt(8_000_000/(w*h)));
- return {left:x,top:y,width:w,height:h,pixelsPerUnit};
-}
-export function terrainContains(bounds:TerrainBounds,width:number,height:number,left:number,top:number,tile:number){
- return bounds.left<=-left/tile&&bounds.top<=-top/tile&&bounds.left+bounds.width>=(width-left)/tile&&bounds.top+bounds.height>=(height-top)/tile;
-}
 const masks=new WeakMap<HTMLImageElement,{feather:number;canvas:HTMLCanvasElement}>();
-const buffers=new WeakMap<CanvasRenderingContext2D,{key:string;image:HTMLImageElement;bounds:TerrainBounds;canvas:HTMLCanvasElement}>();
+
 function maskedTexture(image:HTMLImageElement,feather:number){
  const previous=masks.get(image);if(previous?.feather===feather)return previous.canvas;
  const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
@@ -36,25 +27,55 @@ function maskedTexture(image:HTMLImageElement,feather:number){
  masks.set(image,{feather,canvas});return canvas;
 }
 export type TerrainCompositionLayer={id:string;draw:(ctx:CanvasRenderingContext2D,bounds:TerrainBounds)=>void};
+type Chunk={canvas:HTMLCanvasElement;x:number;y:number};
+type ChunkCache={key:string;image:HTMLImageElement;chunks:Map<string,Chunk>;pixels:number;built:number;hits:number};
+const chunkCaches=new WeakMap<CanvasRenderingContext2D,ChunkCache>();
+export const TERRAIN_CACHE_PIXELS=8_000_000;
+/** Native density on phones, bounded visible workload on very large displays. */
+export function terrainChunkLayout(width:number,height:number,tile:number,dpr:number){
+  const density=Math.min(tile*dpr,tile*Math.sqrt(4_000_000/Math.max(1,width*height)));
+  const size=384,span=size/density;
+  return {density,size,span};
+}
+/** Counters describe CPU draw work/cache residency, not browser frame rate. */
+export function terrainCacheStats(ctx:CanvasRenderingContext2D){
+  const c=chunkCaches.get(ctx);return {built:c?.built??0,hits:c?.hits??0,chunks:c?.chunks.size??0,pixels:c?.pixels??0};
+}
 export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,material=GRASS_MATERIAL,composition?:TerrainCompositionLayer){
- if(!image.complete||!image.naturalWidth||!image.naturalHeight)return false;
- const dpr=Math.max(.1,Math.abs(ctx.getTransform().a)||1);
- const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,composition?.id??'',tile,dpr,width,height].join(':');
- let cached=buffers.get(ctx);
- if(!cached||cached.image!==image||cached.key!==key||!terrainContains(cached.bounds,width,height,left,top,tile)){
-  const texture=maskedTexture(image,material.feather);if(!texture)return false;
-  const plan=terrainBufferPlan(width,height,left,top,tile,dpr),canvas=document.createElement('canvas');
-  canvas.width=Math.ceil(plan.width*plan.pixelsPerUnit);canvas.height=Math.ceil(plan.height*plan.pixelsPerUnit);
-  const g=canvas.getContext('2d');if(!g)return false;
-  g.setTransform(canvas.width/plan.width,0,0,canvas.height/plan.height,-plan.left*canvas.width/plan.width,-plan.top*canvas.height/plan.height);
-  g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
-  for(const patch of terrainPatches(plan,material)){
-   g.save();g.translate(patch.x,patch.y);g.rotate(patch.turn*Math.PI/2);if(patch.mirror)g.scale(-1,1);
-   g.drawImage(texture,-patch.span/2,-patch.span/2,patch.span,patch.span);g.restore();
+  if(!image.complete||!image.naturalWidth||!image.naturalHeight||tile<=0)return false;
+  const dpr=Math.max(.1,Math.abs(ctx.getTransform().a)||1),layout=terrainChunkLayout(width,height,tile,dpr);
+  const {density,size,span}=layout;
+  const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,composition?.id??'',density].join(':');
+  let cache=chunkCaches.get(ctx);
+  if(!cache||cache.image!==image||cache.key!==key){
+    cache={key,image,chunks:new Map(),pixels:0,built:0,hits:0};chunkCaches.set(ctx,cache);
   }
-  // All static materials share this visible buffer and its memory ceiling.
-  composition?.draw(g,plan);
-  cached={key,image,bounds:plan,canvas};buffers.set(ctx,cached);
- }
- const b=cached.bounds;ctx.drawImage(cached.canvas,left+b.left*tile,top+b.top*tile,b.width*tile,b.height*tile);return true;
+  const texture=maskedTexture(image,material.feather);if(!texture)return false;
+  const startX=Math.floor(-left/tile/span),endX=Math.ceil((width-left)/tile/span)-1;
+  const startY=Math.floor(-top/tile/span),endY=Math.ceil((height-top)/tile/span)-1;
+  // One-pixel gutters are cropped off at presentation; adjacent chunks share world coordinates.
+  const pixels=(size+2)**2;
+  for(let y=startY;y<=endY;y++)for(let x=startX;x<=endX;x++){
+    const id=`${x}:${y}`;let chunk=cache.chunks.get(id);
+    if(chunk){cache.hits++;cache.chunks.delete(id);cache.chunks.set(id,chunk);}
+    else{
+      // Drop least recently drawn chunks BEFORE allocating. Backtracking reuses resident regions.
+      while(cache.pixels+pixels>TERRAIN_CACHE_PIXELS&&cache.chunks.size){
+        const oldest=cache.chunks.keys().next().value!;cache.chunks.delete(oldest);cache.pixels-=pixels;
+      }
+      const canvas=document.createElement('canvas');canvas.width=canvas.height=size+2;
+      const g=canvas.getContext('2d');if(!g)return false;
+      const bounds={left:x*span-1/density,top:y*span-1/density,width:span+2/density,height:span+2/density};
+      g.setTransform(density,0,0,density,-x*size+1,-y*size+1);
+      g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+      for(const patch of terrainPatches(bounds,material)){
+        g.save();g.translate(patch.x,patch.y);g.rotate(patch.turn*Math.PI/2);if(patch.mirror)g.scale(-1,1);
+        g.drawImage(texture,-patch.span/2,-patch.span/2,patch.span,patch.span);g.restore();
+      }
+      composition?.draw(g,bounds);
+      chunk={canvas,x,y};cache.chunks.set(id,chunk);cache.pixels+=pixels;cache.built++;
+    }
+    ctx.drawImage(chunk.canvas,1,1,size,size,left+x*span*tile,top+y*span*tile,span*tile,span*tile);
+  }
+  return true;
 }

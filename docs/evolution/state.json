@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "preparing_user_review_publication",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -15,25 +15,25 @@
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
-    "id": "layered-clearing-pond-composition",
+    "id": "terrain-stutter-and-rejected-composition",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_user_visual_review_authorized"
+    "acceptance_status": "offline_verified_pending_user_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.17",
+    "product_version": "1.9.18",
     "last_observed_version": 36,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293",
-    "deployment_id": "appgdep_6ad1284e22c48191b410805f03b96ee5",
-    "site_commit": "a84a9222cba41b2b62b1fd41566d2126c5742af0",
-    "published_at": "2026-10-15T19:24:25.145959+00:00",
+    "status": "preparing",
+    "version_id": null,
+    "deployment_id": null,
+    "site_commit": null,
+    "published_at": null,
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "201/201_passed_28_files_excluding_firebase_staging_integration",
+    "offline_tests": "202/202_passed_28_files_excluding_firebase_staging_integration",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -51,16 +51,17 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: testar a 1.9.17 na sala piloto de combate; conferir lago/terra/areia, escala, nitidez e ondulação em retrato e paisagem, toque/joystick, coleta, saída e recarga.",
-    "Concluir validação visual antes de expandir a composição aos capítulos e completar o kit de variantes."
+    "David: revisar grama e caminhada contínua/retorno, zoom, retrato/paisagem e coleta na sala piloto.",
+    "Se persistir stutter, perfilar frames em navegador suportado antes de nova mudança ampla.",
+    "Redesenhar lago/trilha com arte compatível somente após validar base; não expandir a composição rejeitada aos capítulos."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.16",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
-    "instructions": "Reimplantar 1.9.16 se necessário, preservando saves; não sobrescrever publicação posterior."
+    "production_changed": false,
+    "product_version": "1.9.17",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293",
+    "instructions": "Reimplantar somente se adequado; 1.9.17 tem falha de qualidade/travamento reportada, 1.9.16 preservada como alternativa anterior."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-terrain-stutter-fix.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -201,7 +202,7 @@
   },
   "biome_composition_pilot": {
     "date": "2026-10-15",
-    "status": "published_for_user_review",
+    "status": "rejected_by_user_removed_from_active_room",
     "code_commit": "869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd",
     "source_base": "5c802bc84578f650694f556831662a8114318cee",
     "report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
@@ -221,6 +222,18 @@
     "product_version": "1.9.17",
     "release_commit": "76571a93f77de436037c73c24ba2630874c7064f",
     "site_commit": "a84a9222cba41b2b62b1fd41566d2126c5742af0",
-    "publication_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293"
+    "publication_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293",
+    "user_verdict": "Visual composition rejected and stutter reported on 2026-10-15"
+  },
+  "terrain_stutter_fix": {
+    "date": "2026-10-15",
+    "status": "preparing_user_review_publication",
+    "product_version": "1.9.18",
+    "user_evidence": "Screenshot_20261015-163608_Meu Pet.png",
+    "user_report": "Rejected 1.9.17 visuals; game stutters while walking",
+    "cause": "suspected full visible ground rebuild; not browser-profiled",
+    "change": "LRU world chunks, original softer grass, experimental pond/trail removed with water collider",
+    "verification": "202 offline tests; no browser/playtest/FPS measurement",
+    "asset": "client/public/forest-adventure/grass-block-v2.webp"
   }
 }

@@ -1,5 +1,5 @@
 import {describe,it,expect,vi} from 'vitest';
-import {GRASS_MATERIAL,terrainPatch,terrainPatches,terrainBufferPlan,drawTerrainTexture} from './terrainTexture';
+import {GRASS_MATERIAL,terrainPatch,terrainPatches,terrainChunkLayout,terrainCacheStats,TERRAIN_CACHE_PIXELS,drawTerrainTexture} from './terrainTexture';
 describe('biome terrain texture scale and blending',()=>{
  it('covers every location with an opaque patch core, including negative world coordinates',()=>{
   const m=GRASS_MATERIAL;
@@ -13,18 +13,31 @@ describe('biome terrain texture scale and blending',()=>{
   expect(Math.max(...p.map(v=>v.span))).toBeLessThanOrEqual(2.12);expect(new Set(p.map(v=>`${v.turn}:${v.mirror}`)).size).toBe(8);
   expect(terrainPatch(3,5)).toEqual(terrainPatch(3,5));expect(terrainPatch(3,5)).not.toEqual(terrainPatch(4,5));
  });
- it('plans native-density mobile buffers at all supported zooms with a memory ceiling',()=>{
-  for(const zoom of [1,1.25,1.5,1.75,2]){const tile=844/9*zoom,p=terrainBufferPlan(390,844,0,0,tile,2.625);expect(p.pixelsPerUnit).toBeCloseTo(tile*2.625);expect(p.width*p.height*p.pixelsPerUnit**2).toBeLessThanOrEqual(8_000_001);}
+ it('keeps native density on phones while bounding individual chunk size',()=>{
+  for(const zoom of [1,1.25,1.5,1.75,2]){const tile=844/9*zoom,p=terrainChunkLayout(390,844,tile,2.625);expect(p.density).toBeCloseTo(tile*2.625);expect(p.span*p.density).toBeCloseTo(p.size);expect(p.size).toBe(384);}
  });
  it('reuses a stable buffer for small camera movements and refreshes on zoom or biome image change',()=>{
   let created=0;vi.stubGlobal('document',{createElement:()=>{created++;return {width:0,height:0,getContext:()=>new Proxy({createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}})};}});
   const ctx={getTransform:()=>({a:2}),drawImage:()=>{}} as unknown as CanvasRenderingContext2D;
   const image={complete:true,naturalWidth:1254,naturalHeight:1254} as HTMLImageElement;
   try{
-   expect(drawTerrainTexture(ctx,390,844,image,0,0,100)).toBe(true);expect(created).toBe(2);
-   drawTerrainTexture(ctx,390,844,image,-10,-10,100);expect(created).toBe(2);
-   drawTerrainTexture(ctx,390,844,image,-10,-10,200);expect(created).toBe(3);
-   drawTerrainTexture(ctx,390,844,{...image} as HTMLImageElement,-10,-10,200);expect(created).toBe(5);
+   expect(drawTerrainTexture(ctx,390,844,image,-10,-10,100)).toBe(true);const first=created;
+   drawTerrainTexture(ctx,390,844,image,-20,-20,100);expect(created).toBe(first);
+   drawTerrainTexture(ctx,390,844,image,-20,-20,200);expect(created).toBeGreaterThan(first);const zoomed=created;
+   drawTerrainTexture(ctx,390,844,{...image} as HTMLImageElement,-20,-20,200);expect(created).toBeGreaterThan(zoomed);
+   expect(terrainCacheStats(ctx).pixels).toBeLessThanOrEqual(TERRAIN_CACHE_PIXELS);
+  }finally{vi.unstubAllGlobals();}
+ });
+ it('reuses world chunks on return, adds only a new edge during scrolling and bounds long journeys',()=>{
+  vi.stubGlobal('document',{createElement:()=>({width:0,height:0,getContext:()=>new Proxy({createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}})})});
+  const ctx={getTransform:()=>({a:2}),drawImage:()=>{}} as unknown as CanvasRenderingContext2D;
+  const image={complete:true,naturalWidth:1254,naturalHeight:1254} as HTMLImageElement;
+  try{
+   drawTerrainTexture(ctx,390,844,image,-10,-10,100);const cold=terrainCacheStats(ctx).built;
+   drawTerrainTexture(ctx,390,844,image,-210,-10,100);const moved=terrainCacheStats(ctx).built;
+   expect(moved-cold).toBeLessThan(cold);
+   drawTerrainTexture(ctx,390,844,image,-10,-10,100);expect(terrainCacheStats(ctx).built).toBe(moved);
+   for(let x=0;x<5000;x+=150){drawTerrainTexture(ctx,390,844,image,-x,-10,100);expect(terrainCacheStats(ctx).pixels).toBeLessThanOrEqual(TERRAIN_CACHE_PIXELS);}
   }finally{vi.unstubAllGlobals();}
  });
 });

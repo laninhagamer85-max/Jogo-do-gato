@@ -44,6 +44,7 @@ it('uses one centered chapter crop without stretching or reading outside the sou
 });
 
 import {drawExplorationGround} from './explorationScenery';
+import {terrainCacheStats,TERRAIN_CACHE_PIXELS} from './terrainTexture';
 it('paints a fully covered cached terrain at every corner, zoom and overview',()=>{
  vi.stubGlobal('document',{createElement:()=>({width:0,height:0,getContext:()=>new Proxy({createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}})})});
  try{
@@ -52,10 +53,10 @@ it('paints a fully covered cached terrain at every corner, zoom and overview',()
   const calls:unknown[][]=[];let fills=0;
   const ctx=new Proxy({getTransform:()=>({a:2}),drawImage:(...args:unknown[])=>calls.push(args),fillRect:()=>fills++},{get:(target,key)=>key in target?target[key as keyof typeof target]:()=>{}}) as unknown as CanvasRenderingContext2D;
   const v=combatView(w,h,player,zoom,overview);drawExplorationGround(ctx,w,h,background,v.left,v.top,v.tile);
-  expect(calls).toHaveLength(1);expect(fills).toBe(0);
-  const [dx,dy,dw,dh]=calls[0].slice(-4) as number[];
-  expect(dx).toBeLessThanOrEqual(.00001);expect(dy).toBeLessThanOrEqual(.00001);expect(dx+dw).toBeGreaterThanOrEqual(w-.00001);expect(dy+dh).toBeGreaterThanOrEqual(h-.00001);
-  const buffer=calls[0][0] as HTMLCanvasElement;expect(buffer.width*buffer.height).toBeLessThanOrEqual(8_010_000);
+  expect(calls.length).toBeGreaterThan(0);expect(fills).toBe(0);
+  const rectangles=calls.map(c=>c.slice(-4) as number[]);
+  for(let y=.01;y<h;y+=h/10)for(let x=.01;x<w;x+=w/10)expect(rectangles.some(([dx,dy,dw,dh])=>x>=dx-.00001&&y>=dy-.00001&&x<=dx+dw+.00001&&y<=dy+dh+.00001)).toBe(true);
+  expect(terrainCacheStats(ctx).pixels).toBeLessThanOrEqual(TERRAIN_CACHE_PIXELS);
  }
  }finally{vi.unstubAllGlobals();}
 });

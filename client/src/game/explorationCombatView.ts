@@ -4,8 +4,6 @@ import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPrese
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
-import {PILOT_BIOME} from './biomeComposition';
-import {drawBiomeWater} from './biomeCompositionView';
 
 /** Match phone pixel density while bounding the backing buffer to six million pixels. */
 export function combatCanvasScale(width:number,height:number,pixelRatio:number){
@@ -26,9 +24,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
-  drawExplorationGround(ctx,width,height,background,v.left,v.top,t,undefined,true);
-  drawBiomeWater(ctx,PILOT_BIOME,v.left,v.top,t,state.time,reducedMotion);
-  const scenery=[...ROOM_EDGES,...ROOM_SCENERY,...(PILOT_BIOME.props??[])];
+  drawExplorationGround(ctx,width,height,background,v.left,v.top,t);
+  const scenery=[...ROOM_EDGES,...ROOM_SCENERY];
   if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2,width:1.28,height:1.28});
   const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();

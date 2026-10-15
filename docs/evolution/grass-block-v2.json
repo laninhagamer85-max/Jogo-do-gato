@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-15",
+  "product_version": "1.9.18",
+  "method": "built-in imagegen; WebP format encoding only",
+  "asset": "client/public/forest-adventure/grass-block-v2.webp",
+  "dimensions": [1254, 1254],
+  "sha256": "f9fe79567913b7bc223ac74716455b0fcf0aa53112f09f14bdffe840a198a5fb",
+  "prompt": "Use case: stylized-concept. Asset type: original production terrain material texture for a children's 2D exploration game. Create ONE square continuous seamless grass-only texture, a quiet clean painterly woodland meadow floor. Orthographic overhead, no horizon, no perspective. Small SHORT natural grass blades with crisp brush detail, gentle subdued forest/sage green palette predominantly #70934e, #789958 and #638446. Very LOW tonal contrast across the entire image, absolutely no big bright or dark patches, no lime yellow/chartreuse/neon, no mottled mosaic or camouflage. Slight organic directional variety at the tiny blade scale only. Soft neutral diffuse light, no directional shadow. High definition, fine natural texture, hand-painted game art compatible with detailed mossy rocks and warm wooden logs, visually calm enough for small dropped items to stand out. Fill right to all edges with same uniform material density. No objects, leaves, clover, flowers, paths, dirt, sand, water, borders, text, UI, checkerboard, repeated recognizable tufts or photographic noise. It will be displayed at 2 world units per texture width and overlapped with feathered edges, so any macro pattern is forbidden.",
+  "validation": "static source-art inspection only; in-game perceptual quality and phone performance pending user review"
+}

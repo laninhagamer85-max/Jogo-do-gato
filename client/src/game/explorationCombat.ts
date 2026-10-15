@@ -1,5 +1,4 @@
 import { ROOM_WALLS } from "./explorationRoom";
-import {biomeBlocks} from './biomeComposition';
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
 export type CombatPoint = { x: number; y: number };
 export const PILOT_SIZE = { width: 14, height: 10 };
@@ -52,7 +51,6 @@ export function createCombatState(): CombatState {
 }
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): boolean {
   if (p.x < 1 + radius || p.y < 1 + radius || p.x > 13 - radius || p.y > 9 - radius) return false;
-  if(biomeBlocks(p,radius))return false;
   const walls = gateOpen ? PILOT_WALLS : [...PILOT_WALLS, { x: 9, y: 4 }];
   return !walls.some(w => p.x + radius > w.x && p.x - radius < w.x + 1 && p.y + radius > w.y && p.y - radius < w.y + 1);
 }
