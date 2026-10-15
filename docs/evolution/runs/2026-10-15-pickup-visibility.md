@@ -10,4 +10,4 @@ Verificação: TypeScript e 181 testes offline em 25 arquivos aprovados. Novas v
 
 Limites: sem control-browser, nenhum playtest ou inspeção visual real da revisão. Publicação para teste de David, autorizada anteriormente; não declarar aparência aprovada nem fases online concluídas. Preservados dados e identidade do gato. Uma sala piloto, sem expansão automática.
 
-Publicação em preparação. Rollback produto 1.9.12, Sites 31. Próximo: conferir destaque, tamanhos e coleta no aparelho em retrato e horizontal.
+Publicação succeeded, produto 1.9.13 / Sites 32, https://meupet.aquimeusite.chatgpt.site em 15/10/2026 às 14:55:09 America/Sao_Paulo. Fonte Sites 97161b49b816024781d963a579fe317864f6a9ca; GitHub e53621017e79435d25b85e71748856f25109cb05; deployment appgdep_6ad113601aec8191bffe22e676530269. Rollback produto 1.9.12, Sites 31. Próximo: conferir destaque, tamanhos e coleta no aparelho em retrato e horizontal.

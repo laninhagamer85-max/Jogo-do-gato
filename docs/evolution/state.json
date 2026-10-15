@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,7 +11,7 @@
     "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
     "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "c25fd753fe0614dc9c75b025a25ad294feaded76"
+    "code_commit": "e53621017e79435d25b85e71748856f25109cb05"
   },
   "current_improvement": {
     "id": "visible-ground-pickups",
@@ -21,15 +21,14 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.12",
-    "last_observed_version": 31,
+    "product_version": "1.9.13",
+    "last_observed_version": 32,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_461cb4cbf30c8191a3b4364971dcc15d",
-    "deployment_id": "appgdep_6ad1121b6b8c81919907f41c7d9e42dc",
-    "site_commit": "0bcabb67a2948eb748c00ec78a594956892ab7a8",
-    "published_at": "2026-10-15T17:49:47.418180+00:00",
-    "attempted_in_this_cycle": true,
-    "target_product_version": "1.9.13"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a6124d9a84e48191ad7f1bf672318430",
+    "deployment_id": "appgdep_6ad113601aec8191bffe22e676530269",
+    "site_commit": "97161b49b816024781d963a579fe317864f6a9ca",
+    "published_at": "2026-10-15T17:55:09.989156+00:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -53,7 +52,7 @@
     "Após revisão, continuar adversários, itens e biomas."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.12",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_461cb4cbf30c8191a3b4364971dcc15d",
     "instructions": "Reimplantar 1.9.12 se necessário, preservando os saves."
