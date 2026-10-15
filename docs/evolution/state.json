@@ -3,32 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_awaiting_visual_validation",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
     "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
-    "coordination_branch": "recovery/mobile-review-20261009"
+    "coordination_branch": "recovery/mobile-review-20261009",
+    "code_commit": "e65e2b62372ace1a84e9a5d43098a8fd1ef13d80"
   },
   "current_improvement": {
     "id": "exploration-combat-pilot",
     "implementation_status": "implemented",
-    "acceptance_status": "browser_validation_pending",
+    "acceptance_status": "awaiting_user_playtest",
     "scope": "one_room_only"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.4",
-    "last_observed_version": 23,
-    "status": "unchanged",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
-    "deployment_id": "appgdep_6ad09396f0d08191832779184e1f62b2",
-    "site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
-    "published_at": "2026-10-15T05:49:53-03:00",
-    "attempted_in_this_cycle": false
+    "product_version": "1.9.5",
+    "last_observed_version": 24,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_e24f36c761d88191a9edd4d82c2f9557",
+    "deployment_id": "appgdep_6ad0bf1340308191a53fd5e516ec7dce",
+    "site_commit": "efc78f0488dc41f39a2960007d29fc1c62274ab1",
+    "published_at": "2026-10-15T08:55:26-03:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -36,7 +37,7 @@
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_required_control_browser_unavailable",
+    "browser": "not_run_user_authorized_publication_for_personal_review",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -46,22 +47,17 @@
     },
     "real_online_phases_completed_in_cycle": 0
   },
-  "blockers": [
-    {
-      "code": "browser_visual_gate",
-      "detail": "Ambiente managed-linux sem control-browser. Não foi iniciado preview alternativo. O pedido deste ciclo exige validação visual antes de publicação."
-    }
-  ],
+  "blockers": [],
   "next_actions": [
     "Testar o piloto em navegador suportado, em cinco viewports e perfil isolado: combate, coleta, cura, derrota, recarga e saída.",
     "Validar piso contínuo e caminhada com a identidade de cada pet; publicar somente após aceite aplicável.",
     "Implementar cartas de decoração permanentes, conectar catálogo e expandir mapas para seis capítulos com dez salas reais cada."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.4",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
-    "instructions": "Publicação atual preservada; correção visual isolada no ramo de revisão, sem alterar saves."
+    "instructions": "Retornar à versão 1.9.4 / Sites 23, sem alterar saves de jogadores."
   },
   "latest_report": "docs/evolution/runs/2026-10-15-combat-pilot.md",
   "source_reconciliation": {
@@ -172,5 +168,10 @@
       "safe-point HP restoration"
     ],
     "implemented_rooms": 1
+  },
+  "user_review_authorization": {
+    "date": "2026-10-15",
+    "text": "Publique, eu vou digitar e passar um relatório.",
+    "scope": "publish combat pilot for user playtest; no browser validation claim"
   }
 }
