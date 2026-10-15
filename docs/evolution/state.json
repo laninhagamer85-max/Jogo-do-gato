@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "publishing_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,10 +14,9 @@
     "code_commit": "e65e2b62372ace1a84e9a5d43098a8fd1ef13d80"
   },
   "current_improvement": {
-    "id": "exploration-combat-pilot",
+    "id": "combat-pilot-visual-usability-review",
     "implementation_status": "implemented",
-    "acceptance_status": "awaiting_user_playtest",
-    "scope": "one_room_only"
+    "acceptance_status": "awaiting_user_visual_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -29,7 +28,8 @@
     "deployment_id": "appgdep_6ad0bf1340308191a53fd5e516ec7dce",
     "site_commit": "efc78f0488dc41f39a2960007d29fc1c62274ab1",
     "published_at": "2026-10-15T08:55:26-03:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": true,
+    "target_product_version": "1.9.6"
   },
   "verification": {
     "typescript": "passed",
@@ -37,7 +37,7 @@
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_user_authorized_publication_for_personal_review",
+    "browser": "not_run_control_browser_unavailable; publishing under continuing user review authorization",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -59,7 +59,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
     "instructions": "Retornar à versão 1.9.4 / Sites 23, sem alterar saves de jogadores."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-combat-pilot.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-combat-ui-review.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -173,5 +173,10 @@
     "date": "2026-10-15",
     "text": "Publique, eu vou digitar e passar um relatório.",
     "scope": "publish combat pilot for user playtest; no browser validation claim"
+  },
+  "pilot_user_acceptance": {
+    "version": "1.9.5",
+    "date": "2026-10-15",
+    "result": "David completed and approved pilot playtest; requested visual refinements and simpler item use."
   }
 }
