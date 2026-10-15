@@ -11,28 +11,28 @@
     "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
     "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "50e5e02eb0cde48520d75540d6671b0a441da8d6"
+    "code_commit": "08295a37ba7dd372874c78ad448992cde40e70fa"
   },
   "current_improvement": {
-    "id": "combat-pilot-visual-usability-review",
+    "id": "completed-pilot-replay",
     "implementation_status": "implemented",
-    "acceptance_status": "awaiting_user_visual_review"
+    "acceptance_status": "offline_verified_pending_user_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.6",
-    "last_observed_version": 25,
+    "product_version": "1.9.7",
+    "last_observed_version": 26,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0e7b980080ec819188afe869f6152dce",
-    "deployment_id": "appgdep_6ad0c693c860819189beb07cba5d40ce",
-    "site_commit": "018464cb7155bae0863e970c78cfc5500d11cb1d",
-    "published_at": "2026-10-15T09:27:22-03:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191",
+    "deployment_id": "appgdep_6ad0dd193dac8191955a12ae5aa1f08a",
+    "site_commit": "9f03845c5a7ca3de0b3874e08b2583a906abbc13",
+    "published_at": "2026-10-15T11:03:28-03:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "140/140_passed_22_files",
+    "offline_tests": "144/144_passed_22_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -48,8 +48,8 @@
   },
   "blockers": [],
   "next_actions": [
-    "Receber relatório do usuário da 1.9.6 em retrato e horizontal: ícones, uso rápido, números e integração dos inimigos.",
-    "Corrigir regressões antes de expandir o número de salas."
+    "David: recarregar a página, entrar na sala concluída e tocar em Repetir sala piloto; conferir retorno e novos testes da 1.9.6.",
+    "Receber relatório de controles, itens e arte; expansão de capítulos permanece posterior."
   ],
   "rollback": {
     "production_changed": true,
@@ -57,7 +57,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
     "instructions": "Retornar à versão 1.9.4 / Sites 23, sem alterar saves de jogadores."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-combat-ui-review.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-pilot-replay.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
