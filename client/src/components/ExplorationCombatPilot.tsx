@@ -10,7 +10,7 @@ import { ForestControls } from '@/game/forestControls';
 import type { ForestDirection } from '@/game/forestPuzzle';
 import { petWalkAtlas } from '@/game/petWalkAtlas';
 import { combatAttack, combatLevel, combatMaxHp, combatSnapshot, COMBAT_ITEMS, consumeCombatItem, createCombatState, equipCombatCharm, pilotRoute, readCombatState, replayCompletedCombat, stepCombat, type CombatItem, type CombatPoint, type CombatState } from '@/game/explorationCombat';
-import { combatView, drawCombatPilot } from '@/game/explorationCombatView';
+import { combatCanvasScale, combatView, drawCombatPilot } from '@/game/explorationCombatView';
 import './ExplorationCombatPilot.css';
 
 type Props = { soundOn: boolean; onToggleSound: () => void; profile: PetProfile | null; progress: Record<string, unknown>; onSave: (save: Record<string, unknown>) => void; onBack: () => void };
@@ -59,7 +59,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     checkAssets();
     let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const resize = () => { const r = el.getBoundingClientRect(); w = Math.max(1, r.width); h = Math.max(1, r.height); const dpr = Math.min(2, window.devicePixelRatio || 1); el.width = Math.round(w * dpr); el.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+    const resize = () => { const r = el.getBoundingClientRect(); w = Math.max(1, r.width); h = Math.max(1, r.height); const dpr = combatCanvasScale(w,h,window.devicePixelRatio || 1); el.width = Math.round(w * dpr); el.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
     const observer = new ResizeObserver(resize); observer.observe(el); resize();
     const loop = (now: number) => {
       const dt = last ? Math.min(50, now - last) : 0; last = now;

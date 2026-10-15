@@ -5,6 +5,10 @@ import { combatLevel, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
 
+/** Match phone pixel density while bounding the backing buffer to six million pixels. */
+export function combatCanvasScale(width:number,height:number,pixelRatio:number){
+  return Math.max(.5,Math.min(3,Math.max(1,pixelRatio||1),Math.sqrt(6_000_000/(Math.max(1,width)*Math.max(1,height)))));
+}
 export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false) {
   const tile = overview ? Math.min(width / PILOT_SIZE.width, Math.max(1, height - 100) / PILOT_SIZE.height) : Math.max(52, width / 11, height / 9) * zoom;
   const bw = tile * PILOT_SIZE.width, bh = tile * PILOT_SIZE.height;
