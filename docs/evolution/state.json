@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review_publication",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "a84a9222cba41b2b62b1fd41566d2126c5742af0",
+    "source_site_commit": "4682bcb15fb760ee81ec1a8b44c5662f926f7b6f",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "76571a93f77de436037c73c24ba2630874c7064f",
+    "code_commit": "26f2234a371dfaa6f62e353b3e7d1a6a41543861",
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
@@ -23,12 +23,12 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.18",
-    "last_observed_version": 36,
-    "status": "preparing",
-    "version_id": null,
-    "deployment_id": null,
-    "site_commit": null,
-    "published_at": null,
+    "last_observed_version": 37,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6ef571683908191b8312f6aa3b87011",
+    "deployment_id": "appgdep_6ad12db7a1108191b266d168de080fb7",
+    "site_commit": "4682bcb15fb760ee81ec1a8b44c5662f926f7b6f",
+    "published_at": "2026-10-15T19:47:27.109901+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -37,7 +37,7 @@
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable; explicit publication for David review authorized",
+    "browser": "not_run_control_browser_unavailable; authorized for David to test",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -47,7 +47,8 @@
     },
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
-    "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports"
+    "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
+    "packaged_grass": "sha256_passed_for_actual_archive"
   },
   "blockers": [],
   "next_actions": [
@@ -56,7 +57,7 @@
     "Redesenhar lago/trilha com arte compatível somente após validar base; não expandir a composição rejeitada aos capítulos."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.17",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293",
     "instructions": "Reimplantar somente se adequado; 1.9.17 tem falha de qualidade/travamento reportada, 1.9.16 preservada como alternativa anterior."
@@ -227,13 +228,17 @@
   },
   "terrain_stutter_fix": {
     "date": "2026-10-15",
-    "status": "preparing_user_review_publication",
+    "status": "published_for_user_review",
     "product_version": "1.9.18",
     "user_evidence": "Screenshot_20261015-163608_Meu Pet.png",
     "user_report": "Rejected 1.9.17 visuals; game stutters while walking",
     "cause": "suspected full visible ground rebuild; not browser-profiled",
     "change": "LRU world chunks, original softer grass, experimental pond/trail removed with water collider",
     "verification": "202 offline tests; no browser/playtest/FPS measurement",
-    "asset": "client/public/forest-adventure/grass-block-v2.webp"
+    "asset": "client/public/forest-adventure/grass-block-v2.webp",
+    "code_commit": "26f2234a371dfaa6f62e353b3e7d1a6a41543861",
+    "site_commit": "4682bcb15fb760ee81ec1a8b44c5662f926f7b6f",
+    "art": "new low-contrast original generated grass, WebP1254x1254; static inspection only",
+    "gameplay_performance": "not measured on device"
   }
 }

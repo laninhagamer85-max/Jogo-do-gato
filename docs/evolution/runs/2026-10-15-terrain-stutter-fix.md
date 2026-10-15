@@ -29,3 +29,7 @@ Imagem da nova grama inspecionada estaticamente. **Sem control-browser:** não f
 ## Retomada
 
 Conferir publicação final e registrar IDs. David deve comparar caminhada contínua e ida/volta em retrato/paisagem, zoom e Ver sala; conferir grama, itens e controles. Se persistir engasgo, capturar perfil real de frames e separar terreno, desenho de sprites, React e persistência antes de outra mudança ampla. Só retomar lago/trilha quando houver arte compatível e revisão visual; não expandir a composição reprovada aos capítulos.
+
+## Publicação confirmada
+
+Produto **1.9.18**, Sites **37**, status **succeeded**, publicado em **15/10/2026 às 16:47:27 (America/Sao_Paulo)**. URL: https://meupet.aquimeusite.chatgpt.site. Commit GitHub `26f2234a371dfaa6f62e353b3e7d1a6a41543861`; fonte Sites `4682bcb15fb760ee81ec1a8b44c5662f926f7b6f`; versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6ef571683908191b8312f6aa3b87011`; deployment `appgdep_6ad12db7a1108191b266d168de080fb7`. Build final aprovado; SHA256 do WebP conferido dentro do pacote realmente salvo. 202 testes offline e TypeScript aprovados. Visual e fluidez no aparelho continuam pendentes da revisão de David. Nenhuma medição de FPS ou declaração de resolução definitiva do travamento.
