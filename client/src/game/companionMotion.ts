@@ -1,6 +1,6 @@
 export type GroundPoint = { x: number; y: number };
 export type RoamBounds = { left: number; right: number; bottom: number; top: number };
-export type CompanionRoam = { point: GroundPoint; target: GroundPoint | null; pauseMs: number };
+export type CompanionRoam = { point: GroundPoint; target: GroundPoint | null; pauseMs: number; anticipationMs?: number; lookAt?: GroundPoint };
 
 /** Follow on the floor with bounded speed, independently of display refresh rate. */
 export function followCompanionGround(current: GroundPoint, target: GroundPoint, elapsedMs: number): GroundPoint {
@@ -18,6 +18,7 @@ export function roamCompanion(state: CompanionRoam, bounds: RoamBounds, elapsedM
   if (sleeping) return state;
   const elapsed = Number.isFinite(elapsedMs) ? Math.max(0, Math.min(40, elapsedMs)) : 0;
   const displacedByPet = pet && Math.hypot(state.point.x - pet.x, state.point.y - pet.y) < pet.radius;
+  if ((state.anticipationMs ?? 0) > 0 && !displacedByPet) return { ...state, anticipationMs: Math.max(0, state.anticipationMs! - elapsed) };
   if (state.pauseMs > 0 && !displacedByPet) return { ...state, pauseMs: Math.max(0, state.pauseMs - elapsed) };
   if (!state.target) {
     const local = {
@@ -25,12 +26,14 @@ export function roamCompanion(state: CompanionRoam, bounds: RoamBounds, elapsedM
       bottom: Math.max(bounds.bottom, state.point.y - 0.8), top: Math.min(bounds.top, state.point.y + 0.8),
     };
     const target = { x: local.left + random() * (local.right - local.left), y: local.bottom + random() * (local.top - local.bottom) };
-    return { ...state, pauseMs: 0, target };
+    const lookAt = pet ? nextCompanionWaypoint(state.point, target, bounds, pet) : target;
+    if (!lookAt) return { point: state.point, target: null, pauseMs: 1200 };
+    return { ...state, pauseMs: 0, target, anticipationMs: displacedByPet ? 0 : 1000, lookAt };
   }
   const waypoint = pet ? nextCompanionWaypoint(state.point, state.target, bounds, pet) : state.target;
-  if (!waypoint) return { ...state, target: null, pauseMs: 1200 };
+  if (!waypoint) return { point: state.point, target: null, pauseMs: 1200 };
   const point = followCompanionGround(state.point, waypoint, elapsed);
   if (point.x === state.target.x && point.y === state.target.y) return { point, target: null, pauseMs: 4000 + random() * 4000 };
-  return { ...state, point };
+  return { ...state, point, anticipationMs: 0, lookAt: undefined };
 }
 import { nextCompanionWaypoint, type PetFootprint } from './companionNavigation';
