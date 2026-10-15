@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createCombatState, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER } from './explorationCombat';
+import { createCombatState, replayCompletedCombat, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER } from './explorationCombat';
 import { createInitialGameState, saveExplorationCombatProgress, migrateGameState } from './PetGame';
 describe('Exploration combat pilot', () => {
   it('keeps diagonal speed bounded and accepts short route steps', () => {
@@ -60,5 +60,21 @@ describe('Exploration combat pilot', () => {
     const s=createCombatState();s.player={x:4.75,y:3.5};s.facing={x:1,y:0};s.enemies[0]={...s.enemies[0],x:6.05,y:3.5};
     expect(stepCombat(s,{power:true},50).enemies[0].hp).toBe(40);
   });
+
+  it('reopens a completed room without resetting earned progression or refilling inventory',()=>{
+    const s=createCombatState();s.completed=true;s.revision=900;s.time=50000;s.xp=120;s.stock={fibra:22,ambar:5,erva:0,fruta:0};s.equipmentOwned=true;s.equipmentOn=true;s.deaths=3;s.collectedNodes=['fern-a'];s.gateOpen=true;s.enemies[0].hp=0;
+    const a=replayCompletedCombat(s);expect(a.completed).toBe(false);expect(a.gateOpen).toBe(false);expect(a.collectedNodes).toEqual([]);expect(a.enemies[0].hp).toBe(40);expect(a.enemies[0].attackAt).toBe(51500);expect(a.xp).toBe(120);expect(a.stock).toEqual(s.stock);expect(a.equipmentOn).toBe(true);expect(a.deaths).toBe(3);expect(a.revision).toBe(901);expect(s.completed).toBe(true);
+  });
+  it('migrates existing completed saves and avoids a second completion bonus',()=>{
+    const legacy={...combatSnapshot(createCombatState()),completed:true,equipmentOwned:true};delete legacy.completionRewardClaimed;
+    const parsed=readCombatState(legacy);if(!parsed.supported)throw Error('Unsupported fixture');
+    expect(parsed.state.completionRewardClaimed).toBe(true);const a=replayCompletedCombat(parsed.state);a.gateOpen=true;a.player={...PILOT_EXIT};a.bag.fibra=2;
+    const done=stepCombat(a,{},50);expect(done.stock.fibra).toBe(2);expect(done.message).toContain('broche já conquistado');expect(done.equipmentOwned).toBe(true);expect(stepCombat(done,{},50)).toBe(done);
+  });
+  it('persists replay across reload and accepts its monotonic revision',()=>{
+    const s=createCombatState();s.completed=true;s.revision=800;const state=createInitialGameState();state.explorationCombatProgress=combatSnapshot(s);
+    const a=replayCompletedCombat(s);const saved=saveExplorationCombatProgress(state,combatSnapshot(a));const parsed=readCombatState(saved.explorationCombatProgress);expect(parsed.supported && parsed.state.completed).toBe(false);expect(parsed.supported && parsed.state.completionRewardClaimed).toBe(true);
+  });
+  it('does not restart a room still in progress',()=>{const s=createCombatState();expect(replayCompletedCombat(s)).toBe(s);});
 
 });

@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "publishing_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,9 +14,9 @@
     "code_commit": "50e5e02eb0cde48520d75540d6671b0a441da8d6"
   },
   "current_improvement": {
-    "id": "combat-pilot-visual-usability-review",
+    "id": "completed-pilot-replay",
     "implementation_status": "implemented",
-    "acceptance_status": "awaiting_user_visual_review"
+    "acceptance_status": "offline_verified_pending_user_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -28,11 +28,12 @@
     "deployment_id": "appgdep_6ad0c693c860819189beb07cba5d40ce",
     "site_commit": "018464cb7155bae0863e970c78cfc5500d11cb1d",
     "published_at": "2026-10-15T09:27:22-03:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": true,
+    "target_product_version": "1.9.7"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "140/140_passed_22_files",
+    "offline_tests": "144/144_passed_22_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -57,7 +58,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
     "instructions": "Retornar à versão 1.9.4 / Sites 23, sem alterar saves de jogadores."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-combat-ui-review.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-pilot-replay.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

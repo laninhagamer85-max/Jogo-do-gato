@@ -24,7 +24,7 @@ export type CombatState = {
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
   stock: Record<CombatItem, number>; bag: Record<CombatItem, number>;
   enemies: CombatEnemy[]; loot: CombatLoot[]; collectedNodes: string[];
-  defeated: number; deaths: number; gateOpen: boolean; completed: boolean;
+  defeated: number; deaths: number; gateOpen: boolean; completed: boolean; completionRewardClaimed: boolean;
   equipmentOwned: boolean; equipmentOn: boolean; seed: number;
   attackAt: number; strikeUntil: number; invulnerableUntil: number;
   feedback: CombatFeedback[]; message: string;
@@ -43,7 +43,7 @@ export function createCombatState(): CombatState {
     player: { ...PILOT_CAMP }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: PILOT_ENEMIES.map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
-    loot: [], collectedNodes: [], defeated: 0, deaths: 0, gateOpen: false, completed: false,
+    loot: [], collectedNodes: [], defeated: 0, deaths: 0, gateOpen: false, completed: false, completionRewardClaimed: false,
     equipmentOwned: false, equipmentOn: false, seed: 290519,
     attackAt: 0, strikeUntil: 0, invulnerableUntil: 0, feedback: [],
     message: 'Colete 6 fibras, enfrente um besouro e ative o marco com F.' };
@@ -66,6 +66,7 @@ export function readCombatState(value: unknown): CombatRead {
   s.xp = Math.floor(number(raw.xp, 0, 0, 2e6)); s.hp = number(raw.hp, combatMaxHp(s.xp), 0, combatMaxHp(s.xp));
   s.time = number(raw.time, 0); s.revision = Math.floor(number(raw.revision, 0)); s.energy = number(raw.energy, 100, 0, 100);
   s.gateOpen = raw.gateOpen === true; s.completed = raw.completed === true;
+  s.completionRewardClaimed = raw.completionRewardClaimed === true || s.completed;
   s.equipmentOwned = raw.equipmentOwned === true; s.equipmentOn = s.equipmentOwned && raw.equipmentOn === true;
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   const point = object(raw.player); const p = { x: number(point.x, PILOT_CAMP.x), y: number(point.y, PILOT_CAMP.y) };
@@ -181,8 +182,11 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   }
   if (s.gateOpen && distance(s.player, PILOT_EXIT) < .7) {
     for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) { s.stock[item] += s.bag[item]; s.bag[item] = 0; }
-    s.completed = true; s.equipmentOwned = true; s.walking = false;
-    s.message = 'Sala piloto concluída! Coleta guardada e Broche da Clareira conquistado.';
+    s.completed = true;
+    const firstCompletion = !s.completionRewardClaimed;
+    if (firstCompletion) { s.equipmentOwned = true; s.completionRewardClaimed = true; }
+    s.walking = false;
+    s.message = firstCompletion ? 'Sala piloto concluída! Coleta guardada e Broche da Clareira conquistado.' : 'Sala repetida! Nova coleta guardada; broche já conquistado.';
   }
   return s;
 }
@@ -203,4 +207,27 @@ export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen
     }
   }
   return [];
+}
+
+/** Replay is opt-in after completion; permanent combat progression is retained. */
+export function replayCompletedCombat(current: CombatState): CombatState {
+  if (!current.completed) return current;
+  const next = createCombatState();
+  next.revision = current.revision + 1;
+  next.time = current.time;
+  next.xp = current.xp;
+  next.hp = combatMaxHp(current.xp);
+  next.energy = current.energy;
+  next.stock = { ...current.stock };
+  next.bag = { ...current.bag };
+  next.equipmentOwned = current.equipmentOwned;
+  next.equipmentOn = current.equipmentOn;
+  next.completionRewardClaimed = true;
+  next.deaths = current.deaths;
+  next.seed = current.seed;
+  next.enemies = next.enemies.map(enemy => ({ ...enemy, attackAt: next.time + 1500 }));
+  next.invulnerableUntil = next.time + 2500;
+  next.attackAt = next.time;
+  next.message = 'Nova tentativa: explore, colete e enfrente os adversários. Seu progresso foi mantido.';
+  return next;
 }

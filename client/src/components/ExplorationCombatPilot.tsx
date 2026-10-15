@@ -6,7 +6,7 @@ import type { PetProfile } from '@/game/PetGame';
 import { ForestControls } from '@/game/forestControls';
 import type { ForestDirection } from '@/game/forestPuzzle';
 import { petWalkAtlas } from '@/game/petWalkAtlas';
-import { combatAttack, combatLevel, combatMaxHp, combatSnapshot, COMBAT_ITEMS, consumeCombatItem, createCombatState, equipCombatCharm, pilotRoute, readCombatState, stepCombat, type CombatItem, type CombatPoint, type CombatState } from '@/game/explorationCombat';
+import { combatAttack, combatLevel, combatMaxHp, combatSnapshot, COMBAT_ITEMS, consumeCombatItem, createCombatState, equipCombatCharm, pilotRoute, readCombatState, replayCompletedCombat, stepCombat, type CombatItem, type CombatPoint, type CombatState } from '@/game/explorationCombat';
 import { combatView, drawCombatPilot } from '@/game/explorationCombatView';
 import './ExplorationCombatPilot.css';
 
@@ -29,6 +29,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   function persist() { if (!initial.supported) return; const snapshot = combatSnapshot(current.current), key = JSON.stringify(snapshot); if (key !== lastSaved.current) { lastSaved.current = key; saveRef.current(snapshot); } }
   function openPanel(value: Panel) { clear(); persist(); panelRef.current = value; setPanel(value); }
   function change(next: CombatState) { if (next === current.current) return; current.current = next; setGame(next); persist(); }
+  function replay() { clear(); overviewRef.current = false; setOverview(false); panelRef.current = null; setPanel(null); change(replayCompletedCombat(current.current)); }
   function leave() { clear(); persist(); onBack(); }
   function action(kind: keyof typeof pending.current) { if (!panelRef.current && !overviewRef.current && !current.current.completed) { route.current = []; pending.current[kind] = true; } }
   function viewRoom() { clear(); overviewRef.current = !overviewRef.current; setOverview(overviewRef.current); }
@@ -135,7 +136,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         }}><Icon /></button>)}</div>
         <div className="combat-actions">{(['attack', 'power', 'interact'] as const).map((kind, index) => <button key={kind} disabled={Boolean(panel) || overview || (kind === 'power' && game.energy < 25)} aria-label={['Patada, E ou espaço', 'Poder, Q, custa 25 de energia', 'Interagir com marco, F'][index]} onPointerDown={e => { e.preventDefault(); action(kind); }} onClick={e => { if (e.detail === 0) action(kind); }}>{index === 0 ? <Hand /> : index === 1 ? <Sparkles /> : <Shield />}<span>{['Patada', 'Poder', 'Marco'][index]}</span></button>)}<button onClick={() => openPanel('inventory')} aria-label="Abrir mochila, I"><Backpack /><span>Mochila</span></button></div>
       </div>}
-      {game.completed && <div className="combat-victory"><h2>Sala piloto concluída!</h2><p>Coleta guardada. Broche da Clareira conquistado. Esta é a primeira sala em desenvolvimento, não os 60 níveis completos.</p><button onClick={leave}>Voltar aos capítulos</button></div>}
+      {game.completed && <div className="combat-victory"><h2>Sala piloto concluída!</h2><p>Coleta guardada. Você pode repetir para explorar e testar novamente, mantendo seu nível, inventário e broche. O bônus de conclusão não é entregue outra vez.</p><button onClick={replay}>Repetir sala piloto</button><button onClick={leave}>Voltar aos capítulos</button></div>}
     </div>
     <dialog ref={dialog} className="combat-dialog" aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
       <h2 id="combat-dialog-title">{modalTitle}</h2>
