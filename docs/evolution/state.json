@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_authorized_release",
-  "active_run": "2026-10-15-mimo-walk",
+  "status": "published_user_visual_review_pending",
+  "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "fix/companion-room-roaming-20261015",
@@ -18,21 +18,21 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.2",
-    "last_observed_version": 21,
+    "product_version": "1.9.3",
+    "last_observed_version": 22,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
-    "deployment_id": "appgdep_6ad088b6eea48191b128f8c88be01487",
-    "site_commit": "c2ee904450f7576cbf14451105c935598a7c84b5",
-    "published_at": "2026-10-15T05:04:14-03:00",
-    "attempted_in_this_cycle": false
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6705501060008191987f1f00a18e99b9",
+    "deployment_id": "appgdep_6ad08d1a65cc8191aa320ed47718278d",
+    "site_commit": "de2d6559851d17a3d06730d93076a6deb38bc12c",
+    "published_at": "2026-10-15T05:22:10-03:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "vite_client_build": "passed",
+    "vite_client_build": "passed_existing_chunk_warning",
     "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
     "production_qa_page_exclusion": "passed",
-    "browser": "not_run_control_browser_unavailable",
+    "browser": "live_login_version_1.9.3_confirmed; gameplay_visual_pending",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -58,7 +58,7 @@
     "Expandir salas/biomas da Exploração depois da estabilização dos personagens."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
     "product_version": "1.9.2",
     "instructions": "Restaurar versão salva 1.9.2 pelo fluxo oficial após checar publicações concorrentes; preservar saves."
@@ -125,7 +125,7 @@
   },
   "mimo_walk": {
     "product_version": "1.9.3",
-    "status": "implemented_preparing_release",
+    "status": "published_for_user_review",
     "art": "original_generated_16_frames_4_directions_rgba",
     "asset_sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
     "rollout": "Mimo_house1; Sol_house4_preserved",
