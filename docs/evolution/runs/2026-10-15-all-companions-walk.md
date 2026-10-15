@@ -18,3 +18,10 @@ Geração e inspeção estática concluídas para as dez novas artes. TypeScript
 Navegador control-browser indisponível no ambiente gerenciado. Sem servidor de preview alternativo. A conferência estática do atlas e lógica não equivalem a observar a caminhada no jogo. Publicação autorizada para David testar depois; declarar esse limite. Sem partida real, sem conclusão de fase, sem alteração de conta, progresso ou desbloqueio. Layout vertical/indicadores e expansão da Exploração continuam pendentes.
 
 Rollback: 1.9.3, appgprj_6ac40994d8d881919d46203a60801e46~appgver_6705501060008191987f1f00a18e99b9. Conferir publicação concorrente antes de restaurar; não resetar Git nem saves. Uma publicação por ciclo.
+
+## Resultado da publicação
+Produto 1.9.4, contador Sites 23, publicado às 05:49:53 BRT de 15/10/2026. Status succeeded, URL https://meupet.aquimeusite.chatgpt.site/ . Fonte Sites 99489930c1ca6935dee322042d63f1124fdb9dff. Versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d; deployment appgdep_6ad09396f0d08191832779184e1f62b2. Código GitHub 210d69b7e06baccdba1bd37aea6ca4728c79d46b, ramo de colaboração preservado sem merge.
+
+O primeiro envio foi recusado como invalid_archive; as duas primeiras compactações locais apresentaram EOF truncado. Refeito pelo helper oficial package-site.mjs fora da sessão interativa, sem alterar fonte/build. Terceiro pacote validado por gzip/tar, leitura completa dos 336 membros e hashes dos 12 PNGs, 63.020.338 bytes, SHA256 5ea7fbbaf7c0f99e7d6914fd78772132f1a1bcc4133cddfd4647241bdd927a4f. Salvo e publicado uma única vez após a correção. Arquivo aceito pelo Sites: 325 arquivos, 75.223.040 bytes descompactados.
+
+Após recarregar a página pública no navegador cloud, Versão 1.9.4 confirmada na tela de login; captura meu-pet-1-9-4-1792054261104.jpg. Não houve autenticação, criação de perfil nem teste de caminhada. Validação do lote em execução aguarda David. Rollback 1.9.3 preservado.

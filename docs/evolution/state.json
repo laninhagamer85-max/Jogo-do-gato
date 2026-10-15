@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_authorized_release",
-  "active_run": "2026-10-15-all-companions-walk",
+  "status": "published_user_batch_review_pending",
+  "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "fix/companion-room-roaming-20261015",
@@ -18,13 +18,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.3",
-    "last_observed_version": 22,
+    "product_version": "1.9.4",
+    "last_observed_version": 23,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6705501060008191987f1f00a18e99b9",
-    "deployment_id": "appgdep_6ad08d1a65cc8191aa320ed47718278d",
-    "site_commit": "de2d6559851d17a3d06730d93076a6deb38bc12c",
-    "published_at": "2026-10-15T05:22:10-03:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
+    "deployment_id": "appgdep_6ad09396f0d08191832779184e1f62b2",
+    "site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
+    "published_at": "2026-10-15T05:49:53-03:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -32,7 +32,7 @@
     "vite_client_build": "passed_existing_chunk_warning",
     "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
     "production_qa_page_exclusion": "passed",
-    "browser": "not_run_control_browser_unavailable; batch_review_by_David_after_publish",
+    "browser": "live_login_version_1.9.4_confirmed; companion_gameplay_pending_user",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -59,7 +59,7 @@
     "Depois: ampliar salas, biomas e dificuldade da Exploração."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6705501060008191987f1f00a18e99b9",
     "product_version": "1.9.3",
     "instructions": "Restaurar versão salva 1.9.3 pelo fluxo oficial, checando concorrência e preservando saves."
@@ -136,7 +136,7 @@
   },
   "all_companions_walk": {
     "product_version": "1.9.4",
-    "status": "preparing_publication",
+    "status": "published_for_user_batch_review",
     "companions": 12,
     "new_atlases": 10,
     "frames_per_atlas": 16,
@@ -146,6 +146,7 @@
     "load_policy": "only_active_companion; remain_still_until_own_atlas_ready",
     "accepted_pilot": "1.9.3 movement approved by David; not acceptance of ten new animations",
     "authorization": "David explicitly requested applying to all friends and testing afterwards on 2026-10-15.",
-    "browser_gameplay": "pending_user_review; not observed in this environment"
+    "browser_gameplay": "pending_user_review; not observed in this environment",
+    "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
   }
 }
