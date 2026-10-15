@@ -38,7 +38,10 @@ describe('independent room roaming', () => {
     const chosen = roamCompanion(resting, bounds, 16, false, () => 0.75);
     expect(chosen.target?.x).toBeCloseTo(0.55);
     expect(chosen.target?.y).toBeCloseTo(-0.6);
-    expect(roamCompanion(chosen, bounds, 16, false).point.x).toBeGreaterThan(0);
+    let ready = chosen;
+    for (let i = 0; i < 25; i++) ready = roamCompanion(ready, bounds, 40, false);
+    expect(ready.point).toEqual(initial.point);
+    expect(roamCompanion(ready, bounds, 16, false).point.x).toBeGreaterThan(0);
   });
   it('arrives, rests for 4–8 seconds and does not pick a new target every frame', () => {
     let state: CompanionRoam = { point: { x: 0, y: -1 }, target: { x: 0.01, y: -1 }, pauseMs: 0 };
@@ -52,5 +55,26 @@ describe('independent room roaming', () => {
     expect(roamCompanion(state, bounds, 16, true)).toBe(state);
     const resting = { ...state, target: null, pauseMs: 100 };
     expect(roamCompanion(resting, bounds, 16, true)).toBe(resting);
+  });
+  it('holds a new destination for one second before starting the next stroll', () => {
+    const start: CompanionRoam = { point: { x: 0, y: -1 }, target: null, pauseMs: 0 };
+    let state = roamCompanion(start, bounds, 16, false, () => 0.75);
+    expect(state.anticipationMs).toBe(1000);
+    expect(state.lookAt).toEqual(state.target);
+    for (let i = 0; i < 24; i++) state = roamCompanion(state, bounds, 40, false);
+    expect(state.anticipationMs).toBe(40);
+    expect(state.point).toEqual(start.point);
+    expect(roamCompanion(state, bounds, 40, true)).toBe(state);
+    state = roamCompanion(state, bounds, 40, false);
+    expect(state.point).toEqual(start.point);
+    const moving = roamCompanion(state, bounds, 16, false);
+    expect(moving.point.x).toBeGreaterThan(state.point.x);
+    expect(moving.lookAt).toBeUndefined();
+  });
+  it('does not delay an escape if the main pet moves onto the friend during anticipation', () => {
+    const state: CompanionRoam = { point: { x: 0.1, y: -1 }, target: { x: 1, y: -1 }, pauseMs: 0, anticipationMs: 1000 };
+    const next = roamCompanion(state, bounds, 16, false, Math.random, { x: 0, y: -1, radius: 0.5 });
+    expect(next.point.x).toBeGreaterThan(state.point.x);
+    expect(next.anticipationMs).toBe(0);
   });
 });
