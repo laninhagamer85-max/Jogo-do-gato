@@ -3,10 +3,14 @@ import type { GroundPoint } from './companionMotion';
 import { homeWalkDirection } from './petFrameCleanup';
 
 export type CompanionGait = { phase: number; direction: { row: number; mirror: boolean }; moving: boolean };
-export function advanceCompanionGait(gait: CompanionGait, previous: GroundPoint, current: GroundPoint): CompanionGait {
+export function advanceCompanionGait(gait: CompanionGait, previous: GroundPoint, current: GroundPoint, lookAt?: GroundPoint): CompanionGait {
   const dx = current.x - previous.x, dy = current.y - previous.y;
   const travel = Math.hypot(dx, dy);
-  if (travel <= 0.00001) return { ...gait, phase: 0, moving: false };
+  if (travel <= 0.00001) {
+    const direction = lookAt && Math.hypot(lookAt.x - current.x, lookAt.y - current.y) > 0.00001
+      ? homeWalkDirection(lookAt.x - current.x, lookAt.y - current.y) : gait.direction;
+    return { phase: 0, direction, moving: false };
+  }
   return { phase: (gait.phase + travel / 0.72) % 1, direction: homeWalkDirection(dx, dy), moving: true };
 }
 
