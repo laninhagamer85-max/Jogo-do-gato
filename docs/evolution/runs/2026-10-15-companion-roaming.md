@@ -14,3 +14,6 @@ Código em ramo separado fix/companion-room-roaming-20261015, sem merge nem forc
 
 ## Publicação para teste autorizada
 David pediu explicitamente publicar para verificar no celular e enviar relatório, após ser informado das patas e QA visual pendentes. Esta instrução substitui o gate de navegador local para esta revisão. Produto 1.9; contador Sites 19 previsto. Preservada 1.8 para retorno: appgprj_6ac40994d8d881919d46203a60801e46~appgver_dfab45f0ae6c819192379a6d3c4228b4. Não afirmar animação completa.
+
+## Resultado confirmado
+Produto 1.9 publicado. Sites versão 19, appgprj_6ac40994d8d881919d46203a60801e46~appgver_d469d3c764f881919c516942f2b54464; deployment appgdep_6ad04bb9b3bc8191b6c6d3cd9b34fb29, status succeeded, 2026-10-15T03:43:07.835473+00:00. Fonte 604b4e95d0c18f4ea7fdfe8e51c9d93f19f561bb. URL https://meupet.aquimeusite.chatgpt.site. TypeScript e build finais aprovados. 109 testes offline aprovados. QA visual não executada; David fará a revisão móvel conforme pedido explícito. Animação das patas continua pendente. Nenhum merge/force-push ou alteração de saves.
