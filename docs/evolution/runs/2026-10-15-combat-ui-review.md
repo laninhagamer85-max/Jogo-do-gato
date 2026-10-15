@@ -20,3 +20,13 @@ Publicação em preparação pelo mesmo Site; versão anterior 1.9.5 / Sites 24 
 ## Resultado final desta tentativa
 Implementação e 140 testes concluídos; GitHub código 50e5e02eb0cde48520d75540d6671b0a441da8d6. Fonte exata enviada ao Sites: 018464cb7155bae0863e970c78cfc5500d11cb1d.
 Nada novo publicado. save_site_version rejeitou os pacotes como invalid_archive. Empacotador oficial retornou sucesso e gzip validou na execução produtora; a leitura posterior detectou arquivo truncado. Refeito com gzip padrão e compressão -9; o transporte ainda foi rejeitado. Sem versão salva e sem deploy para 1.9.6. A 1.9.5 / Sites 24 permanece pública. Retomar infraestrutura de pacote/transporte, preservando este código.
+
+## Retentativa concluída — 15/10/2026, 09:27:22 (America/Sao_Paulo)
+Publicado com sucesso: 1.9.6 / Sites 25.
+URL: https://meupet.aquimeusite.chatgpt.site/
+Saved version: appgprj_6ac40994d8d881919d46203a60801e46~appgver_0e7b980080ec819188afe869f6152dce
+Deployment: appgdep_6ad0c693c860819189beb07cba5d40ce
+Source commit: 018464cb7155bae0863e970c78cfc5500d11cb1d.
+Bloqueio de pacote resolvido: archive oficial dividido em partes menores e reconstruído byte a byte; gzip validado em leituras independentes antes do upload. Sem mudança do código/build nem remoção de assets. Sites aceitou 377 arquivos, 81203200 bytes de tar normalizado. Um único deploy desta versão, status terminal succeeded.
+Autorização expressa reiterada: “Públique precisamos testar”. Validação visual/jogável desta revisão permanece a cargo do relatório do usuário; 140 testes offline/build anteriores preservados.
+Rollback: 1.9.5 / Sites 24, appgprj_6ac40994d8d881919d46203a60801e46~appgver_e24f36c761d88191a9edd4d82c2f9557.
