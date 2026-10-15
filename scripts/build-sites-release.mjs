@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+await import('./restore-companion-assets.mjs');
 const config = await readFile(path.join(root, '.env.production'), 'utf8');
 for (const name of ['VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_PROJECT_ID', 'VITE_FIREBASE_APP_ID']) {
   if (!new RegExp(`^${name}=.+$`, 'm').test(config)) throw new Error(`Missing published client setting: ${name}`);
