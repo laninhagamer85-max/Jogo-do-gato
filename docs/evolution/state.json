@@ -7,15 +7,16 @@
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "fix/exploration-continuous-floor-20261015",
-    "base_commit": "2a55e4dc210b3433bd85c6c84e9de9311205a944",
+    "branch": "feat/exploration-combat-pilot-20261015",
+    "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
     "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
     "coordination_branch": "recovery/mobile-review-20261009"
   },
   "current_improvement": {
-    "id": "exploration-continuous-floor",
+    "id": "exploration-combat-pilot",
     "implementation_status": "implemented",
-    "acceptance_status": "browser_validation_pending"
+    "acceptance_status": "browser_validation_pending",
+    "scope": "one_room_only"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -31,7 +32,7 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "125/125_passed_21_files",
+    "offline_tests": "140/140_passed_22_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -52,10 +53,9 @@
     }
   ],
   "next_actions": [
-    "Validar visualmente a correção do piso contínuo já salva, preservando a 1.9.4 até o aceite.",
-    "Implementar sala piloto conforme docs/evolution/exploration-product-rules.md: progressão separada, HP/dano, coleta, checkpoint e proteção dos desbloqueios.",
-    "Depois expandir o capítulo 1 para dez salas e os demais capítulos até seis, com mapas e desafios distintos.",
-    "Preservar saves e regras dos demais modos; conferir UX em retrato/paisagem."
+    "Testar o piloto em navegador suportado, em cinco viewports e perfil isolado: combate, coleta, cura, derrota, recarga e saída.",
+    "Validar piso contínuo e caminhada com a identidade de cada pet; publicar somente após aceite aplicável.",
+    "Implementar cartas de decoração permanentes, conectar catálogo e expandir mapas para seis capítulos com dez salas reais cada."
   ],
   "rollback": {
     "production_changed": false,
@@ -63,7 +63,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
     "instructions": "Publicação atual preservada; correção visual isolada no ramo de revisão, sem alterar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-combat-pilot.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -149,7 +149,7 @@
     "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
   },
   "exploration_expansion": {
-    "status": "product_rules_confirmed_not_implemented",
+    "status": "one_combat_pilot_implemented_pending_browser",
     "chapters": 6,
     "rooms_per_chapter": 10,
     "total_rooms": 60,
@@ -170,6 +170,7 @@
       "level-up HP restoration",
       "respawn intervals and rare-drop rates",
       "safe-point HP restoration"
-    ]
+    ],
+    "implemented_rooms": 1
   }
 }

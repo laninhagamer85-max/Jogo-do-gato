@@ -1,3 +1,4 @@
+import { createCombatState, combatSnapshot, readCombatState } from "./explorationCombat";
 import { DECORATIONS, getDecorationLockReason, getDecorationStageId, type DecorationId } from "./decorations";
 import { PLATFORM_MASCOTS, getPlatformMascot, type PlatformMascotId } from "./platformerLevels";
 import { createInitialForestProgress, normalizeForestProgress } from "./forestProgress";
@@ -64,6 +65,7 @@ export type GameState = {
   gifts: SurpriseGift[];
   platformProgress: PlatformProgress;
   forestPathProgress: Record<string, unknown>;
+  explorationCombatProgress: Record<string, unknown>;
 };
 
 export const MAX_LEVEL = 10;
@@ -107,6 +109,7 @@ export const INITIAL_GAME_STATE: GameState = {
   gifts: [],
   platformProgress: { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} },
   forestPathProgress: createInitialForestProgress(),
+    explorationCombatProgress: combatSnapshot(createCombatState()),
 };
 
 export const PET_CHARACTERS: Array<{ id: PetCharacterId; gender: PetGender; name: string; description: string; icon: string }> = [
@@ -205,6 +208,7 @@ export function createInitialGameState(): GameState {
     gifts: [],
     platformProgress: { ...INITIAL_PLATFORM_PROGRESS, completedStages: [], starsByStage: {} },
     forestPathProgress: createInitialForestProgress(),
+    explorationCombatProgress: combatSnapshot(createCombatState()),
   };
 }
 
@@ -231,6 +235,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
   };
   const platformProgress = normalizePlatformProgress(parsed.platformProgress);
   const forestProgress = normalizeForestProgress(parsed.forestPathProgress);
+  const combatProgress = readCombatState(parsed.explorationCombatProgress);
   const earnedWorldMascots = PLATFORM_MASCOTS.filter((mascot) => platformProgress.completedStages.includes(mascot.world * 10)).map((mascot) => mascot.id);
   const ownedCompanions = Array.from(new Set([...rawOwnedCompanions, ...earnedWorldMascots]));
   const active = isCompanionId(parsed.activeCompanionId) && ownedCompanions.includes(parsed.activeCompanionId) ? parsed.activeCompanionId : null;
@@ -304,6 +309,7 @@ export function migrateGameState(value: unknown, now = Date.now()): GameState {
     roomDecorations,
     gifts,
     platformProgress,
+    explorationCombatProgress: combatProgress.supported ? combatSnapshot(combatProgress.state) : parsed.explorationCombatProgress as Record<string, unknown>,
     forestPathProgress: forestProgress.supported ? forestProgress.progress : parsed.forestPathProgress as Record<string, unknown>,
   };
 }
@@ -648,4 +654,12 @@ export function chooseCompanion(state: GameState, id: CompanionId | null): { sta
   const mascot = getPlatformMascot(id);
   if (mascot && state.activeRoom !== mascot.world) return { state, ok: false, message: `${mascot.name} participa das brincadeiras somente na Casa ${mascot.world}.` };
   return { state: { ...state, activeCompanionId: id }, ok: true, message: id ? "Seu companheiro já está pronto para brincar!" : "Hoje vamos explorar só nós dois." };
+}
+
+/** Combat saves never award house XP, coins or decoration ownership. */
+export function saveExplorationCombatProgress(state: GameState, save: Record<string, unknown>): GameState {
+  const previous = readCombatState(state.explorationCombatProgress);
+  const incoming = readCombatState(save);
+  if (!previous.supported || !incoming.supported || incoming.state.revision < previous.state.revision) return state;
+  return { ...state, explorationCombatProgress: combatSnapshot(incoming.state) };
 }

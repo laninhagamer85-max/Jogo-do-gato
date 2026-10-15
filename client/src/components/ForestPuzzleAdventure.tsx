@@ -1,3 +1,4 @@
+import ExplorationCombatPilot from "./ExplorationCombatPilot";
 import { forestTapPath, forestRouteInput } from "@/game/forestTapNavigation";
 import { petWalkAtlas, drawWalkFrame } from "@/game/petWalkAtlas";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
@@ -20,6 +21,8 @@ type Held = Record<ForestDirection, boolean>;
 type Props = {
   profile: PetProfile | null;
   savedProgress: Record<string, unknown>;
+  combatProgress: Record<string, unknown>;
+  onSaveCombatProgress: (save: Record<string, unknown>) => void;
   soundOn: boolean;
   onToggleSound: () => void;
   onCompleteChapter: (chapter: number, actions: number) => void;
@@ -190,7 +193,7 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
   }
 }
 
-export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
+export default function ForestPuzzleAdventure({ profile, savedProgress, combatProgress, onSaveCombatProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
   const characterId = profile?.characterId ?? "menino-prata";
   const petName = profile?.name ?? "Seu pet";
   const progressRead = useMemo(() => normalizeForestProgress(savedProgress), [savedProgress]);
@@ -414,6 +417,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   };
+  const [combatPilot, setCombatPilot] = useState(false);
   const petImage = GAME_ASSETS.characters[characterId];
   const currentSpec = game ? getForestRoom(game.chapter, game.room) : null;
   const qaTelemetryEnabled = import.meta.env.DEV && typeof window !== "undefined" && ["/qa-review.html", "/qa-adventure.html"].includes(window.location.pathname);
@@ -425,6 +429,8 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
     "data-qa-bridges": game?.placedBridges.join(","),
   } : {};
 
+  if (combatPilot) return <ExplorationCombatPilot profile={profile} progress={combatProgress} onSave={onSaveCombatProgress} onBack={() => setCombatPilot(false)} />;
+
   return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label="Bosque dos Caminhos, modo de exploração">
     <header className="forest-adventure-topbar">
       <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>Bosque dos Caminhos</strong><small>EXPLORAÇÃO E QUEBRA-CABEÇAS</small></div></div>
@@ -435,10 +441,11 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
       </div>
     </header>
     {!game ? <main className="forest-adventure-map">
-      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. Os guardiões são gentis: não há combate, vidas ou cronômetro.</p></div>
+      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. As trilhas de enigmas continuam disponíveis. Experimente também a sala piloto com combate e coleta.</p></div>
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
+      <div className="forest-map-actions"><button type="button" className="forest-primary" onClick={() => setCombatPilot(true)}>Sala piloto: combate e coleta</button><p>Nível de combate próprio, inventário e ponto seguro. Uma sala experimental.</p></div>
       <section className="forest-chapter-grid" aria-label="Seleção de capítulos">
         {FOREST_CHAPTERS.map((chapter) => {
           const isLocked = !supported || chapter.id > unlockedChapter;

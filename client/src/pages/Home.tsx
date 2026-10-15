@@ -19,7 +19,7 @@ import TutorialOverlay from "@/components/TutorialOverlay";
 import {
   buyBoost, buyDecoration, buySkin, buyStoreItem, chooseCompanion, collectSurpriseGift, completeMinigame, completePlatformStage,
   createInitialGameState, CURRENT_SAVE_KEY, DECORATIONS, getUnlockedRoomCount, PET_CHARACTERS, expireGifts, LEGACY_SAVE_KEYS,
-  getDecorationStageId, migrateGameState, performCare, placeDecoration, removeDecoration, selectRoom, setPetProfile,
+  saveExplorationCombatProgress, getDecorationStageId, migrateGameState, performCare, placeDecoration, removeDecoration, selectRoom, setPetProfile,
   SKINS, spawnSurpriseGift, STORE_ITEMS, tickPet, updateDecoration, useStoreItem,
   type CareAction, type CompanionId, type DecorationId, type DecorationPlacement, type GameState,
   type PetGender, type PetProfile, type SkinId, type StoreItemId,
@@ -896,6 +896,7 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
       onGoToHouse={closeAdventure}
       onCompleteTutorial={completeAdventureTutorial}
       onCompleteStage={completeAdventureStage}
+      onSaveCombatProgress={(save) => setGame((current) => current.profile !== game.profile ? current : saveExplorationCombatProgress(current, save))}
       onCompleteForestChapter={(chapter, actions) => setGame((current) => {
         const parsed = normalizeForestProgress(current.forestPathProgress);
         if (!parsed.supported) return current;
