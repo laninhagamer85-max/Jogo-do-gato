@@ -10,3 +10,6 @@ Rollback conhecido: 1.9.1, appgprj_6ac40994d8d881919d46203a60801e46~appgver_2622
 
 ## Correção de profundidade da decoração
 David esclareceu que o Sol fica atrás dos objetos. A 1.9.2 incorpora ordenação compartilhada por ponto de apoio para gato, amigo e decoração: quando o amigo está mais abaixo no chão, aparece à frente do objeto; mais acima, atrás. Tapetes permanecem sob sombras/patas. Não foi solicitado nem implementado neste ajuste desvio físico de todos os móveis. 122 testes offline em 21 arquivos aprovados, incluindo cruzamento visual de frente/trás e tapetes. O pacote anterior de antecipação não foi publicado; reconstruir antes de salvar.
+
+## Publicação confirmada
+Produto 1.9.2, Sites 21. Status succeeded em 2026-10-15T08:03:26.541391+00:00. Fonte c2ee904450f7576cbf14451105c935598a7c84b5; version appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b; deployment appgdep_6ad088b6eea48191b128f8c88be01487. URL https://meupet.aquimeusite.chatgpt.site. TypeScript/build finais aprovados e 122 testes offline; visual móvel aguarda David. Pausa e profundidade da decoração compartilhadas; arte de patas própria somente do Sol. A 1.9.1 permanece disponível para retorno.
