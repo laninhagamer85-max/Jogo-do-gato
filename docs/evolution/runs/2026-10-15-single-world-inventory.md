@@ -25,3 +25,14 @@ Fonte exata 1.9.8 / Sites 27 recuperada pelo helper oficial: e14c79260fdb91b9f4b
 Publicação em preparação; rollback 1.9.8 / Sites 27 preservado.
 Próximo aceite: fundo único ao mover/zoom, colisão e profundidade dos obstáculos, golpe sem sobreposição no rosto, mochila em retrato/horizontal e direcional dos capítulos.
 Depois consolidar arte e contraste dos itens coletáveis; seguir com novos adversários e desafios em uma sala por vez antes de ampliar os capítulos. Sem alegação de 60 salas ou 100 fases testadas.
+
+## Conferência final e publicação
+Recorte dos sprites dos inimigos ajustado a partir dos limites alpha inspecionados: pés aproximados ao apoio no chão e barras/títulos acima do corpo. Sem declaração de playtest visual.
+TypeScript, 158 testes e build repetidos com sucesso após esse ajuste.
+Publicado: 1.9.9 / Sites 28, 15/10/2026 às 13:07:20 (America/Sao_Paulo).
+URL: https://meupet.aquimeusite.chatgpt.site/
+GitHub código: 9d4d82b537c2fd90e59659e7db46eab926e230fa
+Source commit: 87be0e9ba507ec48a97b5f237c0812fae2974250
+Versão salva: appgprj_6ac40994d8d881919d46203a60801e46~appgver_a6e84b7735e0819182305e0aa48954e2
+Deployment: appgdep_6ad0fa105514819181d600b3f11dc3b2 — succeeded.
+Pacote oficial reconstruído por partes para evitar truncamento, gzip validado em duas leituras antes de upload. 354 arquivos e tar normalizado de 86968320 bytes. Um único deploy concluído. Nenhuma partida real alterada. Revisão visual aguarda relatório de David.
