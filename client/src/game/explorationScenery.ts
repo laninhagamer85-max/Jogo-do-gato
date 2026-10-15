@@ -1,18 +1,29 @@
-/** One camera-anchored ground plane. A mirrored repeat prevents hard texture seams. */
-const groundTiles = new WeakMap<HTMLImageElement, HTMLCanvasElement>();
-export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number){
-  ctx.fillStyle='#6b803e';ctx.fillRect(0,0,width,height);
+/** Quiet terrain: one unique camera-anchored plane, no repeat or mirrored tiles. */
+export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
+export const FOREST_GROUND:GroundTheme={id:'forest-soft-v2',seed:5102026,base:'#81ac3c',light:'#a2bf5a',shade:'#709440'};
+export const GROUND_WORLD={left:-10,top:-14,width:34,height:38,pixelsPerTile:36};
+export function groundVariations(seed:number){
+  let value=seed>>>0;const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
+  return Array.from({length:18},()=>({x:random(),y:random(),radius:.07+random()*.12,light:random()>.5}));
+}
+const groundPlanes=new WeakMap<HTMLImageElement,{key:string;canvas:HTMLCanvasElement}>();
+export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND){
+  ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
   if(!image.complete||!image.naturalWidth)return;
-  let canvas=groundTiles.get(image);
-  if(!canvas){
-    canvas=document.createElement('canvas');canvas.width=768;canvas.height=768;const g=canvas.getContext('2d');if(!g)return;
-    for(let y=0;y<2;y++)for(let x=0;x<2;x++){g.save();g.translate(x?768:0,y?768:0);g.scale(x?-1:1,y?-1:1);g.drawImage(image,0,0,384,384);g.restore();}
-    groundTiles.set(image,canvas);
+  const key=JSON.stringify(theme);let plane=groundPlanes.get(image);
+  if(!plane||plane.key!==key){
+    const canvas=document.createElement('canvas');canvas.width=GROUND_WORLD.width*GROUND_WORLD.pixelsPerTile;canvas.height=GROUND_WORLD.height*GROUND_WORLD.pixelsPerTile;
+    const g=canvas.getContext('2d');if(!g)return;
+    g.fillStyle=theme.base;g.fillRect(0,0,canvas.width,canvas.height);
+    // Paint the image once over the entire padded world, never in a tile grid.
+    g.globalAlpha=.56;g.drawImage(image,0,0,canvas.width,canvas.height);g.globalAlpha=1;
+    for(const variation of groundVariations(theme.seed)){
+      const x=variation.x*canvas.width,y=variation.y*canvas.height,r=variation.radius*canvas.width;
+      const gradient=g.createRadialGradient(x,y,0,x,y,r);gradient.addColorStop(0,variation.light?theme.light:theme.shade);gradient.addColorStop(1,'transparent');
+      g.globalAlpha=.15;g.fillStyle=gradient;g.fillRect(x-r,y-r,r*2,r*2);
+    }g.globalAlpha=1;plane={key,canvas};groundPlanes.set(image,plane);
   }
-  const pattern=ctx.createPattern(canvas,'repeat');if(!pattern)return;
-  const scale=tile*3.5/384;
-  ctx.save();ctx.translate(left,top);ctx.scale(scale,scale);ctx.fillStyle=pattern;ctx.fillRect(-left/scale,-top/scale,width/scale,height/scale);ctx.restore();
-  ctx.fillStyle='rgba(24,48,24,.08)';ctx.fillRect(0,0,width,height);
+  ctx.drawImage(plane.canvas,left+GROUND_WORLD.left*tile,top+GROUND_WORLD.top*tile,GROUND_WORLD.width*tile,GROUND_WORLD.height*tile);
 }
 export function drawWoodlandProp(ctx:CanvasRenderingContext2D,image:HTMLImageElement,index:number,x:number,y:number,tile:number){
   if(!image.complete||!image.naturalWidth)return;

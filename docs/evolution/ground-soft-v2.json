@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-15",
+  "asset": "client/public/forest-adventure/ground-soft-v2.png",
+  "sha256": "2cdf6180839d0fc703d62a37cd2f54a3c048d8ae09c4935c0637b253d52c4753",
+  "size": [
+    1254,
+    1254
+  ],
+  "mode": "RGB",
+  "method": "original art generated with built-in image generation; inspected statically",
+  "prompt": "Calm clean overhead spring-green grass lawn for a children's illustrated kitten game. Very short sparse grass, gentle painterly grain and uniform light. Low contrast, subtle warm olive/yellow-green variations. No clovers, leaves, flowers, dirt paths, stones, objects, borders, repeated or mirrored motifs, vignette, UI or text. Original art.",
+  "integration": "paint once across a unique padded world plane, broad deterministic color variation; no createPattern, repeated tile grid or mirroring",
+  "biomes": "GroundTheme separates palette and layout seed; only forest is delivered in this revision"
+}
