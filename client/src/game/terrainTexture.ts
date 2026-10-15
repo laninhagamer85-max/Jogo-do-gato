@@ -35,10 +35,11 @@ function maskedTexture(image:HTMLImageElement,feather:number){
  }
  masks.set(image,{feather,canvas});return canvas;
 }
-export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,material=GRASS_MATERIAL){
+export type TerrainCompositionLayer={id:string;draw:(ctx:CanvasRenderingContext2D,bounds:TerrainBounds)=>void};
+export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,material=GRASS_MATERIAL,composition?:TerrainCompositionLayer){
  if(!image.complete||!image.naturalWidth||!image.naturalHeight)return false;
  const dpr=Math.max(.1,Math.abs(ctx.getTransform().a)||1);
- const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,tile,dpr,width,height].join(':');
+ const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,composition?.id??'',tile,dpr,width,height].join(':');
  let cached=buffers.get(ctx);
  if(!cached||cached.image!==image||cached.key!==key||!terrainContains(cached.bounds,width,height,left,top,tile)){
   const texture=maskedTexture(image,material.feather);if(!texture)return false;
@@ -51,6 +52,8 @@ export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,hei
    g.save();g.translate(patch.x,patch.y);g.rotate(patch.turn*Math.PI/2);if(patch.mirror)g.scale(-1,1);
    g.drawImage(texture,-patch.span/2,-patch.span/2,patch.span,patch.span);g.restore();
   }
+  // All static materials share this visible buffer and its memory ceiling.
+  composition?.draw(g,plan);
   cached={key,image,bounds:plan,canvas};buffers.set(ctx,cached);
  }
  const b=cached.bounds;ctx.drawImage(cached.canvas,left+b.left*tile,top+b.top*tile,b.width*tile,b.height*tile);return true;

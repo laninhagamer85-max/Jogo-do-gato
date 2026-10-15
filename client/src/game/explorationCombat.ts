@@ -1,4 +1,5 @@
 import { ROOM_WALLS } from "./explorationRoom";
+import {biomeBlocks} from './biomeComposition';
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
 export type CombatPoint = { x: number; y: number };
 export const PILOT_SIZE = { width: 14, height: 10 };
@@ -51,6 +52,7 @@ export function createCombatState(): CombatState {
 }
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): boolean {
   if (p.x < 1 + radius || p.y < 1 + radius || p.x > 13 - radius || p.y > 9 - radius) return false;
+  if(biomeBlocks(p,radius))return false;
   const walls = gateOpen ? PILOT_WALLS : [...PILOT_WALLS, { x: 9, y: 4 }];
   return !walls.some(w => p.x + radius > w.x && p.x - radius < w.x + 1 && p.y + radius > w.y && p.y - radius < w.y + 1);
 }
@@ -199,8 +201,12 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   return s;
 }
 export function clearPilotLine(from: CombatPoint, to: CombatPoint, gateOpen: boolean) {
+  return clearPilotWalkLine(from,to,gateOpen,0);
+}
+/** Shared edge check prevents touch paths from cutting across a curved shore. */
+export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:boolean,radius=.22){
   const steps = Math.max(1, Math.ceil(distance(from, to) / .1));
-  for (let i = 0; i <= steps; i++) if (!pilotWalkable({ x: from.x + (to.x - from.x) * i / steps, y: from.y + (to.y - from.y) * i / steps }, gateOpen, 0)) return false;
+  for (let i = 0; i <= steps; i++) if (!pilotWalkable({ x: from.x + (to.x - from.x) * i / steps, y: from.y + (to.y - from.y) * i / steps }, gateOpen, radius)) return false;
   return true;
 }
 /** Breadth-first touch route around the same geometry used by movement. */
@@ -211,7 +217,9 @@ export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen
   for (let index = 0; index < queue.length; index++) {
     const p = queue[index]; if (key(p) === key(end)) { const route: CombatPoint[] = []; let current: CombatPoint | null = p; while (current && key(current) !== key(start)) { route.unshift({ x: current.x + .5, y: current.y + .5 }); current = previous.get(key(current)) ?? null; } return route; }
     for (const d of [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }]) {
-      const n = { x: p.x + d.x, y: p.y + d.y }; if (!previous.has(key(n)) && pilotWalkable({ x: n.x + .5, y: n.y + .5 }, gateOpen)) { previous.set(key(n), p); queue.push(n); }
+      const n = { x: p.x + d.x, y: p.y + d.y };
+      const edgeStart=index===0?from:{x:p.x+.5,y:p.y+.5};
+      if (!previous.has(key(n)) && clearPilotWalkLine(edgeStart,{x:n.x+.5,y:n.y+.5},gateOpen)) { previous.set(key(n), p); queue.push(n); }
     }
   }
   return [];
