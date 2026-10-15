@@ -15,21 +15,24 @@
   },
   "current_improvement": {
     "id": "sol-house4-gait-and-separation",
-    "implementation_status": "implemented",
+    "implementation_status": "published_for_user_review",
     "acceptance_status": "user_mobile_review_requested_no_local_browser"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 17,
+    "last_observed_version": 20,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
     "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_c6299f408bd8819183fc410295f606ff",
-    "deployment_id": "appgdep_6ad022046c608191b61e8913bede7b46",
-    "site_commit": "6a29673c6499be16f6ad5c2c9150ca6dc665a5a1",
-    "published_at": "2026-10-14T21:45:19-03:00"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2622de6d12dc8191a27f7e7e21e4ec3b",
+    "deployment_id": "appgdep_6ad05090976881919d1e923362b98e92",
+    "site_commit": "29bf61ca943b70b7ef27c4cebc08741389e206ec",
+    "published_at": "2026-10-15T04:03:52.069529+00:00",
+    "product_version": "1.9.1",
+    "sites_version": 20,
+    "source_commit": "29bf61ca943b70b7ef27c4cebc08741389e206ec"
   },
   "verification": {
     "typescript": "passed",
@@ -108,10 +111,10 @@
   },
   "sol_walk": {
     "product_version": "1.9.1",
-    "status": "preparing_publication",
+    "status": "succeeded",
     "offline_tests": 116,
-    "typescript": "passed_before_final_packaging",
-    "browser": "not_run_control_browser_unavailable",
+    "typescript": "passed",
+    "browser": "not_run_user_review_pending",
     "art": "original_generated_16_frames_4_directions_alpha",
     "speed_world_units_per_second": 0.8,
     "pause_ms": [
@@ -119,6 +122,13 @@
       8000
     ],
     "collision": "visibility_graph_around_main_pet_footprint",
-    "rollout": "Sol_house4_only"
+    "rollout": "Sol_house4_only",
+    "sites_version": 20,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2622de6d12dc8191a27f7e7e21e4ec3b",
+    "deployment_id": "appgdep_6ad05090976881919d1e923362b98e92",
+    "source_commit": "29bf61ca943b70b7ef27c4cebc08741389e206ec",
+    "published_at": "2026-10-15T04:03:52.069529+00:00",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "build": "passed_existing_chunk_warning"
   }
 }
