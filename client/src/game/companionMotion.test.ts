@@ -13,7 +13,7 @@ describe('grounded companion following', () => {
       for (let frame = 0; frame < fps; frame++) point = followCompanionGround(point, { x: 10, y: 0 }, 1000 / fps);
       return point.x;
     });
-    results.forEach(x => expect(x).toBeCloseTo(2.65, 8));
+    results.forEach(x => expect(x).toBeCloseTo(0.8, 8));
   });
   it('converges exactly without overshooting or oscillating after arrival', () => {
     const target = { x: -0.1, y: 0.1 };
@@ -24,7 +24,7 @@ describe('grounded companion following', () => {
   it('does not jump after a hidden tab or move on an invalid time step', () => {
     const start = { x: 0, y: 0 }, target = { x: 3, y: 4 };
     const next = followCompanionGround(start, target, 10000);
-    expect(Math.hypot(next.x, next.y)).toBeCloseTo(0.106);
+    expect(Math.hypot(next.x, next.y)).toBeCloseTo(0.032);
     for (const delta of [-20, NaN, Infinity, 0]) expect(followCompanionGround(start, target, delta)).toEqual(start);
   });
 });
@@ -36,13 +36,14 @@ describe('independent room roaming', () => {
     const resting = roamCompanion(initial, bounds, 20, false, () => 0.75);
     expect(resting.point).toEqual(initial.point);
     const chosen = roamCompanion(resting, bounds, 16, false, () => 0.75);
-    expect(chosen.target).toEqual({ x: 1, y: -0.75 });
+    expect(chosen.target?.x).toBeCloseTo(0.55);
+    expect(chosen.target?.y).toBeCloseTo(-0.6);
     expect(roamCompanion(chosen, bounds, 16, false).point.x).toBeGreaterThan(0);
   });
-  it('arrives, rests for 2–5 seconds and does not pick a new target every frame', () => {
+  it('arrives, rests for 4–8 seconds and does not pick a new target every frame', () => {
     let state: CompanionRoam = { point: { x: 0, y: -1 }, target: { x: 0.01, y: -1 }, pauseMs: 0 };
     state = roamCompanion(state, bounds, 16, false, () => 0.5);
-    expect(state).toEqual({ point: { x: 0.01, y: -1 }, target: null, pauseMs: 3500 });
+    expect(state).toEqual({ point: { x: 0.01, y: -1 }, target: null, pauseMs: 6000 });
     const paused = roamCompanion(state, bounds, 16, false, () => { throw new Error('must not choose during rest'); });
     expect(paused.point).toEqual(state.point);
   });
