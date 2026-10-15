@@ -124,8 +124,9 @@
   "sol_anticipation": {
     "product_version": "1.9.2",
     "hold_ms": 1000,
-    "offline_tests": 119,
+    "offline_tests": 122,
     "status": "preparing_publication",
-    "browser": "not_run_control_browser_unavailable"
+    "browser": "not_run_control_browser_unavailable",
+    "decoration_depth": "shared_floor_contact_sorting"
   }
 }
