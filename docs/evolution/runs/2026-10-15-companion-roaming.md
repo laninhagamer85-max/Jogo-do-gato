@@ -11,3 +11,6 @@ Verificação: 109 testes offline em 18 arquivos aprovados, incluindo repouso, c
 Pesquisa técnica em 15/10/2026: https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame — usar tempo decorrido para manter a velocidade entre telas de frequências diferentes; limitar o salto ao retomar uma aba.
 
 Código em ramo separado fix/companion-room-roaming-20261015, sem merge nem force-push. Próximos passos: validar movimento em navegador suportado nos tamanhos retrato/paisagem, completar animação própria de Mimi/Tico sem mudar suas identidades e validar os seis pets. Depois retomar organização vertical e indicadores; expansão da Expedição permanece posterior. Rotina diária reativada em 15/10 e prioridades atualizadas, sem criar duplicata.
+
+## Publicação para teste autorizada
+David pediu explicitamente publicar para verificar no celular e enviar relatório, após ser informado das patas e QA visual pendentes. Esta instrução substitui o gate de navegador local para esta revisão. Produto 1.9; contador Sites 19 previsto. Preservada 1.8 para retorno: appgprj_6ac40994d8d881919d46203a60801e46~appgver_dfab45f0ae6c819192379a6d3c4228b4. Não afirmar animação completa.
