@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review_publication",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "5c802bc84578f650694f556831662a8114318cee",
+    "source_site_commit": "a84a9222cba41b2b62b1fd41566d2126c5742af0",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd",
+    "code_commit": "76571a93f77de436037c73c24ba2630874c7064f",
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
@@ -23,12 +23,12 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.17",
-    "last_observed_version": 35,
-    "status": "preparing",
-    "version_id": null,
-    "deployment_id": null,
-    "site_commit": null,
-    "published_at": null,
+    "last_observed_version": 36,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293",
+    "deployment_id": "appgdep_6ad1284e22c48191b410805f03b96ee5",
+    "site_commit": "a84a9222cba41b2b62b1fd41566d2126c5742af0",
+    "published_at": "2026-10-15T19:24:25.145959+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -37,7 +37,7 @@
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable",
+    "browser": "not_run_control_browser_unavailable; explicit publication for David review authorized",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -49,15 +49,13 @@
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports"
   },
-  "blockers": [
-    "Supported control-browser unavailable; real visual/physics QA required before publication of this revision."
-  ],
+  "blockers": [],
   "next_actions": [
     "David: testar a 1.9.17 na sala piloto de combate; conferir lago/terra/areia, escala, nitidez e ondulação em retrato e paisagem, toque/joystick, coleta, saída e recarga.",
     "Concluir validação visual antes de expandir a composição aos capítulos e completar o kit de variantes."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.16",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
     "instructions": "Reimplantar 1.9.16 se necessário, preservando saves; não sobrescrever publicação posterior."
@@ -203,7 +201,7 @@
   },
   "biome_composition_pilot": {
     "date": "2026-10-15",
-    "status": "preparing_user_review_publication",
+    "status": "published_for_user_review",
     "code_commit": "869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd",
     "source_base": "5c802bc84578f650694f556831662a8114318cee",
     "report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
@@ -219,8 +217,10 @@
     "save_verification": "fake player and loot relocation preserves earned state; no real saves read/written",
     "art_validation": "not_observed_in_browser",
     "publication_attempted": true,
-    "public_product_version_unchanged": "1.9.16",
     "variant_kit": "four/three/three material variants not created in this revision",
-    "product_version": "1.9.17"
+    "product_version": "1.9.17",
+    "release_commit": "76571a93f77de436037c73c24ba2630874c7064f",
+    "site_commit": "a84a9222cba41b2b62b1fd41566d2126c5742af0",
+    "publication_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293"
   }
 }
