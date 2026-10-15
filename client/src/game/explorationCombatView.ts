@@ -52,12 +52,13 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         const attacking=enemy.attackAt-state.time>1250 && enemy.attackAt-state.time<=1500;
         if(attacking&&!reducedMotion)ctx.rotate(-.08*Math.sin((1500-enemy.attackAt+state.time)/250*Math.PI));
-        ctx.drawImage(enemiesAtlas,frame*cw,(row? .13: .26)*ch+row*ch,cw,ch*.68,-t*.51,-t*.84,t*1.02,t*.92);ctx.restore();
+        const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dh=t*1.02*sh/cw;
+        ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-t*.51,t*.07-dh,t*1.02,dh);ctx.restore();
       }
-      ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .37, p.y - t * .66, t * .74, t * .075);
-      ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .37, p.y - t * .66, t * .74 * enemy.hp / def.hp, t * .075);
+      ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .37, p.y - t * .88, t * .74, t * .075);
+      ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .37, p.y - t * .88, t * .74 * enemy.hp / def.hp, t * .075);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      ctx.fillText(`${def.name} · Nv ${def.level}`, p.x, p.y - t * .76);
+      ctx.fillText(`${def.name} · Nv ${def.level}`, p.x, p.y - t * .99);
     } else {
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
