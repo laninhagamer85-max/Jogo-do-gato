@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "implemented_awaiting_visual_validation",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,12 +11,13 @@
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
     "source_site_commit": "5c802bc84578f650694f556831662a8114318cee",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "aa5c551be28c086dac383bb1609291b98b7b10d0"
+    "code_commit": "869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd",
+    "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
-    "id": "modular-grass-native-density",
+    "id": "layered-clearing-pond-composition",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_visual_review"
+    "acceptance_status": "offline_verified_awaiting_supported_browser"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -32,11 +33,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "192/192_passed_27_files",
+    "offline_tests": "201/201_passed_28_files_excluding_firebase_staging_integration",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable; user review authorization continues",
+    "browser": "not_run_control_browser_unavailable",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -44,13 +45,17 @@
       "844x390": "not_tested",
       "1366x768": "not_tested"
     },
-    "real_online_phases_completed_in_cycle": 0
+    "real_online_phases_completed_in_cycle": 0,
+    "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
+    "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports"
   },
-  "blockers": [],
+  "blockers": [
+    "Supported control-browser unavailable; real visual/physics QA required before publication of this revision."
+  ],
   "next_actions": [
-    "David: conferir tamanho da grama, nitidez, ausência de quadrículas visíveis e estabilidade ao caminhar/rotacionar/usar zoom.",
-    "Aceitar o piloto; então construir dez salas reais do capítulo 1 conforme plano já registrado.",
-    "Reutilizar terrainTexture.ts com novas texturas e sementes por bioma, sem usar ilustração de mapa inteiro como piso."
+    "Validar composição piloto em navegador suportado: cinco viewports, margens/cantos/zoom, movimento, coleta, combate, recarga, saída e acessibilidade.",
+    "Após corrigir e aprovar a inspeção visual, atualizar número do produto e publicar uma revisão pelo fluxo oficial de Sites.",
+    "Completar variantes do kit, então compor dez salas distintas do capítulo 1 antes dos demais biomas."
   ],
   "rollback": {
     "production_changed": true,
@@ -58,7 +63,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
     "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-modular-ground.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -196,5 +201,26 @@
     "game_implementation": "not_started_in_this_research_step",
     "publication": "no_new_game_deploy",
     "next_action": "Integrar uma composição piloto com grama, terra, areia, lago e margens, adaptar cache e validar antes de expandir aos capítulos."
+  },
+  "biome_composition_pilot": {
+    "date": "2026-10-15",
+    "status": "implemented_awaiting_visual_validation",
+    "code_commit": "869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd",
+    "source_base": "5c802bc84578f650694f556831662a8114318cee",
+    "report": "docs/evolution/runs/2026-10-15-biome-composition-pilot.md",
+    "scope": "one combat pilot room only",
+    "materials": [
+      "existing grass",
+      "original Canvas soil",
+      "original Canvas sand",
+      "static water plus separate dynamic ripples"
+    ],
+    "geometry": "same sampled polygon for rendering, collision and route edges",
+    "cache": "one combined static visible buffer; no per-material cache churn",
+    "save_verification": "fake player and loot relocation preserves earned state; no real saves read/written",
+    "art_validation": "not_observed_in_browser",
+    "publication_attempted": false,
+    "public_product_version_unchanged": "1.9.16",
+    "variant_kit": "four/three/three material variants not created in this revision"
   }
 }

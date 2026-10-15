@@ -42,3 +42,5 @@ A execução inicial da suíte completa também encontrou **um teste de integra�
 **Nada publicado nesta revisão.** A skill de evolução exige inspeção real em navegador suportado antes de publicar mudança visual/física. A 1.9.16 pública permanece intacta, assim como domínio, público, contas e progresso. Código salvo no ramo de colaboração para revisão; os commits desta entrega constam do histórico e de `state.json`.
 
 Próximo passo: iniciar preview com navegador suportado; conferir 375×667, 375×812, 390×844, 844×390 e desktop; avaliar nitidez, transições, escala das pedras, ondulação, todos os cantos/zoom, coleta/combate/ponto seguro/saída e recarga de perfil isolado. Corrigir a arte conforme a inspeção e somente então preparar o próximo número e uma publicação oficial. Após aceite, ampliar o kit de variantes e compor dez salas distintas do capítulo 1 antes dos demais biomas. A meta de seis capítulos × dez salas continua pendente; esta revisão não implementa 60 salas.
+
+Commit da implementação: `869272301e4c6cb297f7fc36fbbdd2dde4b4f7fd` (GitHub). A publicação Sites não recebeu push/deploy desta implementação.
