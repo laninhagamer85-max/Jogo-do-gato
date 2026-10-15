@@ -1,6 +1,7 @@
 import { cleanWalkAtlas, homeWalkDirection } from "./petFrameCleanup";
 import { petWalkAtlas, walkFrame } from "./petWalkAtlas";
 import { roamCompanion, type CompanionRoam } from "./companionMotion";
+import { companionWalkAtlas, advanceCompanionGait, type CompanionGait } from "./companionWalkAtlas";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import "@babylonjs/core/Shaders/default.vertex.js";
@@ -44,7 +45,7 @@ function readSave(): ScenePetState {
       sleeping: parsed.sleeping === true,
       gender: parsed.profile?.gender === "menino" || parsed.profile?.gender === "menina" ? parsed.profile.gender : null,
       characterId: parsed.profile?.characterId ?? null,
-      companion: parsed.activeCompanionId === "mimi" || parsed.activeCompanionId === "tico" ? parsed.activeCompanionId : null,
+      companion: typeof parsed.activeCompanionId === 'string' && Object.prototype.hasOwnProperty.call(GAME_ASSETS.companions, parsed.activeCompanionId) ? parsed.activeCompanionId : null,
     };
   } catch {
     return { level: 1, room: 1, skin: "tigrinho", sleeping: false, gender: null, companion: null };
@@ -53,6 +54,7 @@ function readSave(): ScenePetState {
 
 function imageSprite(scene: Scene, name: string, url: string, width: number, height: number): { mesh: Mesh; material: StandardMaterial; texture: Texture } {
   const mesh = MeshBuilder.CreatePlane(name, { width, height }, scene);
+  mesh.alphaIndex = 1000;
   const texture = new Texture(url, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   texture.hasAlpha = true;
   const material = new StandardMaterial(`${name}-material`, scene);
@@ -154,6 +156,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   const girlBow = imageSprite(scene, "girl-pet-bow", GAME_ASSETS.accessories.girl, 0.8, 0.8);
   boyHat.mesh.position.z = -0.22;
   girlBow.mesh.position.z = -0.22;
+  boyHat.mesh.alphaIndex = girlBow.mesh.alphaIndex = 1001;
   boyHat.mesh.isVisible = saved.gender === "menino" && !saved.characterId;
   girlBow.mesh.isVisible = saved.gender === "menina" && !saved.characterId;
 
@@ -161,17 +164,38 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   let companionId: CompanionId | null = null;
   let companionBaseX = 2.2;
   let companionRoam: CompanionRoam | null = null;
+  let companionWalkTexture: Texture | null = null;
+  let companionLoadGeneration = 0;
+  let companionGait: CompanionGait = { phase: 0, direction: { row: 1, mirror: false }, moving: false };
   const setCompanion = (id: CompanionId | null) => {
     if (id === companionId) return;
+    const generation = ++companionLoadGeneration;
+    companionWalkTexture?.dispose(); companionWalkTexture = null;
     companionSprite?.mesh.dispose(false, true);
     companionSprite = null;
     companionRoam = null;
+    companionGait = { phase: 0, direction: { row: 1, mirror: false }, moving: false };
     companionId = id;
     companionShadow.mesh.isVisible = Boolean(id);
     if (!id) return;
     const url = GAME_ASSETS.companions[id];
     companionSprite = imageSprite(scene, `friend-${id}`, url, 1.62, 1.62);
     companionSprite.mesh.position.z = 0.12;
+    const atlas = companionWalkAtlas(id);
+    if (atlas) {
+      const image = new Image();
+      image.onload = () => {
+        if (generation !== companionLoadGeneration || scene.isDisposed) return;
+        const cleaned = cleanWalkAtlas(image);
+        const atlasCanvas = document.createElement('canvas'); atlasCanvas.width = atlasCanvas.height = 1024;
+        const context = atlasCanvas.getContext('2d'); if (!context) return;
+        context.drawImage(cleaned, 0, 0, 1024, 1024);
+        const texture = new DynamicTexture('companion-walk-clean', atlasCanvas, scene, false, Texture.BILINEAR_SAMPLINGMODE);
+        texture.hasAlpha = true; texture.uScale = texture.vScale = 0.25; texture.update();
+        companionWalkTexture = texture;
+      };
+      image.src = atlas;
+    }
   };
   setCompanion(saved.companion);
 
@@ -429,21 +453,31 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     girlBow.mesh.position.set(positionX + moveX + 0.62 * accessoryScale, positionY + wave + jump + 1.40 * accessoryScale, -0.22);
     girlBow.mesh.rotation.z = kitten.rotation.z * 0.6;
     if (companionSprite) {
-      const companionWidth = 1.62 * companionSprite.mesh.scaling.x;
+      const companionWidth = 1.62 * Math.abs(companionSprite.mesh.scaling.x);
       const horizontalLimit = Math.max(0, (viewWidth - companionWidth) / 2);
       const initialPoint = {
         x: Math.max(-horizontalLimit, Math.min(horizontalLimit, positionX + companionBaseX)),
         y: positionY - petWidth * 0.46,
       };
       companionRoam ??= { point: initialPoint, target: null, pauseMs: 1500 };
+      const previousGround = companionRoam.point;
       companionRoam = roamCompanion(companionRoam, {
         left: -horizontalLimit, right: horizontalLimit,
         bottom: -viewHeight / 2 + 0.3,
         top: Math.min(1.25 - petWidth * 0.46, viewHeight / 2 - companionWidth),
-      }, delta, sleeping);
+      }, delta, sleeping, Math.random, { x: positionX, y: positionY - petWidth * 0.46, radius: petWidth * 0.20 + companionWidth * 0.16 });
       const companionGround = companionRoam.point;
+      companionGait = advanceCompanionGait(companionGait, previousGround, companionGround);
+      const hasWalkArt = companionWalkTexture?.isReady();
+      if (hasWalkArt && companionWalkTexture) {
+        companionWalkTexture.uOffset = walkFrame(companionGait.phase) / 4;
+        companionWalkTexture.vOffset = (3 - companionGait.direction.row) / 4;
+        companionSprite.material.diffuseTexture = companionSprite.material.emissiveTexture = companionWalkTexture;
+        companionSprite.mesh.scaling.x = Math.abs(companionSprite.mesh.scaling.x) * (companionGait.direction.mirror ? -1 : 1);
+      }
       // Sprite and shadow share a fixed foot point; no free-running vertical oscillation.
-      companionSprite.mesh.position.set(companionGround.x, companionGround.y + companionWidth * 0.46, 0.12);
+      companionSprite.mesh.position.set(companionGround.x, companionGround.y + companionWidth * (hasWalkArt ? 0.484375 : 0.46), 0.12);
+      companionSprite.mesh.alphaIndex = companionGround.y < positionY - petWidth * 0.46 ? 1002 : 999;
       companionShadow.mesh.position.set(companionGround.x, companionGround.y, 1.9);
       companionShadow.mesh.scaling.set(companionWidth * 0.66, companionWidth * 0.13, 1);
       companionShadow.material.alpha = 0.7;
@@ -453,6 +487,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   return {
     scene,
     dispose: () => {
+      companionLoadGeneration++;
+      companionWalkTexture?.dispose();
       window.removeEventListener("pet:action", onAction);
       window.removeEventListener("pet:skin", onSkin);
       window.removeEventListener("pet:level", onLevel);
