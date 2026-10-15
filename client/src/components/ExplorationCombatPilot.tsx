@@ -51,11 +51,13 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const props = new Image(); props.src = '/forest-adventure/woodland-props-v2.png';
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
-    const bg = new Image(); bg.src = '/forest-adventure/backgrounds/clearing.webp';
+    const itemArt=Object.fromEntries(Object.keys(COMBAT_ITEMS).map(id=>{const image=new Image();image.src='/forest-adventure/items/'+id+'.svg';return [id,image];})) as Record<CombatItem,HTMLImageElement>;
+    const bg = new Image(); bg.src = '/forest-adventure/ground-clearing-unframed-v1.png';
     let assetsReady = false;
-    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && bg.naturalWidth) { assetsReady = true; setAssetStatus('ready'); } };
+    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
     pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; bg.onload = checkAssets;
     pet.onerror = atlas.onerror = enemies.onerror = props.onerror = bg.onerror = () => { assetsReady = false; setAssetStatus('error'); };
+    Object.values(itemArt).forEach(image=>{image.onload=checkAssets;image.onerror=()=>{assetsReady=false;setAssetStatus('error');};});
     checkAssets();
     let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -85,7 +87,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         if (changedEvent || now - savedAt > 1000) { persist(); savedAt = now; }
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
       }
-      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props);
+      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt);
       frame = window.requestAnimationFrame(loop);
     };
     frame = window.requestAnimationFrame(loop);

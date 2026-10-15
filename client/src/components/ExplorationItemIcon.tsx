@@ -1,3 +1,4 @@
+import React from "react";
 import type { CombatItem } from '@/game/explorationCombat';
 /** Original vector inventory art, shared by the backpack and quick-use slots. */
 export default function ExplorationItemIcon({ item, size = 40 }: { item: CombatItem | 'broche'; size?: number }) {

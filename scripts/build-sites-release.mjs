@@ -8,6 +8,8 @@ const config = await readFile(path.join(root, '.env.production'), 'utf8');
 for (const name of ['VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_PROJECT_ID', 'VITE_FIREBASE_APP_ID']) {
   if (!new RegExp(`^${name}=.+$`, 'm').test(config)) throw new Error(`Missing published client setting: ${name}`);
 }
+const icons = spawnSync(process.execPath, ['--import','tsx','scripts/export-exploration-items.ts'], {cwd:root,stdio:'inherit'});
+if(icons.status!==0)process.exit(icons.status??1);
 const result = spawnSync(process.execPath, ['node_modules/vite/bin/vite.js', 'build'], { cwd: root, stdio: 'inherit' });
 if (result.status !== 0) process.exit(result.status ?? 1);
 // Keep existing hashed assets available to tabs opened before the update.

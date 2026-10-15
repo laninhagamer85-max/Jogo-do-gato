@@ -1,37 +1,28 @@
 /** Quiet terrain: one unique camera-anchored plane, no repeat or mirrored tiles. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'chapter-clearing-v5',seed:5102026,base:'#638b36',light:'#a3bd65',shade:'#4d742d'};
-export const GROUND_WORLD={left:-10,top:-14,width:34,height:38,pixelsPerTile:36};
+export const FOREST_GROUND:GroundTheme={id:'unframed-clearing-v6',seed:5102026,base:'#638b36',light:'#a3bd65',shade:'#4d742d'};
+export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 export function groundVariations(seed:number){
   let value=seed>>>0;const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
   return Array.from({length:18},()=>({x:random(),y:random(),radius:.07+random()*.12,light:random()>.5}));
 }
-const groundPlanes=new WeakMap<HTMLImageElement,{key:string;canvas:HTMLCanvasElement}>();
+/** A single opaque floor covers the complete camera domain: no masked rectangle or tiled backdrop. */
 export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND){
-  ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
-  if(!image.complete||!image.naturalWidth)return;
-  const key=JSON.stringify(theme);let plane=groundPlanes.get(image);
-  if(!plane||plane.key!==key){
-    // Keep chapter artwork at ROOM scale, not enlarged across the 34×38 padding.
-    const canvas=document.createElement('canvas');canvas.width=14*96;canvas.height=10*96;
-    const g=canvas.getContext('2d');if(!g)return;
-    const fit=chapterGroundCrop(image.naturalWidth,image.naturalHeight);
-    g.drawImage(image,fit.x,fit.y,fit.width,fit.height,0,0,canvas.width,canvas.height);
-    // Feather only the outermost edge into the forest floor beyond the playable room.
-    g.globalCompositeOperation='destination-in';
-    const horizontal=g.createLinearGradient(0,0,canvas.width,0);
-    horizontal.addColorStop(0,'transparent');horizontal.addColorStop(.035,'#000');horizontal.addColorStop(.965,'#000');horizontal.addColorStop(1,'transparent');
-    g.fillStyle=horizontal;g.fillRect(0,0,canvas.width,canvas.height);
-    const vertical=g.createLinearGradient(0,0,0,canvas.height);
-    vertical.addColorStop(0,'transparent');vertical.addColorStop(.035,'#000');vertical.addColorStop(.965,'#000');vertical.addColorStop(1,'transparent');
-    g.fillStyle=vertical;g.fillRect(0,0,canvas.width,canvas.height);
-    plane={key,canvas};groundPlanes.set(image,plane);
-  }
-  ctx.drawImage(plane.canvas,left,top,14*tile,10*tile);
+  if(!image.complete||!image.naturalWidth){ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);return;}
+  const fit=chapterGroundCrop(image.naturalWidth,image.naturalHeight,GROUND_WORLD.width/GROUND_WORLD.height);
+  ctx.drawImage(image,fit.x,fit.y,fit.width,fit.height,left+GROUND_WORLD.left*tile,top+GROUND_WORLD.top*tile,GROUND_WORLD.width*tile,GROUND_WORLD.height*tile);
+  // Fine low-contrast strokes stay sharp at native canvas density, including zoomed duels.
+  const tufts=[];
+  for(let y=Math.floor(-top/tile)-1;y<=Math.ceil((height-top)/tile)+1;y++)for(let x=Math.floor(-left/tile)-1;x<=Math.ceil((width-left)/tile)+1;x++)tufts.push(...grassTufts(x,y,theme.seed));
+  ctx.save();ctx.globalAlpha=.18;ctx.lineWidth=Math.max(.6,tile*.008);ctx.lineCap='round';
+  for(let tone=0;tone<4;tone++){
+    ctx.strokeStyle=['#87a83b','#c0d867','#6e9836','#a6c54c'][tone];ctx.beginPath();
+    for(const q of tufts)if(q.tone===tone){const x=left+q.x*tile,y=top+q.y*tile;ctx.moveTo(x,y);ctx.quadraticCurveTo(x+q.lean*tile*.2,y-tile*.015,x+q.lean*tile*.4,y-tile*.035);}
+    ctx.stroke();
+  }ctx.restore();
 }
-/** Cover the room with one source crop, preserving the chapter artwork's proportions. */
-export function chapterGroundCrop(width:number,height:number){
-  const aspect=14/10;
+/** Centered source crop preserves the original artwork proportions. */
+export function chapterGroundCrop(width:number,height:number,aspect=14/10){
   if(width/height>aspect){const w=height*aspect;return {x:(width-w)/2,y:0,width:w,height};}
   const h=width/aspect;return {x:0,y:(height-h)/2,width,height:h};
 }

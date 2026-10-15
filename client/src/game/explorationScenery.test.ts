@@ -42,3 +42,17 @@ it('uses one centered chapter crop without stretching or reading outside the sou
   const p=chapterGroundCrop(w,h);expect(p.width/p.height).toBeCloseTo(1.4,10);expect(p.x).toBeGreaterThanOrEqual(0);expect(p.y).toBeGreaterThanOrEqual(0);expect(p.x+p.width).toBeLessThanOrEqual(w);expect(p.y+p.height).toBeLessThanOrEqual(h);
  }
 });
+
+import {drawExplorationGround} from './explorationScenery';
+it('actually paints one opaque image across the viewport at every corner, zoom and overview',()=>{
+ const background={complete:true,naturalWidth:1254,naturalHeight:1254} as HTMLImageElement;
+ for(const [w,h] of [[375,667],[375,812],[390,844],[844,390],[1366,768]])for(const player of [{x:1.22,y:1.22},{x:12.78,y:1.22},{x:1.22,y:8.78},{x:12.78,y:8.78}])for(const zoom of [1,1.25,1.5,1.75,2])for(const overview of [false,true]){
+  const calls:unknown[][]=[];let fills=0;
+  const ctx=new Proxy({drawImage:(...args:unknown[])=>calls.push(args),fillRect:()=>fills++},{get:(target,key)=>key in target?target[key as keyof typeof target]:()=>{}}) as unknown as CanvasRenderingContext2D;
+  const v=combatView(w,h,player,zoom,overview);drawExplorationGround(ctx,w,h,background,v.left,v.top,v.tile);
+  expect(calls).toHaveLength(1);expect(fills).toBe(0);
+  const [,sx,sy,sw,sh,dx,dy,dw,dh]=calls[0] as number[];
+  expect(dx).toBeLessThanOrEqual(.00001);expect(dy).toBeLessThanOrEqual(.00001);expect(dx+dw).toBeGreaterThanOrEqual(w-.00001);expect(dy+dh).toBeGreaterThanOrEqual(h-.00001);
+  expect(dw/sw).toBeCloseTo(dh/sh,8);expect(sx+sw).toBeLessThanOrEqual(1254.00001);expect(sy+sh).toBeLessThanOrEqual(1254.00001);
+ }
+});

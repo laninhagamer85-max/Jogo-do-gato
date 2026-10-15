@@ -1,5 +1,5 @@
 import { ROOM_EDGES, ROOM_SCENERY } from "./explorationRoom";
-import { drawExplorationGround, drawWoodlandProp } from "./explorationScenery";
+import { drawExplorationGround, drawWoodlandProp, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
@@ -10,14 +10,17 @@ export function combatCanvasScale(width:number,height:number,pixelRatio:number){
   return Math.max(.5,Math.min(3,Math.max(1,pixelRatio||1),Math.sqrt(6_000_000/(Math.max(1,width)*Math.max(1,height)))));
 }
 export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false) {
-  const tile = overview ? Math.min(width / PILOT_SIZE.width, Math.max(1, height - 100) / PILOT_SIZE.height) : Math.max(52, width / 11, height / 9) * zoom;
+  const desiredTile = overview ? Math.min(width / PILOT_SIZE.width, Math.max(1, height - 100) / PILOT_SIZE.height) : Math.max(52, width / 11, height / 9) * zoom;
+  const tile=Math.max(desiredTile,width/GROUND_WORLD.width,height/GROUND_WORLD.height);
   const bw = tile * PILOT_SIZE.width, bh = tile * PILOT_SIZE.height;
   const left = overview ? (width - bw) / 2 : width / 2 - player.x * tile;
   const top = overview ? (height - bh) / 2 : height * .46 - player.y * tile;
-  return { tile, left, top };
+  return {tile,
+    left:Math.max(width-(GROUND_WORLD.left+GROUND_WORLD.width)*tile,Math.min(-GROUND_WORLD.left*tile,left)),
+    top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>) {
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
@@ -33,11 +36,11 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const exit = point(PILOT_EXIT); ctx.strokeStyle = state.gateOpen ? '#ffe4a2' : '#80907c'; ctx.lineWidth = Math.max(3, t * .06); ctx.beginPath(); ctx.arc(exit.x, exit.y, t * .4, 0, Math.PI * 2); ctx.stroke();
   for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
-    drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2);
+    drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2,itemArt?.[n.item]);
   }
   for (const loot of state.loot) {
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
-    drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2);
+    drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
   }
   const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
@@ -55,8 +58,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         const attacking=enemy.attackAt-state.time>1250 && enemy.attackAt-state.time<=1500;
         if(attacking&&!reducedMotion)ctx.rotate(-.08*Math.sin((1500-enemy.attackAt+state.time)/250*Math.PI));
-        const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dh=t*1.02*sh/cw;
-        ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-t*.51,t*.07-dh,t*1.02,dh);ctx.restore();
+        const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dh=t*.82*sh/cw;
+        ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-t*.41,t*.07-dh,t*.82,dh);ctx.restore();
       }
       ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .37, p.y - t * .88, t * .74, t * .075);
       ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .37, p.y - t * .88, t * .74 * enemy.hp / def.hp, t * .075);
@@ -89,7 +92,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
 }
 
 /** Common pickup language for enemy drops and room collection nodes. */
-function drawPickup(ctx:CanvasRenderingContext2D,item:keyof typeof COMBAT_ITEMS,p:CombatPoint,tile:number,lift:number,quantity:number,near:boolean){
+function drawPickup(ctx:CanvasRenderingContext2D,item:keyof typeof COMBAT_ITEMS,p:CombatPoint,tile:number,lift:number,quantity:number,near:boolean,image?:HTMLImageElement){
   ctx.save();
   // A restrained contact shadow stays on the ground while the item falls or hovers.
   const shadow=ctx.createRadialGradient(p.x,p.y+tile*.06,0,p.x,p.y+tile*.06,tile*.28);
@@ -98,7 +101,8 @@ function drawPickup(ctx:CanvasRenderingContext2D,item:keyof typeof COMBAT_ITEMS,
   ctx.fillStyle='rgba(18,35,20,.08)';ctx.beginPath();ctx.arc(0,0,tile*.24,0,Math.PI*2);ctx.fill();ctx.restore();
   ctx.fillStyle=shadow;ctx.beginPath();ctx.ellipse(p.x,p.y+tile*.06,tile*.3,tile*.12,0,0,Math.PI*2);ctx.fill();
   const y=p.y-lift*tile-tile*.12;
-  drawGroundItem(ctx,item,{x:p.x,y:y+tile*.07},tile*.65,0);
+  if(image?.complete&&image.naturalWidth)ctx.drawImage(image,p.x-tile*.29,y-tile*.36,tile*.58,tile*.58);
+  else drawGroundItem(ctx,item,{x:p.x,y:y+tile*.07},tile*.65,0);
   if(near){
     ctx.font='500 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
     const label=`${COMBAT_ITEMS[item]} ×${quantity}`,w=ctx.measureText(label).width+10,ly=y+tile*.34;
