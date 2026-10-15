@@ -16,3 +16,12 @@ Rollback: 1.9.6 / Sites 25 preservada. Nenhum merge/force-push.
 Próximo: David atualizar a página e entrar em Exploração → Sala piloto → Repetir sala piloto.
 
 Resultados: TypeScript aprovado, 144/144 testes offline em 22 arquivos, build aprovado (aviso existente de chunks grandes).
+
+## Publicação confirmada
+1.9.7 / Sites 26 publicada em 15/10/2026 às 11:03:28 (America/Sao_Paulo).
+URL: https://meupet.aquimeusite.chatgpt.site/
+Source commit: 9f03845c5a7ca3de0b3874e08b2583a906abbc13
+GitHub código: 08295a37ba7dd372874c78ad448992cde40e70fa
+Versão salva: appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191
+Deployment: appgdep_6ad0dd193dac8191955a12ae5aa1f08a — succeeded.
+Pacote oficial validado com gzip antes do upload. Nenhuma tentativa de deploy duplicada. Save real do usuário não foi editado; reabertura depende do toque explícito no novo botão. Validação visual pelo usuário segue pendente.
