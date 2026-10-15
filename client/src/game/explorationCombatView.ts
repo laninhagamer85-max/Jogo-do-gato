@@ -1,7 +1,7 @@
 import { ROOM_EDGES, ROOM_SCENERY } from "./explorationRoom";
 import { drawExplorationGround, drawWoodlandProp } from "./explorationScenery";
-import { combatAttackPose, combatLootLift } from "./combatPresentation";
-import { combatLevel, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
+import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
+import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
 
@@ -31,12 +31,13 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
   const exit = point(PILOT_EXIT); ctx.strokeStyle = state.gateOpen ? '#ffe4a2' : '#80907c'; ctx.lineWidth = Math.max(3, t * .06); ctx.beginPath(); ctx.arc(exit.x, exit.y, t * .4, 0, Math.PI * 2); ctx.stroke();
-  for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) drawGroundItem(ctx,n.item,point(n),t*.35,0);
+  for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {
+    const cue=combatPickupCue(state.time,0,reducedMotion);
+    drawPickup(ctx,n.item,point(n),t,cue.hover,cue.glow,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2);
+  }
   for (const loot of state.loot) {
-    const p=point(loot), lift=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion);
-    ctx.fillStyle='rgba(20,38,19,.25)';ctx.beginPath();ctx.ellipse(p.x,p.y+t*.06,t*.17,t*.07,0,0,Math.PI*2);ctx.fill();
-    drawGroundItem(ctx,loot.item,{x:p.x,y:p.y-lift*t},t*.44,lift);
-    ctx.fillStyle='#f3eac6';ctx.font='500 10px sans-serif';ctx.textAlign='center';ctx.fillText(`×${loot.quantity}`,p.x,p.y-t*.37-lift*t);
+    const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
+    drawPickup(ctx,loot.item,p,t,fall+cue.hover,cue.glow,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2);
   }
   const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
@@ -85,6 +86,24 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     ctx.lineWidth = 2; ctx.strokeStyle = '#243a30'; ctx.strokeText(f.text.replace(/ HP$/, ''), p.x, y);
     ctx.fillStyle = f.kind === 'damage' ? '#e9a19a' : f.kind === 'heal' ? '#b9d8b0' : f.kind === 'xp' ? '#ddd2ac' : '#fffbe7'; ctx.fillText(f.text.replace(/ HP$/, ''), p.x, y); ctx.restore();
   });
+}
+
+/** Common pickup language for enemy drops and room collection nodes. */
+function drawPickup(ctx:CanvasRenderingContext2D,item:keyof typeof COMBAT_ITEMS,p:CombatPoint,tile:number,lift:number,glow:number,quantity:number,near:boolean){
+  ctx.save();
+  const radius=tile*.46,halo=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,radius);
+  halo.addColorStop(0,`rgba(255,229,146,${glow*.5})`);halo.addColorStop(1,'rgba(255,229,146,0)');
+  ctx.fillStyle=halo;ctx.fillRect(p.x-radius,p.y-radius,radius*2,radius*2);
+  // A dark backing and cream rim remain legible on bright grass, water or soil.
+  const y=p.y-lift*tile-tile*.12;
+  ctx.fillStyle='#193b2de6';ctx.strokeStyle='#f4e6b4';ctx.lineWidth=Math.max(1.5,tile*.022);
+  ctx.beginPath();ctx.arc(p.x,y,tile*.27,0,Math.PI*2);ctx.fill();ctx.stroke();
+  drawGroundItem(ctx,item,{x:p.x,y:y+tile*.07},tile*.65,0);
+  ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  const label=near?`${COMBAT_ITEMS[item]} ×${quantity}`:`×${quantity}`,w=ctx.measureText(label).width+12,ly=y+tile*.36;
+  ctx.fillStyle='#18382bef';ctx.beginPath();ctx.roundRect(p.x-w/2,ly-9,w,18,6);ctx.fill();
+  ctx.fillStyle='#fff3cf';ctx.fillText(label,p.x,ly);
+  ctx.restore();
 }
 
 /** Original item silhouettes match the visual inventory, rather than generic squares. */

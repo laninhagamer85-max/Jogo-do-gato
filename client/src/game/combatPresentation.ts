@@ -23,3 +23,11 @@ export function forestStickDirection(value:{x:number;y:number}):'up'|'down'|'lef
   if(!Number.isFinite(value.x)||!Number.isFinite(value.y)||Math.hypot(value.x,value.y)<.14)return null;
   return Math.abs(value.x)>Math.abs(value.y)?value.x>0?'right':'left':value.y>0?'down':'up';
 }
+
+/** Visual-only pickup cue. Ground coordinates and collection radius never move. */
+export function combatPickupCue(time:number,landedAt:number|undefined,reducedMotion:boolean){
+  if(reducedMotion)return {hover:0,glow:.86};
+  const elapsed=Math.max(0,time-(landedAt??0));
+  if(time<(landedAt??0))return {hover:0,glow:.86};
+  return {hover:.045*(1-Math.cos(elapsed/520)),glow:.86+.1*Math.sin(elapsed/650)};
+}
