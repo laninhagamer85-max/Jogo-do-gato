@@ -1,7 +1,7 @@
 import { cleanWalkAtlas, homeWalkDirection } from "./petFrameCleanup";
 import { petWalkAtlas, walkFrame } from "./petWalkAtlas";
 import { roamCompanion, type CompanionRoam } from "./companionMotion";
-import { companionWalkAtlas, advanceCompanionGait, type CompanionGait } from "./companionWalkAtlas";
+import { companionWalkAtlas, companionWaitingForWalkArt, advanceCompanionGait, type CompanionGait } from "./companionWalkAtlas";
 import { roomDepthIndex, decorationDepthIndex } from "./roomDepth";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
@@ -464,15 +464,15 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
         y: positionY - petWidth * 0.46,
       };
       companionRoam ??= { point: initialPoint, target: null, pauseMs: 1500 };
+      const hasWalkArt = Boolean(companionWalkTexture?.isReady());
       const previousGround = companionRoam.point;
       companionRoam = roamCompanion(companionRoam, {
         left: -horizontalLimit, right: horizontalLimit,
         bottom: -viewHeight / 2 + 0.3,
         top: Math.min(1.25 - petWidth * 0.46, viewHeight / 2 - companionWidth),
-      }, delta, sleeping, Math.random, { x: positionX, y: positionY - petWidth * 0.46, radius: petWidth * 0.20 + companionWidth * 0.16 });
+      }, delta, sleeping || companionWaitingForWalkArt(companionId, hasWalkArt), Math.random, { x: positionX, y: positionY - petWidth * 0.46, radius: petWidth * 0.20 + companionWidth * 0.16 });
       const companionGround = companionRoam.point;
       companionGait = advanceCompanionGait(companionGait, previousGround, companionGround, companionRoam.lookAt);
-      const hasWalkArt = companionWalkTexture?.isReady();
       if (hasWalkArt && companionWalkTexture) {
         companionWalkTexture.uOffset = walkFrame(companionGait.phase) / 4;
         companionWalkTexture.vOffset = (3 - companionGait.direction.row) / 4;

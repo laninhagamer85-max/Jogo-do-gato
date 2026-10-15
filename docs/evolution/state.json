@@ -4,34 +4,28 @@
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
   "status": "preparing_authorized_release",
-  "active_run": "2026-10-14-v18-pet-size",
+  "active_run": "2026-10-15-mimo-walk",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "recovery/mobile-review-20261009",
-    "pull_request": 4,
-    "base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
-    "implementation_commit": "524be68b1be8f3d001483e5e52785830b269ab86",
-    "release_commit": "8f6065e0cde1b465635fe2e68d2b44b5302be8d8"
+    "branch": "fix/companion-room-roaming-20261015",
+    "base_commit": "f27f6eb7be59fbb893a8fcf82945f5de486a1098"
   },
   "current_improvement": {
-    "id": "sol-anticipation-before-walk",
-    "implementation_status": "published_for_user_review",
-    "acceptance_status": "user_mobile_review_requested"
+    "id": "mimo-house-one-walk",
+    "implementation_status": "implemented",
+    "acceptance_status": "user_visual_review_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
+    "product_version": "1.9.2",
     "last_observed_version": 21,
-    "attempted_in_this_cycle": true,
     "status": "succeeded",
-    "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
     "deployment_id": "appgdep_6ad088b6eea48191b128f8c88be01487",
     "site_commit": "c2ee904450f7576cbf14451105c935598a7c84b5",
-    "published_at": "2026-10-15T08:03:26.541391+00:00",
-    "product_version": "1.9.2",
-    "source_commit": "c2ee904450f7576cbf14451105c935598a7c84b5"
+    "published_at": "2026-10-15T05:04:14-03:00",
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
@@ -48,30 +42,28 @@
     },
     "real_online_phases_completed_in_cycle": 0,
     "account_save_isolation": "passed_fake_storage_only",
-    "atlas_integrity": "passed_original_png_hash_and_region_bounds"
+    "atlas_integrity": "passed_original_png_hash_and_region_bounds",
+    "offline_tests": "124/124_passed_21_files"
   },
   "blockers": [
     {
-      "code": "browser_qa_unavailable",
-      "detail": "Managed Linux sem skill/control-browser disponível. Não foi iniciado servidor de preview nem instalado/improvisado navegador."
-    },
-    {
-      "code": "source_parity_validation_pending",
-      "detail": "Painel de conta e atlas restaurados na fonte; falta equivalência visual e teste de autenticação em perfil isolado antes de substituir v8."
+      "code": "visual_review_pending",
+      "detail": "Navegador control-browser indisponível; sem preview alternativo. Autorização persistente de David para publicar e revisar no celular, com limitações explícitas."
     }
   ],
   "next_actions": [
-    "David mobile review of Sol gait, gentle roaming and detours",
-    "Expand own directional art to remaining house friends in later cycles",
-    "Validate six main pets visually",
-    "Portrait room layout and indicator audit"
+    "David: observar patas, mudança de direção, repouso e desvio do Mimo na casa 1; Sol casa 4 preservado.",
+    "Expandir gradualmente arte própria aos demais amigos após retorno visual.",
+    "Retomar layout vertical da Minha Casa e auditoria de indicadores.",
+    "Expandir salas/biomas da Exploração depois da estabilização dos personagens."
   ],
   "rollback": {
-    "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b7d8ac1804588191aa00c7a123247c13",
-    "instructions": "Restaurar v15 pelo fluxo oficial, após checar concorrência."
+    "production_changed": false,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
+    "product_version": "1.9.2",
+    "instructions": "Restaurar versão salva 1.9.2 pelo fluxo oficial após checar publicações concorrentes; preservar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-sol-anticipation.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-mimo-walk.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -127,15 +119,17 @@
     "product_version": "1.9.2",
     "hold_ms": 1000,
     "offline_tests": 122,
-    "status": "succeeded",
+    "status": "preparing_publication",
     "browser": "not_run_control_browser_unavailable",
-    "decoration_depth": "shared_floor_contact_sorting",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
-    "deployment_id": "appgdep_6ad088b6eea48191b128f8c88be01487",
-    "source_commit": "c2ee904450f7576cbf14451105c935598a7c84b5",
-    "published_at": "2026-10-15T08:03:26.541391+00:00",
-    "url": "https://meupet.aquimeusite.chatgpt.site",
-    "typescript": "passed",
-    "build": "passed_existing_chunk_warning"
+    "decoration_depth": "shared_floor_contact_sorting"
+  },
+  "mimo_walk": {
+    "product_version": "1.9.3",
+    "status": "implemented_preparing_release",
+    "art": "original_generated_16_frames_4_directions_rgba",
+    "asset_sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
+    "rollout": "Mimo_house1; Sol_house4_preserved",
+    "load_safety": "wait_for_own_walk_texture_before_roaming",
+    "visual_validation": "static_atlas_inspected_only; gameplay_pending"
   }
 }

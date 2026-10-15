@@ -14,7 +14,14 @@ export function advanceCompanionGait(gait: CompanionGait, previous: GroundPoint,
   return { phase: (gait.phase + travel / 0.72) % 1, direction: homeWalkDirection(dx, dy), moving: true };
 }
 
-/** Roll out one house at a time; do not borrow another friend's identity. */
+/** Roll out one house at a time; each friend keeps its own artwork. */
 export function companionWalkAtlas(id: CompanionId | null) {
-  return id === 'sol' ? '/manus-storage/sol-walk-v1.png' : undefined;
+  if (id === 'sol') return '/manus-storage/sol-walk-v1.png';
+  if (id === 'mimo') return '/manus-storage/mimo-walk-v1.png';
+  return undefined;
+}
+
+/** Keep the original portrait still until its own walking texture is ready. */
+export function companionWaitingForWalkArt(id: CompanionId | null, ready: boolean) {
+  return Boolean(companionWalkAtlas(id)) && !ready;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { advanceCompanionGait, companionWalkAtlas, type CompanionGait } from './companionWalkAtlas';
+import { advanceCompanionGait, companionWalkAtlas, companionWaitingForWalkArt, type CompanionGait } from './companionWalkAtlas';
 import { walkFrame } from './petWalkAtlas';
 
 describe('Sol walking tied to actual displacement', () => {
@@ -19,11 +19,26 @@ describe('Sol walking tied to actual displacement', () => {
     expect(advanceCompanionGait(idle, { x: 0, y: 0 }, { x: 0, y: 0.1 }).direction.row).toBe(2);
     expect(advanceCompanionGait(idle, { x: 0, y: 0 }, { x: 0, y: -0.1 }).direction.row).toBe(1);
   });
-  it('keeps rollout limited to the house-four identity', () => {
+  it('gives each enabled friend its own atlas and leaves others untouched', () => {
     expect(companionWalkAtlas('sol')).toContain('sol-walk');
+    expect(companionWalkAtlas('mimo')).toContain('mimo-walk');
+    expect(companionWalkAtlas('mimo')).not.toBe(companionWalkAtlas('sol'));
     expect(companionWalkAtlas('mimi')).toBeUndefined();
     expect(companionWalkAtlas('tico')).toBeUndefined();
     expect(companionWalkAtlas(null)).toBeUndefined();
+  });
+  it('returns to rest and keeps the last facing after a pause', () => {
+    const moving = advanceCompanionGait(idle, { x: 1, y: 0 }, { x: 0.8, y: 0 });
+    const stopped = advanceCompanionGait(moving, { x: 0.8, y: 0 }, { x: 0.8, y: 0 });
+    expect(stopped).toEqual({ phase: 0, moving: false, direction: moving.direction });
+  });
+  it('prevents sliding on a slow or failed texture load, without freezing unconverted friends', () => {
+    for (const id of ['mimo', 'sol'] as const) {
+      expect(companionWaitingForWalkArt(id, false)).toBe(true);
+      expect(companionWaitingForWalkArt(id, true)).toBe(false);
+    }
+    expect(companionWaitingForWalkArt('tico', false)).toBe(false);
+    expect(companionWaitingForWalkArt(null, false)).toBe(false);
   });
   it('faces the planned first leg while keeping paws and position still during anticipation', () => {
     const point = { x: 1, y: -1 };
