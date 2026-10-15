@@ -1,94 +1,164 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-14",
+  "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_prototype_with_accepted_limits",
+  "status": "implemented_awaiting_visual_validation",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "recovery/mobile-review-20261009",
-    "pull_request": 4,
-    "base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
-    "implementation_commit": "b044f19da926f0b34247be34ab64a658921b064c",
-    "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f",
-    "published_source_branch": "feat/forest-path-chapter1-20261014",
-    "published_source_commit": "d57861a58ad16d905d044ab8ffceb952b69ef7bb",
-    "published_source_pr": 7
+    "branch": "fix/exploration-continuous-floor-20261015",
+    "base_commit": "2a55e4dc210b3433bd85c6c84e9de9311205a944",
+    "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
+    "coordination_branch": "recovery/mobile-review-20261009",
+    "implementation_commit": "4f1c114179737c1db94657ecd0d60cc968899d79"
   },
   "current_improvement": {
-    "id": "bosque-dos-caminhos-three-chapters-six-rooms",
-    "implementation_status": "published",
-    "acceptance_status": "external_browser_prototype_QA_user_requested_publish"
+    "id": "exploration-continuous-floor",
+    "implementation_status": "implemented",
+    "acceptance_status": "browser_validation_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 13,
-    "attempted_in_this_cycle": true,
-    "status": "succeeded",
-    "authorization": "David requested verifying and publishing Manus final update on 2026-10-14.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2cca64c99c4881919ba593b887dcceee",
-    "deployment_id": "appgdep_6acfd30349348191bbe94dbbe1d902f9",
-    "site_commit": "2ad7a348712bacfeb2391ef8b92a979e71dc8135",
-    "published_at": "2026-10-14T19:08:08.137739+00:00"
+    "product_version": "1.9.4",
+    "last_observed_version": 23,
+    "status": "unchanged",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
+    "deployment_id": "appgdep_6ad09396f0d08191832779184e1f62b2",
+    "site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
+    "published_at": "2026-10-15T05:49:53-03:00",
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "73/73_passed",
+    "offline_tests": "125/125_passed_21_files",
     "build": "passed_existing_chunk_warning",
-    "browser": "External Manus UI-driven fixture completion of 6 rooms; exact PR7 client hashes verified",
-    "local_browser": "unavailable_not_repeated",
-    "phase1": "1_agent_guided_completion_0_deaths_keyboard",
-    "phase2": "organic_unlock_and_touch_start_only",
+    "entry_selection": "passed_101_input_states_not_playthroughs",
+    "published_parity": "passed_fake_storage_only",
+    "browser": "not_run_required_control_browser_unavailable",
     "viewports": {
-      "375x667": "external_layout_passed_not_full_playthrough_each",
-      "375x812": "external_layout_passed_not_full_playthrough_each",
-      "390x844": "external_layout_passed_not_full_playthrough_each",
-      "844x390": "external_layout_passed_not_full_playthrough_each",
-      "1366x768": "external_layout_passed_not_full_playthrough_each"
+      "375x667": "not_tested",
+      "375x812": "not_tested",
+      "390x844": "not_tested",
+      "844x390": "not_tested",
+      "1366x768": "not_tested"
     },
-    "online_phases_completed": 0,
-    "physical_mobile": "not_tested",
-    "firebase_integration": "not_run_staging_credentials_absent",
-    "forest_puzzle": "3_chapters_6_rooms_completed_external_browser_390x844_other_viewports_layout_only",
-    "qa_exclusion": "passed_pages_and_attributes_absent"
+    "real_online_phases_completed_in_cycle": 0
   },
   "blockers": [
     {
-      "code": "remaining_coverage",
-      "detail": "Physical mobile/touch completion and isolated account authentication remain untested; local managed browser absent. External Manus browser evidence accepted for unchanged runtime."
+      "code": "browser_visual_gate",
+      "detail": "Ambiente managed-linux sem control-browser. Não foi iniciado preview alternativo. O pedido deste ciclo exige validação visual antes de publicação."
     }
   ],
   "next_actions": [
-    "Physical mobile test: controls, rotation, safe areas and Web Audio.",
-    "Isolated staging validation of forest progress migration/persistence; do not touch real players.",
-    "Develop final directional animation; audit remaining lateral phases gradually."
+    "Conferir piso contínuo, água, obstáculos, pontes e objetos nos três capítulos, em retrato e paisagem, com navegador suportado e perfil isolado.",
+    "Após aceite visual publicar correção; atribuir nova versão de produto somente no fechamento.",
+    "Definir regras de progressão/economia e construir sala piloto de combate, coleta e inventário; depois ampliar capítulo 1 para dez salas.",
+    "Manter pendências da Minha Casa (retratro/indicadores), sem misturar alterações nesta revisão."
   ],
   "rollback": {
-    "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
-    "instructions": "Restore v12 through official Sites flow after checking concurrent publications; preserve player saves."
+    "production_changed": false,
+    "product_version": "1.9.4",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
+    "instructions": "Publicação atual preservada; correção visual isolada no ramo de revisão, sem alterar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-sites-bosque-release.md",
-  "continuation": {
-    "checked_date": "2026-10-14",
-    "source_head": "6076ee16ccdb9e6d722ba41ddb600c348c54ca68",
-    "recurrence": "paused_missing_required_browser",
-    "tests_this_cycle": [
-      "terrain_geometry_and_draw_commands_passed",
-      "adventure_entry_101_input_states_passed",
-      "typescript_passed"
-    ],
-    "build_this_cycle": "not_repeated_unchanged_source_last_pass_2026-10-13",
-    "resume_condition": "Disponibilizar control-browser no ambiente de Sites, retomar validação isolada e reativar a rotina após resolver o bloqueio.",
-    "release_resolution": "Manus external browser acceptance resolves stage-1 gate for exact runtime; recurrence remains paused."
-  },
+  "latest_report": "docs/evolution/runs/2026-10-15.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
     "icon_atlas": "49_regions_67_symbol_mappings_restored",
     "real_account_actions_performed": false
-  }
+  },
+  "pilot_review": {
+    "status": "preparing_v18_pet_only_scale",
+    "variant": [
+      "menino-prata",
+      "menino-preto",
+      "menino-laranja",
+      "menina-creme",
+      "menina-calico",
+      "menina-azul"
+    ],
+    "scope": "silver walk across three modes, camera safe region, inspection input guards",
+    "publication": "v16_succeeded",
+    "offline_tests": 102,
+    "branch": "fix/pet-walk-camera-20261014",
+    "pull_request": 9,
+    "github_commit": "726777ced125823f38a18f37785814bfb166d98f",
+    "user_acceptance": "v16_black_kitten_adventure_approved_only"
+  },
+  "companion_roaming": {
+    "status": "publishing_for_user_review",
+    "product_version": "1.9",
+    "offline_tests": 109,
+    "typescript": "passed",
+    "build": "passed_before_release_label_change_rebuilding",
+    "browser": "unavailable",
+    "paw_animation": "not_implemented_static_companion_art",
+    "github_branch": "fix/companion-room-roaming-20261015",
+    "github_code_commit": "f462070cd2653105dacacb499399ac9a1e46948f",
+    "authorization": "David explicitly requested publishing on 2026-10-15 to inspect on his phone and report back, after being told paws and browser validation remain pending."
+  },
+  "sol_walk": {
+    "product_version": "1.9.1",
+    "status": "preparing_publication",
+    "offline_tests": 116,
+    "typescript": "passed_before_final_packaging",
+    "browser": "not_run_control_browser_unavailable",
+    "art": "original_generated_16_frames_4_directions_alpha",
+    "speed_world_units_per_second": 0.8,
+    "pause_ms": [
+      4000,
+      8000
+    ],
+    "collision": "visibility_graph_around_main_pet_footprint",
+    "rollout": "Sol_house4_only"
+  },
+  "sol_anticipation": {
+    "product_version": "1.9.2",
+    "hold_ms": 1000,
+    "offline_tests": 122,
+    "status": "preparing_publication",
+    "browser": "not_run_control_browser_unavailable",
+    "decoration_depth": "shared_floor_contact_sorting"
+  },
+  "mimo_walk": {
+    "product_version": "1.9.3",
+    "status": "published_for_user_review",
+    "art": "original_generated_16_frames_4_directions_rgba",
+    "asset_sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
+    "rollout": "Mimo_house1; Sol_house4_preserved",
+    "load_safety": "wait_for_own_walk_texture_before_roaming",
+    "visual_validation": "static_atlas_inspected_only; gameplay_pending",
+    "acceptance": "David approved movement on 2026-10-15 after 1.9.3 publication"
+  },
+  "all_companions_walk": {
+    "product_version": "1.9.4",
+    "status": "published_for_user_batch_review",
+    "companions": 12,
+    "new_atlases": 10,
+    "frames_per_atlas": 16,
+    "total_frames": 192,
+    "manifest": "recovery/companion-atlases/manifest.json",
+    "new_png_bytes": 20956694,
+    "load_policy": "only_active_companion; remain_still_until_own_atlas_ready",
+    "accepted_pilot": "1.9.3 movement approved by David; not acceptance of ten new animations",
+    "authorization": "David explicitly requested applying to all friends and testing afterwards on 2026-10-15.",
+    "browser_gameplay": "pending_user_review; not observed in this environment",
+    "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
+  },
+  "exploration_expansion": {
+    "status": "requirements_recorded_not_implemented",
+    "chapter_one_room_target": 10,
+    "combat_inventory_loot_respawn": "requested_not_implemented",
+    "product_decisions_pending": [
+      "nível compartilhado com Minha Casa ou separado",
+      "regra de perda de coleta quando HP acaba",
+      "destino das cartas de decoração",
+      "quantidade final de capítulos"
+    ]
+  },
+  "recovery_branch_notice": "Este ramo histórico recebe só documentação de coordenação. Para o runtime atual, usar a revisão fix/exploration-continuous-floor-20261015, baseada na 1.9.4; não publicar build do recovery."
 }
