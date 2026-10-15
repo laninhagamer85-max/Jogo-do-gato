@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "publishing_for_user_review",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,7 +11,7 @@
     "base_commit": "af6a1184f2c41b8bafc41d4f2166f672871a2dd3",
     "source_site_commit": "99489930c1ca6935dee322042d63f1124fdb9dff",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "08295a37ba7dd372874c78ad448992cde40e70fa"
+    "code_commit": "2e57fcdced8cf9e91bcc1c978b516d5d693759f7"
   },
   "current_improvement": {
     "id": "immersive-combat-controls-art-sound-drops",
@@ -21,15 +21,14 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.7",
-    "last_observed_version": 26,
+    "product_version": "1.9.8",
+    "last_observed_version": 27,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191",
-    "deployment_id": "appgdep_6ad0dd193dac8191955a12ae5aa1f08a",
-    "site_commit": "9f03845c5a7ca3de0b3874e08b2583a906abbc13",
-    "published_at": "2026-10-15T11:03:28-03:00",
-    "attempted_in_this_cycle": true,
-    "target_product_version": "1.9.8"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_14c779ff1d90819184b04fba60f48c4f",
+    "deployment_id": "appgdep_6ad0e9be35d8819193636d4c9564422f",
+    "site_commit": "e14c79260fdb91b9f4bf7f004efee95f82ea7df7",
+    "published_at": "2026-10-15T11:57:36-03:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -49,14 +48,14 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: recarregar a página, entrar na sala concluída e tocar em Repetir sala piloto; conferir retorno e novos testes da 1.9.6.",
-    "Receber relatório de controles, itens e arte; expansão de capítulos permanece posterior."
+    "David: repetir a sala piloto e validar arte dos inimigos, direcional multitouch, patada/som e queda/coleta em retrato e horizontal.",
+    "Priorizar correções do relatório antes de expandir capítulos."
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.9.4",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d",
-    "instructions": "Retornar à versão 1.9.4 / Sites 23, sem alterar saves de jogadores."
+    "product_version": "1.9.7",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191",
+    "instructions": "Reimplantar versão anterior se necessário, sem editar saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-15-immersive-combat.md",
   "source_reconciliation": {

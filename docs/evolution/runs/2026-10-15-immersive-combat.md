@@ -24,3 +24,12 @@ Navegador e escuta real do áudio: não executados; control-browser indisponíve
 Código em feat/exploration-combat-pilot-20261015, fonte Sites exata recuperada da 1.9.7, commit 9f03845c5a7ca3de0b3874e08b2583a906abbc13. Sem merge/force-push e sem alterações em partidas reais.
 Publicação em preparação. Rollback: 1.9.7 / Sites 26, versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f4918ea4dfc8191995c54bb48953191.
 Próximo: repetir a sala e relatar tamanho/posição dos controles, visibilidade do pet, estilo dos inimigos, ataque/áudio e queda/coleta. Expansão de capítulos e cartas de decoração permanecem fora desta revisão.
+
+## Publicação concluída
+1.9.8 / Sites 27 publicada em 15/10/2026, 11:57:36 (America/Sao_Paulo).
+URL: https://meupet.aquimeusite.chatgpt.site/
+GitHub código: 2e57fcdced8cf9e91bcc1c978b516d5d693759f7
+Source commit: e14c79260fdb91b9f4bf7f004efee95f82ea7df7
+Saved version: appgprj_6ac40994d8d881919d46203a60801e46~appgver_14c779ff1d90819184b04fba60f48c4f
+Deployment: appgdep_6ad0e9be35d8819193636d4c9564422f — succeeded.
+Pacote oficial reconstruído a partir de partes para evitar truncamento, gzip validado em duas leituras, 301 arquivos e 75008000 bytes no tar normalizado. Um único deploy desta versão. Publicação não equivale à validação de gameplay/áudio; aguarda relatório do usuário.
