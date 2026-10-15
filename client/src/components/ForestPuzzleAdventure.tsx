@@ -1,3 +1,4 @@
+import { forestTapPath, forestRouteInput } from "@/game/forestTapNavigation";
 import { petWalkAtlas, drawWalkFrame } from "@/game/petWalkAtlas";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, CircleHelp, Compass, DoorOpen, Home, KeyRound, Pause, Play, RotateCcw, Trees, Volume2, VolumeX } from "lucide-react";
@@ -67,12 +68,11 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
       ctx.beginPath(); ctx.moveTo(px + tile * 0.12, py + tile * (0.38 + wave / tile)); ctx.quadraticCurveTo(px + tile * 0.45, py + tile * 0.24, px + tile * 0.82, py + tile * 0.42); ctx.stroke();
       continue;
     }
-    if (isWall) {
+    if (isWall && x !== 0 && y !== 0 && x !== FOREST_MAP.columns-1 && y !== FOREST_MAP.rows-1) {
       ctx.fillStyle = theme.wall; ctx.fillRect(px, py, tile + 0.5, tile + 0.5);
-      ctx.fillStyle = "rgba(170,220,110,.40)";
-      for (const [cx, cy, radius] of [[0.22, 0.48, 0.3], [0.52, 0.31, 0.35], [0.78, 0.5, 0.27]] as const) {
-        ctx.beginPath(); ctx.arc(px + tile * cx, py + tile * cy, tile * radius, 0, Math.PI * 2); ctx.fill();
-      }
+      // Keep solid obstacles legible without the repeated three-circle decoration.
+      ctx.fillStyle = "rgba(170,220,110,.18)";
+      ctx.fillRect(px,py,tile,tile*.10);
       ctx.fillStyle = "rgba(10,42,29,.28)"; ctx.fillRect(px, py + tile * 0.82, tile, tile * 0.18);
       continue;
     }
@@ -168,7 +168,7 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
   if (state.walking && walkAtlas?.complete && walkAtlas.naturalWidth > 0) {
     ctx.save(); ctx.translate(playerX, playerY);
     if (state.facing === 'left') ctx.scale(-1, 1);
-    const row = state.facing === 'up' ? 2 : state.facing === 'down' ? 1 : 3;
+    const row = state.facing === 'up' ? 2 : state.facing === 'down' ? 1 : 0;
     drawWalkFrame(ctx, walkAtlas, row, state.walkPhase, -tile * .43, -tile * .566, tile * .86, tile * .86);
     ctx.restore();
   } else if (pet.complete && pet.naturalWidth > 0) {
@@ -222,9 +222,11 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   const [overview, setOverview] = useState(false);
   const overviewRef = useRef(false);
   const cameraFocusRef = useRef<{ x: number; y: number } | null>(null);
-  const dragRef = useRef<{ id: number; x: number; y: number } | null>(null);
+  const routeRef = useRef<{x:number;y:number}[]>([]);
+  const dragRef = useRef<{ id: number; x: number; y: number; startX:number; startY:number; moved:boolean } | null>(null);
   const [inspecting, setInspecting] = useState(false);
   const followPet = () => {
+    routeRef.current = [];
     cameraFocusRef.current = null; dragRef.current = null;
     overviewRef.current = false; setOverview(false); setInspecting(false);
   };
@@ -251,7 +253,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   }, []);
   const setOverlaySafe = useCallback((value: Overlay) => { overlayRef.current = value; setOverlay(value); }, []);
   const stopHeld = useCallback(() => {
-    dragRef.current = null;
+    dragRef.current = null; routeRef.current = [];
     heldRef.current = { ...EMPTY_HELD }; controlsRef.current.clear();
     pendingActionRef.current = false; pendingUseRef.current = false; lastFrameRef.current = 0;
     for (const timer of tapTimersRef.current) window.clearTimeout(timer);
@@ -292,15 +294,21 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
       const delta = lastFrameRef.current ? Math.min(0.05, Math.max(0, (now - lastFrameRef.current) / 1000)) : 0;
       lastFrameRef.current = now;
       const current = stateRef.current;
-      if (current && !overlayRef.current && !overviewRef.current && !cameraFocusRef.current && !current.chapterComplete) {
+      if (current && !overlayRef.current && !overviewRef.current && !cameraFocusRef.current && !dragRef.current && !current.chapterComplete) {
+        const manual = Object.values(heldRef.current).some(Boolean);
+        if(manual)routeRef.current=[];
+        const auto = manual ? {} : forestRouteInput(current.player,routeRef.current,delta);
+        const beforeChapter=current.chapter,beforeRoom=current.room;
         const input: ForestInput = {
-          ...heldRef.current,
+          ...heldRef.current, ...auto,
           actionPressed: pendingActionRef.current,
           usePressed: pendingUseRef.current,
         };
         pendingActionRef.current = false; pendingUseRef.current = false;
         const result = stepForestGame(current, input, delta);
         stateRef.current = result.state; gameRef.current = result.state;
+        if(result.state.chapter!==beforeChapter||result.state.room!==beforeRoom||result.events.includes('bump'))routeRef.current=[];
+        if(routeRef.current.length && !result.state.walking && delta>0)routeRef.current=[];
         if (soundOnRef.current) {
           if (result.events.includes("bump")) playPlatformSfx("bump");
           if (result.events.includes("key-collected")) playPlatformSfx("forest-key");
@@ -388,6 +396,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   };
   const triggerAction = (use: boolean) => {
     if (overlayRef.current || !stateRef.current || cameraFocusRef.current || overviewRef.current) return;
+    routeRef.current = [];
     if (use) pendingUseRef.current = true; else pendingActionRef.current = true;
   };
   const pause = () => { stopHeld(); setOverlaySafe(overlayRef.current === "pause" ? null : "pause"); };
@@ -450,24 +459,39 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
       <div className="forest-game-layout">
         <div className="forest-canvas-wrap"><canvas ref={canvasRef}
           onPointerDown={(event) => {
-            if (overlayRef.current || overviewRef.current || dragRef.current || event.button !== 0) return;
-            stopHeld(); const current = stateRef.current; if (!current) return;
-            cameraFocusRef.current ??= { ...current.player };
-            dragRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
-            event.currentTarget.setPointerCapture(event.pointerId); setInspecting(true);
+            if (overlayRef.current || dragRef.current || event.button !== 0) return;
+            stopHeld();
+            dragRef.current = { id:event.pointerId,x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,moved:false };
+            event.currentTarget.setPointerCapture(event.pointerId);
           }}
           onPointerMove={(event) => {
-            const drag = dragRef.current; const focus = cameraFocusRef.current;
-            if (!drag || drag.id !== event.pointerId || !focus) return;
-            const rect = event.currentTarget.getBoundingClientRect();
-            const view = forestView(rect.width, rect.height, focus);
-            focus.x = Math.max(0, Math.min(FOREST_MAP.columns, focus.x - (event.clientX - drag.x) / view.tile));
-            focus.y = Math.max(0, Math.min(FOREST_MAP.rows, focus.y - (event.clientY - drag.y) / view.tile));
-            drag.x = event.clientX; drag.y = event.clientY;
+            const drag=dragRef.current,current=stateRef.current;
+            if(!drag||drag.id!==event.pointerId||!current)return;
+            if(!drag.moved && Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)<8)return;
+            drag.moved=true;
+            if(overviewRef.current)return;
+            cameraFocusRef.current ??= {...current.player};setInspecting(true);
+            const focus=cameraFocusRef.current,rect=event.currentTarget.getBoundingClientRect();
+            const view=forestView(rect.width,rect.height,current.player,false,focus,{top:44,bottom:(controlsElementRef.current?.getBoundingClientRect().height??0)+8});
+            focus.x=Math.max(0,Math.min(FOREST_MAP.columns,focus.x-(event.clientX-drag.x)/view.tile));
+            focus.y=Math.max(0,Math.min(FOREST_MAP.rows,focus.y-(event.clientY-drag.y)/view.tile));
+            drag.x=event.clientX;drag.y=event.clientY;
           }}
-          onPointerUp={(event) => { if (dragRef.current?.id === event.pointerId) dragRef.current = null; }}
-          onPointerCancel={(event) => { if (dragRef.current?.id === event.pointerId) dragRef.current = null; }}
-          onLostPointerCapture={(event) => { if (dragRef.current?.id === event.pointerId) dragRef.current = null; }} aria-label={`Mapa de cima: ${currentSpec?.title}. Setas ou WASD movem o pet; E interage; F usa o objeto.`}
+          onPointerUp={(event) => {
+            const drag=dragRef.current,current=stateRef.current;
+            if(!drag||drag.id!==event.pointerId)return;
+            dragRef.current=null;
+            if(drag.moved||!current||overlayRef.current)return;
+            const rect=event.currentTarget.getBoundingClientRect();
+            const view=forestView(rect.width,rect.height,current.player,overviewRef.current,cameraFocusRef.current??undefined,{top:44,bottom:(controlsElementRef.current?.getBoundingClientRect().height??0)+8});
+            const destination={x:(event.clientX-rect.left-view.left)/view.tile,y:(event.clientY-rect.top-view.top)/view.tile};
+            const path=forestTapPath(current,destination);
+            followPet();routeRef.current=path??[];
+            const updated={...current,message:path ? 'Caminhando até o ponto. Use o direcional para interromper.' : 'Esse ponto está bloqueado ou sem caminho. Toque no chão livre.'};
+            stateRef.current=updated;gameRef.current=updated;setGame(updated);setUiMessage(updated.message);
+          }}
+          onPointerCancel={(event) => { if(dragRef.current?.id===event.pointerId)dragRef.current=null; }}
+          onLostPointerCapture={(event) => { if(dragRef.current?.id===event.pointerId)dragRef.current=null; }} aria-label={`Mapa de cima: ${currentSpec?.title}. Toque no chão para caminhar; arraste para olhar. Setas ou WASD movem o pet; E interage; F usa o objeto.`}
           {...qaTelemetryAttributes} />
           <div className="forest-live-message" aria-live="polite">{overview || inspecting ? "Inspeção pausada · use Voltar ao pet ou o direcional para jogar" : uiMessage || game.message}</div>
           {overlay && <div ref={overlayElementRef} onKeyDown={trapOverlayFocus} className="forest-overlay" role="dialog" aria-modal="true" aria-label={overlay === "pause" ? "Jogo pausado" : overlay === "room" ? "Sala concluída" : "Capítulo concluído"}>
@@ -481,7 +505,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
                 : <div className="forest-dialog-actions"><button className="forest-primary" type="button" onClick={() => { const next = Math.min(3, (summary?.chapter ?? game.chapter) + 1); setSelectedChapter(next); returnToMap(); }}><Compass size={16} /> Ver capítulos</button><button className="forest-secondary" type="button" onClick={() => openGame(summary?.chapter ?? game.chapter)}><RotateCcw size={15} /> Rejogar capítulo</button></div>}
               {overlay === "pause" && <div className="forest-pause-menu">
                 <button type="button" className="forest-secondary" onClick={() => setShowHelp(value => !value)} aria-expanded={showHelp}><CircleHelp size={16} /> Como jogar</button>
-                {showHelp && <p>Setas ou WASD movem. E interage com o objeto à frente; F usa ou solta o objeto carregado. Arraste o cenário para inspecionar com o jogo pausado. Ver sala mostra o mapa inteiro; Voltar ao pet ou o direcional retoma a partida.</p>}
+                {showHelp && <p>Setas ou WASD movem. E interage com o objeto à frente; F usa ou solta o objeto carregado. Toque no chão para caminhar até ele. O direcional cancela esse percurso. Arraste o cenário para inspecionar com o jogo pausado. Ver sala mostra o mapa inteiro; Voltar ao pet ou o direcional retoma a partida.</p>}
                 <button type="button" className="forest-secondary" onClick={() => requestExit("restart")}><RotateCcw size={16} /> Reiniciar sala</button>
                 <button type="button" className="forest-secondary" onClick={() => requestExit("map")}><Compass size={16} /> Seleção de capítulos</button>
                 <button type="button" className="forest-secondary" onClick={() => requestExit("adventure")}><ArrowLeft size={16} /> Aventura</button>

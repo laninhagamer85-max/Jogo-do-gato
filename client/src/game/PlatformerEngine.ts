@@ -54,6 +54,7 @@ export class PlatformerEngine {
   private dpr = 1;
   private player = { x: 0, y: 0, vx: 0, vy: 0, grounded: false, facing: 1 };
   private cameraX = 0;
+  private viewZoom = 1;
   private hearts = 3;
   private coinsCollected = 0;
   private collectedCoinIds = new Set<number>();
@@ -122,6 +123,12 @@ export class PlatformerEngine {
     document.addEventListener("visibilitychange", this.visibilityChange);
     this.running = true;
     this.raf = window.requestAnimationFrame(this.frame);
+  }
+
+  /** Presentation only. Zoom never resizes the simulation or rebuilds the layout. */
+  setViewZoom(value: number) {
+    this.viewZoom = Number.isFinite(value) ? Math.max(1,Math.min(1.3,value)) : 1;
+    this.render();
   }
 
   setInput(action: InputAction, pressed: boolean) {
@@ -364,6 +371,11 @@ export class PlatformerEngine {
     const width = this.width;
     const height = this.height;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    ctx.save();
+    const anchorX = Math.max(0,Math.min(width,this.player.x-this.cameraX+PLAYER_WIDTH/2));
+    const anchorY = Math.max(0,Math.min(height,this.player.y+PLAYER_HEIGHT));
+    ctx.translate((1-this.viewZoom)*anchorX,(1-this.viewZoom)*anchorY);
+    ctx.scale(this.viewZoom,this.viewZoom);
     this.drawRoomBackground(ctx, width, height);
     this.drawGapWarnings(ctx, height);
     for (const surface of this.layout.surfaces) this.drawPlatform(ctx, surface);
@@ -374,6 +386,7 @@ export class PlatformerEngine {
     for (const enemy of this.layout.enemies) if (!this.defeatedEnemyIds.has(enemy.id)) this.drawEnemy(ctx, enemy.x, enemy.y, enemy.direction);
     this.drawGoal(ctx);
     this.drawPlayer(ctx);
+    ctx.restore();
   }
 
   private drawRoomBackground(ctx: CanvasRenderingContext2D, width: number, height: number) {

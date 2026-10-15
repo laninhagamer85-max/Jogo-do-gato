@@ -618,14 +618,20 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
     setGame(result.state); setPendingDecoration(null); setSelectedDecorationId(null); showToast(result.message); playTone("reward");
   }
 
-  function handleStageClick(event: MouseEvent<HTMLElement>) {
-    if (event.target !== event.currentTarget) return;
-    if (pendingDecoration) { placeDecorationAt(event.clientX, event.clientY); return; }
+  function moveFromRoomClick(event: MouseEvent<HTMLElement>) {
+    const target=event.target;
+    if (!(target instanceof Element) || target.closest('button,a,input,textarea,select,[role="dialog"],[role="button"],.modal-backdrop,.topbar,.side-left > *,.side-right > *,.mobile-mission-dock,[data-decoration-id],.scene-decoration,.decoration-picker')) return;
+    if (pendingDecoration) { placeDecorationAt(event.clientX,event.clientY); return; }
+    const canvas=event.currentTarget.closest('.game-root')?.querySelector('.game-canvas') ?? document.querySelector('.game-canvas');
+    const bounds=canvas?.getBoundingClientRect(); if (!bounds?.width || !bounds.height) return;
     setSelectedDecorationId(null);
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = Math.max(7, Math.min(93, ((event.clientX - bounds.left) / bounds.width) * 100));
-    const y = Math.max(15, Math.min(86, ((event.clientY - bounds.top) / bounds.height) * 100));
-    dispatchPetEvent("pet:move", { x, y });
+    const x=Math.max(7,Math.min(93,((event.clientX-bounds.left)/bounds.width)*100));
+    const y=Math.max(15,Math.min(86,((event.clientY-bounds.top)/bounds.height)*100));
+    dispatchPetEvent('pet:move',{x,y});
+  }
+
+  function handleStageClick(event: MouseEvent<HTMLElement>) {
+    event.stopPropagation(); moveFromRoomClick(event);
   }
 
   function petTap(event: MouseEvent<HTMLElement>) {
@@ -899,7 +905,7 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
   }
 
   return (
-    <div className={`game-root classic-two-column-layout ${focusMode ? "focus-mode" : ""}`}>
+    <div className={`game-root classic-two-column-layout ${focusMode ? "focus-mode" : ""}`} onClick={moveFromRoomClick}>
       <Suspense fallback={<div className="scene-loading" aria-label="Carregando cenário do pet" />}><GameCanvas initialState={{ level: game.level, room: game.activeRoom, skin: game.skin, sleeping: game.sleeping, gender: game.profile?.gender ?? null, characterId: game.profile?.characterId ?? null, companion: game.activeCompanionId }} /></Suspense>
       <div className="room-overlay" aria-hidden="true" />
       <div className="screen-ui">

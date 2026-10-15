@@ -119,3 +119,6 @@ Sons gerados pelo Web Audio API, sem arquivos adicionais: moedas (arpejo agudo),
 - `client/public/manus-storage/menino-prata-walk-pilot-v1.png`: atlas 4x4 gerado com ferramenta de imagem integrada, referência `boy-prata_33684c26.webp` do projeto. Preserva boné/coleira ciano e identidade do gato prata; não é arte de Disney/Capcom. Prompt e limites de validação no relatório `docs/evolution/runs/2026-10-14-walk-camera-pilot.md`. Apenas variante prata, aprovação visual pendente.
 
 - `client/public/manus-storage/menino-preto-walk-pilot-v1.png`: atlas 4x4 de caminhada, gerado pela ferramenta integrada com referência original `boy-preto_954326d9.webp`; boné amarelo, olhos âmbar e coleira verde. Arte por variante, validação visual pendente.
+
+## Demais variantes — 14/10/2026
+Quatro atlas originais4x4 gerados pela ferramenta integrada com os próprios personagens como referência: menino-laranja (boné azul-marinho/coleira azul), menina-creme (laço rosa/medalha rosa), menina-calico (pelagem tricolor/laço coral) e menina-azul (pelagem cinza-azulada/laço lilás). Caminhada lateral, frente, costas e perspectiva; arquivos client/public/manus-storage/<id>-walk-v1.png. Prompt comum e limitações no relatório v17. Inspeção estática realizada; playtest das variantes pendente.

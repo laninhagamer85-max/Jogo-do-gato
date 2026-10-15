@@ -57,6 +57,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const [phase, setPhase] = useState<Phase>("map");
   const [forestMode, setForestMode] = useState(false);
   const [hud, setHud] = useState<PlatformerHud>(START_HUD);
+  const [zoomStep, setZoomStep] = useState(0);
   const [attempt, setAttempt] = useState(0);
   const [reward, setReward] = useState<Completion | null>(null);
   const [rewardStep, setRewardStep] = useState(0);
@@ -144,13 +145,14 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
           onLose: () => setPhase("failed"),
         });
       }
+      engineRef.current.setViewZoom(1+zoomStep*.15);
       engineRef.current.setSoundEnabled(soundOn);
       engineRef.current.setPaused(phase === "paused" || settingsOpen);
     } else if (engineRef.current) {
       engineRef.current.dispose();
       engineRef.current = null;
     }
-  }, [phase, stageId, attempt, state.profile, soundOn, settingsOpen]);
+  }, [phase, stageId, attempt, state.profile, soundOn, settingsOpen, zoomStep]);
 
   useEffect(() => () => {
     engineRef.current?.dispose();
@@ -370,6 +372,11 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       <section className="pa-playfield" aria-label={`Fase ${stageId}: ${currentStage.subtitle}`}>
         <canvas ref={canvasRef} className="pa-canvas" aria-label="Jogo de plataforma: use as setas para correr, espaço para pular e alcance o portal dourado" />
         <div className="pa-canvas-vignette" aria-hidden="true" />
+        <div className="pa-zoom-controls" role="group" aria-label="Zoom da visão do jogo">
+          <button type="button" disabled={zoomStep === 0} onClick={() => setZoomStep(step => Math.max(0,step-1))} aria-label="Diminuir zoom da visão">−</button>
+          <output aria-live="polite" aria-label="Zoom atual">{100+zoomStep*15}%</output>
+          <button type="button" disabled={zoomStep === 2} onClick={() => setZoomStep(step => Math.min(2,step+1))} aria-label="Aumentar zoom da visão">+</button>
+        </div>
         <div className="pa-level-progress"><span>{hud.checkpoint ? "MARCO ATIVADO" : "RUMO AO PORTAL"}</span><div><i style={{ width: `${hud.progress}%` }} /></div><small>{hud.progress}%</small></div>
         <div className="pa-touch-controls" aria-label="Controles de toque">
           <div className="pa-direction-controls">

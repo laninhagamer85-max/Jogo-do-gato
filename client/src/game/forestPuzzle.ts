@@ -193,6 +193,10 @@ function overlapsBlock(x: number, y: number, spec: ForestRoomSpec, state: Forest
   const points = [cell(Math.floor(x - radius), Math.floor(y - radius)), cell(Math.floor(x + radius), Math.floor(y - radius)), cell(Math.floor(x - radius), Math.floor(y + radius)), cell(Math.floor(x + radius), Math.floor(y + radius))];
   return points.some((point) => isBlocked(point, spec, state));
 }
+/** Shared collision query for tap navigation; uses the same player radius as gameplay. */
+export function forestPositionBlocked(state: ForestGameState, x: number, y: number) {
+  return overlapsBlock(x,y,getForestRoom(state.chapter,state.room),state);
+}
 function addUnique(list: string[], value: string) { return list.includes(value) ? list : [...list, value]; }
 
 function syncPressurePlates(state: ForestGameState, spec: ForestRoomSpec) {

@@ -12,7 +12,7 @@ describe('variant-specific art selection', () => {
   it('loads the black kitten art without replacing it with the silver variant', () => {
     expect(petWalkAtlas('menino-preto')).toContain('menino-preto-walk');
     expect(petWalkAtlas('menino-preto')).not.toBe(petWalkAtlas('menino-prata'));
-    expect(petWalkAtlas('menina-calico')).toBeUndefined();
+    expect(petWalkAtlas('menina-calico')).toContain('menina-calico-walk');
     expect(petWalkAtlas(null)).toBeUndefined();
   });
 });

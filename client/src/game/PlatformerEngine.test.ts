@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlatformerEngine } from "./PlatformerEngine";
 import { getPetMotionPose } from "./platformerAnimation";
-import { createInitialGameState, setPetProfile } from "./PetGame";
+import { createInitialGameState, setPetProfile, type PetCharacterId } from "./PetGame";
 
 // The DOM/Canvas are stubs. These are engine regressions, not rendered playtests.
-function harness(characterId: "menino-prata" | "menino-preto" = "menino-prata") {
+function harness(characterId: PetCharacterId = "menino-prata") {
   const listeners = new Map<string, () => void>();
   const documentStub = {
     hidden: false,
@@ -32,7 +32,7 @@ function harness(characterId: "menino-prata" | "menino-preto" = "menino-prata") 
     clientHeight: size.height, width: 0, height: 0,
     getContext: () => ctx, getBoundingClientRect: () => size,
   } as unknown as HTMLCanvasElement;
-  const profile = setPetProfile(createInitialGameState(), { name: "QA", age: 2, gender: "menino", characterId }).profile!;
+  const profile = setPetProfile(createInitialGameState(), { name: "QA", age: 2, gender: characterId.startsWith("menina") ? "menina" : "menino", characterId }).profile!;
   const callbacks = { onHud: vi.fn(), onCollectible: vi.fn(), onWin: vi.fn(), onLose: vi.fn() };
   const engine = new PlatformerEngine(canvas, 1, profile, callbacks);
   const internals = engine as any;
@@ -359,6 +359,43 @@ describe('black kitten pilot integration', () => {
     expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
     h.engine.setInput('right',false); h.internals.update(1/60,34); h.internals.drawPlayer(h.context);
     expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+    h.engine.dispose();
+  });
+});
+
+describe('remaining character walk integration', () => {
+  for(const id of ['menino-laranja','menina-creme','menina-calico','menina-azul'] as const) {
+    it(`preserves ${id} identity across movement and seated state`, () => {
+      const h=harness(id);h.engine.setSoundEnabled(false);h.stand(0);
+      expect(h.internals.walkAtlas.src).toContain(id+'-walk');
+      Object.assign(h.internals.walkAtlas,{complete:true,naturalWidth:1254,naturalHeight:1254});
+      Object.assign(h.internals.idleImage,{complete:true,naturalWidth:768,naturalHeight:768});
+      h.engine.setInput('right',true);h.internals.update(1/60,17);h.internals.drawPlayer(h.context);
+      expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.walkAtlas);
+      h.engine.setInput('right',false);h.internals.update(1/60,34);h.internals.drawPlayer(h.context);
+      expect(h.contextCalls.get('drawImage')?.mock.calls.at(-1)?.[0]).toBe(h.internals.idleImage);
+      h.engine.dispose();
+    });
+  }
+});
+
+describe('optional camera zoom',()=>{
+  it('clamps at the approved normal size and preserves simulation, progress and input',()=>{
+    const h=harness();h.stand(0);h.internals.coinsCollected=3;
+    h.engine.setInput('right',true);
+    const before={player:{...h.internals.player},layout:h.internals.layout,camera:h.internals.cameraX,hearts:h.internals.hearts};
+    for(const value of [1.15,1.3,.2,9,NaN,1]) {
+      h.engine.setViewZoom(value);
+      expect(h.internals.viewZoom).toBeGreaterThanOrEqual(1);
+      expect(h.internals.viewZoom).toBeLessThanOrEqual(1.3);
+      expect(h.internals.player).toEqual(before.player);
+      expect(h.internals.layout).toBe(before.layout);
+      expect(h.internals.cameraX).toBe(before.camera);
+      expect(h.internals.hearts).toBe(before.hearts);
+      expect(h.internals.coinsCollected).toBe(3);
+      expect(h.internals.input.right).toBe(true);
+    }
+    h.resize(844,390);expect(h.internals.viewZoom).toBe(1);
     h.engine.dispose();
   });
 });

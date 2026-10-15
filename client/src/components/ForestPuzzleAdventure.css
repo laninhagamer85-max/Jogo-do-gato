@@ -268,3 +268,17 @@
   .is-playing .forest-dpad { grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(2, 52px); }
   .is-playing .forest-dpad button { width: 52px; height: 52px; }
 }
+
+/* Intro text and pet keep their own space instead of competing in a narrow row. */
+.forest-adventure-intro > div:first-child { min-width:0; }
+.forest-adventure-pet-chip { flex-shrink:0; }
+.forest-adventure-pet-chip strong { white-space:normal; overflow-wrap:anywhere; text-overflow:clip; }
+@media(max-width:700px) {
+  .forest-adventure-intro { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+  .forest-adventure-intro h1 { font-size:26px; }
+  .forest-adventure-intro p { font-size:14px; line-height:1.45; }
+  .forest-adventure-pet-chip { width:100%; min-width:0; padding:8px 12px; gap:14px; }
+  .forest-adventure-pet-chip img { flex:0 0 80px; width:80px; height:88px; }
+  .forest-adventure-pet-chip small { font-size:12px; }
+  .forest-adventure-pet-chip strong { max-width:none; font-size:18px; line-height:1.25; }
+}

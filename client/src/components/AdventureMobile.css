@@ -123,3 +123,18 @@
   .platform-adventure .pa-playfield { min-height: 220px; }
   .platform-adventure .pa-play-footer { display: none; }
 }
+
+/* Portrait gameplay uses the remaining viewport instead of a fixed 48dvh field. */
+@media (max-width: 900px) and (orientation: portrait), (pointer: coarse) and (orientation: portrait) {
+  .platform-adventure.pa-in-game { height:100dvh; min-height:0; overflow:hidden; }
+  .platform-adventure.pa-in-game .pa-topbar { flex:0 0 auto; min-height:58px; padding-top:max(4px,env(safe-area-inset-top)); }
+  .platform-adventure.pa-in-game .pa-top-actions { width:auto; }
+  .platform-adventure.pa-in-game .pa-play-layout { flex:1 1 0; min-height:0; padding:4px 6px max(6px,env(safe-area-inset-bottom)); }
+  .platform-adventure.pa-in-game .pa-game-heading { flex:0 0 auto; min-height:60px; flex-wrap:nowrap; gap:6px; padding-bottom:6px; }
+  .platform-adventure.pa-in-game .pa-game-heading > div:first-child { min-width:0; }
+  .platform-adventure.pa-in-game .pa-game-heading h1 { font-size:15px; line-height:1.15; }
+  .platform-adventure.pa-in-game .pa-game-heading p { display:none; }
+  .platform-adventure.pa-in-game .pa-game-status { width:auto; flex-shrink:0; gap:6px; padding:6px; }
+  .platform-adventure.pa-in-game .pa-playfield { flex:1 1 0; height:auto; min-height:0; border-radius:16px; }
+  .platform-adventure.pa-in-game .pa-play-footer { display:none; }
+}

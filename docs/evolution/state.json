@@ -22,15 +22,15 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 16,
+    "last_observed_version": 17,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
     "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b7d8ac1804588191aa00c7a123247c13",
-    "deployment_id": "appgdep_6ad0187286f881918c810136654dadda",
-    "site_commit": "325379f31e138270246d7e26ed80aaf059a76673",
-    "published_at": "2026-10-14T21:04:22-03:00"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_c6299f408bd8819183fc410295f606ff",
+    "deployment_id": "appgdep_6ad022046c608191b61e8913bede7b46",
+    "site_commit": "6a29673c6499be16f6ad5c2c9150ca6dc665a5a1",
+    "published_at": "2026-10-14T21:45:19-03:00"
   },
   "verification": {
     "typescript": "passed",
@@ -60,15 +60,16 @@
     }
   ],
   "next_actions": [
-    "Conferir visualmente sombras, entrada da casa, troca de companheiro e rotação retrato/paisagem.",
-    "Continuar refinamento de terreno e patas na Aventura, com fase piloto."
+    "User test v17: six variants, zoom, portrait room taps, tap path vs drag, navigation and puzzle integrity.",
+    "Backlog: companion walk and idle expressions, visible hunger/dirt, audit need decay rate.",
+    "Keep recurrence paused unless user separately requests resume."
   ],
   "rollback": {
     "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_af6642d34c4081918f211308ba287fae",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b7d8ac1804588191aa00c7a123247c13",
     "instructions": "Restaurar v15 pelo fluxo oficial, após checar concorrência."
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-v16-sprite-corrections.md",
+  "latest_report": "docs/evolution/runs/2026-10-14-v17-all-pets.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -76,16 +77,21 @@
     "real_account_actions_performed": false
   },
   "pilot_review": {
-    "status": "published_awaiting_user_visual_test",
+    "status": "v17_published_awaiting_user_test",
     "variant": [
       "menino-prata",
-      "menino-preto"
+      "menino-preto",
+      "menino-laranja",
+      "menina-creme",
+      "menina-calico",
+      "menina-azul"
     ],
     "scope": "silver walk across three modes, camera safe region, inspection input guards",
     "publication": "v16_succeeded",
-    "offline_tests": 92,
+    "offline_tests": 101,
     "branch": "fix/pet-walk-camera-20261014",
     "pull_request": 9,
-    "github_commit": "726777ced125823f38a18f37785814bfb166d98f"
+    "github_commit": "726777ced125823f38a18f37785814bfb166d98f",
+    "user_acceptance": "v16_black_kitten_adventure_approved_only"
   }
 }
