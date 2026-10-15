@@ -35,4 +35,14 @@ Revisão isolada: feat/exploration-combat-pilot-20261015. Commit é o que conté
 Rollback: descartar a revisão não publicada; Site público intacto.
 Próximo: jogar o piloto em cinco viewports com perfil isolado, validar dano/derrota/coleta/saída/reload e navegação. Depois implementar cartas de decoração permanentes e expandir para seis capítulos × dez salas reais, com progressão de enigmas. O piloto não entrega essas 60 salas nem catálogo de cartas.
 
-Commit confirmado: e65e2b62372ace1a84e9a5d43098a8fd1ef13d80.
+## Resultado de publicação para revisão do usuário
+David autorizou: “Publique, eu vou digitar e passar um relatório.”
+Publicado com sucesso em 15/10/2026 às 08:55:26 (America/Sao_Paulo).
+Produto 1.9.5; Sites 24.
+URL: https://meupet.aquimeusite.chatgpt.site/
+Source commit Sites: efc78f0488dc41f39a2960007d29fc1c62274ab1
+Versão salva: appgprj_6ac40994d8d881919d46203a60801e46~appgver_e24f36c761d88191a9edd4d82c2f9557
+Deployment: appgdep_6ad0bf1340308191a53fd5e516ec7dce
+140 testes e build repetidos com sucesso antes do pacote. Primeiro arquivo de upload foi rejeitado por truncamento; pacote refeito, gzip validado, segunda gravação concluída. Um único deploy bem-sucedido.
+A validação visual/jogável segue pendente do relatório do usuário. O status anterior de não publicado descreve a primeira etapa e foi superado por esta autorização e resultado terminal. Sem merge/force-push ou alterações de conta.
+Rollback preservado: 1.9.4, Sites 23, versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_1511d1277fd481919ffbf23a270b728d.
