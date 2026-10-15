@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "implemented_awaiting_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,9 +14,9 @@
     "code_commit": "f85f4cca7972bc4ebc0fb56d49081135778e2551"
   },
   "current_improvement": {
-    "id": "soft-grass-no-repeating-tiles",
+    "id": "painted-pilot-room-map",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_visual_review"
+    "acceptance_status": "offline_verified_pending_user_playtest"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -28,11 +28,12 @@
     "deployment_id": "appgdep_6ad0ffda57f08191bb35b00f2f1b67bc",
     "site_commit": "97308fed0d76fe8cbaa728d6c41cec62ae38ab7a",
     "published_at": "2026-10-15T13:32:08-03:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": true,
+    "target_product_version": "1.9.11"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "165/165_passed_24_files",
+    "offline_tests": "170/170_passed_25_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -48,16 +49,16 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: avaliar o verde suave ao caminhar, ausência de blocos espelhados e leitura dos personagens/itens.",
-    "Após aceite, evoluir materiais e desafios próprios dos futuros biomas, sem expandir mapas antes da validação do piloto."
+    "David: repetir piloto e conferir chão/objetos, contornos e rotas em retrato e horizontal.",
+    "Depois do aceite, itens e adversários próprios por bioma; expansão gradual das salas, desafios e cartas."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.9",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a6e84b7735e0819182305e0aa48954e2",
-    "instructions": "Retornar à 1.9.9 caso necessário, preservando saves."
+    "production_changed": false,
+    "product_version": "1.9.10",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f0aaaff933e481919546f44b87d0d3e9",
+    "instructions": "Reimplantar 1.9.10 se necessário, preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-soft-grass.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-painted-pilot-map.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

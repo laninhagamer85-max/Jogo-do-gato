@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-15",
+  "direction": "Match painted chapter clearing and approved preview; clean ground-only plate plus independent transparent props; no flattened map or UI",
+  "files": [
+    {
+      "path": "client/public/forest-adventure/ground-painted-v3.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "bd12c20547094195fb859ebbda832a823ab874b56266d05b8eb214a0dc6a51f0",
+      "origin": "original imagegen artwork; no extracted third party sprites"
+    },
+    {
+      "path": "client/public/forest-adventure/woodland-props-v2.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "sha256": "e8c5d4ff863bf7140aa3ceeecb97519be1bd89bd9e92551ae53f853c205fcc18",
+      "origin": "original imagegen artwork; no extracted third party sprites"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { ROOM_WALLS } from "./explorationRoom";
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
 export type CombatPoint = { x: number; y: number };
 export const PILOT_SIZE = { width: 14, height: 10 };
@@ -6,7 +7,7 @@ export const PILOT_MARKER = { x: 8.5, y: 4.5 };
 export const PILOT_EXIT = { x: 12.4, y: 4.5 };
 export type CombatItem = 'fibra' | 'ambar' | 'erva' | 'fruta';
 export const COMBAT_ITEMS: Record<CombatItem, string> = { fibra: 'Fibra', ambar: 'Âmbar', erva: 'Erva de cura', fruta: 'Fruta de energia' };
-export const PILOT_WALLS = [{ x: 5, y: 2 }, { x: 5, y: 3 }, { x: 5, y: 4 }, { x: 10, y: 6 }, { x: 10, y: 7 }];
+export const PILOT_WALLS = ROOM_WALLS;
 export const PILOT_NODES = [
   { id: 'fern-a', x: 2.5, y: 4.5, item: 'fibra' as const, quantity: 3 },
   { id: 'fern-b', x: 6.5, y: 7.5, item: 'fibra' as const, quantity: 3 },
@@ -53,6 +54,13 @@ export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): 
   const walls = gateOpen ? PILOT_WALLS : [...PILOT_WALLS, { x: 9, y: 4 }];
   return !walls.some(w => p.x + radius > w.x && p.x - radius < w.x + 1 && p.y + radius > w.y && p.y - radius < w.y + 1);
 }
+/** Relocate positions covered by revised scenery, preserving earned state. */
+export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean):CombatPoint {
+  if(pilotWalkable(p,gateOpen))return {...p};
+  if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||p.x<1||p.x>13||p.y<1||p.y>9)return {...PILOT_CAMP};
+  const candidates=Array.from({length:96},(_,i)=>({x:1.5+i%12,y:1.5+Math.floor(i/12)})).filter(q=>pilotWalkable(q,gateOpen));
+  candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...PILOT_CAMP};
+}
 function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean): CombatPoint {
   const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen) ? p.x + dx : p.x;
   return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen) ? p.y + dy : p.y };
@@ -70,7 +78,7 @@ export function readCombatState(value: unknown): CombatRead {
   s.equipmentOwned = raw.equipmentOwned === true; s.equipmentOn = s.equipmentOwned && raw.equipmentOn === true;
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   const point = object(raw.player); const p = { x: number(point.x, PILOT_CAMP.x), y: number(point.y, PILOT_CAMP.y) };
-  s.player = pilotWalkable(p, s.gateOpen) ? p : { ...PILOT_CAMP };
+  s.player = nearestPilotPoint(p, s.gateOpen);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
   s.collectedNodes = PILOT_NODES.filter(n => Array.isArray(raw.collectedNodes) && raw.collectedNodes.includes(n.id)).map(n => n.id);
@@ -79,15 +87,15 @@ export function readCombatState(value: unknown): CombatRead {
   s.enemies = PILOT_ENEMIES.map(def => {
     const rawEnemy = object(Array.isArray(raw.enemies) ? raw.enemies.find(e => object(e).id === def.id) : null);
     const ep = { x: number(rawEnemy.x, def.x), y: number(rawEnemy.y, def.y) };
-    return { id: def.id, ...(pilotWalkable(ep, s.gateOpen) ? ep : { x: def.x, y: def.y }), hp: number(rawEnemy.hp, def.hp, 0, def.hp),
+    return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen), hp: number(rawEnemy.hp, def.hp, 0, def.hp),
       generation: Math.floor(number(rawEnemy.generation, 0)), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + 45000) };
   });
   const allowedLoot = new Set(s.enemies.filter(e => e.hp === 0).map(e => `${e.id}:${e.generation}`));
   s.loot = Array.isArray(raw.loot) ? raw.loot.slice(0, 20).flatMap(v => {
     const l = object(v); const id = String(l.id); const item = String(l.item) as CombatItem;
     const p = { x: number(l.x, 0), y: number(l.y, 0) };
-    if (!allowedLoot.has(id) || !Object.prototype.hasOwnProperty.call(COMBAT_ITEMS, item) || !pilotWalkable(p, s.gateOpen)) return [];
-    allowedLoot.delete(id); return [{ id, item, ...p, bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), quantity: Math.floor(number(l.quantity, 1, 1, 20)) }];
+    if (!allowedLoot.has(id) || !Object.prototype.hasOwnProperty.call(COMBAT_ITEMS, item) || (p.x < 1 || p.x > 13 || p.y < 1 || p.y > 9)) return [];
+    allowedLoot.delete(id); return [{ id, item, ...nearestPilotPoint(p,s.gateOpen), bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), quantity: Math.floor(number(l.quantity, 1, 1, 20)) }];
   }) : [];
   if (s.hp === 0) return { supported: true, state: defeatCombat(s) };
   return { supported: true, state: s };
