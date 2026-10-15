@@ -12,6 +12,6 @@ Validação: TypeScript aprovado, 170 testes offline em 25 arquivos aprovados, b
 
 Limites: control-browser indisponível; nenhum navegador/playtest executado. Publicação para revisão de David autorizada expressamente na conversa. Apenas uma sala piloto atualizada; não há 60 salas implementadas ou 100 fases auditadas. Aprovação anterior do piloto não valida este novo desenho.
 
-Publicação: aguardando empacotamento oficial. Rollback: produto 1.9.10, Sites 29, commit 97308fed0d76fe8cbaa728d6c41cec62ae38ab7a.
+Publicação confirmada: produto 1.9.11, Sites 30, status succeeded, https://meupet.aquimeusite.chatgpt.site. Fonte Sites 1c4b222c031591f69d4f1aab506597fb79919b6f; commit GitHub bb65451ee4243d71599cb25245abb7e6df18176d. Deployment appgdep_6ad10db624608191881d826211d8a590. Em 15/10/2026 às 14:31:08 America/Sao_Paulo. Rollback: produto 1.9.10, Sites 29, commit 97308fed0d76fe8cbaa728d6c41cec62ae38ab7a.
 
 Próximo passo: testar passagens e leitura de objetos no celular/horizontal antes de expandir biomas e novas salas.
