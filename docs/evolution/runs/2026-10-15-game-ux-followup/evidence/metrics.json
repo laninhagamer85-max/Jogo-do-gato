@@ -1,0 +1,130 @@
+{
+  "forest-portrait-375x667": {
+    "viewport": {
+      "width": 375,
+      "height": 667
+    },
+    "canvas": {
+      "x": 13,
+      "y": 183,
+      "width": 349,
+      "height": 329
+    },
+    "touchControls": [
+      {
+        "label": "Mover para cima",
+        "width": 56,
+        "height": 56,
+        "x": 81,
+        "y": 532
+      },
+      {
+        "label": "Mover para a esquerda",
+        "width": 56,
+        "height": 56,
+        "x": 21,
+        "y": 592
+      },
+      {
+        "label": "Mover para baixo",
+        "width": 56,
+        "height": 56,
+        "x": 81,
+        "y": 592
+      },
+      {
+        "label": "Mover para a direita",
+        "width": 56,
+        "height": 56,
+        "x": 141,
+        "y": 592
+      },
+      {
+        "label": "E Interagir",
+        "width": 149,
+        "height": 56,
+        "x": 205,
+        "y": 530
+      },
+      {
+        "label": "F Usar / soltar",
+        "width": 149,
+        "height": 56,
+        "x": 205,
+        "y": 594
+      }
+    ]
+  },
+  "forest-landscape-844x390": {
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "canvas": {
+      "x": 13,
+      "y": 111.4375,
+      "width": 614,
+      "height": 269.5625
+    },
+    "touchControls": [
+      {
+        "label": "Mover para cima",
+        "width": 48,
+        "height": 48,
+        "x": 710,
+        "y": 166
+      },
+      {
+        "label": "Mover para a esquerda",
+        "width": 48,
+        "height": 48,
+        "x": 658,
+        "y": 218
+      },
+      {
+        "label": "Mover para baixo",
+        "width": 48,
+        "height": 48,
+        "x": 710,
+        "y": 218
+      },
+      {
+        "label": "Mover para a direita",
+        "width": 48,
+        "height": 48,
+        "x": 762,
+        "y": 218
+      },
+      {
+        "label": "E Interagir",
+        "width": 84,
+        "height": 52,
+        "x": 653,
+        "y": 274
+      },
+      {
+        "label": "F Usar / soltar",
+        "width": 72,
+        "height": 52,
+        "x": 743,
+        "y": 274
+      }
+    ]
+  },
+  "platformer": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "movement": "ArrowRight held 160 ms via Playwright keyboard, then released",
+    "hudAfterInput": "Meu Pet Virtual\nAVENTURA DA TURMA\nMapa\nMUNDO 1 · FASE 1\nCasa do Começo · 01\n\nSiga as patinhas douradas. Colete peixinho dourado e alcance o portal.\n\n0\n/28\n🐟\n0\n/3\nRUMO AO PORTAL\n3%\n↑\nPULAR\n←\n→\nmover\nESPAÇO\npular\nMinha Casa"
+  },
+  "browserDiagnostics": {
+    "pageErrors": [],
+    "httpResponsesAtOrAbove400ForGameAssets": [],
+    "fixtureOnly404": {
+      "url": "http://127.0.0.1:5177/favicon.ico",
+      "classification": "Favicon ausente no shell local de QA; nenhum asset do jogo falhou."
+    }
+  }
+}

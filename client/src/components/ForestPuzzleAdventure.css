@@ -252,3 +252,44 @@
   .is-playing .forest-live-message { font-size: 12px; }
 }
 .is-playing .forest-game-metrics > .forest-key-counter { display: flex; flex-direction: row; min-width: 0; gap: 4px; padding: 5px; font-size: 14px; }
+
+
+/* In short landscape viewports, keep the touch cluster beside the room so the map can use the available height. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .is-playing .forest-game-layout {
+    grid-template-columns: minmax(0, 1fr) 196px;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .is-playing .forest-game-controls {
+    grid-column: 2;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    justify-items: center;
+    gap: 8px;
+  }
+  .is-playing .forest-dpad {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: repeat(2, 48px);
+    gap: 4px;
+  }
+  .is-playing .forest-dpad button { width: 48px; height: 48px; }
+  .is-playing .forest-action-buttons {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: 192px;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .is-playing .forest-action-buttons button {
+    min-height: 52px;
+    padding: 6px;
+    font-size: 11px;
+  }
+}

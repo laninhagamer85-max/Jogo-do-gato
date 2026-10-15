@@ -368,7 +368,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, soundOn,
   const pause = () => { stopHeld(); setOverlaySafe(overlayRef.current === "pause" ? null : "pause"); };
   const returnToMap = () => { stateRef.current = null; gameRef.current = null; setGame(null); setSummary(null); setOverlaySafe(null); stopHeld(); };
   const requestExit = (action: ForestExit) => { stopHeld(); setOverlaySafe("pause"); setExitAction(action); };
-  const cancelExit = () => { setExitAction(null); setOverlaySafe(null); stopHeld(); };
+  const cancelExit = () => { setExitAction(null); stopHeld(); };
   const confirmExit = () => {
     const action = exitAction; setExitAction(null); stopHeld();
     if (action === "restart" && stateRef.current) openGame(stateRef.current.chapter, stateRef.current.room);
