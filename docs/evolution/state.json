@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "preparing_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -14,7 +14,7 @@
     "code_commit": "d7def4b1a64447e7fb9af4de59459b5fe862e033"
   },
   "current_improvement": {
-    "id": "unframed-world-ground-pilot-rollout",
+    "id": "modular-grass-native-density",
     "implementation_status": "implemented",
     "acceptance_status": "offline_verified_pending_user_visual_review"
   },
@@ -28,11 +28,12 @@
     "deployment_id": "appgdep_6ad11b4c134c81918c0f0ebe1a592f8c",
     "site_commit": "ad6369b33c3f0cf0bfacd75979c81c033abf0e1a",
     "published_at": "2026-10-15T18:29:03.337159+00:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": true,
+    "target_product_version": "1.9.16"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "188/188_passed_26_files",
+    "offline_tests": "192/192_passed_27_files",
     "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -48,17 +49,17 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: percorrer quatro cantos com zoom e Ver sala; verificar chão sem borda, insetos e coleta/reentrada.",
-    "Depois do aceite do piloto, construir dez salas reais no capítulo 1 e migrar campanha; depois capítulos 2–6.",
-    "Água animada, adversários próprios, recompensas raras compartilhadas e cartas por bioma conforme exploration-campaign-rollout.md."
+    "David: conferir tamanho da grama, nitidez, ausência de quadrículas visíveis e estabilidade ao caminhar/rotacionar/usar zoom.",
+    "Aceitar o piloto; então construir dez salas reais do capítulo 1 conforme plano já registrado.",
+    "Reutilizar terrainTexture.ts com novas texturas e sementes por bioma, sem usar ilustração de mapa inteiro como piso."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.14",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8a0d04b05f8c8191adb17a677a4758b7",
-    "instructions": "Reimplantar 1.9.14 se necessário, preservando saves."
+    "production_changed": false,
+    "product_version": "1.9.15",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
+    "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-pilot-world-ground.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-modular-ground.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

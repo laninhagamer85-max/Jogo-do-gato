@@ -1,4 +1,4 @@
-import {describe,it,expect} from 'vitest';
+import {describe,it,expect,vi} from 'vitest';
 import { groundVariations,GROUND_WORLD } from './explorationScenery';
 import {combatView,combatCanvasScale} from './explorationCombatView';
 describe('non repeating woodland ground',()=>{
@@ -44,15 +44,18 @@ it('uses one centered chapter crop without stretching or reading outside the sou
 });
 
 import {drawExplorationGround} from './explorationScenery';
-it('actually paints one opaque image across the viewport at every corner, zoom and overview',()=>{
+it('paints a fully covered cached terrain at every corner, zoom and overview',()=>{
+ vi.stubGlobal('document',{createElement:()=>({width:0,height:0,getContext:()=>new Proxy({createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}})})});
+ try{
  const background={complete:true,naturalWidth:1254,naturalHeight:1254} as HTMLImageElement;
  for(const [w,h] of [[375,667],[375,812],[390,844],[844,390],[1366,768]])for(const player of [{x:1.22,y:1.22},{x:12.78,y:1.22},{x:1.22,y:8.78},{x:12.78,y:8.78}])for(const zoom of [1,1.25,1.5,1.75,2])for(const overview of [false,true]){
   const calls:unknown[][]=[];let fills=0;
-  const ctx=new Proxy({drawImage:(...args:unknown[])=>calls.push(args),fillRect:()=>fills++},{get:(target,key)=>key in target?target[key as keyof typeof target]:()=>{}}) as unknown as CanvasRenderingContext2D;
+  const ctx=new Proxy({getTransform:()=>({a:2}),drawImage:(...args:unknown[])=>calls.push(args),fillRect:()=>fills++},{get:(target,key)=>key in target?target[key as keyof typeof target]:()=>{}}) as unknown as CanvasRenderingContext2D;
   const v=combatView(w,h,player,zoom,overview);drawExplorationGround(ctx,w,h,background,v.left,v.top,v.tile);
   expect(calls).toHaveLength(1);expect(fills).toBe(0);
-  const [,sx,sy,sw,sh,dx,dy,dw,dh]=calls[0] as number[];
+  const [dx,dy,dw,dh]=calls[0].slice(-4) as number[];
   expect(dx).toBeLessThanOrEqual(.00001);expect(dy).toBeLessThanOrEqual(.00001);expect(dx+dw).toBeGreaterThanOrEqual(w-.00001);expect(dy+dh).toBeGreaterThanOrEqual(h-.00001);
-  expect(dw/sw).toBeCloseTo(dh/sh,8);expect(sx+sw).toBeLessThanOrEqual(1254.00001);expect(sy+sh).toBeLessThanOrEqual(1254.00001);
+  const buffer=calls[0][0] as HTMLCanvasElement;expect(buffer.width*buffer.height).toBeLessThanOrEqual(8_010_000);
  }
+ }finally{vi.unstubAllGlobals();}
 });

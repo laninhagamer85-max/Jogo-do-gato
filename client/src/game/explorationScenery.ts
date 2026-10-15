@@ -1,25 +1,17 @@
-/** Quiet terrain: one unique camera-anchored plane, no repeat or mirrored tiles. */
+import {drawTerrainTexture,GRASS_MATERIAL} from "./terrainTexture";
+/** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'unframed-clearing-v6',seed:5102026,base:'#638b36',light:'#a3bd65',shade:'#4d742d'};
+export const FOREST_GROUND:GroundTheme={id:'grass-block-v7',seed:5102026,base:'#638b36',light:'#a3bd65',shade:'#4d742d'};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 export function groundVariations(seed:number){
   let value=seed>>>0;const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
   return Array.from({length:18},()=>({x:random(),y:random(),radius:.07+random()*.12,light:random()>.5}));
 }
-/** A single opaque floor covers the complete camera domain: no masked rectangle or tiled backdrop. */
+/** Material parameters can be reused with the grass, soil, sand and snow assets of future biomes. */
 export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND){
-  if(!image.complete||!image.naturalWidth){ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);return;}
-  const fit=chapterGroundCrop(image.naturalWidth,image.naturalHeight,GROUND_WORLD.width/GROUND_WORLD.height);
-  ctx.drawImage(image,fit.x,fit.y,fit.width,fit.height,left+GROUND_WORLD.left*tile,top+GROUND_WORLD.top*tile,GROUND_WORLD.width*tile,GROUND_WORLD.height*tile);
-  // Fine low-contrast strokes stay sharp at native canvas density, including zoomed duels.
-  const tufts=[];
-  for(let y=Math.floor(-top/tile)-1;y<=Math.ceil((height-top)/tile)+1;y++)for(let x=Math.floor(-left/tile)-1;x<=Math.ceil((width-left)/tile)+1;x++)tufts.push(...grassTufts(x,y,theme.seed));
-  ctx.save();ctx.globalAlpha=.18;ctx.lineWidth=Math.max(.6,tile*.008);ctx.lineCap='round';
-  for(let tone=0;tone<4;tone++){
-    ctx.strokeStyle=['#87a83b','#c0d867','#6e9836','#a6c54c'][tone];ctx.beginPath();
-    for(const q of tufts)if(q.tone===tone){const x=left+q.x*tile,y=top+q.y*tile;ctx.moveTo(x,y);ctx.quadraticCurveTo(x+q.lean*tile*.2,y-tile*.015,x+q.lean*tile*.4,y-tile*.035);}
-    ctx.stroke();
-  }ctx.restore();
+  if(!drawTerrainTexture(ctx,width,height,image,left,top,tile,{...GRASS_MATERIAL,id:theme.id,seed:theme.seed})){
+    ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
+  }
 }
 /** Centered source crop preserves the original artwork proportions. */
 export function chapterGroundCrop(width:number,height:number,aspect=14/10){
