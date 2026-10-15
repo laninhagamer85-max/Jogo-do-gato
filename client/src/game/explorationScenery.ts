@@ -1,6 +1,6 @@
 /** Quiet terrain: one unique camera-anchored plane, no repeat or mirrored tiles. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'forest-crisp-v4',seed:5102026,base:'#87aa46',light:'#a3bd65',shade:'#688c38'};
+export const FOREST_GROUND:GroundTheme={id:'chapter-clearing-v5',seed:5102026,base:'#638b36',light:'#a3bd65',shade:'#4d742d'};
 export const GROUND_WORLD={left:-10,top:-14,width:34,height:38,pixelsPerTile:36};
 export function groundVariations(seed:number){
   let value=seed>>>0;const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
@@ -12,20 +12,28 @@ export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,
   if(!image.complete||!image.naturalWidth)return;
   const key=JSON.stringify(theme);let plane=groundPlanes.get(image);
   if(!plane||plane.key!==key){
-    const canvas=document.createElement('canvas');canvas.width=GROUND_WORLD.width*GROUND_WORLD.pixelsPerTile;canvas.height=GROUND_WORLD.height*GROUND_WORLD.pixelsPerTile;
+    // Keep chapter artwork at ROOM scale, not enlarged across the 34×38 padding.
+    const canvas=document.createElement('canvas');canvas.width=14*96;canvas.height=10*96;
     const g=canvas.getContext('2d');if(!g)return;
-    g.fillStyle=theme.base;g.fillRect(0,0,canvas.width,canvas.height);
-    // Paint the image once over the entire padded world, never in a tile grid.
-    g.globalAlpha=.22;g.drawImage(image,0,0,canvas.width,canvas.height);g.globalAlpha=1;
-    for(const variation of groundVariations(theme.seed)){
-      const x=variation.x*canvas.width,y=variation.y*canvas.height,r=variation.radius*canvas.width;
-      const gradient=g.createRadialGradient(x,y,0,x,y,r);gradient.addColorStop(0,variation.light?theme.light:theme.shade);gradient.addColorStop(1,'transparent');
-      g.globalAlpha=.05;g.fillStyle=gradient;g.fillRect(x-r,y-r,r*2,r*2);
-    }g.globalAlpha=1;plane={key,canvas};groundPlanes.set(image,plane);
+    const fit=chapterGroundCrop(image.naturalWidth,image.naturalHeight);
+    g.drawImage(image,fit.x,fit.y,fit.width,fit.height,0,0,canvas.width,canvas.height);
+    // Feather only the outermost edge into the forest floor beyond the playable room.
+    g.globalCompositeOperation='destination-in';
+    const horizontal=g.createLinearGradient(0,0,canvas.width,0);
+    horizontal.addColorStop(0,'transparent');horizontal.addColorStop(.035,'#000');horizontal.addColorStop(.965,'#000');horizontal.addColorStop(1,'transparent');
+    g.fillStyle=horizontal;g.fillRect(0,0,canvas.width,canvas.height);
+    const vertical=g.createLinearGradient(0,0,0,canvas.height);
+    vertical.addColorStop(0,'transparent');vertical.addColorStop(.035,'#000');vertical.addColorStop(.965,'#000');vertical.addColorStop(1,'transparent');
+    g.fillStyle=vertical;g.fillRect(0,0,canvas.width,canvas.height);
+    plane={key,canvas};groundPlanes.set(image,plane);
   }
-  ctx.drawImage(plane.canvas,left+GROUND_WORLD.left*tile,top+GROUND_WORLD.top*tile,GROUND_WORLD.width*tile,GROUND_WORLD.height*tile);
-  drawGrassDetail(ctx,width,height,left,top,tile,theme.seed);
-
+  ctx.drawImage(plane.canvas,left,top,14*tile,10*tile);
+}
+/** Cover the room with one source crop, preserving the chapter artwork's proportions. */
+export function chapterGroundCrop(width:number,height:number){
+  const aspect=14/10;
+  if(width/height>aspect){const w=height*aspect;return {x:(width-w)/2,y:0,width:w,height};}
+  const h=width/aspect;return {x:0,y:(height-h)/2,width,height:h};
 }
 /** Atlas content bounds measured on the original transparent artwork, not its empty square cells. */
 const PROP_BOUNDS = [[20,150,512,477],[0,130,512,481],[0,212,496,458],[30,39,509,425],[13,99,512,405],[0,12,411,430]];
@@ -45,22 +53,4 @@ export function grassTufts(cellX:number,cellY:number,seed:number){
   let state=(Math.imul(cellX,73856093)^Math.imul(cellY,19349663)^seed)>>>0;
   const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};
   return Array.from({length:5},()=>({x:cellX+random(),y:cellY+random(),height:.045+random()*.055,lean:(random()-.5)*.1,tone:Math.floor(random()*4)}));
-}
-function drawGrassDetail(ctx:CanvasRenderingContext2D,width:number,height:number,left:number,top:number,tile:number,seed:number){
-  // Cull to visible cells and batch all leaves by tone: crisp native canvas paths, four fills/frame.
-  const x0=Math.floor(-left/tile)-1,x1=Math.ceil((width-left)/tile)+1;
-  const y0=Math.floor(-top/tile)-1,y1=Math.ceil((height-top)/tile)+1;
-  const tufts=[];for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)tufts.push(...grassTufts(x,y,seed));
-  const colors=['#77983c','#96b551','#abc267','#6b8d35'];
-  ctx.save();ctx.globalAlpha=.54;
-  for(let tone=0;tone<4;tone++){
-    ctx.fillStyle=colors[tone];ctx.beginPath();
-    for(const q of tufts){if(q.tone!==tone)continue;const x=left+q.x*tile,y=top+q.y*tile,h=q.height*tile;
-      for(let blade=-1;blade<=1;blade++){
-        const lean=q.lean*tile+blade*h*.48,base=x+blade*h*.11;
-        ctx.moveTo(base,y);ctx.quadraticCurveTo(base+lean*.25-h*.11,y-h*.48,base+lean,y-h*(blade===0?1:.72));
-        ctx.quadraticCurveTo(base+lean*.2+h*.09,y-h*.3,base+h*.08,y);ctx.closePath();
-      }
-    }ctx.fill();
-  }ctx.restore();
 }

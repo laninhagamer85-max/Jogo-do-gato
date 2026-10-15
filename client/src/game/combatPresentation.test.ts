@@ -21,6 +21,6 @@ describe('Immersive combat input and presentation',()=>{
 
 describe('pickup visibility and motion accessibility',()=>{
  it('keeps the item grounded until its drop lands',()=>{expect(combatPickupCue(250,500,false).hover).toBe(0);expect(combatPickupCue(500,500,false).hover).toBe(0);});
- it('keeps a persistent visible cue while completely suppressing movement in reduced motion',()=>{expect(combatPickupCue(1000,500,true)).toEqual(combatPickupCue(9000,500,true));expect(combatPickupCue(1000,500,true).hover).toBe(0);expect(combatPickupCue(1000,500,true).glow).toBeGreaterThan(.75);});
- it('uses only small, slowly varying hover and glow after landing',()=>{for(let time=500;time<12000;time+=50){const a=combatPickupCue(time,500,false),b=combatPickupCue(time+50,500,false);expect(a.hover).toBeGreaterThanOrEqual(0);expect(a.hover).toBeLessThanOrEqual(.09);expect(Math.abs(a.glow-b.glow)).toBeLessThan(.01);}});
+ it('completely suppresses movement in reduced motion',()=>{expect(combatPickupCue(1000,500,true)).toEqual(combatPickupCue(9000,500,true));expect(combatPickupCue(1000,500,true).hover).toBe(0);});
+ it('uses only small, slowly varying hover after landing',()=>{for(let time=500;time<12000;time+=50){const a=combatPickupCue(time,500,false),b=combatPickupCue(time+50,500,false);expect(a.hover).toBeGreaterThanOrEqual(0);expect(a.hover).toBeLessThanOrEqual(.09);expect(Math.abs(a.hover-b.hover)).toBeLessThan(.01);}});
 });

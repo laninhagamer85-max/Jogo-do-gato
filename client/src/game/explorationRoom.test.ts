@@ -3,7 +3,7 @@ import {PILOT_OBSTACLES,ROOM_WALLS,ROOM_SCENERY} from './explorationRoom';
 import {PILOT_CAMP,PILOT_NODES,PILOT_ENEMIES,PILOT_MARKER,PILOT_EXIT,pilotWalkable,pilotRoute,readCombatState,createCombatState} from './explorationCombat';
 describe('painted pilot room geometry',()=>{
  it('derives collisions and single prop anchors from the same footprints',()=>{
-  expect(ROOM_SCENERY).toHaveLength(2);expect(ROOM_WALLS).toHaveLength(5);
+  expect(ROOM_SCENERY).toHaveLength(2);expect(ROOM_WALLS).toHaveLength(3);
   PILOT_OBSTACLES.forEach((o,i)=>{expect(ROOM_SCENERY[i].x).toBe(o.x+o.width/2);for(let x=o.x;x<o.x+o.width;x++)for(let y=o.y;y<o.y+o.height;y++)expect(pilotWalkable({x:x+.5,y:y+.5},true)).toBe(false);});
  });
  it('keeps all collection points, encounters, marker and exit reachable',()=>{
@@ -22,4 +22,11 @@ describe('painted pilot room geometry',()=>{
  it('still rejects out of bounds loot',()=>{
   const save=createCombatState();save.enemies[0].hp=0;save.loot=[{id:'beetle:0',x:99,y:99,item:'fibra',quantity:3}];const read=readCombatState(save);if(read.supported)expect(read.state.loot).toEqual([]);
  });
+});
+
+it('opens the space released by smaller scenery without invisible old walls',()=>{
+ expect(pilotWalkable({x:7.5,y:3.5},true)).toBe(true);
+ expect(pilotWalkable({x:11.5,y:6.5},true)).toBe(true);
+ expect(pilotWalkable({x:6.5,y:3.5},true)).toBe(false);
+ expect(pilotWalkable({x:10.5,y:6.5},true)).toBe(false);
 });

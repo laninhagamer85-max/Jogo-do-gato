@@ -35,3 +35,10 @@ describe('sharp scenery without stretching',()=>{
 });
 
 it('matches mobile pixel density and bounds large canvas memory',()=>{expect(combatCanvasScale(390,844,2.625)).toBe(2.625);expect(combatCanvasScale(844,390,2.625)).toBe(2.625);const s=combatCanvasScale(3840,2160,3);expect(3840*2160*s*s).toBeLessThanOrEqual(6000000.01);});
+
+import {chapterGroundCrop} from './explorationScenery';
+it('uses one centered chapter crop without stretching or reading outside the source',()=>{
+ for(const [w,h] of [[1440,810],[810,1440],[1254,1254]]){
+  const p=chapterGroundCrop(w,h);expect(p.width/p.height).toBeCloseTo(1.4,10);expect(p.x).toBeGreaterThanOrEqual(0);expect(p.y).toBeGreaterThanOrEqual(0);expect(p.x+p.width).toBeLessThanOrEqual(w);expect(p.y+p.height).toBeLessThanOrEqual(h);
+ }
+});

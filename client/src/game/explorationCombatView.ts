@@ -33,11 +33,11 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const exit = point(PILOT_EXIT); ctx.strokeStyle = state.gateOpen ? '#ffe4a2' : '#80907c'; ctx.lineWidth = Math.max(3, t * .06); ctx.beginPath(); ctx.arc(exit.x, exit.y, t * .4, 0, Math.PI * 2); ctx.stroke();
   for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
-    drawPickup(ctx,n.item,point(n),t,cue.hover,cue.glow,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2);
+    drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2);
   }
   for (const loot of state.loot) {
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
-    drawPickup(ctx,loot.item,p,t,fall+cue.hover,cue.glow,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2);
+    drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2);
   }
   const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
@@ -89,20 +89,22 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
 }
 
 /** Common pickup language for enemy drops and room collection nodes. */
-function drawPickup(ctx:CanvasRenderingContext2D,item:keyof typeof COMBAT_ITEMS,p:CombatPoint,tile:number,lift:number,glow:number,quantity:number,near:boolean){
+function drawPickup(ctx:CanvasRenderingContext2D,item:keyof typeof COMBAT_ITEMS,p:CombatPoint,tile:number,lift:number,quantity:number,near:boolean){
   ctx.save();
-  const radius=tile*.46,halo=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,radius);
-  halo.addColorStop(0,`rgba(255,229,146,${glow*.5})`);halo.addColorStop(1,'rgba(255,229,146,0)');
-  ctx.fillStyle=halo;ctx.fillRect(p.x-radius,p.y-radius,radius*2,radius*2);
-  // A dark backing and cream rim remain legible on bright grass, water or soil.
+  // A restrained contact shadow stays on the ground while the item falls or hovers.
+  const shadow=ctx.createRadialGradient(p.x,p.y+tile*.06,0,p.x,p.y+tile*.06,tile*.28);
+  shadow.addColorStop(0,'rgba(18,35,20,.18)');shadow.addColorStop(1,'rgba(18,35,20,0)');
+  ctx.save();ctx.translate(p.x,p.y+tile*.06);ctx.scale(1,.36);
+  ctx.fillStyle='rgba(18,35,20,.08)';ctx.beginPath();ctx.arc(0,0,tile*.24,0,Math.PI*2);ctx.fill();ctx.restore();
+  ctx.fillStyle=shadow;ctx.beginPath();ctx.ellipse(p.x,p.y+tile*.06,tile*.3,tile*.12,0,0,Math.PI*2);ctx.fill();
   const y=p.y-lift*tile-tile*.12;
-  ctx.fillStyle='#193b2de6';ctx.strokeStyle='#f4e6b4';ctx.lineWidth=Math.max(1.5,tile*.022);
-  ctx.beginPath();ctx.arc(p.x,y,tile*.27,0,Math.PI*2);ctx.fill();ctx.stroke();
   drawGroundItem(ctx,item,{x:p.x,y:y+tile*.07},tile*.65,0);
-  ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  const label=near?`${COMBAT_ITEMS[item]} ×${quantity}`:`×${quantity}`,w=ctx.measureText(label).width+12,ly=y+tile*.36;
-  ctx.fillStyle='#18382bef';ctx.beginPath();ctx.roundRect(p.x-w/2,ly-9,w,18,6);ctx.fill();
-  ctx.fillStyle='#fff3cf';ctx.fillText(label,p.x,ly);
+  if(near){
+    ctx.font='500 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    const label=`${COMBAT_ITEMS[item]} ×${quantity}`,w=ctx.measureText(label).width+10,ly=y+tile*.34;
+    ctx.fillStyle='#18382bd9';ctx.beginPath();ctx.roundRect(p.x-w/2,ly-8,w,16,5);ctx.fill();
+    ctx.fillStyle='#fff3cf';ctx.fillText(label,p.x,ly);
+  }
   ctx.restore();
 }
 

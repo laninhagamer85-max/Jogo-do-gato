@@ -51,7 +51,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const props = new Image(); props.src = '/forest-adventure/woodland-props-v2.png';
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
-    const bg = new Image(); bg.src = '/forest-adventure/ground-painted-v3.png';
+    const bg = new Image(); bg.src = '/forest-adventure/backgrounds/clearing.webp';
     let assetsReady = false;
     const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && bg.naturalWidth) { assetsReady = true; setAssetStatus('ready'); } };
     pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; bg.onload = checkAssets;
