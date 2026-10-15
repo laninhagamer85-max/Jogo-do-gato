@@ -1,0 +1,16 @@
+.game-release {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  color: inherit;
+  font-family: "Nunito", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0;
+  white-space: nowrap;
+  vertical-align: middle;
+}

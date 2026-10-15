@@ -1,3 +1,4 @@
+import ReleaseBadge from "./ReleaseBadge";
 import PetSymbol from "@/components/PetSymbol";
 import { useMemo, useState, type FormEvent } from "react";
 import { ArrowLeft, ArrowRight, Check, PawPrint, Sparkles, Volume2 } from "lucide-react";
@@ -52,6 +53,7 @@ export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHea
           <div className="intro-speech">{step === 0 ? "Miau! Vamos escolher quem vai viver esta aventura?" : step === 1 ? `Encontre o ${genderWord} que combina com você!` : `Quase lá! Como vou me chamar?`} <span><PetSymbol symbol="♥" /></span></div>
         </div>
         <div className="intro-form-wrap">
+          <ReleaseBadge />
           <span className="intro-kicker"><Sparkles size={14} /> UMA NOVA HISTÓRIA COMEÇA</span>
           <div className="intro-stepper" aria-label={`Passo ${step + 1} de 3`}>
             {stepNames.map((label, index) => <span className={index === step ? "active" : index < step ? "done" : ""} key={label}><i>{index < step ? <Check size={12} /> : index + 1}</i>{label}</span>)}

@@ -152,14 +152,13 @@ describe("PlatformerEngine existing gameplay contracts", () => {
   it("renders articulated running frames instead of the still run illustration", () => {
     const h = harness(); h.stand(0);
     h.internals.player.vx = 220;
-    Object.assign(h.internals.idleImage, { complete: true, naturalWidth: 120 });
-    h.internals.elapsed = 0.2;
+    h.internals.walkCycle = 0.2;
     h.internals.drawPlayer(h.context);
     const firstTailPose = h.contextCalls.get("bezierCurveTo")?.mock.calls.at(-1);
     expect(firstTailPose).toBeDefined();
     expect(h.contextCalls.get("drawImage")?.mock.calls.length ?? 0).toBe(0);
     h.contextCalls.get("bezierCurveTo")?.mockClear();
-    h.internals.elapsed = 0.3;
+    h.internals.walkCycle = 0.3;
     h.internals.drawPlayer(h.context);
     const nextTailPose = h.contextCalls.get("bezierCurveTo")?.mock.calls.at(-1);
     expect(nextTailPose).not.toEqual(firstTailPose);
@@ -301,5 +300,35 @@ describe("pet presentation-only animation", () => {
       expect(pose.scaleY).toBeGreaterThan(0.8);
       expect(pose.scaleY).toBeLessThan(1.2);
     }
+  });
+});
+
+// DOM/Canvas stubs only; these assertions are not a visual acceptance test.
+describe('consistent pet renderer and distance-driven gait', () => {
+  it('uses the same articulated character while resting and moving', () => {
+    const h = harness(); h.stand(0);
+    h.contextCalls.get('ellipse')?.mockClear();
+    h.contextCalls.get('drawImage')?.mockClear();
+    h.internals.player.vx = 0;
+    h.internals.drawPlayer(h.context);
+    const idlePaws = h.contextCalls.get('ellipse')?.mock.calls.filter((call: unknown[]) => call[2] === 5 && call[3] === 3.2).length;
+    h.contextCalls.get('ellipse')?.mockClear();
+    h.internals.player.vx = 300; h.internals.walkCycle = 1;
+    h.internals.drawPlayer(h.context);
+    const movingPaws = h.contextCalls.get('ellipse')?.mock.calls.filter((call: unknown[]) => call[2] === 5 && call[3] === 3.2).length;
+    expect(idlePaws).toBe(4); expect(movingPaws).toBe(4);
+    expect(h.contextCalls.get('drawImage')?.mock.calls.length ?? 0).toBe(0);
+    h.engine.dispose();
+  });
+  it('advances gait with actual ground travel and freezes it while idle or clamped', () => {
+    const h = harness(); h.engine.setSoundEnabled(false); h.stand(0);
+    h.engine.setInput('right', true); h.internals.update(1 / 60, 17);
+    expect(h.internals.walkCycle).toBeGreaterThan(0);
+    h.engine.setInput('right', false);
+    const cycle = h.internals.walkCycle;
+    h.internals.update(1 / 60, 34); expect(h.internals.walkCycle).toBe(cycle);
+    h.internals.player.x = 0; h.engine.setInput('left', true);
+    h.internals.update(1 / 60, 51); expect(h.internals.walkCycle).toBe(cycle);
+    h.engine.dispose();
   });
 });

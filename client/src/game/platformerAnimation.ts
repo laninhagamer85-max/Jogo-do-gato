@@ -4,6 +4,7 @@ export type PetMotionInput = {
   verticalSpeed: number;
   elapsed: number;
   landingFor: number;
+  walkCycle?: number;
 };
 
 export type PetMotionPose = {
@@ -46,7 +47,7 @@ export function getPetMotionPose(input: PetMotionInput): PetMotionPose {
   }
 
   if (moving) {
-    const stride = elapsed * 13.5;
+    const stride = input.walkCycle ?? elapsed * 13.5;
     const bounce = Math.abs(Math.sin(stride));
     return {
       state: "run",

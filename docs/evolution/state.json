@@ -3,23 +3,23 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-14",
   "timezone": "America/Sao_Paulo",
-  "status": "published_prototype_with_accepted_limits",
+  "status": "published_visual_acceptance_pending",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "recovery/mobile-review-20261009",
-    "pull_request": 4,
-    "base_commit": "15589688d60e1dd971f93a0fbc783b8554e1e24e",
-    "implementation_commit": "b044f19da926f0b34247be34ab64a658921b064c",
-    "release_commit": "4660c321d99668201c847e2f4e1f43119a8c619f",
+    "branch": "fix/game-ux-controls-20261014",
+    "pull_request": 8,
+    "base_commit": "d57861a58ad16d905d044ab8ffceb952b69ef7bb",
+    "implementation_commit": "7ab60750f47220e5b8642c387bf72368153b8219",
+    "release_commit": "7080924fe9a151036cbc81e3ba802e4e4d34c34b",
     "published_source_branch": "feat/pet-motion-20261014",
     "published_source_commit": "d0a5d08c7f7564a9d3c0adeaa6a9758d2c460103",
     "published_source_pr": 6
   },
   "current_improvement": {
-    "id": "pet-motion-forest-exploration-prototype",
-    "implementation_status": "published",
-    "acceptance_status": "user_accepted_prototype_limits_external_browser_QA"
+    "id": "game-ux-thumb-controls-exit-safety-pet-consistency",
+    "implementation_status": "implemented",
+    "acceptance_status": "browser_validation_pending"
   },
   "in_review_update": {
     "id": "bosque-dos-caminhos-final-qa",
@@ -47,55 +47,39 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 12,
+    "last_observed_version": 14,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
-    "authorization": "David relayed explicit approval of chain #4–#6 including prototype limitations on 2026-10-14.",
-    "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cec6532f0bdc8191a33f639e51a1f20f",
-    "deployment_id": "appgdep_6acfb4c402f08191966514c9a43d6ad4",
-    "site_commit": "47a07c607879a443b2fe9b2686795e118a2495ba",
-    "published_at": "2026-10-14T16:59:10.706299+00:00"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_4f86c4a6f1c8819191d750d5298c0905",
+    "deployment_id": "appgdep_6acff95e29988191b4f7f76bc7150708",
+    "site_commit": "7ab48d7f0d0670d7fbad6eba1e191d0f9fb08ed8",
+    "published_at": "2026-10-14T18:51:45-03:00",
+    "authorization": "David explicitly authorized publication of PR8 with visual QA pending and requested version on opening."
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "60/60_passed",
+    "offline_tests": "81/81_passed",
     "build": "passed_existing_chunk_warning",
-    "browser": "Manus isolated Browser Sandbox, tested runtime 0338794; subsequent diff documentation only",
-    "local_browser": "unavailable_not_repeated",
-    "phase1": "1_agent_guided_completion_0_deaths_keyboard",
-    "phase2": "organic_unlock_and_touch_start_only",
-    "viewports": {
-      "375x667": "external_layout_passed_not_full_playthrough_each",
-      "375x812": "external_layout_passed_not_full_playthrough_each",
-      "390x844": "external_layout_passed_not_full_playthrough_each",
-      "844x390": "external_layout_passed_not_full_playthrough_each",
-      "1366x768": "external_layout_passed_not_full_playthrough_each"
-    },
-    "online_phases_completed": 0,
-    "physical_mobile": "not_tested",
-    "firebase_integration": "not_run_staging_credentials_absent",
-    "forest_puzzle": "1_room_solved_21_arrow_inputs_external_browser"
+    "browser": "live_onboarding_version_14_confirmed_screenshot; gameplay_and_responsive_acceptance_pending",
+    "physical_mobile": "not_run",
+    "real_playthroughs": 0
   },
   "blockers": [
     {
-      "code": "remaining_coverage",
-      "detail": "Physical mobile/touch completion and isolated account authentication remain untested; local managed browser absent. External Manus browser evidence accepted for unchanged runtime."
+      "code": "browser_visual_gate",
+      "detail": "No control-browser capability; managed Sites forbids alternative preview browser. Actual layout, modal focus/multitouch and animation acceptance remain pending."
     }
   ],
   "next_actions": [
-    "Review the separate Bosque PR; keep v12 live and do not merge or publish without an explicit decision.",
-    "Test controls, rotation, safe areas and audio on a physical mobile device.",
-    "Validate versioned progress migration/persistence with an isolated staging profile.",
-    "Decide whether production requires full four-direction sprite sheets instead of procedural walk cadence.",
-    "Keep recurrence paused until separately resumed."
+    "Validate gameplay, touch controls, exit dialog, pet animation and required mobile/tablet/desktop viewports in isolated supported browser.",
+    "Use v13 rollback if regression confirmed; keep recurring task paused."
   ],
   "rollback": {
     "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0538219100148191ac0a851264317359",
-    "instructions": "Restore v11 through official Sites flow after checking concurrent deployments; preserve saves."
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2cca64c99c4881919ba593b887dcceee",
+    "instructions": "Restore saved v13 through official Sites flow after checking concurrent deployments; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-14-sites-prototype-release.md",
+  "latest_report": "docs/evolution/runs/2026-10-14-v14-release.md",
   "latest_review_report": "docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md",
   "continuation": {
     "checked_date": "2026-10-14",
