@@ -1,5 +1,6 @@
 import { cleanWalkAtlas, homeWalkDirection } from "./petFrameCleanup";
 import { petWalkAtlas, walkFrame } from "./petWalkAtlas";
+import { roamCompanion, type CompanionRoam } from "./companionMotion";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import "@babylonjs/core/Shaders/default.vertex.js";
@@ -159,10 +160,12 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   let companionSprite: ReturnType<typeof imageSprite> | null = null;
   let companionId: CompanionId | null = null;
   let companionBaseX = 2.2;
+  let companionRoam: CompanionRoam | null = null;
   const setCompanion = (id: CompanionId | null) => {
     if (id === companionId) return;
     companionSprite?.mesh.dispose(false, true);
     companionSprite = null;
+    companionRoam = null;
     companionId = id;
     companionShadow.mesh.isVisible = Boolean(id);
     if (!id) return;
@@ -245,6 +248,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     girlBow.mesh.scaling.set(scale, scale, 1);
     companionBaseX = aspect < 0.7 ? Math.min(1.35, viewWidth * 0.28) : aspect < 1.15 ? 1.8 : 2.45;
     if (companionSprite) {
+      companionRoam = null; // Re-anchor to the new floor after an orientation change.
       companionSprite.mesh.position.set(companionBaseX, baseY - 0.55 * scale, 0.12);
       const companionScale = scale * (aspect < 0.7 ? 0.84 : 1);
       companionSprite.mesh.scaling.set(companionScale, companionScale, 1);
@@ -425,11 +429,22 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     girlBow.mesh.position.set(positionX + moveX + 0.62 * accessoryScale, positionY + wave + jump + 1.40 * accessoryScale, -0.22);
     girlBow.mesh.rotation.z = kitten.rotation.z * 0.6;
     if (companionSprite) {
-      companionSprite.mesh.position.x = positionX + companionBaseX + Math.sin(now / 820 + 1.2) * 0.07;
-      const companionGroundY = positionY - 0.55 * (petWidth / 3.35);
-      companionSprite.mesh.position.y = companionGroundY + Math.sin(now / 640 + 1.4) * 0.045;
       const companionWidth = 1.62 * companionSprite.mesh.scaling.x;
-      companionShadow.mesh.position.set(companionSprite.mesh.position.x, companionGroundY - companionWidth * 0.45, 1.9);
+      const horizontalLimit = Math.max(0, (viewWidth - companionWidth) / 2);
+      const initialPoint = {
+        x: Math.max(-horizontalLimit, Math.min(horizontalLimit, positionX + companionBaseX)),
+        y: positionY - petWidth * 0.46,
+      };
+      companionRoam ??= { point: initialPoint, target: null, pauseMs: 1500 };
+      companionRoam = roamCompanion(companionRoam, {
+        left: -horizontalLimit, right: horizontalLimit,
+        bottom: -viewHeight / 2 + 0.3,
+        top: Math.min(1.25 - petWidth * 0.46, viewHeight / 2 - companionWidth),
+      }, delta, sleeping);
+      const companionGround = companionRoam.point;
+      // Sprite and shadow share a fixed foot point; no free-running vertical oscillation.
+      companionSprite.mesh.position.set(companionGround.x, companionGround.y + companionWidth * 0.46, 0.12);
+      companionShadow.mesh.position.set(companionGround.x, companionGround.y, 1.9);
       companionShadow.mesh.scaling.set(companionWidth * 0.66, companionWidth * 0.13, 1);
       companionShadow.material.alpha = 0.7;
     }
