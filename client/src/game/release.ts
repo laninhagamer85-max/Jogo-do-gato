@@ -1,2 +1,2 @@
 /** Keep this identifier aligned with the saved Sites release number. */
-export const GAME_RELEASE = 18;
+export const GAME_RELEASE = '1.9';
