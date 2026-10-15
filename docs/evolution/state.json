@@ -4,7 +4,7 @@
   "updated_date": "2026-10-12",
   "timezone": "America/Sao_Paulo",
   "status": "preparing_authorized_release",
-  "active_run": "2026-10-14-v16-sprite-corrections",
+  "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "recovery/mobile-review-20261009",
@@ -22,15 +22,15 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "last_observed_version": 15,
+    "last_observed_version": 16,
     "attempted_in_this_cycle": true,
     "status": "succeeded",
     "authorization": "User explicitly authorized publish before browser validation on 2026-10-12, with rollback to v8 if necessary.",
     "rollback_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_24a5a18e7de881919523d7103210fc7a",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_af6642d34c4081918f211308ba287fae",
-    "deployment_id": "appgdep_6ad01353da7481919d96b2b91c618d23",
-    "site_commit": "e5070490c14c3d354c834f607c0438e64141346d",
-    "published_at": "2026-10-12T13:55:28-03:00"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b7d8ac1804588191aa00c7a123247c13",
+    "deployment_id": "appgdep_6ad0187286f881918c810136654dadda",
+    "site_commit": "325379f31e138270246d7e26ed80aaf059a76673",
+    "published_at": "2026-10-14T21:04:22-03:00"
   },
   "verification": {
     "typescript": "passed",
@@ -64,10 +64,9 @@
     "Continuar refinamento de terreno e patas na Aventura, com fase piloto."
   ],
   "rollback": {
-    "code_base_commit": "fb26f07b99c39e8995c975d7ddbe8224ab823a8d",
-    "instructions": "Se uma regressão exigir retorno, publicar a versão salva v8 pelo fluxo oficial no mesmo Site; conferir primeiro se não houve publicação concorrente. Não resetar Git nem alterar dados de jogadores.",
     "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_72cd246ff9288191b3e37c01503766ad"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_af6642d34c4081918f211308ba287fae",
+    "instructions": "Restaurar v15 pelo fluxo oficial, após checar concorrência."
   },
   "latest_report": "docs/evolution/runs/2026-10-14-v16-sprite-corrections.md",
   "source_reconciliation": {
@@ -77,15 +76,16 @@
     "real_account_actions_performed": false
   },
   "pilot_review": {
-    "status": "preparing_followup_for_user_visual_test",
+    "status": "published_awaiting_user_visual_test",
     "variant": [
       "menino-prata",
       "menino-preto"
     ],
     "scope": "silver walk across three modes, camera safe region, inspection input guards",
-    "publication": "preparing_v15_user_authorized_post_publish_visual_test",
+    "publication": "v16_succeeded",
     "offline_tests": 92,
     "branch": "fix/pet-walk-camera-20261014",
-    "pull_request": 9
+    "pull_request": 9,
+    "github_commit": "726777ced125823f38a18f37785814bfb166d98f"
   }
 }
