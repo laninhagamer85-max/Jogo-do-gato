@@ -14,11 +14,24 @@ export function advanceCompanionGait(gait: CompanionGait, previous: GroundPoint,
   return { phase: (gait.phase + travel / 0.72) % 1, direction: homeWalkDirection(dx, dy), moving: true };
 }
 
-/** Roll out one house at a time; each friend keeps its own artwork. */
+/** Each friend has its own directional artwork; filenames are stable across releases. */
+export const COMPANION_WALK_FILES = {
+  mimi: 'mimi-walk-v1.png',
+  tico: 'tico-walk-v1.png',
+  mimo: 'mimo-walk-v1.png',
+  florita: 'florita-walk-v1.png',
+  bigodito: 'bigodito-walk-v1.png',
+  sol: 'sol-walk-v1.png',
+  conchinha: 'conchinha-walk-v1.png',
+  pingo: 'pingo-walk-v1.png',
+  nevinha: 'nevinha-walk-v1.png',
+  letrinha: 'letrinha-walk-v1.png',
+  estrelinha: 'estrelinha-walk-v1.png',
+  festeiro: 'festeiro-walk-v1.png',
+} satisfies Record<CompanionId, string>;
+
 export function companionWalkAtlas(id: CompanionId | null) {
-  if (id === 'sol') return '/manus-storage/sol-walk-v1.png';
-  if (id === 'mimo') return '/manus-storage/mimo-walk-v1.png';
-  return undefined;
+  return id ? `/manus-storage/${COMPANION_WALK_FILES[id]}` : undefined;
 }
 
 /** Keep the original portrait still until its own walking texture is ready. */

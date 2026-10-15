@@ -1,25 +1,33 @@
 # Meu Pet Virtual — Web Agência AD
 
-**Retomada e instruções:** [recovery/RETOMADA-MANUS.md](recovery/RETOMADA-MANUS.md).
+## Estado atual da fonte
 
-## Estado da publicação
+Versão de produto em preparação: **1.9.4**, caminhada própria para os 12 amiguinhos. A 1.9.3 é o piloto aprovado por David. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status de publicação.
 
-A versão pública mais recente observada no Site existente é a **v12**, publicada em 14/10/2026 a partir do commit `47a07c607879a443b2fe9b2686795e118a2495ba`. Ela reúne a revisão da Aventura e o protótipo inicial de Exploração. O repositório continua sendo a fonte de trabalho; esta documentação não publica nem altera o Site.
+Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 
-## Atualização em desenvolvimento
+A cobertura de fonte/recuperação evoluiu desde o snapshot v8 abaixo; painel de conta e atlas de ícones foram reconciliados. Testes offline e inspeção estática de sprites não substituem teste de gameplay. A expansão dos amigos está autorizada para David testar no celular depois da publicação.
 
-A atualização **Bosque dos Caminhos** está em branch própria, derivada do runtime publicado na v12. O plano é oferecer três capítulos originais com duas salas cada, exploração top-down, puzzles gentis, movimento visível do pet, áudio original e progresso versionado por perfil. A Aventura lateral continua disponível e não é substituída.
+## Histórico da recuperação
 
-**Esta atualização ainda não foi publicada.** Os PRs #4–#6 permanecem preservados; o Bosque está no [PR #7](https://github.com/laninhagamer85-max/Jogo-do-gato/pull/7), separado e baseado no PR #6. Não fazer merge, force-push ou deploy nesta rodada. Consulte o [plano](docs/evolution/plans/2026-10-14-bosque-dos-caminhos.md), o [TODO](TODO.md), o [estado da evolução](docs/evolution/state.json) e o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md).
+Ramo de retomada e revisão móvel de 09/10/2026, preparado para colaboração com o Manus.
 
-## Desenvolvimento e validação
+**Comece por [Retomada e instruções para o Manus](recovery/RETOMADA-MANUS.md).**
 
-- `pnpm dev`: inicia apenas a aplicação local de desenvolvimento.
-- `/qa-review.html`: fixture de revisão em memória; não autentica nem lê/grava partidas reais e é excluída do build público.
+O projeto reúne o código React/TypeScript recuperado, as 158 mídias da publicação e uma cópia íntegra da distribuição v7. A fonte recuperada é anterior à v7; as diferenças de ícones e painel de conta estão documentadas e ainda precisam ser conciliadas.
+
+- `pnpm dev`: cliente de desenvolvimento.
+- `/qa-review.html`: demonstração local da aventura, sem contas nem partidas reais.
 - `pnpm check`: verificação TypeScript.
-- `pnpm exec vitest run --exclude '**/*.integration.test.ts'`: testes offline pertinentes, sem integrar contas reais.
-- `pnpm build`: produz os arquivos estáticos locais da fonte; **não publica**.
-- `pnpm build:recovery`: recuperação histórica da v7 com ajustes móveis; não é a versão atual.
-- `pnpm dev:server` e `pnpm build:server`: fluxo anterior com Express.
+- `pnpm build`: build do código editável, ainda sujeito à conciliação.
+- `pnpm build:recovery`: gera `out/` preservando a v7 e aplicando somente as correções móveis desta revisão.
+- `pnpm dev:server`: fluxo anterior com Express.
 
-A QA desta atualização cobre o modo novo e regressões selecionadas da Aventura. Um playthrough UI-driven das seis salas foi concluído na fixture isolada com teclado/toque sintetizados; isso não é uma partida humana nem um save real. **Não declarar as 100 fases laterais testadas**. Testes em aparelho físico e persistência autenticada em staging permanecem pendentes; consulte o [relatório QA](docs/evolution/reviews/2026-10-14-bosque-dos-caminhos/REPORT.md).
+A revisão móvel foi publicada como versão 8 em 09/10/2026. As alterações de entrada da Aventura de 12/10/2026 estão somente na fonte editável e aguardam validação visual e conciliação com os recursos publicados. Não publicar o build normal antes dessas verificações. O build de recuperação não inclui o novo componente de entrada.
+
+- `node --import tsx scripts/verify-adventure-entry.ts`: verifica seleção da próxima fase, replay e imutabilidade do progresso, sem navegador ou conta. Não executa as fases.
+- `docs/evolution/state.json` e `docs/evolution/runs/2026-10-12.md`: estado e limites da revisão.
+
+Os 100 estágios ainda precisam de testes reais na conta de teste.
+
+![Revisão móvel da aventura em uma partida de demonstração](recovery/review-mobile-20261009.jpg)

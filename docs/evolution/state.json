@@ -3,17 +3,17 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_user_visual_review_pending",
-  "active_run": null,
+  "status": "preparing_authorized_release",
+  "active_run": "2026-10-15-all-companions-walk",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "fix/companion-room-roaming-20261015",
     "base_commit": "f27f6eb7be59fbb893a8fcf82945f5de486a1098"
   },
   "current_improvement": {
-    "id": "mimo-house-one-walk",
+    "id": "all-twelve-companions-walk",
     "implementation_status": "implemented",
-    "acceptance_status": "user_visual_review_pending"
+    "acceptance_status": "user_batch_review_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -32,7 +32,7 @@
     "vite_client_build": "passed_existing_chunk_warning",
     "entry_selection_and_save_immutability": "passed_101_input_states_not_playthroughs",
     "production_qa_page_exclusion": "passed",
-    "browser": "live_login_version_1.9.3_confirmed; gameplay_visual_pending",
+    "browser": "not_run_control_browser_unavailable; batch_review_by_David_after_publish",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -43,27 +43,28 @@
     "real_online_phases_completed_in_cycle": 0,
     "account_save_isolation": "passed_fake_storage_only",
     "atlas_integrity": "passed_original_png_hash_and_region_bounds",
-    "offline_tests": "124/124_passed_21_files"
+    "offline_tests": "125/125_passed_21_files",
+    "companion_atlas_static": "12_atlases_192_subject_components_passed"
   },
   "blockers": [
     {
-      "code": "visual_review_pending",
-      "detail": "Navegador control-browser indisponível; sem preview alternativo. Autorização persistente de David para publicar e revisar no celular, com limitações explícitas."
+      "code": "batch_visual_review_pending",
+      "detail": "Lote autorizado por David para publicar e testar depois. Inspeção estática e testes lógicos aprovados; sem playtest dos dez novos amigos."
     }
   ],
   "next_actions": [
-    "David: observar patas, mudança de direção, repouso e desvio do Mimo na casa 1; Sol casa 4 preservado.",
-    "Expandir gradualmente arte própria aos demais amigos após retorno visual.",
-    "Retomar layout vertical da Minha Casa e auditoria de indicadores.",
-    "Expandir salas/biomas da Exploração depois da estabilização dos personagens."
+    "David: conferir os amiguinhos disponíveis na conta; caminhada, direções, repouso e desvio do gato. Não desbloquear casas artificialmente.",
+    "Corrigir qualquer regressão do lote antes de ampliar recursos.",
+    "Retomar layout vertical da Minha Casa, organização de painéis e auditoria dos indicadores.",
+    "Depois: ampliar salas, biomas e dificuldade da Exploração."
   ],
   "rollback": {
-    "production_changed": true,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fa640b28c118819195ad6073c80f040b",
-    "product_version": "1.9.2",
-    "instructions": "Restaurar versão salva 1.9.2 pelo fluxo oficial após checar publicações concorrentes; preservar saves."
+    "production_changed": false,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6705501060008191987f1f00a18e99b9",
+    "product_version": "1.9.3",
+    "instructions": "Restaurar versão salva 1.9.3 pelo fluxo oficial, checando concorrência e preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-mimo-walk.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-all-companions-walk.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -130,6 +131,21 @@
     "asset_sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
     "rollout": "Mimo_house1; Sol_house4_preserved",
     "load_safety": "wait_for_own_walk_texture_before_roaming",
-    "visual_validation": "static_atlas_inspected_only; gameplay_pending"
+    "visual_validation": "static_atlas_inspected_only; gameplay_pending",
+    "acceptance": "David approved movement on 2026-10-15 after 1.9.3 publication"
+  },
+  "all_companions_walk": {
+    "product_version": "1.9.4",
+    "status": "preparing_publication",
+    "companions": 12,
+    "new_atlases": 10,
+    "frames_per_atlas": 16,
+    "total_frames": 192,
+    "manifest": "recovery/companion-atlases/manifest.json",
+    "new_png_bytes": 20956694,
+    "load_policy": "only_active_companion; remain_still_until_own_atlas_ready",
+    "accepted_pilot": "1.9.3 movement approved by David; not acceptance of ten new animations",
+    "authorization": "David explicitly requested applying to all friends and testing afterwards on 2026-10-15.",
+    "browser_gameplay": "pending_user_review; not observed in this environment"
   }
 }

@@ -1,0 +1,1618 @@
+{
+  "schema_version": 1,
+  "product_version": "1.9.4",
+  "date": "2026-10-15",
+  "inspection_type": "static_atlas_not_gameplay",
+  "runtime_cleanup": "existing largest-connected-subject; 4x4 grid; common floor alignment",
+  "prompt": "Preserve reference identity, face, fur and accessories. Original 4x4 transparent RGBA directional walking sprite sheet. Rows: right profile, front, back, front-right. Four gentle alternating-paw frames each, equal scale and baseline, whole body inside each cell with clear gutters. No text, grid, shadows or background. Species-appropriate steps; hamster holds book while stepping.",
+  "atlases": [
+    {
+      "id": "mimi",
+      "filename": "mimi-walk-v1.png",
+      "reference": "companheira-mimi_bc963ec5.webp",
+      "sha256": "b06992a1e4d10e72eb488ca170d8dd200db2d0e5c959e081e0a1b2b1afa3b312",
+      "bytes": 2361683,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 40602,
+          "subject_width": 299,
+          "subject_height": 256
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 40520,
+          "subject_width": 286,
+          "subject_height": 252
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 40175,
+          "subject_width": 292,
+          "subject_height": 254
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 39528,
+          "subject_width": 272,
+          "subject_height": 253
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 43929,
+          "subject_width": 243,
+          "subject_height": 300
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 44701,
+          "subject_width": 248,
+          "subject_height": 297
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 46248,
+          "subject_width": 240,
+          "subject_height": 312
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 43718,
+          "subject_width": 239,
+          "subject_height": 294
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 35516,
+          "subject_width": 207,
+          "subject_height": 286
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 36096,
+          "subject_width": 204,
+          "subject_height": 289
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 34721,
+          "subject_width": 202,
+          "subject_height": 288
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 36940,
+          "subject_width": 217,
+          "subject_height": 286
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 48028,
+          "subject_width": 304,
+          "subject_height": 284
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 48306,
+          "subject_width": 301,
+          "subject_height": 280
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 48348,
+          "subject_width": 293,
+          "subject_height": 280
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 45123,
+          "subject_width": 283,
+          "subject_height": 272
+        }
+      ]
+    },
+    {
+      "id": "tico",
+      "filename": "tico-walk-v1.png",
+      "reference": "companheiro-tico_da6d680c.webp",
+      "sha256": "4f9101b9fa446bdef7fe2ec81c3912325e2ac18f72d9d7f34a2b6f8aa7ef3714",
+      "bytes": 2126242,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 51823,
+          "subject_width": 294,
+          "subject_height": 271
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 49659,
+          "subject_width": 284,
+          "subject_height": 270
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 49720,
+          "subject_width": 288,
+          "subject_height": 269
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 50156,
+          "subject_width": 291,
+          "subject_height": 268
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 49404,
+          "subject_width": 280,
+          "subject_height": 306
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 50000,
+          "subject_width": 280,
+          "subject_height": 307
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 50362,
+          "subject_width": 276,
+          "subject_height": 301
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 48638,
+          "subject_width": 277,
+          "subject_height": 303
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 43978,
+          "subject_width": 267,
+          "subject_height": 298
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 44435,
+          "subject_width": 263,
+          "subject_height": 292
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 44096,
+          "subject_width": 266,
+          "subject_height": 292
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 44200,
+          "subject_width": 267,
+          "subject_height": 292
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 56451,
+          "subject_width": 295,
+          "subject_height": 294
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 56595,
+          "subject_width": 302,
+          "subject_height": 282
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 56471,
+          "subject_width": 298,
+          "subject_height": 291
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 54724,
+          "subject_width": 289,
+          "subject_height": 287
+        }
+      ]
+    },
+    {
+      "id": "mimo",
+      "filename": "mimo-walk-v1.png",
+      "reference": "mascot-01-mimo_31fcb547.webp",
+      "sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
+      "bytes": 2253016,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "approved_pilot_1.9.3",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 43439,
+          "subject_width": 291,
+          "subject_height": 260
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 44113,
+          "subject_width": 288,
+          "subject_height": 262
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 43636,
+          "subject_width": 297,
+          "subject_height": 256
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 43045,
+          "subject_width": 288,
+          "subject_height": 260
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 45549,
+          "subject_width": 251,
+          "subject_height": 288
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 44930,
+          "subject_width": 255,
+          "subject_height": 288
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 44076,
+          "subject_width": 253,
+          "subject_height": 283
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 42422,
+          "subject_width": 245,
+          "subject_height": 291
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 42047,
+          "subject_width": 239,
+          "subject_height": 275
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 40408,
+          "subject_width": 240,
+          "subject_height": 277
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 40283,
+          "subject_width": 232,
+          "subject_height": 277
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 40750,
+          "subject_width": 237,
+          "subject_height": 276
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 51367,
+          "subject_width": 299,
+          "subject_height": 288
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 50421,
+          "subject_width": 296,
+          "subject_height": 291
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 50882,
+          "subject_width": 296,
+          "subject_height": 294
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 50439,
+          "subject_width": 301,
+          "subject_height": 294
+        }
+      ]
+    },
+    {
+      "id": "florita",
+      "filename": "florita-walk-v1.png",
+      "reference": "mascot-02-florita_7e059aa6.webp",
+      "sha256": "a50542120f4badbb44399b187e076c8bfd07d408b81129391a4d06bce1290cf7",
+      "bytes": 2047527,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 49675,
+          "subject_width": 266,
+          "subject_height": 279
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 48343,
+          "subject_width": 252,
+          "subject_height": 285
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 46787,
+          "subject_width": 256,
+          "subject_height": 277
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 46405,
+          "subject_width": 257,
+          "subject_height": 283
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 48498,
+          "subject_width": 295,
+          "subject_height": 298
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 47985,
+          "subject_width": 298,
+          "subject_height": 294
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 46964,
+          "subject_width": 297,
+          "subject_height": 297
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 48051,
+          "subject_width": 288,
+          "subject_height": 297
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 41849,
+          "subject_width": 289,
+          "subject_height": 277
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 43057,
+          "subject_width": 288,
+          "subject_height": 282
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 40646,
+          "subject_width": 275,
+          "subject_height": 278
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 42331,
+          "subject_width": 272,
+          "subject_height": 279
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 52153,
+          "subject_width": 268,
+          "subject_height": 301
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 55156,
+          "subject_width": 292,
+          "subject_height": 302
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 52534,
+          "subject_width": 261,
+          "subject_height": 299
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 51743,
+          "subject_width": 269,
+          "subject_height": 289
+        }
+      ]
+    },
+    {
+      "id": "bigodito",
+      "filename": "bigodito-walk-v1.png",
+      "reference": "mascot-03-bigodito_f3a981ff.webp",
+      "sha256": "10fbd793665f23f62ead9202937c57f6bd9ff4e49332b6f105a7c4bb22059d02",
+      "bytes": 2247353,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 44018,
+          "subject_width": 294,
+          "subject_height": 264
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 43601,
+          "subject_width": 287,
+          "subject_height": 266
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 44570,
+          "subject_width": 286,
+          "subject_height": 264
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 43360,
+          "subject_width": 292,
+          "subject_height": 266
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 47439,
+          "subject_width": 260,
+          "subject_height": 302
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 48692,
+          "subject_width": 253,
+          "subject_height": 301
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 48650,
+          "subject_width": 260,
+          "subject_height": 301
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 48012,
+          "subject_width": 249,
+          "subject_height": 300
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 44740,
+          "subject_width": 253,
+          "subject_height": 293
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 53468,
+          "subject_width": 266,
+          "subject_height": 366
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 45024,
+          "subject_width": 256,
+          "subject_height": 293
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 44707,
+          "subject_width": 245,
+          "subject_height": 292
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 55446,
+          "subject_width": 289,
+          "subject_height": 295
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 52623,
+          "subject_width": 281,
+          "subject_height": 296
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 55639,
+          "subject_width": 302,
+          "subject_height": 300
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 54670,
+          "subject_width": 289,
+          "subject_height": 299
+        }
+      ]
+    },
+    {
+      "id": "sol",
+      "filename": "sol-walk-v1.png",
+      "reference": "mascot-04-sol_d636860d.webp",
+      "sha256": "2df0e03d995404a2f4234fdfd5eeb13a5346d9f5cfffff047ee5c30a9a0e209c",
+      "bytes": 1949495,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "approved_pilot_1.9.3",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 39832,
+          "subject_width": 276,
+          "subject_height": 239
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 39188,
+          "subject_width": 277,
+          "subject_height": 237
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 39318,
+          "subject_width": 276,
+          "subject_height": 238
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 38530,
+          "subject_width": 279,
+          "subject_height": 234
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 39107,
+          "subject_width": 234,
+          "subject_height": 275
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 38917,
+          "subject_width": 235,
+          "subject_height": 274
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 38448,
+          "subject_width": 231,
+          "subject_height": 275
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 38550,
+          "subject_width": 229,
+          "subject_height": 276
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 32223,
+          "subject_width": 207,
+          "subject_height": 271
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 31839,
+          "subject_width": 203,
+          "subject_height": 258
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 32953,
+          "subject_width": 210,
+          "subject_height": 266
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 32871,
+          "subject_width": 212,
+          "subject_height": 258
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 46199,
+          "subject_width": 294,
+          "subject_height": 262
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 44753,
+          "subject_width": 289,
+          "subject_height": 252
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 48234,
+          "subject_width": 291,
+          "subject_height": 266
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 44338,
+          "subject_width": 291,
+          "subject_height": 256
+        }
+      ]
+    },
+    {
+      "id": "conchinha",
+      "filename": "conchinha-walk-v1.png",
+      "reference": "mascot-05-conchinha_9e16f10c.webp",
+      "sha256": "6c5c3e9c944b58efc55c02559a0b861995bf8fafcc488956d27029d370536efa",
+      "bytes": 2170377,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 44739,
+          "subject_width": 295,
+          "subject_height": 258
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 43103,
+          "subject_width": 295,
+          "subject_height": 254
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 42683,
+          "subject_width": 284,
+          "subject_height": 258
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 44442,
+          "subject_width": 296,
+          "subject_height": 262
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 46781,
+          "subject_width": 258,
+          "subject_height": 295
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 46987,
+          "subject_width": 260,
+          "subject_height": 295
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 45679,
+          "subject_width": 250,
+          "subject_height": 294
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 47211,
+          "subject_width": 252,
+          "subject_height": 294
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 38759,
+          "subject_width": 214,
+          "subject_height": 282
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 41719,
+          "subject_width": 238,
+          "subject_height": 277
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 41027,
+          "subject_width": 235,
+          "subject_height": 270
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 39498,
+          "subject_width": 224,
+          "subject_height": 273
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 51868,
+          "subject_width": 298,
+          "subject_height": 298
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 51327,
+          "subject_width": 299,
+          "subject_height": 291
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 52536,
+          "subject_width": 295,
+          "subject_height": 304
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 52348,
+          "subject_width": 303,
+          "subject_height": 295
+        }
+      ]
+    },
+    {
+      "id": "pingo",
+      "filename": "pingo-walk-v1.png",
+      "reference": "mascot-06-pingo_c29b94c2.webp",
+      "sha256": "31033977065035ddc727ab03e72c4b4a4eb2b161cbf1042a0103df3dcf4b1bd1",
+      "bytes": 2244122,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 42828,
+          "subject_width": 283,
+          "subject_height": 261
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 43730,
+          "subject_width": 283,
+          "subject_height": 259
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 44103,
+          "subject_width": 284,
+          "subject_height": 264
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 43110,
+          "subject_width": 287,
+          "subject_height": 256
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 47547,
+          "subject_width": 244,
+          "subject_height": 291
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 49746,
+          "subject_width": 259,
+          "subject_height": 293
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 47825,
+          "subject_width": 243,
+          "subject_height": 296
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 49009,
+          "subject_width": 251,
+          "subject_height": 289
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 41562,
+          "subject_width": 227,
+          "subject_height": 289
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 43409,
+          "subject_width": 247,
+          "subject_height": 285
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 44058,
+          "subject_width": 240,
+          "subject_height": 287
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 42766,
+          "subject_width": 236,
+          "subject_height": 286
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 53277,
+          "subject_width": 300,
+          "subject_height": 288
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 53553,
+          "subject_width": 296,
+          "subject_height": 290
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 53474,
+          "subject_width": 298,
+          "subject_height": 290
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 53058,
+          "subject_width": 300,
+          "subject_height": 275
+        }
+      ]
+    },
+    {
+      "id": "nevinha",
+      "filename": "nevinha-walk-v1.png",
+      "reference": "mascot-07-nevinha_fbd8e97e.webp",
+      "sha256": "7ae9670e5bc89fe845a459f13c97e38d3ce79dcd7fa467a7a21498fe2a2e8572",
+      "bytes": 1824865,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 40570,
+          "subject_width": 248,
+          "subject_height": 279
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 38842,
+          "subject_width": 232,
+          "subject_height": 282
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 39354,
+          "subject_width": 237,
+          "subject_height": 282
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 40282,
+          "subject_width": 236,
+          "subject_height": 285
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 38487,
+          "subject_width": 197,
+          "subject_height": 301
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 39214,
+          "subject_width": 198,
+          "subject_height": 301
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 38552,
+          "subject_width": 198,
+          "subject_height": 299
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 39723,
+          "subject_width": 202,
+          "subject_height": 305
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 37129,
+          "subject_width": 191,
+          "subject_height": 294
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 37100,
+          "subject_width": 193,
+          "subject_height": 290
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 37433,
+          "subject_width": 191,
+          "subject_height": 297
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 36874,
+          "subject_width": 192,
+          "subject_height": 286
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 44849,
+          "subject_width": 251,
+          "subject_height": 284
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 43547,
+          "subject_width": 241,
+          "subject_height": 298
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 44391,
+          "subject_width": 250,
+          "subject_height": 298
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 44442,
+          "subject_width": 249,
+          "subject_height": 294
+        }
+      ]
+    },
+    {
+      "id": "letrinha",
+      "filename": "letrinha-walk-v1.png",
+      "reference": "mascot-08-letrinha_289c9a17.webp",
+      "sha256": "c65ebc5a19f4c242679d3c9f7ee4177699da1ebc74ae5288bfd61aa45dfab5df",
+      "bytes": 2001373,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 40356,
+          "subject_width": 207,
+          "subject_height": 285
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 40107,
+          "subject_width": 208,
+          "subject_height": 284
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 40208,
+          "subject_width": 210,
+          "subject_height": 286
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 41945,
+          "subject_width": 217,
+          "subject_height": 286
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 46403,
+          "subject_width": 219,
+          "subject_height": 305
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 46909,
+          "subject_width": 219,
+          "subject_height": 300
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 46673,
+          "subject_width": 213,
+          "subject_height": 307
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 47343,
+          "subject_width": 221,
+          "subject_height": 304
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 42608,
+          "subject_width": 205,
+          "subject_height": 289
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 43078,
+          "subject_width": 205,
+          "subject_height": 292
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 42386,
+          "subject_width": 203,
+          "subject_height": 287
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 43078,
+          "subject_width": 203,
+          "subject_height": 286
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 52443,
+          "subject_width": 234,
+          "subject_height": 307
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 51093,
+          "subject_width": 238,
+          "subject_height": 302
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 51576,
+          "subject_width": 239,
+          "subject_height": 310
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 53201,
+          "subject_width": 234,
+          "subject_height": 310
+        }
+      ]
+    },
+    {
+      "id": "estrelinha",
+      "filename": "estrelinha-walk-v1.png",
+      "reference": "mascot-09-estrelinha_71ec038f.webp",
+      "sha256": "7bb0b8de496812103fc192d17295db90eab6ee80172c535a612dcb9c978ab078",
+      "bytes": 1962816,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 41123,
+          "subject_width": 275,
+          "subject_height": 252
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 42239,
+          "subject_width": 277,
+          "subject_height": 256
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 42310,
+          "subject_width": 297,
+          "subject_height": 252
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 43108,
+          "subject_width": 291,
+          "subject_height": 252
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 45434,
+          "subject_width": 257,
+          "subject_height": 285
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 44864,
+          "subject_width": 252,
+          "subject_height": 278
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 43770,
+          "subject_width": 255,
+          "subject_height": 279
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 43508,
+          "subject_width": 244,
+          "subject_height": 278
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 36842,
+          "subject_width": 196,
+          "subject_height": 282
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 36777,
+          "subject_width": 206,
+          "subject_height": 283
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 37914,
+          "subject_width": 186,
+          "subject_height": 287
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 38167,
+          "subject_width": 194,
+          "subject_height": 289
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 50414,
+          "subject_width": 295,
+          "subject_height": 280
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 50277,
+          "subject_width": 290,
+          "subject_height": 284
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 51184,
+          "subject_width": 294,
+          "subject_height": 272
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 50712,
+          "subject_width": 298,
+          "subject_height": 277
+        }
+      ]
+    },
+    {
+      "id": "festeiro",
+      "filename": "festeiro-walk-v1.png",
+      "reference": "mascot-10-festeiro_0c19a065.webp",
+      "sha256": "a383b7e4a8ab8e5d73bdeccea3a6da7f1f6df5b89d1b5289b561b1b065edf279",
+      "bytes": 1970336,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "frame_count": 16,
+      "direction_rows": [
+        "right",
+        "front",
+        "back",
+        "front_right"
+      ],
+      "art_origin": "original_generated",
+      "static_inspection": "passed_16_subject_components",
+      "gameplay_review": "pending_user_test",
+      "frame_inspection": [
+        {
+          "row": 0,
+          "column": 0,
+          "subject_pixels": 42862,
+          "subject_width": 287,
+          "subject_height": 272
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "subject_pixels": 43954,
+          "subject_width": 279,
+          "subject_height": 274
+        },
+        {
+          "row": 0,
+          "column": 2,
+          "subject_pixels": 45187,
+          "subject_width": 293,
+          "subject_height": 274
+        },
+        {
+          "row": 0,
+          "column": 3,
+          "subject_pixels": 42524,
+          "subject_width": 276,
+          "subject_height": 275
+        },
+        {
+          "row": 1,
+          "column": 0,
+          "subject_pixels": 48004,
+          "subject_width": 236,
+          "subject_height": 313
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "subject_pixels": 46748,
+          "subject_width": 205,
+          "subject_height": 315
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "subject_pixels": 45545,
+          "subject_width": 212,
+          "subject_height": 303
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "subject_pixels": 44668,
+          "subject_width": 219,
+          "subject_height": 304
+        },
+        {
+          "row": 2,
+          "column": 0,
+          "subject_pixels": 39984,
+          "subject_width": 192,
+          "subject_height": 296
+        },
+        {
+          "row": 2,
+          "column": 1,
+          "subject_pixels": 38437,
+          "subject_width": 188,
+          "subject_height": 285
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "subject_pixels": 39608,
+          "subject_width": 191,
+          "subject_height": 290
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "subject_pixels": 39651,
+          "subject_width": 186,
+          "subject_height": 291
+        },
+        {
+          "row": 3,
+          "column": 0,
+          "subject_pixels": 49878,
+          "subject_width": 265,
+          "subject_height": 288
+        },
+        {
+          "row": 3,
+          "column": 1,
+          "subject_pixels": 51118,
+          "subject_width": 269,
+          "subject_height": 288
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "subject_pixels": 50112,
+          "subject_width": 281,
+          "subject_height": 291
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "subject_pixels": 50818,
+          "subject_width": 268,
+          "subject_height": 292
+        }
+      ]
+    }
+  ]
+}
