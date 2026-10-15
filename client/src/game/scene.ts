@@ -467,7 +467,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
         top: Math.min(1.25 - petWidth * 0.46, viewHeight / 2 - companionWidth),
       }, delta, sleeping, Math.random, { x: positionX, y: positionY - petWidth * 0.46, radius: petWidth * 0.20 + companionWidth * 0.16 });
       const companionGround = companionRoam.point;
-      companionGait = advanceCompanionGait(companionGait, previousGround, companionGround);
+      companionGait = advanceCompanionGait(companionGait, previousGround, companionGround, companionRoam.lookAt);
       const hasWalkArt = companionWalkTexture?.isReady();
       if (hasWalkArt && companionWalkTexture) {
         companionWalkTexture.uOffset = walkFrame(companionGait.phase) / 4;
