@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
-    "base_commit": "48ee2e84da978986a310726f6ec33557967fe8e9",
-    "source_site_commit": "ad6369b33c3f0cf0bfacd75979c81c033abf0e1a",
+    "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
+    "source_site_commit": "5c802bc84578f650694f556831662a8114318cee",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "d7def4b1a64447e7fb9af4de59459b5fe862e033"
+    "code_commit": "aa5c551be28c086dac383bb1609291b98b7b10d0"
   },
   "current_improvement": {
     "id": "modular-grass-native-density",
@@ -21,15 +21,14 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.15",
-    "last_observed_version": 34,
+    "product_version": "1.9.16",
+    "last_observed_version": 35,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
-    "deployment_id": "appgdep_6ad11b4c134c81918c0f0ebe1a592f8c",
-    "site_commit": "ad6369b33c3f0cf0bfacd75979c81c033abf0e1a",
-    "published_at": "2026-10-15T18:29:03.337159+00:00",
-    "attempted_in_this_cycle": true,
-    "target_product_version": "1.9.16"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
+    "deployment_id": "appgdep_6ad11f4948608191b60a53e95d2bb038",
+    "site_commit": "5c802bc84578f650694f556831662a8114318cee",
+    "published_at": "2026-10-15T18:45:52.719784+00:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -54,7 +53,7 @@
     "Reutilizar terrainTexture.ts com novas texturas e sementes por bioma, sem usar ilustração de mapa inteiro como piso."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.15",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
     "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."

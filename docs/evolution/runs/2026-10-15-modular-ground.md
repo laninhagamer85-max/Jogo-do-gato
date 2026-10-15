@@ -18,4 +18,4 @@ Pesquisa consultada 15/10/2026: MDN https://developer.mozilla.org/en-US/docs/Web
 
 Limites: control-browser indisponível. Nenhum navegador, medição de FPS em aparelho, inspeção real de emendas nem playtest executados. Publicação para revisão de David autorizada; nitidez, percepção de repetição e fluidez aguardam teste no aparelho, inclusive em zoom 2. Nenhum save real alterado por ferramentas. Piloto permanece uma sala, 60 salas continuam em planejamento.
 
-Publicação em preparação. Rollback 1.9.15 / Sites 34. Após aceite: dez salas distintas no capítulo 1, antes de migrar demais capítulos.
+Publicação succeeded, produto 1.9.16 / Sites 35, https://meupet.aquimeusite.chatgpt.site em 15/10/2026 às 15:45:52 America/Sao_Paulo. Fonte Sites 5c802bc84578f650694f556831662a8114318cee; GitHub aa5c551be28c086dac383bb1609291b98b7b10d0; deployment appgdep_6ad11f4948608191b60a53e95d2bb038. Rollback 1.9.15 / Sites 34. Após aceite: dez salas distintas no capítulo 1, antes de migrar demais capítulos.
