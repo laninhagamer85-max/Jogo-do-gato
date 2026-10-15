@@ -2,6 +2,7 @@ import { cleanWalkAtlas, homeWalkDirection } from "./petFrameCleanup";
 import { petWalkAtlas, walkFrame } from "./petWalkAtlas";
 import { roamCompanion, type CompanionRoam } from "./companionMotion";
 import { companionWalkAtlas, advanceCompanionGait, type CompanionGait } from "./companionWalkAtlas";
+import { roomDepthIndex, decorationDepthIndex } from "./roomDepth";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import "@babylonjs/core/Shaders/default.vertex.js";
@@ -228,6 +229,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       1.55 - (placement.y / 100) * 0.45,
     );
     sprite.mesh.rotation.z = (placement.rotation * Math.PI) / 180;
+    sprite.mesh.alphaIndex = decorationDepthIndex(placement.itemId, sprite.mesh.position.y, worldSize, placement.rotation);
     sprite.mesh.isPickable = true;
     sprite.mesh.metadata = { decorationId: placement.id };
   };
@@ -418,6 +420,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       }
     }
     kitten.position.set(positionX + moveX, positionY + wave + jump, 0);
+    kitten.alphaIndex = roomDepthIndex(positionY - petWidth * 0.46);
+    boyHat.mesh.alphaIndex = girlBow.mesh.alphaIndex = roomDepthIndex(positionY - petWidth * 0.46, true);
     // The footprint stays on the floor while the pet reacts above it.
     const elevation = Math.max(0, wave + jump);
     const shadowSpread = 1 + Math.min(0.4, elevation * 0.7);
@@ -477,7 +481,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       }
       // Sprite and shadow share a fixed foot point; no free-running vertical oscillation.
       companionSprite.mesh.position.set(companionGround.x, companionGround.y + companionWidth * (hasWalkArt ? 0.484375 : 0.46), 0.12);
-      companionSprite.mesh.alphaIndex = companionGround.y < positionY - petWidth * 0.46 ? 1002 : 999;
+      companionSprite.mesh.alphaIndex = roomDepthIndex(companionGround.y);
       companionShadow.mesh.position.set(companionGround.x, companionGround.y, 1.9);
       companionShadow.mesh.scaling.set(companionWidth * 0.66, companionWidth * 0.13, 1);
       companionShadow.material.alpha = 0.7;
