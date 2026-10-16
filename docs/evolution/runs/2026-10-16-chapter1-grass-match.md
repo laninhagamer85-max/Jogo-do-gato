@@ -23,3 +23,9 @@ Pesquisa técnica da revisão imediatamente anterior continua aplicável: https:
 Próximo passo: comparar com a clareira original em retrato/paisagem, Ver sala e zoom de combate. Rollback conhecido: produto 1.9.21 / Sites 40; manter saves e não sobrescrever publicação posterior.
 
 TypeScript, build e 33 testes pertinentes de terreno/cenário/bioma aprovados. A suíte de 211 testes offline da 1.9.21 não foi repetida integralmente nesta troca de arte. Nenhuma nova verificação de integração Firebase foi executada.
+
+## Publicação
+
+Produto 1.9.22 / Sites 41, implantação succeeded. Commit Sites `f2d17db2cae5adf7898b443a08a0a96e79a3a095`; código GitHub `4324394c548e95735083f17773c33c5fe6de744b`. Versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_34b5eb038b6081918cd8be9790820e30`, deployment `appgdep_6ad1b242ad7481919440ee149610f69b`. URL: https://meupet.aquimeusite.chatgpt.site. Primeiro pacote gzip estava incompleto; recusado pelo Sites sem implantação. Refeito com helper oficial em novo caminho, validado por leitura integral e hash idêntico da textura; segunda gravação aprovada. Aceite no aparelho pendente.
+
+Após sucesso, recarregado o jogo e aberto Aventura → Exploração → sala piloto → Ver sala. A imagem em paisagem confirma o solo mais claro, as novas marcas pintadas, grupos de borda e os dois insetos menores preservados. A variação tonal ainda é perceptível em área grande: a semelhança estética e o grau de contraste dependem da comparação de David. Não declarar equivalência perfeita ao capítulo, aprovação de arte, retrato ou FPS.

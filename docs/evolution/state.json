@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review_publication",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,7 +11,7 @@
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
     "source_site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "eda4cee99c462d85581b3b0fd035f0d85e8c06b9",
+    "code_commit": "4324394c548e95735083f17773c33c5fe6de744b",
     "implementation_base_github_commit": "1fdffde7d7a3c9448dce129f553d526a80832285"
   },
   "current_improvement": {
@@ -23,12 +23,12 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.22",
-    "last_observed_version": 40,
-    "status": "preparing",
-    "version_id": null,
-    "deployment_id": null,
-    "site_commit": null,
-    "published_at": null,
+    "last_observed_version": 41,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_34b5eb038b6081918cd8be9790820e30",
+    "deployment_id": "appgdep_6ad1b242ad7481919440ee149610f69b",
+    "site_commit": "f2d17db2cae5adf7898b443a08a0a96e79a3a095",
+    "published_at": "2026-10-16T05:12:55.511185+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -37,7 +37,7 @@
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.9.21 landscape mismatch observed; 1.9.22 not observed yet; portrait and FPS pending",
+    "browser": "Post-deploy 1.9.22 loaded in authenticated cloud browser; landscape overview inspected. Grass is brighter and painterly, with visible dense tonal variation. Color/style acceptance pending David; portrait and FPS not verified.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -48,7 +48,7 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "pending"
+    "packaged_grass": "first gzip incomplete; rebuilt separately, full tar and exact grass hash passed; native save succeeded"
   },
   "blockers": [],
   "next_actions": [
@@ -56,7 +56,7 @@
     "Aceitar a base antes de expandir o piloto para salas reais do capítulo 1."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.21",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_151986417ea481918a913b68df89b365",
     "site_commit": "3855e6697699dd2dd111cabf8a27e5b104087d95",
@@ -285,7 +285,7 @@
   },
   "chapter1_grass_match": {
     "date": "2026-10-16",
-    "status": "offline_verified_pending_user_review",
+    "status": "published_for_user_comparison",
     "reference": "client/public/forest-adventure/backgrounds/clearing.webp",
     "asset": "client/public/forest-adventure/grass-chapter1-painted-v4.webp",
     "scope": "pilot grass only; groups/insects/controls/saves unchanged",
@@ -293,6 +293,7 @@
       2.82,
       3.18
     ],
-    "new_gameplay_content": false
+    "new_gameplay_content": false,
+    "post_deploy_visual": "actual landscape overview observed; closer light green palette, not a claim of identical chapter rendering or user acceptance"
   }
 }
