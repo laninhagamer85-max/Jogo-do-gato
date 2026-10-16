@@ -63,3 +63,15 @@
 /* 1.9.12: keep notices in the HUD band, clear of the player's face. */
 .combat-goal{left:max(12px,env(safe-area-inset-left));transform:none;max-width:calc(100% - 24px);text-align:left;line-height:1.3}
 @media(max-height:450px) and (orientation:landscape){.combat-goal{top:8px;left:200px;right:245px;width:auto;max-width:none;font-size:9px;padding:4px 7px;max-height:40px;overflow:hidden}}
+
+/* North-up minimap, below header; camera controls stay beside it. */
+.combat-minimap{position:absolute;z-index:2;top:max(62px,calc(env(safe-area-inset-top) + 54px));right:max(10px,env(safe-area-inset-right));width:90px;height:90px;pointer-events:none}
+.combat-minimap svg{display:block;width:100%;height:100%}
+.combat-pilot .combat-camera{right:104px}
+@media(max-height:500px){.combat-minimap{width:76px;height:76px}.combat-pilot .combat-camera{right:90px}}
+
+@media(max-width:420px) and (min-height:501px){.combat-pilot .combat-camera{right:10px;top:max(158px,calc(env(safe-area-inset-top) + 150px));flex-direction:column}.combat-pilot .combat-goal{max-width:calc(100% - 84px);left:12px;transform:none;text-align:left}}
+/* Painted magnifying lens: terrain occupies the full aperture, circular rim has no handle. */
+.combat-minimap--lens canvas{position:absolute;left:10%;top:10%;width:80%;height:80%;border-radius:50%;display:block}
+.combat-minimap--lens .combat-minimap-frame{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.combat-minimap-north{position:absolute;top:14%;left:44%;font-size:9px;font-weight:700;color:#fff8d7;text-shadow:0 1px 3px #122219;pointer-events:none}

@@ -53,7 +53,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const el = canvas.current, ctx = el?.getContext('2d'); if (!el || !ctx) return;
     const props = new Image(); props.src = '/forest-adventure/woodland-props-v2.png';
     const garden = new Image(); garden.src = FOREST_NATURE.garden.asset;
-    const portal = new Image(); portal.src = '/forest-adventure/woodland-portal-v1.webp';
+    const portal = new Image(); portal.src = '/forest-adventure/woodland-portal-v2.webp';
     const shelter = new Image(); shelter.src = PILOT_SHELTER.asset;
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;

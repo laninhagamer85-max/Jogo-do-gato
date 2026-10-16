@@ -1,4 +1,5 @@
-import { EXPANDED_GARDENS, OUTER_GARDENS, ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
+import {drawPortalEnergy,drawPortalArch} from './explorationPortal';
+import { SCATTERED_GARDENS, OUTER_GARDENS, ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
 import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna,drawForestPerches} from './forestNature';
 import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
@@ -30,7 +31,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);
   };
-  if(gardenAtlas)for(const patch of [...ROOM_GARDENS,...ROOM_EDGE_GARDENS,...EXPANDED_GARDENS,...OUTER_GARDENS]){
+  if(gardenAtlas)for(const patch of [...ROOM_GARDENS,...ROOM_EDGE_GARDENS,...SCATTERED_GARDENS,...OUTER_GARDENS]){
     const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
     if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
   }
@@ -44,24 +45,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const marker = point(PILOT_MARKER);
   if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
-  // Painted arch shares the exit foot anchor; moving light never shifts the interaction target.
   const exit = point(PILOT_EXIT);
-  if(portalAtlas?.complete&&portalAtlas.naturalWidth){
-    if(state.gateOpen){
-      const glow=ctx.createRadialGradient(exit.x,exit.y-t*.5,0,exit.x,exit.y-t*.5,t*.9);
-      glow.addColorStop(0,'rgba(185,245,151,.22)');glow.addColorStop(1,'rgba(185,245,151,0)');
-      ctx.fillStyle=glow;ctx.fillRect(exit.x-t,exit.y-t*1.5,t*2,t*2);
-    }
-    const pw=t*1.65,ph=pw*portalAtlas.naturalHeight/portalAtlas.naturalWidth;
-    ctx.drawImage(portalAtlas,exit.x-pw/2,exit.y-ph+t*.13,pw,ph);
-    if(state.gateOpen)for(let i=0;i<5;i++){
-      const phase=reducedMotion?.5:(state.time/3200+i/5)%1;
-      const x=exit.x+Math.sin(i*2.4+phase*2)*t*.32,y=exit.y-phase*t*1.15;
-      ctx.save();ctx.globalAlpha=.35+.3*Math.sin(phase*Math.PI);
-      const light=ctx.createRadialGradient(x,y,0,x,y,t*.055);light.addColorStop(0,'#fffad1');light.addColorStop(1,'rgba(202,242,161,0)');ctx.fillStyle=light;
-      ctx.fillRect(x-t*.055,y-t*.055,t*.11,t*.11);ctx.restore();
-    }
-  }
+  drawPortalEnergy(ctx,exit.x,exit.y,t,state.time,state.gateOpen,reducedMotion);
 
   for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
@@ -71,10 +56,11 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
     drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
   }
-  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), {type:'shelter' as const,p:PILOT_SHELTER}, ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), {type:'shelter' as const,p:PILOT_SHELTER}, {type:'portal' as const,p:PILOT_EXIT}, ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='prop'){drawProp(entity.p);continue;}
+    if(entity.type==='portal'){drawPortalArch(ctx,portalAtlas,p.x,p.y,t);continue;}
     if(entity.type==='shelter'){
       if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
         const scale=Math.min(t*PILOT_SHELTER.width/shelterAtlas.naturalWidth,t*PILOT_SHELTER.height/shelterAtlas.naturalHeight),w=shelterAtlas.naturalWidth*scale,h=shelterAtlas.naturalHeight*scale;

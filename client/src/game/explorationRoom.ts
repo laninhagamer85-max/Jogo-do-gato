@@ -62,3 +62,30 @@ export const OUTER_GARDENS=Array.from({length:96},(_,i)=>{
  const angle=i*Math.PI*2/96;
  return {x:7+Math.cos(angle)*(13.15+.18*Math.sin(i*1.7)),y:5+Math.sin(angle)*(10.15+.15*Math.cos(i)),index:[4,1,0,2,5,3,1][i%7],width:1.2+(i%3)*.18,height:1.0+(i%4)*.13,blocking:false as const};
 });
+
+/** Low vegetation is traversable; rock/log bases now share collision with the visible props.
+ * Height is the ground contact depth, not the entire upright sprite silhouette. */
+export const EDGE_PROP_FOOTPRINTS=ROOM_EDGE_SOLIDS.map(prop=>({
+ x:prop.x,y:prop.y-prop.height*.19,rx:prop.width*.46,ry:prop.height*.24,
+}));
+export function hitsEdgeScenery(p:{x:number;y:number},radius:number){
+ return EDGE_PROP_FOOTPRINTS.some(f=>Math.hypot((p.x-f.x)/(f.rx+radius),(p.y-f.y)/(f.ry+radius))<1);
+}
+/** Stable irregular groups with clearings around spawn, pickups and the exit. */
+const gardenClearings=[{x:1.5,y:1.5,r:1.15},{x:12.4,y:4.5,r:1.35},{x:8.5,y:4.5,r:.85},
+ {x:2.5,y:4.5,r:.75},{x:6.5,y:7.5,r:.75},{x:3.5,y:7.5,r:.75}];
+const scatterRandom=(seed:number)=>{let n=seed>>>0;return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};};
+function woodlandGardens(){
+ const random=scatterRandom(16352026),result:typeof ROOM_GARDENS=[];
+ for(let i=0;i<85&&result.length<34;i++){
+  const x=-3.8+random()*22,y=-2.8+random()*16;
+  if(Math.hypot((x-7)/11.4,(y-5)/8.4)>1||gardenClearings.some(c=>Math.hypot(x-c.x,y-c.y)<c.r))continue;
+  if([...ROOM_GARDENS,...ROOM_EDGE_GARDENS,...result].some(q=>Math.hypot(x-q.x,y-q.y)<1.15))continue;
+  const width=.35+random()*.37,height=width*(.65+random()*.15);
+  result.push({x,y,index:[0,1,2,4,5][i%5],width,height,blocking:false});
+  // Occasional small companion plant makes groups, not a uniform grid.
+  if(i%3===0)result.push({x:x+.36,y:y+.19,index:[1,2,5][i%3],width:width*.52,height:height*.52,blocking:false});
+ }
+ return result;
+}
+export const SCATTERED_GARDENS=woodlandGardens();

@@ -1,6 +1,6 @@
 import {EXPLORATION_WORLD,insideExploration} from './explorationWorld';
 import {readMinimap,revealMinimap} from './explorationMinimap';
-import { ROOM_WALLS, PILOT_SHELTER } from "./explorationRoom";
+import { ROOM_WALLS, PILOT_SHELTER, hitsEdgeScenery } from "./explorationRoom";
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
 export type CombatPoint = { x: number; y: number };
 export const PILOT_SIZE = EXPLORATION_WORLD;
@@ -61,7 +61,7 @@ export function createCombatState(): CombatState {
     message: 'Colete 6 fibras, enfrente um besouro e ative o marco com F.' };
 }
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): boolean {
-  if (!insideExploration(p,radius)) return false;
+  if (!insideExploration(p,radius) || hitsEdgeScenery(p,radius)) return false;
   const walls = gateOpen ? PILOT_WALLS : [...PILOT_WALLS, { x: 9, y: 4 }];
   const f=PILOT_SHELTER.footprint;
   if(p.x+radius>f.x && p.x-radius<f.x+f.width && p.y+radius>f.y && p.y-radius<f.y+f.height)return false;
