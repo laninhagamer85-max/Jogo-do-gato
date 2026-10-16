@@ -42,3 +42,5 @@ Prompt do portal: editar v1 preservando materiais, aumentar elevação da câmer
 Referências técnicas já consultadas em 16/10: https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection e https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage — colisão por apoios e escala uniforme.
 
 Rollback: versão Sites 53 / produto 1.9.34; preservar publicações posteriores. Próximo: testar perto do abrigo, caminhos por toque, portal ativo, lupa cheia e legibilidade nas duas orientações. Não foram adicionadas novas salas nesta revisão.
+
+Publicação concluída: produto 1.9.35 / Sites 54; versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_7b5696b9b4388191a6778bbabb49256e; deployment appgdep_6ad24bbabbf88191b273da926bbbb759; fonte c77279a439922d8feef6327d5fe19c9fb0c65f0b; código GitHub 6d9d4a629b55bef04eea20d0e356c63305dd048c. URL https://meupet.aquimeusite.chatgpt.site. Build e TypeScript aprovados, 205 testes. Gameplay visual e fluidez aguardam usuário.
