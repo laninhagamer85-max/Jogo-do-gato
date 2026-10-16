@@ -99,11 +99,6 @@
 @media(prefers-reduced-motion:reduce){.combat-pilot--lens-dock .combat-lens-slot{transition:none}}
 .combat-pilot--lens-dock .combat-victory{top:calc(var(--lens-bottom) + 30px);max-height:calc(100% - var(--lens-bottom) - 42px)}
 
-/* World camera zoom is independent from the minimap size and map overview. */
-.combat-world-zoom{position:absolute;z-index:5;right:max(12px,env(safe-area-inset-right));top:calc(var(--lens-bottom) + env(safe-area-inset-top) + 6px);color:#fff0c3;text-align:center;background:#213923e6;border:1px solid #ac925a;border-radius:14px;padding:3px 4px;font-size:11px;pointer-events:auto}
-.combat-world-zoom>div{display:flex;align-items:center;gap:2px}
-.combat-pilot .combat-world-zoom button{display:grid;place-items:center;min-width:44px;min-height:44px;width:44px;height:44px;padding:8px;border:0;border-radius:50%;background:#503119 url('/forest-adventure/map-dock-button-v1.webp') center/100% 100% no-repeat;color:#fff0c3;touch-action:manipulation}
-.combat-world-zoom button:disabled{opacity:.4}
-.combat-world-zoom button:focus-visible{outline:3px solid #fff0c3;outline-offset:2px}
-.combat-world-zoom output{min-width:36px;font-size:13px;font-variant-numeric:tabular-nums}
-@media(max-height:500px) and (orientation:landscape){.combat-world-zoom{top:140px;left:210px;right:auto}}
+/* A sixth rim slot replaces the separate camera bar; lens size stays in its own slot. */
+.combat-lens-camera{left:85.355%;top:85.355%}
+.combat-pilot--lens-dock .combat-lens-camera:disabled{opacity:.45;filter:none}

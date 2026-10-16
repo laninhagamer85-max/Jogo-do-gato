@@ -1,11 +1,11 @@
-import {lensDockAction,lensDockLayout,type ExplorationPanel} from '@/game/explorationLens';
+import {lensDockAction,lensDockLayout,toggleWorldCameraZoom,type ExplorationPanel} from '@/game/explorationLens';
 import ExplorationMinimap from './ExplorationMinimap';
 import CombatInventory from "./CombatInventory";
 import ExplorationJoystick from "./ExplorationJoystick";
 import { playPlatformSfx, unlockPlatformAudio } from "@/game/platformerAudio";
 import ExplorationItemIcon from "./ExplorationItemIcon";
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Backpack, Map, Pause, Play, Shield, Sparkles, Plus, Minus, Volume2, VolumeX, PawPrint, X } from 'lucide-react';
+import { Backpack, Map, Pause, Play, Shield, Sparkles, Plus, Minus, ZoomIn, ZoomOut, Volume2, VolumeX, PawPrint, X } from 'lucide-react';
 import { GAME_ASSETS } from '@/game/assets';
 import type { PetProfile } from '@/game/PetGame';
 import { ForestControls } from '@/game/forestControls';
@@ -155,15 +155,9 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
           <button className="combat-lens-slot combat-lens-inventory" onClick={()=>dockAction('inventory')} aria-label={panel==='inventory'?'Fechar mochila':'Abrir mochila'} aria-expanded={panel==='inventory'} aria-controls="combat-panel" title={panel==='inventory'?'Fechar mochila':'Abrir mochila'}>{panel==='inventory'?<X/>:<Backpack/>}</button>
           <button className="combat-lens-slot combat-lens-size" onClick={()=>setLensExpanded(value=>!value)} aria-label={lensExpanded?'Reduzir tamanho da lupa':'Ampliar tamanho da lupa'} aria-pressed={lensExpanded} title={lensExpanded?'Reduzir lupa':'Ampliar lupa'}>{lensExpanded?<Minus/>:<Plus/>}</button>
           <button className="combat-lens-slot combat-lens-map" onClick={viewRoom} aria-label={overview?'Voltar ao pet':'Ver mapa completo'} aria-pressed={overview} title={overview?'Voltar ao pet':'Ver mapa completo'}>{overview?<X/>:<Map/>}</button>
+          <button type="button" className="combat-lens-slot combat-lens-camera" disabled={overview} onClick={()=>{route.current=[];setZoom(toggleWorldCameraZoom);}} aria-label={zoom>1?'Afastar câmera para 1×':'Aproximar câmera para 2×'} aria-pressed={zoom>1} title={zoom>1?'Câmera: voltar para 1×':'Câmera: aproximar para 2×'}>{zoom>1?<ZoomOut/>:<ZoomIn/>}</button>
         </nav>
       </ExplorationMinimap>
-      <div className="combat-world-zoom" role="group" aria-label="Zoom da câmera do jogo">
-        <span>Câmera</span><div>
-          <button type="button" disabled={overview || zoom <= 1} onClick={() => { route.current=[]; setZoom(value => Math.max(1, Math.round((value - .25)*100)/100)); }} aria-label="Afastar câmera do pet" title="Afastar câmera"><Minus size={20}/></button>
-          <output aria-live="polite" aria-label="Aproximação da câmera">{zoom.toLocaleString('pt-BR')}×</output>
-          <button type="button" disabled={overview || zoom >= 2} onClick={() => { route.current=[]; setZoom(value => Math.min(2, Math.round((value + .25)*100)/100)); }} aria-label="Aproximar câmera do pet" title="Aproximar câmera"><Plus size={20}/></button>
-        </div>
-      </div>
       <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(6, fibers)}/6 fibras</span><span>{game.defeated > 0 ? "✓" : "0/1"} adversário</span><span>{game.gateOpen ? "Siga até a saída" : "Ative o marco"}</span></div>
       <div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>
       {!game.completed && <div className="combat-item-tray" aria-label="Itens e uso rápido">

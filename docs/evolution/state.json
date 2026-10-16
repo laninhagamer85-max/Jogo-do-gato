@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_phone_review",
-  "active_run": "2026-10-16-world-camera-zoom",
+  "status": "preparing_publication_for_user_phone_test",
+  "active_run": "2026-10-16-camera-rim-toggle",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -17,23 +17,23 @@
   },
   "current_improvement": {
     "id": "world-camera-zoom",
-    "implementation_status": "published",
-    "acceptance_status": "pending_user_phone_test"
+    "implementation_status": "implemented",
+    "acceptance_status": "user_explicitly_requests_publication_to_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.37",
     "last_observed_version": 56,
-    "status": "succeeded",
+    "status": "previous_release",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a396c5f269408191967c4fe6ce42f6a5",
     "deployment_id": "appgdep_6ad260f1eefc8191a90ebee882f5b709",
     "site_commit": "4009a9561013ed5ed21b31b51acdeede01872e58",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "214 passed in 26 game files",
+    "offline_tests": "45 targeted tests passed; projection and touch inverse at four viewport sizes",
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -50,9 +50,11 @@
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
     "packaged_grass": "all_three_hashes_match_manifest"
   },
-  "blockers": [],
+  "blockers": [
+    "Browser inspection required by evolution skill; control-browser unavailable."
+  ],
   "next_actions": [
-    "David tests camera +/- and minimap size independently, touch navigation and full map in portrait/landscape."
+    "Publish compact camera shortcut for phone review; inspect six targets and portrait/landscape."
   ],
   "rollback": {
     "production_changed": true,
@@ -61,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-world-camera-zoom.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-camera-rim-toggle.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -416,9 +418,16 @@
   "camera_zoom_release": {
     "product_version": "1.9.37",
     "implemented_source": "e7e1228f445b663a083ae9f324aad2e318e5b222",
-    "status": "published_for_user_phone_review",
+    "status": "preparing_publication",
     "authorization": "David: Publique e eu vou fazer o teste",
-    "browser": "unavailable, user phone review pending",
-    "code_commit": "78c49bd6f6f4897488c6282e5b4801154288b304"
+    "browser": "unavailable, user phone review pending"
+  },
+  "camera_rim_toggle": {
+    "product_version": "1.9.38",
+    "base_source": "4009a9561013ed5ed21b31b51acdeede01872e58",
+    "status": "implemented",
+    "change": "remove camera bar; one ZoomIn/ZoomOut button lower right of wooden rim; 1x <-> 2x; size remains separate",
+    "tests": "TypeScript and 215 tests in 26 game files passed; build passed",
+    "browser": "unavailable; user has approved 1.9.37 camera behavior and requests compact rim adjustment"
   }
 }
