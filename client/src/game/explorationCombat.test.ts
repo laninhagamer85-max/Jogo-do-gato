@@ -63,14 +63,14 @@ describe('Exploration combat pilot', () => {
     const a=stepCombat(s,{interact:true},50);expect(a.gateOpen).toBe(true);a.player={...PILOT_EXIT};
     const b=stepCombat(a,{},50);expect(b.completed).toBe(true);expect(b.stock.fibra).toBe(6);expect(b.bag.fibra).toBe(0);expect(stepCombat(b,{},50)).toBe(b);
   });
-  it('preserves forward save versions',()=>expect(readCombatState({version:'4'})).toEqual({supported:false,version:4}));
+  it('preserves forward save versions',()=>expect(readCombatState({version:'5'})).toEqual({supported:false,version:5}));
   it('adds combat to legacy saves and never changes house progression',()=>{
     const house=migrateGameState({level:8,xp:123});const before={level:house.level,xp:house.xp,coins:house.coins};
     const combat=createCombatState();combat.xp=90;combat.revision=10;
     const a=saveExplorationCombatProgress(house,combatSnapshot(combat));expect({level:a.level,xp:a.xp,coins:a.coins}).toEqual(before);
     combat.revision=2;expect(saveExplorationCombatProgress(a,combatSnapshot(combat))).toBe(a);
   });
-  it('does not overwrite a newer combat schema',()=>{const s=createInitialGameState();s.explorationCombatProgress={version:4,secret:'retain'};expect(saveExplorationCombatProgress(s,combatSnapshot(createCombatState()))).toBe(s);});
+  it('does not overwrite a newer combat schema',()=>{const s=createInitialGameState();s.explorationCombatProgress={version:5,secret:'retain'};expect(saveExplorationCombatProgress(s,combatSnapshot(createCombatState()))).toBe(s);});
   it('respawns on time with an uncollected drop and preserves that drop across reload',()=>{
     const s=createCombatState();s.time=50000;s.enemies[0].hp=0;s.enemies[0].respawnAt=1;
     s.loot=[{id:'beetle:0',x:4,y:6.5,item:'fibra',quantity:3}];

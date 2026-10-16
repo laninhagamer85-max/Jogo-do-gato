@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão de produto em preparação: **1.11.0**, vinte salas em dois biomas, portais automáticos, mestres e cartas raras utilizáveis. O piloto foi declarado concluído por David em 16/10. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status de publicação.
+Versão de produto em preparação: **1.12.0**, seleção de capítulos e salas, progresso visível e repetição das salas concluídas com checkpoint da campanha preservado. O piloto foi declarado concluído por David em 16/10. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status de publicação.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

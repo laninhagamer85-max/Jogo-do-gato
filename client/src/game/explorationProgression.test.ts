@@ -41,8 +41,8 @@ it('equipped rare cards change the real power effect and preserve selection in s
  let s=fixture(1);s.cards=['roots','tide'];s=equipCombatCard(s,'roots');s.player={x:6,y:5.5};s.enemies[0].x=6.5;s.enemies[0].y=5.5;s=stepCombat(s,{power:true},0);expect(s.enemies[0].slowUntil).toBe(2000);s=equipCombatCard(s,'tide');s.hp=60;s.attackAt=0;s=stepCombat(s,{power:true},50);expect(s.hp).toBe(75);expect(read(s).activeCard).toBe('tide');
 });
 it('old minimap discoveries migrate by world position as the area grows',()=>{
- const r=readCombatState({version:2,minimapVersion:2,player:{x:1.5,y:1.5},exploredCells:[(8+5)*26+12+6],xp:500,stock:{ambar:7}});if(!r.supported)throw Error();expect(minimapDiscovered(r.state.exploredCells,{x:12.5,y:8.5})).toBe(true);expect(r.state.stock.ambar).toBe(7);expect(r.state.xp).toBe(500);expect(r.state.version).toBe(3);
- expect(readCombatState({version:4}).supported).toBe(false);
+ const r=readCombatState({version:2,minimapVersion:2,player:{x:1.5,y:1.5},exploredCells:[(8+5)*26+12+6],xp:500,stock:{ambar:7}});if(!r.supported)throw Error();expect(minimapDiscovered(r.state.exploredCells,{x:12.5,y:8.5})).toBe(true);expect(r.state.stock.ambar).toBe(7);expect(r.state.xp).toBe(500);expect(r.state.version).toBe(4);
+ expect(readCombatState({version:5}).supported).toBe(false);
 });
 it('NPC populations and levels increase between biomes and every random encounter is navigable',()=>{
  expect(campaignEnemies(19,42).length).toBeGreaterThan(campaignEnemies(10,42).length);expect(campaignEnemies(10,42).length).toBeGreaterThan(campaignEnemies(1,42).length);

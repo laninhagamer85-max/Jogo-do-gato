@@ -12,17 +12,18 @@ import type { PetProfile } from '@/game/PetGame';
 import { ForestControls } from '@/game/forestControls';
 import type { ForestDirection } from '@/game/forestPuzzle';
 import { petWalkAtlas } from '@/game/petWalkAtlas';
-import { tickCombatPortal,equipCombatCard,useRareCombatItem,COMBAT_CARDS, combatAttack, combatLevel, combatMaxHp, combatSnapshot, COMBAT_ITEMS, consumeCombatItem, createCombatState, equipCombatCharm, pilotRoute, readCombatState, replayCompletedCombat, stepCombat, type CombatItem, type CombatPoint, type CombatState } from '@/game/explorationCombat';
+import { tickCombatPortal,equipCombatCard,useRareCombatItem,COMBAT_CARDS, combatAttack, combatLevel, combatMaxHp, combatSnapshot, COMBAT_ITEMS, consumeCombatItem, createCombatState, equipCombatCharm, pilotRoute, readCombatState, stepCombat, type CombatItem, type CombatPoint, type CombatState } from '@/game/explorationCombat';
 import { combatCanvasScale, combatView, drawCombatPilot } from '@/game/explorationCombatView';
 import {FOREST_NATURE} from '@/game/forestNature';
 import {PILOT_SHELTER} from '@/game/explorationRoom';
 import './ExplorationCombatPilot.css';
 
-type Props = { soundOn: boolean; onToggleSound: () => void; profile: PetProfile | null; progress: Record<string, unknown>; onSave: (save: Record<string, unknown>) => void; onBack: () => void };
+type Props = { replayMode?:boolean; soundOn: boolean; onToggleSound: () => void; profile: PetProfile | null; progress: Record<string, unknown>; onSave: (save: Record<string, unknown>) => void; onBack: () => void };
 type Panel = ExplorationPanel;
-export default function ExplorationCombatPilot({ profile, progress, onSave, onBack, soundOn, onToggleSound }: Props) {
+export default function ExplorationCombatPilot({ profile, progress, onSave, onBack, soundOn, onToggleSound,replayMode=false }: Props) {
   const [initial] = useState(() => readCombatState(progress));
   const [game, setGame] = useState<CombatState>(() => initial.supported ? initial.state : createCombatState());
+  const replayElapsed=useRef(0),backRef=useRef(onBack);backRef.current=onBack;
   const current = useRef(game), saveRef = useRef(onSave), controls = useRef(new ForestControls());
   const pending = useRef({ attack: false, power: false, interact: false });
   const route = useRef<CombatPoint[]>([]), panelRef = useRef<Panel>(null), overviewRef = useRef(false);
@@ -112,7 +113,8 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
       }
       if(assetsReady&&current.current.completed&&!document.hidden&&!panelRef.current&&!overviewRef.current){
-        const before=current.current;current.current=tickCombatPortal(before,dt);
+        if(replayMode){replayElapsed.current+=dt;if(replayElapsed.current>=850){clear();persist();backRef.current();return;}}
+        const before=current.current;if(!replayMode)current.current=tickCombatPortal(before,dt);
         if(current.current!==before){if(current.current.roomIndex!==before.roomIndex){clear();persist();}setGame(current.current);}
       }
       drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water);
@@ -153,7 +155,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
   const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
   return <section style={dockStyle} className="combat-pilot combat-pilot--lens-dock" aria-label="Campanha de Exploração">
-    <header className="combat-top"><div><small>CAP. {chapterNumber(game.roomIndex)} · SALA {roomInChapter(game.roomIndex)}/10 · {room.title.toUpperCase()}</small><h1>{profile?.name ?? 'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
+    <header className="combat-top"><div><small>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {roomInChapter(game.roomIndex)}/10 · {room.title.toUpperCase()}</small><h1>{profile?.name ?? 'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
       <canvas ref={canvas} aria-label="Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila." onPointerUp={event => {
@@ -185,7 +187,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
 
         <div className="combat-actions">{(['attack', 'power', 'interact'] as const).map((kind, index) => <button className={`combat-action-${kind}`} key={kind} disabled={Boolean(panel) || overview || (kind === 'power' && game.energy < 25)} aria-label={['Patada, E ou espaço', 'Poder, Q, custa 25 de energia', 'Interagir com marco, F'][index]} onPointerDown={e => { e.preventDefault(); action(kind); }} onClick={e => { if (e.detail === 0) action(kind); }}>{index === 0 ? <PawPrint /> : index === 1 ? <Sparkles /> : <Shield />}<span>{['Atacar', 'Poder', 'Marco'][index]}</span></button>)}</div>
       </div>}
-      {game.completed && <div className={`combat-teleport ${game.roomIndex===EXPLORATION_ROOMS.length-1?'combat-teleport-final':''}`} role="status" aria-live="polite"><div className="combat-teleport-light"/><h2>{game.roomIndex===EXPLORATION_ROOMS.length-1?'Biomas concluídos!':'Atravessando o portal…'}</h2><p>{game.roomIndex<EXPLORATION_ROOMS.length-1?`${chapterName(game.roomIndex+1)} · Sala ${roomInChapter(game.roomIndex+1)}/10`:'Progresso salvo. Novas trilhas virão na próxima expansão.'}</p>{room.bossId&&game.activeCard&&<p><strong>Carta rara: {COMBAT_CARDS[game.activeCard].name}</strong><br/>{COMBAT_CARDS[game.activeCard].description}</p>}{game.roomIndex===EXPLORATION_ROOMS.length-1&&<button onClick={leave}>Salvar e sair</button>}</div>}
+      {game.completed && <div className={`combat-teleport ${game.roomIndex===EXPLORATION_ROOMS.length-1?'combat-teleport-final':''}`} role="status" aria-live="polite"><div className="combat-teleport-light"/><h2>{replayMode?'Sala repetida! Voltando ao mapa…':game.roomIndex===EXPLORATION_ROOMS.length-1?'Biomas concluídos!':'Atravessando o portal…'}</h2><p>{replayMode?'Seu ponto de avanço na campanha foi preservado.':game.roomIndex<EXPLORATION_ROOMS.length-1?`${chapterName(game.roomIndex+1)} · Sala ${roomInChapter(game.roomIndex+1)}/10`:'Progresso salvo. Novas trilhas virão na próxima expansão.'}</p>{room.bossId&&game.activeCard&&<p><strong>Carta rara: {COMBAT_CARDS[game.activeCard].name}</strong><br/>{COMBAT_CARDS[game.activeCard].description}</p>}{!replayMode&&game.roomIndex===EXPLORATION_ROOMS.length-1&&<button onClick={leave}>Salvar e sair</button>}</div>}
     </div>
     <dialog id="combat-panel" open={Boolean(panel)} ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
       <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel === 'inventory' && <button onClick={() => openPanel(null)} aria-label="Fechar mochila e retomar"><X size={20}/></button>}</header>

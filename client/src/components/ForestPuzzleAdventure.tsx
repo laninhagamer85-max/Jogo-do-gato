@@ -1,5 +1,7 @@
+import ExplorationCampaignMap from './ExplorationCampaignMap';
+import {startExplorationReplay,saveExplorationReplay} from '@/game/explorationSelection';
 import {chapterName,roomInChapter} from '@/game/explorationCampaign';
-import {readCombatState} from '@/game/explorationCombat';
+import {combatSnapshot,readCombatState} from '@/game/explorationCombat';
 import ExplorationJoystick from "./ExplorationJoystick";
 import { forestStickDirection } from "@/game/combatPresentation";
 import ExplorationCombatPilot from "./ExplorationCombatPilot";
@@ -421,7 +423,11 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   };
-  const [combatPilot, setCombatPilot] = useState(false);
+  const [combatEntry,setCombatEntry]=useState<{progress:Record<string,unknown>;replay:boolean}|null>(null);
+  const campaignRef=useRef(combatProgress);campaignRef.current=combatProgress;
+  const enterCampaign=()=>{setCombatEntry({progress:campaignRef.current,replay:false});};
+  const enterReplay=(index:number)=>{const parsed=readCombatState(campaignRef.current);if(!parsed.supported)return;const attempt=startExplorationReplay(parsed.state,index);if(attempt)setCombatEntry({progress:combatSnapshot(attempt),replay:true});};
+  const saveCombatEntry=(value:Record<string,unknown>)=>{let save=value;if(combatEntry?.replay){const base=readCombatState(campaignRef.current);if(!base.supported)return;save=combatSnapshot(saveExplorationReplay(base.state,value));}campaignRef.current=save;onSaveCombatProgress(save);};
   const combatCampaign=readCombatState(combatProgress);
   const combatRoomNumber=combatCampaign.supported?combatCampaign.state.roomIndex+1:1;
   const petImage = GAME_ASSETS.characters[characterId];
@@ -435,7 +441,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     "data-qa-bridges": game?.placedBridges.join(","),
   } : {};
 
-  if (combatPilot) return <ExplorationCombatPilot soundOn={soundOn} onToggleSound={onToggleSound} profile={profile} progress={combatProgress} onSave={onSaveCombatProgress} onBack={() => setCombatPilot(false)} />;
+  if (combatEntry) return <ExplorationCombatPilot replayMode={combatEntry.replay} soundOn={soundOn} onToggleSound={onToggleSound} profile={profile} progress={combatEntry.progress} onSave={saveCombatEntry} onBack={() => setCombatEntry(null)} />;
 
   return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label="Bosque dos Caminhos, modo de exploração">
     <header className="forest-adventure-topbar">
@@ -451,7 +457,8 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
-      <div className="forest-map-actions"><button type="button" className="forest-primary" onClick={() => setCombatPilot(true)}>{chapterName(combatRoomNumber-1)} · Sala {roomInChapter(combatRoomNumber-1)}/10</button><p>Continue de onde parou. Vinte salas, portais automáticos, mestres e cartas raras. Nível de combate próprio, inventário e ponto seguro.</p></div>
+      {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
+      <h2 className="forest-enigma-heading">Trilhas de enigmas</h2>
       <section className="forest-chapter-grid" aria-label="Seleção de capítulos">
         {FOREST_CHAPTERS.map((chapter) => {
           const isLocked = !supported || chapter.id > unlockedChapter;

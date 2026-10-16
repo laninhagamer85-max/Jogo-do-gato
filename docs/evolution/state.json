@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_user_device_test",
-  "active_run": "2026-10-16-continuous-biomes",
+  "status": "preparing_publication_for_user_phone_test",
+  "active_run": "2026-10-16-campaign-selection",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,7 +16,7 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "continuous-biomes-bosses-rare-cards",
+    "id": "campaign-selection-and-isolated-replays",
     "implementation_status": "implemented",
     "acceptance_status": "pending_user_device_test"
   },
@@ -25,7 +25,7 @@
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.11.0",
     "last_observed_version": 59,
-    "status": "succeeded",
+    "status": "previous_release",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d544641ad4788191acc19a7e2a543874",
     "deployment_id": "appgdep_6ad27395580081919a18ca7b62b938aa",
     "site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
@@ -33,11 +33,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "367 offline tests across 30 files; engine, SSR and Canvas commands",
+    "offline_tests": "378 offline tests across 31 files",
     "build": "passed; existing large chunk warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable",
+    "browser": "unavailable; not run",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -54,8 +54,7 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "User tests continuing current room, lake style, bridge crossing, automatic portal, masters/cards and second biome on device.",
-    "Chapters 3–6 remain planned."
+    "User tests chapter/room selection and replay without moving campaign checkpoint."
   ],
   "rollback": {
     "production_changed": true,
@@ -64,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-continuous-biomes.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-campaign-selection.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
