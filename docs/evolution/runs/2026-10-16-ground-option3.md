@@ -12,7 +12,7 @@ Ramo de colaboração estava atrás do terreno da publicação; base GitHub `93a
 
 TypeScript, build de produção e 222 testes offline em 30 arquivos aprovados na fonte do Site. Integração Firebase staging excluída por falta de credencial. Os três hashes das texturas no build correspondem ao manifesto. Aviso preexistente de chunks grandes mantido. Não foi executada partida, teste de conta, FPS ou inspeção real nos cinco viewports. Nenhuma conta/save de jogador lido ou alterado.
 
-Navegador control-browser indisponível. A skill evoluir-meu-pet-virtual exige inspeção real para mudança visual; Sites proíbe improvisar caminho alternativo de preview. **Não publicado**, aguardando validação. Produto público continua 1.9.30; número do próximo release será atribuído somente após reconciliar/publicar.
+Navegador control-browser indisponível. Nenhum preview alternativo iniciado. Depois de informado desse limite, David pediu explicitamente “Públique para mim testar”, autorizando esta publicação para revisão no aparelho. Preparando produto 1.9.31; não alegar aceite visual nem medição de fluidez por testes offline. A confirmação final de publicação será registrada após o resultado do serviço.
 
 Pesquisa consultada em 16/10/2026: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas — preservado pré-render/cache existente para evitar trabalho de textura por frame. Sem arte externa incorporada.
 

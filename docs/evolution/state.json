@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_awaiting_supported_browser",
+  "status": "publishing_for_user_phone_review",
   "active_run": "2026-10-16-ground-option3",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -18,7 +18,7 @@
   "current_improvement": {
     "id": "user-selected-ground-option3",
     "implementation_status": "implemented_and_built_on_exact_sites_source",
-    "acceptance_status": "awaiting_browser"
+    "acceptance_status": "user_authorized_publication_for_phone_test_after_disclosed_browser_limit"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
