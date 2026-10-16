@@ -6,6 +6,7 @@ import App from "./App";
 import { getSecurityHeaders } from "./lib/authApi";
 import { trpc } from "./lib/trpc";
 import "./index.css";
+import "./components/HomeRoomNavigation.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

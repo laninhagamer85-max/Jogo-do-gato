@@ -3,7 +3,10 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'grass-chapter1-painted-v4',seed:5102026,base:'#6caa2d',light:'#a2cc41',shade:'#4d8f2b'};
+export const FOREST_GROUND:GroundTheme={id:'grass-chapter1-rendered-v5',seed:5102026,base:'#416a3c',light:'#a2cc41',shade:'#4d8f2b'};
+/** Match the rendered chapter-one clearing, not the brighter source image alone.
+ * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
+export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;
 /** Larger illustrated strokes match the chapter art; patch overlap ratios stay unchanged. */
 export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3,step:1.35,jitter:.12};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
@@ -14,9 +17,11 @@ export function groundVariations(seed:number){
 }
 /** Material parameters can be reused with the grass, soil, sand and snow assets of future biomes. */
 export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND,pilotComposition=false){
-  if(!drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined)){
-    ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
-  }
+  ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
+  ctx.save();ctx.globalAlpha=CHAPTER_ONE_LIGHTING.textureOpacity;
+  drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined);
+  ctx.restore();
+  ctx.fillStyle=CHAPTER_ONE_LIGHTING.shade;ctx.fillRect(0,0,width,height);
 }
 /** Centered source crop preserves the original artwork proportions. */
 export function chapterGroundCrop(width:number,height:number,aspect=14/10){
@@ -31,10 +36,21 @@ export function woodlandPropPlacement(index:number,x:number,y:number,tile:number
   const width=(r-l)*scale,height=(b-t)*scale;
   return {sx:(index%3)*512+l,sy:Math.floor(index/3)*512+t,sw:r-l,sh:b-t,x:x-width/2,y:y-height,width,height};
 }
-export function drawWoodlandProp(ctx:CanvasRenderingContext2D,image:HTMLImageElement,index:number,x:number,y:number,tile:number,size?:{width:number;height:number}){
+/** One shaded atlas per loaded image; no per-frame filters or image processing.
+ * The current 1536 x 1024 atlas costs 6 MiB, separate from the 8 MP terrain LRU. */
+const litAtlases=new WeakMap<HTMLImageElement,HTMLCanvasElement>();
+function chapterLitAtlas(image:HTMLImageElement){
+  const previous=litAtlases.get(image);if(previous)return previous;
+  const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+  const g=canvas.getContext('2d');if(!g)return image;
+  g.drawImage(image,0,0);g.globalCompositeOperation='source-atop';
+  g.fillStyle=CHAPTER_ONE_LIGHTING.shade;g.fillRect(0,0,canvas.width,canvas.height);
+  g.globalCompositeOperation='source-over';litAtlases.set(image,canvas);return canvas;
+}
+export function drawWoodlandProp(ctx:CanvasRenderingContext2D,image:HTMLImageElement,index:number,x:number,y:number,tile:number,size?:{width:number;height:number},chapterLighting=false){
   if(!image.complete||!image.naturalWidth)return;
   const p=woodlandPropPlacement(index,x,y,tile,size),sx=image.naturalWidth/1536,sy=image.naturalHeight/1024;
-  ctx.drawImage(image,p.sx*sx,p.sy*sy,p.sw*sx,p.sh*sy,p.x,p.y,p.width,p.height);
+  ctx.drawImage(chapterLighting?chapterLitAtlas(image):image,p.sx*sx,p.sy*sy,p.sw*sx,p.sh*sy,p.x,p.y,p.width,p.height);
 }
 /** Hash each world cell, never the viewport: details remain fixed during movement and rotation. */
 export function grassTufts(cellX:number,cellY:number,seed:number){

@@ -21,6 +21,7 @@ type Completion = ReturnType<typeof completePlatformStage>;
 
 type Props = {
   state: GameState;
+  initialMode?: "adventure" | "exploration";
   soundOn: boolean;
   audioMix: PlatformAudioMix;
   onAudioMixChange: (mix: PlatformAudioMix) => void;
@@ -46,7 +47,7 @@ function formatStars(stars: number) {
   return `${"★".repeat(stars)}${"☆".repeat(Math.max(0, 3 - stars))}`;
 }
 
-export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMixChange, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage, onCompleteForestChapter, onSaveCombatProgress }: Props) {
+export default function PlatformAdventure({ state, initialMode = "adventure", soundOn, audioMix, onAudioMixChange, onToggleSound, onGoToHouse, onCompleteTutorial, onCompleteStage, onCompleteForestChapter, onSaveCombatProgress }: Props) {
   const qaAutoPilot = useMemo(() => import.meta.env.DEV && new URLSearchParams(window.location.search).get("autoplay") === "1", []);
   const qaStageLimit = useMemo(() => {
     const requested = Number(new URLSearchParams(window.location.search).get("qa-stages"));
@@ -56,7 +57,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const [world, setWorld] = useState(initialWorld);
   const [stageId, setStageId] = useState(state.platformProgress.unlockedStage <= 100 ? state.platformProgress.unlockedStage : 100);
   const [phase, setPhase] = useState<Phase>("map");
-  const [forestMode, setForestMode] = useState(false);
+  const [forestMode, setForestMode] = useState(initialMode === "exploration");
   const [hud, setHud] = useState<PlatformerHud>(START_HUD);
   const [zoomStep, setZoomStep] = useState(0);
   const [attempt, setAttempt] = useState(0);

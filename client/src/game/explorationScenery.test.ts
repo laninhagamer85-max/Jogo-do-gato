@@ -77,7 +77,7 @@ it('paints a fully covered cached terrain at every corner, zoom and overview',()
   const calls:unknown[][]=[];let fills=0;
   const ctx=new Proxy({getTransform:()=>({a:2}),drawImage:(...args:unknown[])=>calls.push(args),fillRect:()=>fills++},{get:(target,key)=>key in target?target[key as keyof typeof target]:()=>{}}) as unknown as CanvasRenderingContext2D;
   const v=combatView(w,h,player,zoom,overview);drawExplorationGround(ctx,w,h,background,v.left,v.top,v.tile);
-  expect(calls.length).toBeGreaterThan(0);expect(fills).toBe(0);
+  expect(calls.length).toBeGreaterThan(0);expect(fills).toBe(2);
   const rectangles=calls.map(c=>c.slice(-4) as number[]);
   for(let y=.01;y<h;y+=h/10)for(let x=.01;x<w;x+=w/10)expect(rectangles.some(([dx,dy,dw,dh])=>x>=dx-.00001&&y>=dy-.00001&&x<=dx+dw+.00001&&y<=dy+dh+.00001)).toBe(true);
   expect(terrainCacheStats(ctx).pixels).toBeLessThanOrEqual(TERRAIN_CACHE_PIXELS);

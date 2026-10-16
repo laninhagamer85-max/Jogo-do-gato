@@ -27,7 +27,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   drawExplorationGround(ctx,width,height,background,v.left,v.top,t);
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
-    if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop);
+    if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);
   };
   ROOM_UNDERGROWTH.forEach(drawProp);
   const scenery=[...ROOM_EDGES,...ROOM_SCENERY];
@@ -36,7 +36,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Seguro', camp.x, camp.y - t * .6);
   const marker = point(PILOT_MARKER);
-  if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8);
+  if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
   const exit = point(PILOT_EXIT); ctx.strokeStyle = state.gateOpen ? '#ffe4a2' : '#80907c'; ctx.lineWidth = Math.max(3, t * .06); ctx.beginPath(); ctx.arc(exit.x, exit.y, t * .4, 0, Math.PI * 2); ctx.stroke();
   for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {

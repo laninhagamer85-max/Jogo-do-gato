@@ -1,0 +1,49 @@
+/* Primary game destinations stay together; room tools leave the pet's centre clear. */
+.game-root.classic-two-column-layout .home-game-modes {
+  grid-column:1 / -1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px; width:min(100%,540px); margin:0 auto; pointer-events:auto;
+}
+.home-game-modes button,.home-room-tools button {
+  display:flex; align-items:center; justify-content:center; gap:7px; min-width:0;
+  min-height:48px; padding:8px 12px; border:1px solid #b7d5f066; border-radius:13px;
+  background:linear-gradient(145deg,#244773f5,#172e50f5); color:#fff;
+  font-family:inherit; font-weight:700; font-size:14px; line-height:1.15; cursor:pointer; touch-action:manipulation;
+  box-shadow:0 3px 12px #07182b33;
+}
+.home-game-modes button:first-child { background:linear-gradient(145deg,#16794e,#105737); }
+.home-game-modes button:nth-child(2) { background:linear-gradient(145deg,#316c68,#204e4b); }
+.home-game-modes button:last-child { background:linear-gradient(145deg,#755780,#513c64); }
+.home-game-modes button svg,.home-room-tools button svg { flex-shrink:0; }
+.home-game-modes button:focus-visible,.home-room-tools button:focus-visible { outline:3px solid #bcecff; outline-offset:3px; }
+.home-room-tools { display:none; }
+.game-root.classic-two-column-layout.focus-mode .home-game-modes { display:none; }
+@media (max-width:900px) and (orientation:portrait), (pointer:coarse) and (orientation:portrait) {
+  .game-root.classic-two-column-layout .topbar { grid-template-areas:"brand actions" "progress progress" "modes modes"; }
+  .game-root.classic-two-column-layout .topbar > .level-card { padding-right:9px; }
+  .game-root.classic-two-column-layout .home-game-modes { grid-area:modes; gap:6px; width:100%; margin-top:2px; }
+  .home-game-modes button { min-height:52px; padding:6px 3px; flex-direction:column; gap:4px; font-size:13px; }
+  .home-game-modes button svg { width:20px; height:20px; }
+  .game-root.classic-two-column-layout .home-room-tools { display:contents; pointer-events:none; }
+  .home-room-tools button { position:fixed; z-index:28; width:58px; min-height:54px; padding:6px 3px; flex-direction:column; gap:4px; font-size:11px; pointer-events:auto; }
+  .home-room-care { left:max(10px,env(safe-area-inset-left)); bottom:calc(146px + env(safe-area-inset-bottom)); }
+  .home-room-status { left:max(10px,env(safe-area-inset-left)); bottom:calc(82px + env(safe-area-inset-bottom)); }
+  .home-room-backpack { right:max(10px,env(safe-area-inset-right)); bottom:calc(82px + env(safe-area-inset-bottom)); }
+  .home-room-tools button[aria-expanded=true] { border-color:#bdedc6; background:#2d624b; }
+  .game-root.classic-two-column-layout .side-left { top:auto; bottom:calc(212px + env(safe-area-inset-bottom)); left:max(10px,env(safe-area-inset-left)); width:min(300px,calc(100vw - 20px)); max-height:calc(100svh - 390px); transform:none; display:block !important; pointer-events:none; overflow:auto; }
+  .game-root.classic-two-column-layout .side-left > * { display:none !important; }
+  .game-root.classic-two-column-layout.room-mobile-panel-care .side-left > .care-panel,
+  .game-root.classic-two-column-layout.room-mobile-panel-stats .side-left > .stats-panel { display:block !important; pointer-events:auto; padding:12px !important; }
+  .game-root.classic-two-column-layout .side-left .care-grid { gap:8px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button { min-height:52px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button b { font-size:12px; }
+  .game-root.classic-two-column-layout .side-left > .care-panel .care-button small { font-size:10px; }
+  .game-root.classic-two-column-layout .side-left > .stats-panel .stat-label strong,
+  .game-root.classic-two-column-layout .side-left > .stats-panel .stat-label span { font-size:10px; }
+  .game-root.classic-two-column-layout .side-left > .stats-panel .stats-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .game-root.classic-two-column-layout.focus-mode .home-room-tools { display:none; }
+}
+@media (orientation:landscape) and (max-height:500px) {
+  .game-root.classic-two-column-layout .home-game-modes { gap:6px; }
+  .home-game-modes button { min-height:44px; padding:5px 9px; font-size:13px; }
+  .game-root.classic-two-column-layout .dashboard-grid { min-height:calc(100svh - 135px); }
+}

@@ -4,7 +4,7 @@ import type { User } from "firebase/auth";
 import PlayerAccountDialog from "@/components/PlayerAccountDialog";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type DragEvent, type MouseEvent } from "react";
 import {
-  Activity, Backpack, Bath, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Gamepad2, Gift, Heart,
+  Activity, Backpack, Bath, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Compass, Gamepad2, Gift, Heart,
   Home as HomeIcon, LockKeyhole, MapPin, Moon, PawPrint, Plus, Settings, ShoppingBag,
   Eye, EyeOff, LogOut, ShieldCheck, Sparkles, Star, Trophy, Utensils, Volume2, VolumeX, X,
 } from "lucide-react";
@@ -165,6 +165,8 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
   const [activeTab, setActiveTab] = useState<"care" | "games" | "shop">(demoMiniGame ? "games" : "care");
   const [collapsed, setCollapsed] = useState<CollapsedPanels>(() => demoMode ? DEFAULT_PANELS : loadPanels());
   const [adventureOpen, setAdventureOpen] = useState(() => platformerDemoMode);
+  const [adventureStartMode, setAdventureStartMode] = useState<"adventure" | "exploration">("adventure");
+  const [mobileRoomPanel, setMobileRoomPanel] = useState<"care" | "stats" | null>(null);
   const [gamesOpen, setGamesOpen] = useState(Boolean(demoMiniGame));
   const [shopOpen, setShopOpen] = useState(false);
   const [shopTab, setShopTab] = useState<ShopTab>("items");
@@ -621,6 +623,7 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
   function moveFromRoomClick(event: MouseEvent<HTMLElement>) {
     const target=event.target;
     if (!(target instanceof Element) || target.closest('button,a,input,textarea,select,[role="dialog"],[role="button"],.modal-backdrop,.topbar,.side-left > *,.side-right > *,.mobile-mission-dock,[data-decoration-id],.scene-decoration,.decoration-picker')) return;
+    if (mobileRoomPanel) { setMobileRoomPanel(null); return; }
     if (pendingDecoration) { placeDecorationAt(event.clientX,event.clientY); return; }
     const canvas=event.currentTarget.closest('.game-root')?.querySelector('.game-canvas') ?? document.querySelector('.game-canvas');
     const bounds=canvas?.getBoundingClientRect(); if (!bounds?.width || !bounds.height) return;
@@ -786,7 +789,13 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
   }
 
   function openMiniHub() { setActiveTab("games"); setActiveRoomMenu(null); setActiveCareAction(null); setMiniId(null); setGamesOpen(true); }
-  function openAdventure() { setActiveRoomMenu(null); setActiveCareAction(null); adventureEnteredAtRef.current = Date.now(); setAdventureOpen(true); }
+  function enterAdventure(mode: "adventure" | "exploration") { setActiveRoomMenu(null); setActiveCareAction(null); setMobileRoomPanel(null); setAdventureStartMode(mode); adventureEnteredAtRef.current = Date.now(); setAdventureOpen(true); }
+  function openAdventure() { enterAdventure("adventure"); }
+  function openExploration() { enterAdventure("exploration"); }
+  function toggleMobileRoomPanel(panel: "care" | "stats") {
+    setMobileRoomPanel((current) => current === panel ? null : panel);
+    setCollapsed((current) => ({ ...current, [panel]: false }));
+  }
   function closeAdventure() {
     const enteredAt = adventureEnteredAtRef.current;
     if (enteredAt !== null) {
@@ -889,6 +898,7 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
   if (adventureOpen && game.profile) {
     return <PlatformAdventure
       state={game}
+      initialMode={adventureStartMode}
       soundOn={soundOn}
       audioMix={audioMix}
       onAudioMixChange={setAudioMix}
@@ -906,7 +916,7 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
   }
 
   return (
-    <div className={`game-root classic-two-column-layout ${focusMode ? "focus-mode" : ""}`} onClick={moveFromRoomClick}>
+    <div className={`game-root classic-two-column-layout ${focusMode ? "focus-mode" : ""} ${mobileRoomPanel ? `room-mobile-panel-${mobileRoomPanel}` : ""}`} onClick={moveFromRoomClick}>
       <Suspense fallback={<div className="scene-loading" aria-label="Carregando cenário do pet" />}><GameCanvas initialState={{ level: game.level, room: game.activeRoom, skin: game.skin, sleeping: game.sleeping, gender: game.profile?.gender ?? null, characterId: game.profile?.characterId ?? null, companion: game.activeCompanionId }} /></Suspense>
       <div className="room-overlay" aria-hidden="true" />
       <div className="screen-ui">
@@ -914,12 +924,10 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
           <div className="brand-lockup"><span className="brand-paw"><PawPrint size={28} fill="currentColor" /></span><div><strong>Meu Pet</strong><small>UMA CASA DE CADA VEZ</small>{demoMode && <small className="demo-state">DEMO · SAVE PRESERVADO</small>}</div><span className="mobile-room-location"><MapPin size={10} aria-hidden="true" /> Casa {game.activeRoom} · {activeChapter.location}</span>{activeServerProfileId && !demoMode && <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-800" aria-live="polite"><ShieldCheck size={12}/>{serverProfileStatus === "saving" ? "Salvando" : "Perfil protegido"}</span>}</div>
           <div className="level-card" aria-label={`Nível ${game.level}, ${game.xp} de ${game.xpMax} XP`}>
             <div className="level-heading"><span className="level-star"><Star size={23} fill="currentColor" /></span><strong>Nível {game.level}</strong><span className="xp-copy">{game.xp} / {game.xpMax} XP</span></div>
-            <button className="portrait-adventure-action level-adventure-action" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Abrir Aventura com 100 fases"><Gamepad2 size={16} /><span>Aventura</span></button>
             <div className="xp-track"><span style={{ width: `${xpPercent}%` }} /></div>
           <div className="level-location" aria-label={`Casa ${game.activeRoom}: ${activeChapter.location}`}><MapPin size={11} aria-hidden="true" /> {activeChapter.location}<span>Casa {game.activeRoom}/10</span></div>
           </div>
           <div className="top-actions">
-            <button className="adventure-home-button" type="button" data-room-tour="adventure" onClick={openAdventure} aria-label="Voltar à aventura de 100 fases"><Gamepad2 size={17} /><span>Aventura</span></button>
             <button className="coin-pill" onClick={() => openShop("items")} aria-label="Abrir a loja de itens"><Coins size={21} fill="currentColor" /><strong>{game.coins.toLocaleString("pt-BR")}</strong><span className="coin-plus"><Plus size={15} /></span></button>
             <button className="portrait-story-button" type="button" onClick={() => setStoryLevel(game.level)} aria-label={`Abrir a história: ${currentChapter.title}`} title="Sua história"><BookOpen size={17} /></button>
             <button className="icon-button" onClick={() => setSettingsOpen(true)} aria-label="Configurações"><Settings size={19} /></button>
@@ -927,15 +935,26 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
             <button className="icon-button pause-toggle" onClick={() => setPaused(true)} aria-label="Pausar jogo"><span className="pause-symbol">Ⅱ</span></button>
             <button className="icon-button focus-mode-toggle" type="button" onClick={() => { setFocusMode((value) => !value); setActiveCareAction(null); }} aria-pressed={focusMode} aria-label={focusMode ? "Mostrar todas as informações" : "Ativar tela limpa"} title={focusMode ? "Mostrar interface completa" : "Tela limpa"}>{focusMode ? <Eye size={19} /> : <EyeOff size={19} />}</button>
           </div>
+          <nav className="home-game-modes" aria-label="Modos de jogo">
+            <button type="button" data-room-tour="adventure" onClick={openAdventure}><Gamepad2 size={20} aria-hidden="true" /><span>Aventura</span></button>
+            <button type="button" data-room-tour="exploration" onClick={openExploration}><Compass size={20} aria-hidden="true" /><span>Exploração</span></button>
+            <button type="button" data-room-tour="minigames" onClick={openMiniHub}><Sparkles size={20} aria-hidden="true" /><span>Minijogos</span></button>
+          </nav>
         </header>
+
+        <nav className="home-room-tools" aria-label="Atalhos da sala de estar">
+          <button type="button" className="home-room-care" data-room-tour="care-shortcut" aria-expanded={mobileRoomPanel === "care"} aria-controls="home-room-care-panel" onClick={() => toggleMobileRoomPanel("care")}><Heart size={21} aria-hidden="true" /><span>Cuidar</span></button>
+          <button type="button" className="home-room-status" aria-expanded={mobileRoomPanel === "stats"} aria-controls="home-room-status-panel" onClick={() => toggleMobileRoomPanel("stats")}><Activity size={21} aria-hidden="true" /><span>Status</span></button>
+          <button type="button" className="home-room-backpack" data-room-tour="inventory-shortcut" onClick={() => openShop("inventory")}><Backpack size={21} aria-hidden="true" /><span>Mochila</span></button>
+        </nav>
 
         <main className="dashboard-grid">
           <aside className="side-column side-left">
-            <section className={`glass-panel stats-panel ${collapsed.stats ? "panel-is-collapsed" : ""}`}>
+            <section id="home-room-status-panel" className={`glass-panel stats-panel ${collapsed.stats ? "panel-is-collapsed" : ""}`}>
               <div className="panel-heading"><h2>Como estou?</h2><div className="panel-heading-actions"><span className="status-dot" /><CollapseButton collapsed={collapsed.stats} onClick={() => togglePanel("stats")} label="status" /></div></div>
               {!collapsed.stats && <div className="stats-list">{statMeta.map((item) => <div className="stat-row" key={item.key}><div className="stat-icon"><PetSymbol symbol={item.icon} /></div><div className="stat-main"><div className="stat-label"><strong>{item.label}</strong><span>{Math.round(game.stats[item.key])}%</span></div><div className={`stat-track ${item.color}`}><span style={{ width: `${game.stats[item.key]}%` }} /></div></div></div>)}</div>}
             </section>
-            <section className={`glass-panel care-panel ${collapsed.care ? "panel-is-collapsed" : ""}`} data-room-tour="care">
+            <section id="home-room-care-panel" className={`glass-panel care-panel ${collapsed.care ? "panel-is-collapsed" : ""}`} data-room-tour="care">
               <div className="panel-heading"><h2>Cuidar</h2><div className="panel-heading-actions"><span className="panel-caption">um gesto de carinho</span><CollapseButton collapsed={collapsed.care} onClick={() => { if (!collapsed.care) setActiveCareAction(null); togglePanel("care"); }} label="cuidados" /></div></div>
               {!collapsed.care && <div className="care-grid">
                 <button className={`care-button feed ${activeCareAction === "food" ? "is-active" : ""}`} aria-expanded={activeCareAction === "food"} onClick={() => openCareAction("food")}><span><PetSymbol symbol="🍎" /></span><b>Alimentar</b><small>{game.inventory.sardinha > 0 ? `${game.inventory.sardinha} na mochila` : "ver petiscos"}</small></button>
