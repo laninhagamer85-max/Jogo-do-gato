@@ -34,3 +34,18 @@ Preview gerenciado indisponível sem control-browser. Usuário autorizou publica
 ## Publicação
 
 Preparando. Rollback: 1.9.24, commit Sites 76dacf405cf5a19286d8252b00dce50a68f9676b. IDs e análise serão acrescentados após sucesso do serviço.
+
+## 1.9.25 publicada e inspecionada
+
+GitHub: 5ca43a7fd9c0c869fcc5dad98b015b253904137a; Sites: c24a41664f97dee3383c204444f276a4174eb318; versão interna 44; appgprj_6ac40994d8d881919d46203a60801e46~appgver_38326b2e9d008191b7973c7ab8c56764; deployment appgdep_6ad1c1c1135081918fca59d352502f2f, succeeded em 2026-10-16T06:19:04.422079+00:00.
+
+Inspeção real em paisagem: grama com menos repetição, novas plantas e flores visíveis, borboletas/abelha em movimento, casinha original à direita do camp. Percorridas esquerda, parte inferior e direita; obstáculo/tronco bloquearam passagem corretamente. Gato recebeu dano e retornou ao ponto seguro após derrota; nenhum material perdido. Parte superior não concluída. Respawn e persistência foram testados offline; não observados por ciclo completo online. Sem medição de FPS ou retrato.
+
+## Ajuste solicitado durante a inspeção — 1.9.26
+
+David aprovou aspecto do gramado, musgo, flores e borboletas. Pediu: casinha reconhecível como casa de gato no canto esquerdo; insetos pequenos sobre troncos/plantas; leve aproximação da cor do gramado à das plantas, preservando a vegetação aprovada. Mistura de rocha/areia/grama na mesma sala ficou expressamente para outras situações.
+
+- Casa de gato original gerada via ImageGen com transparência, baseada apenas no estilo do asset próprio existente. Madeira, entrada baixa, almofada, símbolo de pata e telhado verde, sem escada/tronco de suporte. WebP q93, 1254×1254, 363452 bytes; mantida a proporção. Posição x0,45/y1,9 à esquerda do spawn (1,5/1,5), pequena base fora do corredor.
+- Dois mini besouros ambientais sobre o tronco e o toco usam o primeiro quadro do atlas existente em escala 0,16 unidade; abelha junto de plantas em 0,13 unidade. Movimento local limitado, congelado com redução de movimento. Sem entidades de combate, XP, loot ou hitbox.
+- Somente base do gramado passou de #416a3c para #52783e. Textura, mistura, distribuição e cor das plantas preservadas. A tentativa intermediária de tingir folhagem foi abandonada antes de publicar, conforme a correção de David.
+- 222 testes passaram; build final em andamento. Não foram implementados terrenos mistos nem expansão de campanha.

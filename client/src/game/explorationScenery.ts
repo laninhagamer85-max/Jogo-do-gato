@@ -3,7 +3,7 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'grass-four-variants-v6',seed:5102026,base:'#416a3c',light:'#a2cc41',shade:'#4d8f2b'};
+export const FOREST_GROUND:GroundTheme={id:'grass-four-variants-v6',seed:5102026,base:'#52783e',light:'#a2cc41',shade:'#4d8f2b'};
 /** Match the rendered chapter-one clearing, not the brighter source image alone.
  * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
 export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;

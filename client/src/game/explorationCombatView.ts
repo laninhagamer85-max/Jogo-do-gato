@@ -1,5 +1,5 @@
 import { ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
-import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna} from './forestNature';
+import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna,drawForestPerches} from './forestNature';
 import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
@@ -100,6 +100,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
 
     }
   }
+  drawForestPerches(ctx,v.left,v.top,t,state.time,reducedMotion,width,height,enemiesAtlas);
   state.feedback.forEach((f, i) => {
     const p = point(f), life = Math.max(0, Math.min(1, (f.until - state.time) / 1100));
     ctx.save(); ctx.globalAlpha = Math.min(1, life * 4); ctx.font = `600 ${Math.min(13, Math.max(11, t * .17))}px sans-serif`; ctx.textAlign = 'center';

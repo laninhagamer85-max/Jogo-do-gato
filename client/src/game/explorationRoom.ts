@@ -1,6 +1,6 @@
 import {composeForestClusters,FOREST_EDGE_CLUSTERS} from './biomeScenery';
-/** Existing woodland house marks the safe camp; its base leaves spawn and routes free. */
-export const PILOT_SHELTER={x:2.75,y:1.9,width:1.4,height:1.4,footprint:{x:2.4,y:1.55,width:.7,height:.35},asset:'/manus-storage/bosque-casa-arvore_0200432f.webp'};
+/** Cat shelter sits left of spawn, with its doorway facing the pet outside. */
+export const PILOT_SHELTER={x:.45,y:1.9,width:1.55,height:1.55,footprint:{x:-.1,y:1.45,width:1,height:.45},asset:'/forest-adventure/cat-safe-house-v1.webp'};
 /** Room geometry and art share the same ground footprints. */
 export const PILOT_OBSTACLES = [
   {id:'fallen-log', x:5,y:3,width:2,height:1,index:2,artWidth:2.1,artHeight:1.08},

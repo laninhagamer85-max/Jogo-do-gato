@@ -3,41 +3,41 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_pending_publication",
+  "status": "preparing_user_requested_followup",
   "active_run": "2026-10-16-forest-nature-variations",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "76dacf405cf5a19286d8252b00dce50a68f9676b",
+    "source_site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "a4e49ad94a70b3bbfa1cdd14820ef0af346fd79e",
+    "code_commit": "5ca43a7fd9c0c869fcc5dad98b015b253904137a",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6"
   },
   "current_improvement": {
     "id": "forest-nature-and-independent-respawn",
-    "implementation_status": "offline_verified",
+    "implementation_status": "1.9.25_published_1.9.26_followup_in_preparation",
     "acceptance_status": "pending_phone_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.25",
-    "last_observed_version": 43,
-    "status": "preparing",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_12d8f80299b081918e1f6989c7670ad4",
-    "deployment_id": "appgdep_6ad1b84b099081919eeefec09bb3ffb7",
-    "site_commit": "76dacf405cf5a19286d8252b00dce50a68f9676b",
-    "published_at": "2026-10-16T05:38:41.443728+00:00",
-    "attempted_in_this_cycle": false
+    "last_observed_version": 44,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_38326b2e9d008191b7973c7ab8c56764",
+    "deployment_id": "appgdep_6ad1c1c1135081918fca59d352502f2f",
+    "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
+    "published_at": "2026-10-16T06:19:04.422079+00:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "221/221 in 30 files; Firebase staging integration excluded",
+    "offline_tests": "222/222 in 30 files; Firebase staging integration excluded",
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Pending published inspection; managed preview unavailable because control-browser is not available",
+    "browser": "1.9.25 inspected live in landscape; walked left/lower/right sectors, received damage and returned to camp after defeat. Upper perimeter not completed; no combat respawn observed online. Phone/FPS not tested.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -52,8 +52,8 @@
   },
   "blockers": [],
   "next_actions": [
-    "Publish validated 1.9.25 for David's requested test, inspect the public pilot and report observed improvements.",
-    "Phone portrait and FPS remain unmeasured; no campaign expansion in this revision."
+    "Publish 1.9.26 with cat shelter on left, tiny ambient perched insects, slight grass base color adjustment only; approved plants preserved.",
+    "Mixed surfaces and future biomes remain planned, explicitly deferred by David."
   ],
   "rollback": {
     "production_changed": false,

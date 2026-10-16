@@ -7,6 +7,7 @@ export const FOREST_NATURE={
   garden:{asset:'/forest-adventure/walkable-garden-v1.webp',columns:3,rows:2,blocking:false},
   rays:[{x:1.4,y:-1.7,dx:3.7,dy:6.5,width:1.1},{x:8.8,y:-1.2,dx:2.7,dy:5.2,width:.65}],
   insects:[{x:3.2,y:2.6,symbol:'🦋',phase:.8},{x:7.2,y:7.8,symbol:'🐝',phase:3.2},{x:11.2,y:5.8,symbol:'🦋',phase:5.4}],
+  perches:[{x:5.8,y:3.55,kind:'beetle',phase:1.4},{x:3.5,y:3.62,kind:'beetle',phase:3.6},{x:11.2,y:7.2,kind:'bee',phase:5.2}],
 } as const;
 export type GardenPatch={x:number;y:number;index:number;width:number;height:number;blocking:false};
 /** Bases measured from the generated alpha atlas. No collision is inferred from artwork. */
@@ -25,6 +26,24 @@ export function drawGardenPatch(ctx:CanvasRenderingContext2D,image:HTMLImageElem
 export function ambientInsectPose(time:number,index:number,reducedMotion:boolean){
   const insect=FOREST_NATURE.insects[index],t=reducedMotion?0:time/1000;
   return {x:insect.x+Math.cos(t*.22+insect.phase)*.65,y:insect.y+Math.sin(t*.31+insect.phase)*.38,wing:reducedMotion?1:.82+.18*Math.cos(t*4+insect.phase)};
+}
+export function ambientPerchPose(time:number,index:number,reducedMotion:boolean){
+  const p=FOREST_NATURE.perches[index],t=reducedMotion?0:time/1000;
+  return {x:p.x+Math.sin(t*.38+p.phase)*.035,y:p.y+Math.cos(t*.29+p.phase)*.012};
+}
+/** Draw after solid props so tiny ambient insects can rest ON logs/stumps, without combat entities. */
+export function drawForestPerches(ctx:CanvasRenderingContext2D,left:number,top:number,tile:number,time:number,reducedMotion:boolean,width:number,height:number,beetleAtlas?:HTMLImageElement){
+  if(typeof Image==='undefined')return;
+  FOREST_NATURE.perches.forEach((insect,i)=>{
+    const p=ambientPerchPose(time,i,reducedMotion),x=left+p.x*tile,y=top+p.y*tile;
+    if(x< -tile||y< -tile||x>width+tile||y>height+tile)return;
+    ctx.save();ctx.globalAlpha=.9;
+    if(insect.kind==='beetle'&&beetleAtlas?.complete&&beetleAtlas.naturalWidth){
+      const cw=beetleAtlas.naturalWidth/4,ch=beetleAtlas.naturalHeight/2,w=tile*.16,h=w*ch*.6640625/cw;
+      ctx.drawImage(beetleAtlas,0,ch*.2734375,cw,ch*.6640625,x-w/2,y-h,w,h);
+    }else if(insect.kind==='bee')drawPetSymbol(ctx,'🐝',x,y,tile*.13);
+    ctx.restore();
+  });
 }
 export function drawForestSun(ctx:CanvasRenderingContext2D,left:number,top:number,tile:number){
   for(const ray of FOREST_NATURE.rays){
