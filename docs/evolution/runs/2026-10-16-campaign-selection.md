@@ -13,3 +13,5 @@ Verificação: TypeScript, 378 testes offline em31 arquivos (motor, seleção, p
 Referências técnicas em16/10: https://react.dev/learn/preserving-and-resetting-state — separação da tentativa por instância; https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button — botões desabilitados, rótulos e foco.
 
 Rollback anterior: produto1.11.0 / Sites59 / fonte `5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c` / versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_d544641ad4788191acc19a7e2a543874`.
+
+Publicação confirmada: produto1.12.0 / Sites60 / fonte `089303ac1ff2ffa68d3d0772b5c266a1a4d9d4e1` / versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_eaf99c8e081c8191889477f05e388595` / deployment `appgdep_6ad2774be4ac819191ae443bf7c5142f` / https://meupet.aquimeusite.chatgpt.site.

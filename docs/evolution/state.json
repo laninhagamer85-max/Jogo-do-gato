@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_user_phone_test",
+  "status": "published_pending_user_device_test",
   "active_run": "2026-10-16-campaign-selection",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
-    "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
+    "source_site_commit": "089303ac1ff2ffa68d3d0772b5c266a1a4d9d4e1",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "9470199b32323054b67d1f2a362250a029644d43",
+    "code_commit": "6c614f93585a9c2690c883998c1232cabb211355",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6",
     "code_commit_status": "published"
   },
@@ -23,12 +23,12 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.11.0",
-    "last_observed_version": 59,
-    "status": "previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d544641ad4788191acc19a7e2a543874",
-    "deployment_id": "appgdep_6ad27395580081919a18ca7b62b938aa",
-    "site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
+    "product_version": "1.12.0",
+    "last_observed_version": 60,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_eaf99c8e081c8191889477f05e388595",
+    "deployment_id": "appgdep_6ad2774be4ac819191ae443bf7c5142f",
+    "site_commit": "089303ac1ff2ffa68d3d0772b5c266a1a4d9d4e1",
     "attempted_in_this_cycle": true
   },
   "verification": {
