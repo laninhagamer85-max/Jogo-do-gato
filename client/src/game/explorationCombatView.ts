@@ -1,5 +1,5 @@
-import { ROOM_EDGES, ROOM_SCENERY } from "./explorationRoom";
-import { drawExplorationGround, drawWoodlandProp, GROUND_WORLD } from "./explorationScenery";
+import { ROOM_EDGES, ROOM_SCENERY, ROOM_UNDERGROWTH } from "./explorationRoom";
+import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
@@ -25,6 +25,11 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   drawExplorationGround(ctx,width,height,background,v.left,v.top,t);
+  const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
+    const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
+    if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop);
+  };
+  ROOM_UNDERGROWTH.forEach(drawProp);
   const scenery=[...ROOM_EDGES,...ROOM_SCENERY];
   if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2,width:1.28,height:1.28});
   const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
@@ -45,7 +50,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
-    if(entity.type==='prop'){if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,entity.p.index,p.x,p.y,t,entity.p);continue;}
+    if(entity.type==='prop'){drawProp(entity.p);continue;}
     ctx.fillStyle = 'rgba(10,24,15,.3)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + t * .07, t * .28, t * .10, 0, 0, Math.PI * 2); ctx.fill();
     if (entity.type === 'enemy') {
       const enemy = entity.p as CombatState['enemies'][number], def = PILOT_ENEMIES.find(e => e.id === enemy.id)!;

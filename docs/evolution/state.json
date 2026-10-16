@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-15",
+  "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "preparing_user_review_publication",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -15,26 +15,26 @@
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
-    "id": "apply-selected-grass-option4",
+    "id": "natural-grass3-and-clearing-density",
     "implementation_status": "implemented",
-    "acceptance_status": "selected_static_art_pending_in_game_user_review"
+    "acceptance_status": "offline_verified_pending_user_device_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.19",
+    "product_version": "1.9.20",
     "last_observed_version": 38,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1",
-    "deployment_id": "appgdep_6ad178bcbc0481919973d21b868c2fae",
-    "site_commit": "843606530fd9dd1b7d0f63107637900cf704c7aa",
-    "published_at": "2026-10-16T01:07:29.488473+00:00",
+    "status": "preparing",
+    "version_id": null,
+    "deployment_id": null,
+    "site_commit": null,
+    "published_at": null,
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "22/22_terrain_scenery_tests_passed_2_files",
-    "build": "passed_existing_chunk_warning",
+    "offline_tests": "205/205_passed_28_files_excluding_firebase_staging_integration",
+    "build": "pending_final",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
     "browser": "not_run_control_browser_unavailable; selected static art applied for user device review",
@@ -48,20 +48,20 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "sha256_passed_complete_retry_archive"
+    "packaged_grass": "pending_archive_check"
   },
   "blockers": [],
   "next_actions": [
-    "David: revisar opção 4 no jogo, em retrato/paisagem, zoom e Ver sala, incluindo caminhada e retorno.",
-    "Revisar composição com vegetação do capítulo 1 após teste da textura escolhida; dez salas por capítulo ainda pendentes."
+    "David: testar opção 3, distribuição de elementos, caminhada, coleta e combate em retrato/paisagem e zoom.",
+    "Ajustar conforme revisão antes de expandir para as demais salas; 60 salas ainda não implementadas."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.18",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6ef571683908191b8312f6aa3b87011",
-    "instructions": "Reimplantar 1.9.18 se necessário; preservar saves e não sobrescrever publicação posterior."
+    "production_changed": false,
+    "product_version": "1.9.19",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1",
+    "instructions": "Reimplantar 1.9.19 se necessário, preservando saves; não sobrescrever publicação posterior."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-grass-option4.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-grass3-scenery-density.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -252,5 +252,17 @@
     "code_commit": "ccf1a7e2415a83642184d88b84ec17e6ab8f89fd",
     "site_commit": "843606530fd9dd1b7d0f63107637900cf704c7aa",
     "publication_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1"
+  },
+  "natural_grass3_density": {
+    "date": "2026-10-16",
+    "status": "preparing_user_review_publication",
+    "product_version": "1.9.20",
+    "selection": "3 — Natural uniforme",
+    "groundcover_groups": 22,
+    "new_solid_objects": 3,
+    "total_solid_objects": 5,
+    "world_space_layout": "fixed; same for portrait and landscape",
+    "scope": "one combat pilot room",
+    "browser": "not_run_control_browser_unavailable"
   }
 }

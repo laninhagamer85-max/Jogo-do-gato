@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-16",
+  "selection": "3 — Natural uniforme; clarified from ambiguous E",
+  "source_image": "exec-59713065-4f42-4b69-9cee-019343838295.png",
+  "original_sha256": "3d0cac349d85db180346dc89d3edb42dbaa22ca8f37d931bf3fa2900083caa2b",
+  "asset": "client/public/forest-adventure/grass-natural-option3-v1.webp",
+  "dimensions": [1254,1254],
+  "bytes": 581956,
+  "sha256": "1ca5d7882501c7f19882f2f8197556b28edd81401576a2553db03f3d2aa81523",
+  "method": "existing built-in imagegen preview selected by user; WebP quality 90 format conversion only",
+  "generation_brief": "Natural fine turf: organic fine short grass with varied small blade widths, occasional overlapping cut blades, subtle earthy olive green undertones and soft fresh tips. Detailed painted natural material compatible with a children's woodland illustration; quiet continuous ground coverage.",
+  "validation": "static source-art inspection; in-game visual/performance review pending"
+}
