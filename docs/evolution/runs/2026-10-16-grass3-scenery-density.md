@@ -23,3 +23,7 @@ Arte fonte inspecionada estaticamente. **control-browser indisponível**: não i
 Aplicada a pesquisa já registrada em `docs/evolution/biome-composition-research-2026-10-15.md`: grupos com espaços de respiro e salas com função, em vez de preencher uniformemente tudo. Referências anteriores: https://factorio.com/blog/post/fff-219 (detalhes e variedade) e https://deepnight.net/tutorial/the-level-design-of-dead-cells-a-hybrid-approach/ (salas com propósito). Não incorporada arte desses jogos.
 
 David: comparar o gramado 3 e a densidade em retrato/paisagem, zoom e Ver sala; caminhar pelos grupos, coletar itens e verificar legibilidade durante combate. Ajustar antes de expandir a composição a outras salas e biomas. Rollback preservado na 1.9.19.
+
+## Publicação confirmada
+
+Produto **1.9.20**, Sites **39**, status **succeeded**, em **16/10/2026, 01:42:57 (America/Sao_Paulo)**. URL: https://meupet.aquimeusite.chatgpt.site. Commit GitHub `c3182cf8bc8e0f1643d88446aca3fc1cb6036708`; fonte Sites `e7924f17c689d3c33f021b799fdef056a9d80b69`; versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_e82df9a594e08191b2c46f9410f2b54b`; deployment `appgdep_6ad1ab3c44b08191bcabdef6e4aa41be`. Build, TypeScript e 205 testes offline aprovados; pacote lido integralmente e hash da textura 3 conferido antes do envio. Uma versão salva e um deploy concluído. Revisão visual e fluidez no aparelho continuam pendentes de David.

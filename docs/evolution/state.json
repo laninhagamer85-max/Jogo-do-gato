@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review_publication",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "843606530fd9dd1b7d0f63107637900cf704c7aa",
+    "source_site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "ccf1a7e2415a83642184d88b84ec17e6ab8f89fd",
+    "code_commit": "c3182cf8bc8e0f1643d88446aca3fc1cb6036708",
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
@@ -23,21 +23,21 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.20",
-    "last_observed_version": 38,
-    "status": "preparing",
-    "version_id": null,
-    "deployment_id": null,
-    "site_commit": null,
-    "published_at": null,
+    "last_observed_version": 39,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_e82df9a594e08191b2c46f9410f2b54b",
+    "deployment_id": "appgdep_6ad1ab3c44b08191bcabdef6e4aa41be",
+    "site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
+    "published_at": "2026-10-16T04:42:57.437721+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
     "offline_tests": "205/205_passed_28_files_excluding_firebase_staging_integration",
-    "build": "pending_final",
+    "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable; selected static art applied for user device review",
+    "browser": "not_run_control_browser_unavailable; explicit device review requested",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -48,7 +48,7 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "pending_archive_check"
+    "packaged_grass": "complete_archive_and_sha256_passed"
   },
   "blockers": [],
   "next_actions": [
@@ -56,7 +56,7 @@
     "Ajustar conforme revisão antes de expandir para as demais salas; 60 salas ainda não implementadas."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.19",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1",
     "instructions": "Reimplantar 1.9.19 se necessário, preservando saves; não sobrescrever publicação posterior."
@@ -255,7 +255,7 @@
   },
   "natural_grass3_density": {
     "date": "2026-10-16",
-    "status": "preparing_user_review_publication",
+    "status": "published_for_user_review",
     "product_version": "1.9.20",
     "selection": "3 — Natural uniforme",
     "groundcover_groups": 22,
@@ -263,6 +263,9 @@
     "total_solid_objects": 5,
     "world_space_layout": "fixed; same for portrait and landscape",
     "scope": "one combat pilot room",
-    "browser": "not_run_control_browser_unavailable"
+    "browser": "not_run_control_browser_unavailable",
+    "code_commit": "c3182cf8bc8e0f1643d88446aca3fc1cb6036708",
+    "site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
+    "publication_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_e82df9a594e08191b2c46f9410f2b54b"
   }
 }
