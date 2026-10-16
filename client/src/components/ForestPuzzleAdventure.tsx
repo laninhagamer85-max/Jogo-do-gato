@@ -1,3 +1,4 @@
+import {readCombatState} from '@/game/explorationCombat';
 import ExplorationJoystick from "./ExplorationJoystick";
 import { forestStickDirection } from "@/game/combatPresentation";
 import ExplorationCombatPilot from "./ExplorationCombatPilot";
@@ -420,6 +421,8 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   };
   const [combatPilot, setCombatPilot] = useState(false);
+  const combatCampaign=readCombatState(combatProgress);
+  const combatRoomNumber=combatCampaign.supported?combatCampaign.state.roomIndex+1:1;
   const petImage = GAME_ASSETS.characters[characterId];
   const currentSpec = game ? getForestRoom(game.chapter, game.room) : null;
   const qaTelemetryEnabled = import.meta.env.DEV && typeof window !== "undefined" && ["/qa-review.html", "/qa-adventure.html"].includes(window.location.pathname);
@@ -443,11 +446,11 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
       </div>
     </header>
     {!game ? <main className="forest-adventure-map">
-      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. As trilhas de enigmas continuam disponíveis. Experimente também a sala piloto com combate e coleta.</p></div>
+      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. As trilhas de enigmas continuam disponíveis. A Clareira dos Troncos agora tem dez salas de combate, coleta e desafios.</p></div>
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
-      <div className="forest-map-actions"><button type="button" className="forest-primary" onClick={() => setCombatPilot(true)}>Sala piloto: combate e coleta</button><p>Nível de combate próprio, inventário e ponto seguro. Uma sala experimental.</p></div>
+      <div className="forest-map-actions"><button type="button" className="forest-primary" onClick={() => setCombatPilot(true)}>Clareira dos Troncos · Sala {combatRoomNumber}/10</button><p>Dez salas com combate, coleta, placas, chave e ponte. Nível de combate próprio, inventário e ponto seguro.</p></div>
       <section className="forest-chapter-grid" aria-label="Seleção de capítulos">
         {FOREST_CHAPTERS.map((chapter) => {
           const isLocked = !supported || chapter.id > unlockedChapter;

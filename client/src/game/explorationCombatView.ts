@@ -1,7 +1,10 @@
+import {campaignRoom,campaignGardens,campaignEnemies,RARE_ITEMS} from './explorationCampaign';
+import {drawBiomeWater} from './biomeCompositionView';
+import {drawCampaignBridge,drawCampaignKey} from './explorationCampaignArt';
 import {drawPortalEnergy,drawPortalArch} from './explorationPortal';
 import { SCATTERED_GARDENS, OUTER_GARDENS, ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
 import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna,drawForestPerches} from './forestNature';
-import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
+import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD,FOREST_GROUND } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
@@ -22,41 +25,53 @@ export function combatView(width: number, height: number, player: CombatPoint, z
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement) {
+  const room=campaignRoom(state.roomIndex),definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
-  drawExplorationGround(ctx,width,height,background,v.left,v.top,t);
+  drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
+  if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion);
+  drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);
   };
-  if(gardenAtlas)for(const patch of [...ROOM_GARDENS,...ROOM_EDGE_GARDENS,...SCATTERED_GARDENS,...OUTER_GARDENS]){
+  if(gardenAtlas)for(const patch of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS]){
     const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
     if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
   }
   drawForestSun(ctx,v.left,v.top,t);
   drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);
-  const scenery=[...ROOM_EDGE_SOLIDS,...ROOM_SCENERY];
-  if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2,width:1.28,height:1.28});
-  const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
+  const scenery=[...ROOM_EDGE_SOLIDS,...room.scenery];
+  if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
+  const camp = point(room.camp); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
-  const marker = point(PILOT_MARKER);
+  const marker = point(room.marker);
   if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
-  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
-  const exit = point(PILOT_EXIT);
+  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
+  const exit = point(room.exit);
   drawPortalEnergy(ctx,exit.x,exit.y,t,state.time,state.gateOpen,reducedMotion);
 
-  for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {
+  if(room.key&&!state.hasRoomKey)drawCampaignKey(ctx,keyAtlas,room.key,v.left,v.top,t,state.time,reducedMotion);
+  for(const [i,plate] of room.switches.entries()){
+    const p=point(plate);if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,p.x,p.y+t*.15,t*.65,undefined,true);
+    ctx.fillStyle=i<state.switchStep?'#caf1a0':'#fff2bd';ctx.font=`600 ${Math.max(12,t*.2)}px sans-serif`;ctx.textAlign='center';ctx.fillText(i<state.switchStep?'✓':String(i+1),p.x,p.y-t*.35);
+  }
+  for (const n of room.nodes) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
     drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2,itemArt?.[n.item]);
   }
   for (const loot of state.loot) {
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
-    drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
+    if(loot.rare&&rareAtlas?.complete&&rareAtlas.naturalWidth){
+      const sw=rareAtlas.naturalWidth/2,sh=rareAtlas.naturalHeight,h=t*.5,w=h*sw/sh;
+      ctx.drawImage(rareAtlas,loot.rare==='seiva'?0:sw,0,sw,sh,p.x-w/2,p.y-h-fall-cue.hover,w,h);
+      ctx.fillStyle='#e9dcac';ctx.font=`600 ${Math.max(10,t*.14)}px sans-serif`;ctx.textAlign='center';ctx.fillText(`${RARE_ITEMS[loot.rare]} ×${loot.quantity}`,p.x,p.y+t*.18);
+    }else drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
   }
-  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), {type:'shelter' as const,p:PILOT_SHELTER}, {type:'portal' as const,p:PILOT_EXIT}, ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), {type:'shelter' as const,p:PILOT_SHELTER}, {type:'portal' as const,p:room.exit}, ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='prop'){drawProp(entity.p);continue;}
@@ -70,12 +85,17 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const shadow=entity.type==='enemy'?.21:.28;
     ctx.fillStyle = 'rgba(10,24,15,.3)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + t * .07, t * shadow, t * shadow*.36, 0, 0, Math.PI * 2); ctx.fill();
     if (entity.type === 'enemy') {
-      const enemy = entity.p as CombatState['enemies'][number], def = PILOT_ENEMIES.find(e => e.id === enemy.id)!;
+      const enemy = entity.p as CombatState['enemies'][number], def = definitions.find(e => e.id === enemy.id)!;
       const range = Math.hypot(state.player.x-enemy.x,state.player.y-enemy.y);
-      const safe = Math.hypot(state.player.x-PILOT_CAMP.x,state.player.y-PILOT_CAMP.y)<1.6;
+      const safe = Math.hypot(state.player.x-room.camp.x,state.player.y-room.camp.y)<1.6;
       const moving = (!safe && range<4 && range>PILOT_INSECT.stopDistance) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
-      if(enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
-        const row=enemy.id==='beetle'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
+      if(def.art&&mobsAtlas?.complete&&mobsAtlas.naturalWidth){
+        const cw=mobsAtlas.naturalWidth/4,ch=mobsAtlas.naturalHeight/3,frame=moving&&!reducedMotion?Math.floor(state.time/170)%4:0;
+        const dw=t*(def.width??.78),dh=dw*ch/cw;
+        ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
+        ctx.drawImage(mobsAtlas,frame*cw,(def.spriteRow??0)*ch,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
+      }else if(!def.art&&enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
+        const row=def.name==='Besouro'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
         const cw=enemiesAtlas.naturalWidth/4,ch=enemiesAtlas.naturalHeight/2;
         ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         const attacking=enemy.attackAt-state.time>1250 && enemy.attackAt-state.time<=1500;
@@ -86,7 +106,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * .72, t * .62, t * .065);
       ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * .72, t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      ctx.fillText(`${def.name} · Nv ${def.level}`, p.x, p.y - t * .83);
+      ctx.fillText(`${def.name} · Nv ${def.level}${def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * .83);
     } else {
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
@@ -104,7 +124,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
 
     }
   }
-  drawForestPerches(ctx,v.left,v.top,t,state.time,reducedMotion,width,height,enemiesAtlas);
+  if(!room.index)drawForestPerches(ctx,v.left,v.top,t,state.time,reducedMotion,width,height,enemiesAtlas);
   state.feedback.forEach((f, i) => {
     const p = point(f), life = Math.max(0, Math.min(1, (f.until - state.time) / 1100));
     ctx.save(); ctx.globalAlpha = Math.min(1, life * 4); ctx.font = `600 ${Math.min(13, Math.max(11, t * .17))}px sans-serif`; ctx.textAlign = 'center';

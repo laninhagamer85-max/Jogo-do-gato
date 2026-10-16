@@ -1,5 +1,5 @@
 import {drawTerrainTexture,GRASS_MATERIAL} from "./terrainTexture";
-import {PILOT_BIOME} from './biomeComposition';
+import {type BiomeComposition,PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
@@ -19,10 +19,10 @@ export function groundVariations(seed:number){
   return Array.from({length:18},()=>({x:random(),y:random(),radius:.07+random()*.12,light:random()>.5}));
 }
 /** Material parameters can be reused with the grass, soil, sand and snow assets of future biomes. */
-export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND,pilotComposition=false){
+export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND,pilotComposition:boolean|BiomeComposition=false){
   ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
   ctx.save();ctx.globalAlpha=GROUND_TEXTURE_OPACITY;
-  drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined);
+  drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition===true?PILOT_STATIC_GROUND:pilotComposition?{id:pilotComposition.id,draw:(g,bounds)=>drawBiomeStatic(g,bounds,pilotComposition)}:undefined);
   ctx.restore();
   ctx.fillStyle='rgba(20,40,29,.06)';ctx.fillRect(0,0,width,height);
 }

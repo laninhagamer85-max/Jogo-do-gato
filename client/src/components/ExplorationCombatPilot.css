@@ -102,3 +102,7 @@
 /* A sixth rim slot replaces the separate camera bar; lens size stays in its own slot. */
 .combat-lens-camera{left:85.355%;top:85.355%}
 .combat-pilot--lens-dock .combat-lens-camera:disabled{opacity:.45;filter:none}
+/* Campaign objectives wrap within the reserved left HUD strip. */
+.combat-pilot--lens-dock .combat-objective{max-height:100px;overflow:hidden}
+.combat-pilot--lens-dock .combat-goal{top:max(222px,calc(env(safe-area-inset-top) + 214px))}
+@media(max-height:500px) and (orientation:landscape){.combat-pilot--lens-dock .combat-goal{top:100px}.combat-pilot--lens-dock .combat-objective{max-height:78px}}

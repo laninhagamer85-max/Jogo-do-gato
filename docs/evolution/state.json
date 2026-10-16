@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_phone_review",
-  "active_run": "2026-10-16-camera-rim-toggle",
+  "status": "preparing_publication_for_user_phone_test",
+  "active_run": "2026-10-16-chapter1-expansion",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,25 +16,25 @@
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
-    "id": "world-camera-zoom",
+    "id": "chapter1-expansion-and-wildlife",
     "implementation_status": "implemented",
-    "acceptance_status": "user_explicitly_requests_publication_to_test"
+    "acceptance_status": "new_rooms_pending_user_playtest"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.38",
-    "last_observed_version": 57,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_04a931166fc481918432d84bf25028f9",
-    "deployment_id": "appgdep_6ad263674d6481918f78a7f0ad6038ec",
-    "site_commit": "3f91ca1881667d06bcbdefcbf564cea2c4be4342",
-    "attempted_in_this_cycle": true
+    "product_version": "1.9.37",
+    "last_observed_version": 56,
+    "status": "previous_release",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a396c5f269408191967c4fe6ce42f6a5",
+    "deployment_id": "appgdep_6ad260f1eefc8191a90ebee882f5b709",
+    "site_commit": "4009a9561013ed5ed21b31b51acdeede01872e58",
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "45 targeted tests passed; projection and touch inverse at four viewport sizes",
-    "build": "passed",
+    "offline_tests": "280 passed in 29 game test files (offline)",
+    "build": "passed; existing large-chunk warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
     "browser": "unavailable; not run",
@@ -54,7 +54,8 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "David tests compact camera toggle and independent lens-size slot on his phone."
+    "Publish first chapter; user tests new rooms and NPC balance on phone.",
+    "Next chapters/biomes remain planned."
   ],
   "rollback": {
     "production_changed": true,
@@ -63,7 +64,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-camera-rim-toggle.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-chapter1-expansion.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -149,7 +150,7 @@
     "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
   },
   "exploration_expansion": {
-    "status": "one_combat_pilot_implemented_pending_browser",
+    "status": "chapter1_implemented_pending_user_playtest",
     "chapters": 6,
     "rooms_per_chapter": 10,
     "total_rooms": 60,
@@ -171,7 +172,7 @@
       "respawn intervals and rare-drop rates",
       "safe-point HP restoration"
     ],
-    "implemented_rooms": 1,
+    "implemented_rooms": 10,
     "rollout_plan": "docs/evolution/exploration-campaign-plan.json",
     "rollout_rules": "docs/evolution/exploration-campaign-rollout.md"
   },
@@ -181,9 +182,9 @@
     "scope": "publish layered biome pilot as 1.9.17 for David to test after disclosure of missing supported browser; not visual acceptance"
   },
   "pilot_user_acceptance": {
-    "version": "1.9.5",
-    "date": "2026-10-15",
-    "result": "David completed and approved pilot playtest; requested visual refinements and simpler item use."
+    "version": "1.9.38",
+    "date": "2026-10-16",
+    "result": "User reports pilot tests concluded and requests expansion."
   },
   "biome_composition_research": {
     "date": "2026-10-15",
@@ -425,10 +426,9 @@
   "camera_rim_toggle": {
     "product_version": "1.9.38",
     "base_source": "4009a9561013ed5ed21b31b51acdeede01872e58",
-    "status": "published_for_user_phone_review",
+    "status": "implemented",
     "change": "remove camera bar; one ZoomIn/ZoomOut button lower right of wooden rim; 1x <-> 2x; size remains separate",
     "tests": "TypeScript and 215 tests in 26 game files passed; build passed",
-    "browser": "unavailable; user has approved 1.9.37 camera behavior and requests compact rim adjustment",
-    "code_commit": "9e334f8a139ce09d41bb30640bbd2566dd644c06"
+    "browser": "unavailable; user has approved 1.9.37 camera behavior and requests compact rim adjustment"
   }
 }
