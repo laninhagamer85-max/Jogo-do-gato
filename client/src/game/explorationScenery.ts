@@ -3,7 +3,9 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'grass-woodland-soft-v3',seed:5102026,base:'#668642',light:'#809a58',shade:'#526d37'};
+export const FOREST_GROUND:GroundTheme={id:'grass-chapter1-painted-v4',seed:5102026,base:'#6caa2d',light:'#a2cc41',shade:'#4d8f2b'};
+/** Larger illustrated strokes match the chapter art; patch overlap ratios stay unchanged. */
+export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3,step:1.35,jitter:.12};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 const PILOT_STATIC_GROUND={id:PILOT_BIOME.id,draw:(ctx:CanvasRenderingContext2D,bounds:import('./terrainTexture').TerrainBounds)=>drawBiomeStatic(ctx,bounds,PILOT_BIOME)};
 export function groundVariations(seed:number){
@@ -12,7 +14,7 @@ export function groundVariations(seed:number){
 }
 /** Material parameters can be reused with the grass, soil, sand and snow assets of future biomes. */
 export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND,pilotComposition=false){
-  if(!drawTerrainTexture(ctx,width,height,image,left,top,tile,{...GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined)){
+  if(!drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined)){
     ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
   }
 }

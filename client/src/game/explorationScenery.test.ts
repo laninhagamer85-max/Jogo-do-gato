@@ -1,8 +1,16 @@
 import {describe,it,expect,vi} from 'vitest';
-import { groundVariations,GROUND_WORLD } from './explorationScenery';
+import { groundVariations,GROUND_WORLD,FOREST_GRASS_MATERIAL } from './explorationScenery';
+import {terrainPatch} from './terrainTexture';
 import {combatView,combatCanvasScale,drawCombatPilot} from './explorationCombatView';
 import {createCombatState,PILOT_INSECT} from './explorationCombat';
 describe('non repeating woodland ground',()=>{
+  it('covers the floor with opaque cores at the enlarged chapter-one brush scale',()=>{
+    const m=FOREST_GRASS_MATERIAL;
+    for(let y=-4;y<4;y+=.13)for(let x=-4;x<4;x+=.13){
+      const p=terrainPatch(Math.floor(x/m.step),Math.floor(y/m.step),m),half=p.span*(.5-m.feather);
+      expect(Math.abs(x-p.x)).toBeLessThan(half);expect(Math.abs(y-p.y)).toBeLessThan(half);
+    }
+  });
   it('renders both smaller insect sprites with uniform scale and grounded feet',()=>{
     const calls:unknown[][]=[];
     const ctx=new Proxy({drawImage:(...args:unknown[])=>calls.push(args),measureText:()=>({width:20}),createRadialGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}}) as unknown as CanvasRenderingContext2D;

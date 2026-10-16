@@ -1,0 +1,17 @@
+{
+  "tool": "built-in imagegen",
+  "source": "exec-019cd205-76ee-416c-ad86-f0ac2236e140.png",
+  "reference": "client/public/forest-adventure/backgrounds/clearing.webp",
+  "asset": "client/public/forest-adventure/grass-chapter1-painted-v4.webp",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "encoding": "WebP q92; no resizing, recoloring or cropping",
+  "world_span": [
+    2.82,
+    3.18
+  ],
+  "prompt": "Edit target/reference: the supplied background is the original Chapter 1 clearing of this exact children's game. Create ONLY an isolated square ground-material texture derived from the CENTRAL GRASS of this image, matching its hand-painted storybook brushwork, colors and light exactly. Do not produce a whole clearing, trees, rocks, flowers, border, horizon, objects or map. Fill the entire output edge to edge with short low-growing painted meadow grass as seen at the centre of the reference. Match its fresh saturated leaf greens and soft yellow-green sunlit strokes, deep green micro-shadows and visible broad illustrated strokes, avoiding the dull grey/olive lawn look. Medium green base with restrained light leaf-green details; fresh and colorful but no neon lime. The original reference's bright atmospheric lighting must become neutral diffuse illumination on this reusable material: no sunbeams, bright centre, vignette or large patches. Tiny scattered painted leaf-like grass strokes only; no distinct recurring clover tufts, rosettes, pebbles or dirt. Broad tonal variation extremely subtle, yet clearly painted detail at close range. Orthographic top down, uniform scale everywhere, square seamless tile-compatible edge tones. Avoid photographic hairlike lawn blades and noisy fine texture: stylistically this must look like a piece of the reference illustration that blends naturally with its foliage and mossy rocks. No text, logos or grid. Return grass only, no composition or preview.",
+  "sha256": "d2158294f50a6d713610b4adc869ebe76bd505317086e2b78c8d0989d1603354"
+}

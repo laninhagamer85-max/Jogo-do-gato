@@ -52,7 +52,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
     const itemArt=Object.fromEntries(Object.keys(COMBAT_ITEMS).map(id=>{const image=new Image();image.src='/forest-adventure/items/'+id+'.svg';return [id,image];})) as Record<CombatItem,HTMLImageElement>;
-    const bg = new Image(); bg.src = '/forest-adventure/grass-woodland-soft-v3.webp';
+    const bg = new Image(); bg.src = '/forest-adventure/grass-chapter1-painted-v4.webp';
     let assetsReady = false;
     const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
     pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; bg.onload = checkAssets;

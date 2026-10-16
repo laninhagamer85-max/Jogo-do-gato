@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "preparing_user_review_publication",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -12,32 +12,32 @@
     "source_site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "eda4cee99c462d85581b3b0fd035f0d85e8c06b9",
-    "implementation_base_github_commit": "38136dec5a85837aaaa080fb9275e1d19c4a1c40"
+    "implementation_base_github_commit": "1fdffde7d7a3c9448dce129f553d526a80832285"
   },
   "current_improvement": {
-    "id": "natural-clearing-border-and-smaller-insects",
+    "id": "chapter1-painted-grass-match",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_device_review"
+    "acceptance_status": "pending_user_comparison"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.21",
+    "product_version": "1.9.22",
     "last_observed_version": 40,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_151986417ea481918a913b68df89b365",
-    "deployment_id": "appgdep_6ad1b01e65448191b913a6ae86bfeec0",
-    "site_commit": "3855e6697699dd2dd111cabf8a27e5b104087d95",
-    "published_at": "2026-10-16T05:03:47.759540+00:00",
+    "status": "preparing",
+    "version_id": null,
+    "deployment_id": null,
+    "site_commit": null,
+    "published_at": null,
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "211/211 passed in 29 files; Firebase staging integration explicitly excluded because credential absent",
+    "offline_tests": "33/33 pertinent terrain/scenery/biome tests passed; prior 211-test offline suite unchanged outside terrain",
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Post-deploy 1.9.21 loaded and inspected in cloud browser, landscape overview only. New grass, clusters and smaller insects visible. Portrait, motion, FPS and user device acceptance not tested.",
+    "browser": "1.9.21 landscape mismatch observed; 1.9.22 not observed yet; portrait and FPS pending",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -48,21 +48,21 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "passed_exact_sha256_in_deployment_archive"
+    "packaged_grass": "pending"
   },
   "blockers": [],
   "next_actions": [
-    "David: conferir grama, bordas, escala dos insetos e caminhada em retrato/paisagem e Ver sala.",
-    "Depois do aceite visual, implementar salas reais do capítulo 1 com dificuldade, encontros, drops e desbloqueios próprios; não apenas duplicar o piloto."
+    "David: comparar paleta e acabamento com a clareira do capítulo 1; avaliar retrato/paisagem e caminhada.",
+    "Aceitar a base antes de expandir o piloto para salas reais do capítulo 1."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.20",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_e82df9a594e08191b2c46f9410f2b54b",
-    "site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
-    "instructions": "Reimplantar a versão conhecida 1.9.20 somente se ainda for a publicação imediatamente anterior; preservar saves e não sobrescrever trabalho posterior."
+    "production_changed": false,
+    "product_version": "1.9.21",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_151986417ea481918a913b68df89b365",
+    "site_commit": "3855e6697699dd2dd111cabf8a27e5b104087d95",
+    "instructions": "Reimplantar 1.9.21 somente se ainda for a publicação imediatamente anterior; preservar saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-natural-clearing-review.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-chapter1-grass-match.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -282,5 +282,17 @@
     "new_enemies_implemented": 0,
     "campaign_expansion": "planning only, existing 60-room gate preserved",
     "post_deploy_visual": "landscape overview observed; phone portrait and gameplay pending"
+  },
+  "chapter1_grass_match": {
+    "date": "2026-10-16",
+    "status": "offline_verified_pending_user_review",
+    "reference": "client/public/forest-adventure/backgrounds/clearing.webp",
+    "asset": "client/public/forest-adventure/grass-chapter1-painted-v4.webp",
+    "scope": "pilot grass only; groups/insects/controls/saves unchanged",
+    "patch_span_world": [
+      2.82,
+      3.18
+    ],
+    "new_gameplay_content": false
   }
 }
