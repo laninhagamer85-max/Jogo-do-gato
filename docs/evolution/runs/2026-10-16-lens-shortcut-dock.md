@@ -11,3 +11,5 @@ Verificação: TypeScript aprovado;213 testes em26 arquivos passaram;8 novos tes
 Arte: botão original imagegen baseado na moldura circular existente, madeira marrom pintada, latão fino, luz superior esquerda, centro preenchido de madeira sem símbolo/texto, alfa fora do círculo. Ícones do sistema existente inseridos pelo componente. 1254×1254RGBA convertido para WebP; arquivo client/public/forest-adventure/map-dock-button-v1.webp, SHA256 d635e05c11c0b4e85fbf105132e3bcfe71fbc05482a217f96e2a596c567251da. Sem material de terceiros.
 
 Rollback: Sites54 / produto1.9.35. Conferir a publicação corrente antes de reverter. Próximo: usuário testa cada slot duas vezes, mochila/pause/visão geral, redimensionamento e foco em retrato/paisagem.
+
+Publicação concluída com sucesso: produto 1.9.36 / Sites55; versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_8da3efe91af88191b4c1a22dc764f416; deployment appgdep_6ad2573f3c648191b154975cd0e5549e; fonte 260acaf65552fd41d0c9cffea68672a1a2a24499; código GitHub 386858ab2dda2f233fbd6f561d04738084e69c4c. URL https://meupet.aquimeusite.chatgpt.site. Gameplay visual pendente de revisão do usuário no celular.

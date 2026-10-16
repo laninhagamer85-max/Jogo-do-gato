@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_user_review",
+  "status": "published_for_user_phone_review",
   "active_run": "2026-10-16-lens-shortcut-dock",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -23,13 +23,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.32",
-    "last_observed_version": 49,
-    "status": "published_previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_434b56631a4481918efe3d440c373076",
-    "deployment_id": "appgdep_6ad221d9b95c8191be591cadf1fc2e26",
-    "site_commit": "24a891740ef0d376cd956a5e9aa08c6801c34fe8",
-    "attempted_in_this_cycle": false
+    "product_version": "1.9.36",
+    "last_observed_version": 55,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8da3efe91af88191b4c1a22dc764f416",
+    "deployment_id": "appgdep_6ad2573f3c648191b154975cd0e5549e",
+    "site_commit": "260acaf65552fd41d0c9cffea68672a1a2a24499",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed_on_exact_sites_source_with_option3",
@@ -54,7 +54,7 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "Publish 1.9.36 then user checks lens sizing, five slot toggles, panels and landscape."
+    "David tests all five reversible slots, lens size, paused panels, overview and phone orientations."
   ],
   "rollback": {
     "production_changed": true,
@@ -401,7 +401,7 @@
   "lens_shortcut_dock": {
     "product_version": "1.9.36",
     "base_source": "c77279a439922d8feef6327d5fe19c9fb0c65f0b",
-    "status": "implemented_checks_passed",
+    "status": "published_for_user_phone_review",
     "controls": [
       "sound on/off",
       "pause/resume",
@@ -413,6 +413,7 @@
     "size": "normal 136–168px portrait, expanded160–214px; landscape124/158px; five44px targets",
     "verification": "TypeScript and 213 game tests passed; 8 dock tests repeated after focus changes; final build passed",
     "browser": "unavailable_control_browser; user requests publication for phone test",
-    "scope": "approved lens/control UI only; preserve world vegetation, grass, collision, portal, progress and account code"
+    "scope": "approved lens/control UI only; preserve world vegetation, grass, collision, portal, progress and account code",
+    "code_commit": "386858ab2dda2f233fbd6f561d04738084e69c4c"
   }
 }
