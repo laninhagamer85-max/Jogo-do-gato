@@ -38,6 +38,16 @@ export const ROOM_UNDERGROWTH=[
 ].map(p=>({...p,blocking:false as const}));
 export const ROOM_EDGES=composeForestClusters(FOREST_EDGE_CLUSTERS);
 /** Replace the repeated fern silhouette with six original low, walkable plant varieties. */
-export const ROOM_GARDENS=ROOM_UNDERGROWTH.map((p,i)=>({...p,index:[0,1,2,4,5,1,2,3,4,5,0][i%11]}));
+/** The same low moss/grass used on the edges, scattered through the clearing.
+ * These patches render below the pet and never enter ROOM_WALLS. */
+const ROOM_MEADOW_PATCHES=[
+  {x:4.65,y:2.1,width:1.05,height:.62},
+  {x:6.9,y:4.6,width:1.18,height:.7},
+  {x:5.25,y:5.9,width:.95,height:.56},
+  {x:9.15,y:3.25,width:1.12,height:.65},
+  {x:10.8,y:5.35,width:.86,height:.52},
+  {x:4.65,y:7.9,width:1.08,height:.64},
+].map(p=>({...p,index:2,blocking:false as const}));
+export const ROOM_GARDENS=[...ROOM_UNDERGROWTH.map((p,i)=>({...p,index:[0,1,2,4,5,1,2,3,4,5,0][i%11]})),...ROOM_MEADOW_PATCHES];
 export const ROOM_EDGE_GARDENS=ROOM_EDGES.filter(p=>p.index===1||p.index===3).map((p,i)=>({...p,index:[4,1,0,2,5,3,1][i%7],blocking:false as const}));
 export const ROOM_EDGE_SOLIDS=ROOM_EDGES.filter(p=>p.index!==1&&p.index!==3);
