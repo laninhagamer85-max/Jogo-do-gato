@@ -11,6 +11,8 @@ import type { ForestDirection } from '@/game/forestPuzzle';
 import { petWalkAtlas } from '@/game/petWalkAtlas';
 import { combatAttack, combatLevel, combatMaxHp, combatSnapshot, COMBAT_ITEMS, consumeCombatItem, createCombatState, equipCombatCharm, pilotRoute, readCombatState, replayCompletedCombat, stepCombat, type CombatItem, type CombatPoint, type CombatState } from '@/game/explorationCombat';
 import { combatCanvasScale, combatView, drawCombatPilot } from '@/game/explorationCombatView';
+import {FOREST_NATURE} from '@/game/forestNature';
+import {PILOT_SHELTER} from '@/game/explorationRoom';
 import './ExplorationCombatPilot.css';
 
 type Props = { soundOn: boolean; onToggleSound: () => void; profile: PetProfile | null; progress: Record<string, unknown>; onSave: (save: Record<string, unknown>) => void; onBack: () => void };
@@ -49,14 +51,18 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     if (!initial.supported) return;
     const el = canvas.current, ctx = el?.getContext('2d'); if (!el || !ctx) return;
     const props = new Image(); props.src = '/forest-adventure/woodland-props-v2.png';
+    const garden = new Image(); garden.src = FOREST_NATURE.garden.asset;
+    const shelter = new Image(); shelter.src = PILOT_SHELTER.asset;
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
     const itemArt=Object.fromEntries(Object.keys(COMBAT_ITEMS).map(id=>{const image=new Image();image.src='/forest-adventure/items/'+id+'.svg';return [id,image];})) as Record<CombatItem,HTMLImageElement>;
-    const bg = new Image(); bg.src = '/forest-adventure/grass-chapter1-painted-v4.webp';
+    const bg = new Image(); bg.src = FOREST_NATURE.ground.asset;
     let assetsReady = false;
-    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
-    pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; bg.onload = checkAssets;
-    pet.onerror = atlas.onerror = enemies.onerror = props.onerror = bg.onerror = () => { assetsReady = false; setAssetStatus('error'); };
+    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && garden.naturalWidth && shelter.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
+    pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; garden.onload = checkAssets; bg.onload = checkAssets;
+    shelter.onload=checkAssets;
+    pet.onerror = atlas.onerror = enemies.onerror = props.onerror = garden.onerror = bg.onerror = () => { assetsReady = false; setAssetStatus('error'); };
+    shelter.onerror=pet.onerror;
     Object.values(itemArt).forEach(image=>{image.onload=checkAssets;image.onerror=()=>{assetsReady=false;setAssetStatus('error');};});
     checkAssets();
     let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0;
@@ -87,7 +93,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         if (changedEvent || now - savedAt > 1000) { persist(); savedAt = now; }
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
       }
-      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt);
+      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter);
       frame = window.requestAnimationFrame(loop);
     };
     frame = window.requestAnimationFrame(loop);

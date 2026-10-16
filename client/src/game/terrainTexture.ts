@@ -1,30 +1,35 @@
 /** Biome-independent terrain material: fixed world density, overlapping aperiodic patches. */
-export type TerrainMaterial={id:string;seed:number;span:number;step:number;jitter:number;feather:number};
+export type TerrainMaterial={id:string;seed:number;span:number;step:number;jitter:number;feather:number;atlasColumns?:number;atlasRows?:number};
 export const GRASS_MATERIAL:TerrainMaterial={id:'grass-block-v1',seed:5102026,span:2,step:.9,jitter:.08,feather:.18};
 export type TerrainBounds={left:number;top:number;width:number;height:number};
 export function terrainPatch(x:number,y:number,material=GRASS_MATERIAL){
  let n=(Math.imul(x,73856093)^Math.imul(y,19349663)^material.seed)>>>0;
  const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
- return {x:(x+.5)*material.step+(random()-.5)*material.jitter*2,y:(y+.5)*material.step+(random()-.5)*material.jitter*2,span:material.span*(.94+random()*.12),turn:Math.floor(random()*4),mirror:random()>.5};
+ return {x:(x+.5)*material.step+(random()-.5)*material.jitter*2,y:(y+.5)*material.step+(random()-.5)*material.jitter*2,span:material.span*(.94+random()*.12),turn:Math.floor(random()*4),mirror:random()>.5,variant:Math.floor(random()*(material.atlasColumns??1)*(material.atlasRows??1))};
 }
 export function terrainPatches(bounds:TerrainBounds,material=GRASS_MATERIAL){
  const patches=[];const pad=material.span*1.1;
  for(let y=Math.floor((bounds.top-pad)/material.step);y<=Math.ceil((bounds.top+bounds.height+pad)/material.step);y++)for(let x=Math.floor((bounds.left-pad)/material.step);x<=Math.ceil((bounds.left+bounds.width+pad)/material.step);x++)patches.push(terrainPatch(x,y,material));
  return patches;
 }
-const masks=new WeakMap<HTMLImageElement,{feather:number;canvas:HTMLCanvasElement}>();
+const masks=new WeakMap<HTMLImageElement,{key:string;canvases:HTMLCanvasElement[]}>();
 
-function maskedTexture(image:HTMLImageElement,feather:number){
- const previous=masks.get(image);if(previous?.feather===feather)return previous.canvas;
- const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+function maskedTextures(image:HTMLImageElement,feather:number,columns=1,rows=1){
+ const key=[feather,columns,rows,image.naturalWidth,image.naturalHeight].join(':');
+ const previous=masks.get(image);if(previous?.key===key)return previous.canvases;
+ const canvases:HTMLCanvasElement[]=[];
+ for(let index=0;index<columns*rows;index++){
+ const canvas=document.createElement('canvas');canvas.width=Math.floor(image.naturalWidth/columns);canvas.height=Math.floor(image.naturalHeight/rows);
  const g=canvas.getContext('2d');if(!g)return null;
- g.drawImage(image,0,0);g.globalCompositeOperation='destination-in';
+ g.drawImage(image,index%columns*canvas.width,Math.floor(index/columns)*canvas.height,canvas.width,canvas.height,0,0,canvas.width,canvas.height);g.globalCompositeOperation='destination-in';
  for(const horizontal of [true,false]){
   const gradient=g.createLinearGradient(0,0,horizontal?canvas.width:0,horizontal?0:canvas.height);
   gradient.addColorStop(0,'transparent');gradient.addColorStop(feather,'#000');gradient.addColorStop(1-feather,'#000');gradient.addColorStop(1,'transparent');
   g.fillStyle=gradient;g.fillRect(0,0,canvas.width,canvas.height);
  }
- masks.set(image,{feather,canvas});return canvas;
+ canvases.push(canvas);
+ }
+ masks.set(image,{key,canvases});return canvases;
 }
 export type TerrainCompositionLayer={id:string;draw:(ctx:CanvasRenderingContext2D,bounds:TerrainBounds)=>void};
 type Chunk={canvas:HTMLCanvasElement;x:number;y:number};
@@ -45,12 +50,12 @@ export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,hei
   if(!image.complete||!image.naturalWidth||!image.naturalHeight||tile<=0)return false;
   const dpr=Math.max(.1,Math.abs(ctx.getTransform().a)||1),layout=terrainChunkLayout(width,height,tile,dpr);
   const {density,size,span}=layout;
-  const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,composition?.id??'',density].join(':');
+  const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,material.atlasColumns??1,material.atlasRows??1,composition?.id??'',density].join(':');
   let cache=chunkCaches.get(ctx);
   if(!cache||cache.image!==image||cache.key!==key){
     cache={key,image,chunks:new Map(),pixels:0,built:0,hits:0};chunkCaches.set(ctx,cache);
   }
-  const texture=maskedTexture(image,material.feather);if(!texture)return false;
+  const textures=maskedTextures(image,material.feather,material.atlasColumns,material.atlasRows);if(!textures)return false;
   const startX=Math.floor(-left/tile/span),endX=Math.ceil((width-left)/tile/span)-1;
   const startY=Math.floor(-top/tile/span),endY=Math.ceil((height-top)/tile/span)-1;
   // One-pixel gutters are cropped off at presentation; adjacent chunks share world coordinates.
@@ -70,7 +75,7 @@ export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,hei
       g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
       for(const patch of terrainPatches(bounds,material)){
         g.save();g.translate(patch.x,patch.y);g.rotate(patch.turn*Math.PI/2);if(patch.mirror)g.scale(-1,1);
-        g.drawImage(texture,-patch.span/2,-patch.span/2,patch.span,patch.span);g.restore();
+        g.drawImage(textures[patch.variant],-patch.span/2,-patch.span/2,patch.span,patch.span);g.restore();
       }
       composition?.draw(g,bounds);
       chunk={canvas,x,y};cache.chunks.set(id,chunk);cache.pixels+=pixels;cache.built++;

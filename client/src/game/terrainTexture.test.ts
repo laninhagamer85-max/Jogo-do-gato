@@ -1,6 +1,18 @@
 import {describe,it,expect,vi} from 'vitest';
 import {GRASS_MATERIAL,terrainPatch,terrainPatches,terrainChunkLayout,terrainCacheStats,TERRAIN_CACHE_PIXELS,drawTerrainTexture} from './terrainTexture';
 describe('biome terrain texture scale and blending',()=>{
+ it('samples all four atlas cells with stable world variants and crops rather than repeating the entire atlas',()=>{
+  const material={...GRASS_MATERIAL,atlasColumns:2,atlasRows:2};
+  const patches=terrainPatches({left:-3,top:-3,width:12,height:12},material);
+  expect(new Set(patches.map(p=>p.variant)).size).toBe(4);
+  expect(terrainPatch(2,4,material)).toEqual(terrainPatch(2,4,material));
+  const crops:unknown[][]=[];
+  const image={complete:true,naturalWidth:1254,naturalHeight:1254} as HTMLImageElement;
+  vi.stubGlobal('document',{createElement:()=>({width:0,height:0,getContext:()=>new Proxy({createLinearGradient:()=>({addColorStop:()=>{}}),drawImage:(...args:unknown[])=>{if(args[0]===image)crops.push(args);}},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}})})});
+  try{drawTerrainTexture({getTransform:()=>({a:1}),drawImage:()=>{}} as unknown as CanvasRenderingContext2D,390,844,image,0,0,100,material);
+   expect(crops.map(c=>c.slice(1,5))).toEqual([[0,0,627,627],[627,0,627,627],[0,627,627,627],[627,627,627,627]]);
+  }finally{vi.unstubAllGlobals();}
+ });
  it('covers every location with an opaque patch core, including negative world coordinates',()=>{
   const m=GRASS_MATERIAL;
   for(let y=-3.6;y<4;y+=.17)for(let x=-3.6;x<4;x+=.17){

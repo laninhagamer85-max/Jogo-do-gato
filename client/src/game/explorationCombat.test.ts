@@ -1,7 +1,23 @@
 import { describe, it, expect } from 'vitest';
-import { createCombatState, replayCompletedCombat, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER, PILOT_INSECT, pilotWalkable } from './explorationCombat';
+import { createCombatState, replayCompletedCombat, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER, PILOT_INSECT, pilotWalkable, insectRespawnMs } from './explorationCombat';
 import { createInitialGameState, saveExplorationCombatProgress, migrateGameState } from './PetGame';
 describe('Exploration combat pilot', () => {
+  it('expires uncommon drops sooner while preserving the deadline across reload',()=>{
+    const s=createCombatState();s.enemies.forEach(e=>{e.hp=0;e.generation=1;e.respawnAt=999999;});
+    s.loot=[{id:'beetle:0',item:'fibra',quantity:3,x:4,y:6.5,expiresAt:180000},{id:'caterpillar:0',item:'ambar',quantity:2,x:10.5,y:3,expiresAt:90000}];
+    s.time=90000;const a=stepCombat(s,{},0);expect(a.loot.map(l=>l.item)).toEqual(['fibra']);
+    const r=readCombatState(combatSnapshot(a));if(!r.supported)throw Error('Unsupported fixture');
+    expect(r.state.loot[0].expiresAt).toBe(180000);r.state.time=180000;expect(stepCombat(r.state,{},0).loot).toHaveLength(0);
+  });
+  it('sets respawn from species level and rarity and preserves pending timers on reload',()=>{
+    const s=createCombatState();s.player={x:4,y:5.5};s.facing={x:0,y:1};s.enemies[0].hp=1;
+    const a=stepCombat(s,{attack:true},50);expect(a.enemies[0].respawnAt-a.time).toBe(30000);
+    const c=createCombatState();c.player={x:10.5,y:2};c.facing={x:0,y:1};c.enemies[1].hp=1;
+    const b=stepCombat(c,{attack:true},50);expect(b.enemies[1].respawnAt-b.time).toBe(60000);
+    const r=readCombatState(combatSnapshot(b));expect(r.supported && r.state.enemies[1].respawnAt).toBe(b.enemies[1].respawnAt);
+    expect(insectRespawnMs({level:3,rarity:'rare'})).toBeGreaterThan(insectRespawnMs({level:3,rarity:'uncommon'}));
+    expect(insectRespawnMs({level:4,rarity:'common'})).toBeGreaterThan(insectRespawnMs({level:1,rarity:'common'}));
+  });
   it('uses the smaller insect footprint near a log without shrinking the player',()=>{
     expect(pilotWalkable({x:4.81,y:3.5},false,PILOT_INSECT.radius)).toBe(true);
     expect(pilotWalkable({x:4.81,y:3.5},false)).toBe(false);
@@ -55,11 +71,28 @@ describe('Exploration combat pilot', () => {
     combat.revision=2;expect(saveExplorationCombatProgress(a,combatSnapshot(combat))).toBe(a);
   });
   it('does not overwrite a newer combat schema',()=>{const s=createInitialGameState();s.explorationCombatProgress={version:2,secret:'retain'};expect(saveExplorationCombatProgress(s,combatSnapshot(createCombatState()))).toBe(s);});
-  it('delays respawn while an uncollected drop exists',()=>{
+  it('respawns on time with an uncollected drop and preserves that drop across reload',()=>{
     const s=createCombatState();s.time=50000;s.enemies[0].hp=0;s.enemies[0].respawnAt=1;
     s.loot=[{id:'beetle:0',x:4,y:6.5,item:'fibra',quantity:3}];
-    const a=stepCombat(s,{},50);expect(a.enemies[0].hp).toBe(0);a.loot=[];
-    const b=stepCombat(a,{},50);expect(b.enemies[0].hp).toBe(40);expect(b.enemies[0].generation).toBe(1);
+    const a=stepCombat(s,{},50);expect(a.enemies[0].hp).toBe(40);expect(a.enemies[0].generation).toBe(1);expect(a.loot).toEqual(s.loot);
+    const r=readCombatState(combatSnapshot(a));if(!r.supported)throw Error('Unsupported fixture');
+    expect(r.state.loot).toHaveLength(1);r.state.player={x:4,y:6.5};
+    const b=stepCombat(r.state,{},0);expect(b.bag.fibra).toBe(3);expect(b.loot).toHaveLength(0);
+    expect(stepCombat(b,{},0).bag.fibra).toBe(3);
+  });
+  it('still waits for the timer and does not respawn beside the player',()=>{
+    const s=createCombatState();s.enemies[0].hp=0;s.enemies[0].respawnAt=45000;
+    expect(stepCombat(s,{},50).enemies[0].hp).toBe(0);
+    s.time=45000;s.player={x:4,y:6.5};expect(stepCombat(s,{},0).enemies[0].hp).toBe(0);
+    s.player={...PILOT_CAMP};expect(stepCombat(s,{},0).enemies[0].hp).toBe(40);
+  });
+  it('combines repeated drops without losing quantities or duplicating collection after reload',()=>{
+    const s=createCombatState();s.player={x:4,y:5.5};s.facing={x:0,y:1};s.enemies[0].hp=1;s.enemies[0].generation=8;
+    s.loot=[{id:'beetle:0',x:2,y:2,item:'fibra',quantity:24}];
+    const a=stepCombat(s,{attack:true},50);expect(a.loot).toHaveLength(1);expect(a.loot[0].quantity).toBe(27);
+    const r=readCombatState(combatSnapshot(a));if(!r.supported)throw Error('Unsupported fixture');
+    expect(r.state.loot[0].quantity).toBe(27);r.state.player={x:2,y:2};
+    const b=stepCombat(r.state,{},0);expect(b.bag.fibra).toBe(27);expect(b.loot).toHaveLength(0);
   });
   it('returns to safety on incoming fatal damage',()=>{
     const s=createCombatState();s.player={x:4,y:6};s.hp=1;s.enemies[0].attackAt=0;

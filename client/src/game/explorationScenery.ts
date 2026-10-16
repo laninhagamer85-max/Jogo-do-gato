@@ -3,12 +3,12 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'grass-chapter1-rendered-v5',seed:5102026,base:'#416a3c',light:'#a2cc41',shade:'#4d8f2b'};
+export const FOREST_GROUND:GroundTheme={id:'grass-four-variants-v6',seed:5102026,base:'#416a3c',light:'#a2cc41',shade:'#4d8f2b'};
 /** Match the rendered chapter-one clearing, not the brighter source image alone.
  * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
 export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;
 /** Larger illustrated strokes match the chapter art; patch overlap ratios stay unchanged. */
-export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3,step:1.35,jitter:.12};
+export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3,step:1.35,jitter:.12,atlasColumns:2,atlasRows:2};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 const PILOT_STATIC_GROUND={id:PILOT_BIOME.id,draw:(ctx:CanvasRenderingContext2D,bounds:import('./terrainTexture').TerrainBounds)=>drawBiomeStatic(ctx,bounds,PILOT_BIOME)};
 export function groundVariations(seed:number){
@@ -39,7 +39,7 @@ export function woodlandPropPlacement(index:number,x:number,y:number,tile:number
 /** One shaded atlas per loaded image; no per-frame filters or image processing.
  * The current 1536 x 1024 atlas costs 6 MiB, separate from the 8 MP terrain LRU. */
 const litAtlases=new WeakMap<HTMLImageElement,HTMLCanvasElement>();
-function chapterLitAtlas(image:HTMLImageElement){
+export function chapterLitAtlas(image:HTMLImageElement){
   const previous=litAtlases.get(image);if(previous)return previous;
   const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
   const g=canvas.getContext('2d');if(!g)return image;

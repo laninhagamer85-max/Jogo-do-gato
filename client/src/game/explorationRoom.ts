@@ -1,4 +1,6 @@
 import {composeForestClusters,FOREST_EDGE_CLUSTERS} from './biomeScenery';
+/** Existing woodland house marks the safe camp; its base leaves spawn and routes free. */
+export const PILOT_SHELTER={x:2.75,y:1.9,width:1.4,height:1.4,footprint:{x:2.4,y:1.55,width:.7,height:.35},asset:'/manus-storage/bosque-casa-arvore_0200432f.webp'};
 /** Room geometry and art share the same ground footprints. */
 export const PILOT_OBSTACLES = [
   {id:'fallen-log', x:5,y:3,width:2,height:1,index:2,artWidth:2.1,artHeight:1.08},
@@ -35,3 +37,7 @@ export const ROOM_UNDERGROWTH=[
   {x:2.1,y:8.4,index:3,width:.48,height:.38},
 ].map(p=>({...p,blocking:false as const}));
 export const ROOM_EDGES=composeForestClusters(FOREST_EDGE_CLUSTERS);
+/** Replace the repeated fern silhouette with six original low, walkable plant varieties. */
+export const ROOM_GARDENS=ROOM_UNDERGROWTH.map((p,i)=>({...p,index:[0,1,2,4,5,1,2,3,4,5,0][i%11]}));
+export const ROOM_EDGE_GARDENS=ROOM_EDGES.filter(p=>p.index===1||p.index===3).map((p,i)=>({...p,index:[4,1,0,2,5,3,1][i%7],blocking:false as const}));
+export const ROOM_EDGE_SOLIDS=ROOM_EDGES.filter(p=>p.index!==1&&p.index!==3);

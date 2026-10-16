@@ -1,4 +1,4 @@
-import { ROOM_WALLS } from "./explorationRoom";
+import { ROOM_WALLS, PILOT_SHELTER } from "./explorationRoom";
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
 export type CombatPoint = { x: number; y: number };
 export const PILOT_SIZE = { width: 14, height: 10 };
@@ -14,13 +14,19 @@ export const PILOT_NODES = [
   { id: 'healing-leaf', x: 3.5, y: 7.5, item: 'erva' as const, quantity: 1 },
 ];
 export const PILOT_ENEMIES = [
-  { id: 'beetle', name: 'Besouro', level: 1, hp: 40, attack: 9, defense: 1, xp: 25, item: 'fibra' as CombatItem, quantity: 3, x: 4, y: 6.5 },
-  { id: 'caterpillar', name: 'Lagarta', level: 3, hp: 80, attack: 16, defense: 3, xp: 55, item: 'ambar' as CombatItem, quantity: 2, x: 10.5, y: 3 },
+  { id: 'beetle', name: 'Besouro', level: 1, rarity: 'common' as const, hp: 40, attack: 9, defense: 1, xp: 25, item: 'fibra' as CombatItem, quantity: 3, x: 4, y: 6.5 },
+  { id: 'caterpillar', name: 'Lagarta', level: 3, rarity: 'uncommon' as const, hp: 80, attack: 16, defense: 3, xp: 55, item: 'ambar' as CombatItem, quantity: 2, x: 10.5, y: 3 },
 ];
+/** Initial tuning shared by future combat species; environmental fauna never enters this system. */
+export function insectRespawnMs(enemy:{level:number;rarity:'common'|'uncommon'|'rare'}){
+  return (30000+(Math.max(1,enemy.level)-1)*5000)*({common:1,uncommon:1.5,rare:2}[enemy.rarity]);
+}
 /** Smaller insects share their footprint and contact distances with the renderer. */
 export const PILOT_INSECT={width:.64,radius:.17,stopDistance:.55,attackDistance:.82};
 export type CombatEnemy = CombatPoint & { id: string; hp: number; generation: number; attackAt: number; respawnAt: number };
-export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity: number; bornAt?: number; landedAt?: number };
+export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity: number; bornAt?: number; landedAt?: number; expiresAt?:number };
+/** Active play time, paused with the room: common piles last longer than uncommon amber. */
+export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
   version: 1; revision: number; time: number; xp: number; hp: number; energy: number;
@@ -54,6 +60,8 @@ export function createCombatState(): CombatState {
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): boolean {
   if (p.x < 1 + radius || p.y < 1 + radius || p.x > 13 - radius || p.y > 9 - radius) return false;
   const walls = gateOpen ? PILOT_WALLS : [...PILOT_WALLS, { x: 9, y: 4 }];
+  const f=PILOT_SHELTER.footprint;
+  if(p.x+radius>f.x && p.x-radius<f.x+f.width && p.y+radius>f.y && p.y-radius<f.y+f.height)return false;
   return !walls.some(w => p.x + radius > w.x && p.x - radius < w.x + 1 && p.y + radius > w.y && p.y - radius < w.y + 1);
 }
 /** Relocate positions covered by revised scenery, preserving earned state. */
@@ -90,14 +98,18 @@ export function readCombatState(value: unknown): CombatRead {
     const rawEnemy = object(Array.isArray(raw.enemies) ? raw.enemies.find(e => object(e).id === def.id) : null);
     const ep = { x: number(rawEnemy.x, def.x), y: number(rawEnemy.y, def.y) };
     return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen), hp: number(rawEnemy.hp, def.hp, 0, def.hp),
-      generation: Math.floor(number(rawEnemy.generation, 0)), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + 45000) };
+      generation: Math.floor(number(rawEnemy.generation, 0)), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + Math.max(45000,insectRespawnMs(def))) };
   });
-  const allowedLoot = new Set(s.enemies.filter(e => e.hp === 0).map(e => `${e.id}:${e.generation}`));
+  // Earlier generations can still have a drop after their owner has respawned.
+  const allowedLoot = new Set<string>();
   s.loot = Array.isArray(raw.loot) ? raw.loot.slice(0, 20).flatMap(v => {
     const l = object(v); const id = String(l.id); const item = String(l.item) as CombatItem;
     const p = { x: number(l.x, 0), y: number(l.y, 0) };
-    if (!allowedLoot.has(id) || !Object.prototype.hasOwnProperty.call(COMBAT_ITEMS, item) || (p.x < 1 || p.x > 13 || p.y < 1 || p.y > 9)) return [];
-    allowedLoot.delete(id); return [{ id, item, ...nearestPilotPoint(p,s.gateOpen), bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), quantity: Math.floor(number(l.quantity, 1, 1, 20)) }];
+    const owner=s.enemies.find(e=>id.startsWith(`${e.id}:`));
+    const generation=Number(id.slice(id.indexOf(':')+1));
+    const def=PILOT_ENEMIES.find(e=>e.id===owner?.id);
+    if (!owner || !def || id!==`${owner.id}:${generation}` || !Number.isInteger(generation) || generation<0 || generation>owner.generation || (generation===owner.generation && owner.hp>0) || allowedLoot.has(owner.id) || item!==def.item || (p.x < 1 || p.x > 13 || p.y < 1 || p.y > 9)) return [];
+    allowedLoot.add(owner.id); return [{ id, item, ...nearestPilotPoint(p,s.gateOpen), bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), expiresAt:number(l.expiresAt,s.time+combatLootLifetime(item),0,s.time+combatLootLifetime(item)), quantity: Math.floor(number(l.quantity, 1, 1, 9999)) }];
   }) : [];
   if (s.hp === 0) return { supported: true, state: defeatCombat(s) };
   return { supported: true, state: s };
@@ -136,6 +148,7 @@ function random(s: CombatState) { s.seed = (Math.imul(s.seed, 1664525) + 1013904
 export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: number): CombatState {
   if (current.completed || !Number.isFinite(elapsedMs) || elapsedMs < 0) return current;
   const s = clone(current), dt = Math.min(50, elapsedMs); s.time += dt; s.revision++;
+  s.loot=s.loot.filter(l=>s.time<(l.expiresAt??Infinity));
   s.feedback = s.feedback.filter(f => f.until > s.time); s.energy = Math.min(100, s.energy + dt * .004);
   const dx = clamp(input.dx || 0, -1, 1), dy = clamp(input.dy || 0, -1, 1), length = Math.hypot(dx, dy);
   const previous = s.player;
@@ -151,11 +164,14 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
       const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6 : 1) - def.defense)));
       enemy.hp -= damage; feedback(s, enemy, `−${damage} HP`, 'damage');
       if (enemy.hp === 0) {
-        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; enemy.respawnAt = s.time + 45000;
+        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; enemy.respawnAt = s.time + insectRespawnMs(def);
         feedback(s, s.player, `+${def.xp} XP`, 'xp');
         const increase = combatMaxHp(s.xp) - oldMax; s.hp += increase;
         if (combatLevel(s.xp) > oldLevel) { feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
-        s.loot.push({ id: `${enemy.id}:${enemy.generation}`, x: enemy.x, y: enemy.y, item: def.item, quantity: def.quantity, bornAt: s.time, landedAt: s.time + 500 });
+        // Keep one pending pile per insect so repeated respawns do not grow the scene indefinitely.
+        const pending=s.loot.find(l=>l.id.startsWith(`${enemy.id}:`) && l.item===def.item);
+        if(pending){pending.quantity+=def.quantity;pending.expiresAt=s.time+combatLootLifetime(def.item);}
+        else s.loot.push({ id: `${enemy.id}:${enemy.generation}`, x: enemy.x, y: enemy.y, item: def.item, quantity: def.quantity, bornAt: s.time, landedAt: s.time + 500,expiresAt:s.time+combatLootLifetime(def.item) });
         if (random(s) < .12 && !s.equipmentOwned) { s.equipmentOwned = true; feedback(s, s.player, 'Broche encontrado', 'info'); }
         s.message = `${def.name} superado. Aproxime-se para coletar ${COMBAT_ITEMS[def.item]}.`;
       }
@@ -164,7 +180,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   for (const enemy of s.enemies) {
     const def = PILOT_ENEMIES.find(e => e.id === enemy.id)!;
     if (enemy.hp === 0) {
-      const occupied = distance(s.player, def) < 2 || s.loot.some(l => l.id === `${enemy.id}:${enemy.generation}`);
+      const occupied = distance(s.player, def) < 2;
       if (s.time >= enemy.respawnAt && !occupied) { Object.assign(enemy, { x: def.x, y: def.y, hp: def.hp, generation: enemy.generation + 1, attackAt: s.time + 1500, respawnAt: 0 }); }
       continue;
     }

@@ -1,4 +1,5 @@
-import { ROOM_EDGES, ROOM_SCENERY, ROOM_UNDERGROWTH } from "./explorationRoom";
+import { ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
+import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna} from './forestNature';
 import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
@@ -20,7 +21,7 @@ export function combatView(width: number, height: number, player: CombatPoint, z
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement) {
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
@@ -29,12 +30,17 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);
   };
-  ROOM_UNDERGROWTH.forEach(drawProp);
-  const scenery=[...ROOM_EDGES,...ROOM_SCENERY];
+  if(gardenAtlas)for(const patch of [...ROOM_GARDENS,...ROOM_EDGE_GARDENS]){
+    const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
+    if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
+  }
+  drawForestSun(ctx,v.left,v.top,t);
+  drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);
+  const scenery=[...ROOM_EDGE_SOLIDS,...ROOM_SCENERY];
   if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2,width:1.28,height:1.28});
   const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Seguro', camp.x, camp.y - t * .6);
+  ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(PILOT_MARKER);
   if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
@@ -47,10 +53,16 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
     drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
   }
-  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), {type:'shelter' as const,p:PILOT_SHELTER}, ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='prop'){drawProp(entity.p);continue;}
+    if(entity.type==='shelter'){
+      if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
+        const scale=Math.min(t*PILOT_SHELTER.width/shelterAtlas.naturalWidth,t*PILOT_SHELTER.height/shelterAtlas.naturalHeight),w=shelterAtlas.naturalWidth*scale,h=shelterAtlas.naturalHeight*scale;
+        ctx.drawImage(shelterAtlas,p.x-w/2,p.y-h,w,h);
+      }continue;
+    }
     const shadow=entity.type==='enemy'?.21:.28;
     ctx.fillStyle = 'rgba(10,24,15,.3)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + t * .07, t * shadow, t * shadow*.36, 0, 0, Math.PI * 2); ctx.fill();
     if (entity.type === 'enemy') {
