@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-16",
+  "origin": "Three original imagegen proposals in this conversation; WebP q93, no resizing/recoloring/compositing",
+  "dimensions": [1254, 1254],
+  "selected": 3,
+  "scope": "Exploration combat pilot ground",
+  "options": [
+    {"id": 1, "name": "Musgo suave", "file": "option-1.webp", "sha256": "3ff4048e1a6e528fed92196d09f298b4ffa595830550f748a70469cbe48bb604", "status": "reserved_for_future_use"},
+    {"id": 2, "name": "Grama fina", "file": "option-2.webp", "sha256": "0ce49c39f9cb1c0aed73b157c694b888e9a43d9c24c9286b8c7fd59c677788e5", "status": "reserved_for_future_use"},
+    {"id": 3, "name": "Musgo e grama", "file": "option-3.webp", "sha256": "4322562d973a6b3209c5d226168a60eaa9e238cd5555c2cdff42c5791500e9e7", "status": "selected_pending_browser_validation"}
+  ]
+}

@@ -4,41 +4,40 @@
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
   "status": "implemented_awaiting_supported_browser",
-  "active_run": "2026-10-16",
+  "active_run": "2026-10-16-ground-option3",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
-    "branch": "feat/exploration-combat-pilot-20261015",
-    "base_commit": "c23654907b47d217e27d6eb29fe140b7749c1de7",
-    "source_site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
+    "branch": "review/grass-option3-20261016",
+    "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
+    "source_site_commit": "763edb8b72a2de65e7d2b7dc9a3858832e9af7fb",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "6b8283c87808f9c53cf841416b3e8fbd5d2827d4",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6",
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
-    "id": "safe-point-label-clearance",
-    "implementation_status": "source_and_230_offline_tests_passed",
-    "acceptance_status": "awaiting_supported_browser"
+    "id": "user-selected-ground-option3",
+    "implementation_status": "implemented_and_built_on_exact_sites_source",
+    "acceptance_status": "awaiting_browser"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.26",
-    "last_observed_version": 45,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_805df287976c8191a1cd9c576bdcba8d",
-    "deployment_id": "appgdep_6ad1c4e03b04819188b22a4412e0d6a3",
-    "site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
-    "published_at": "2026-10-16T06:32:24.066505+00:00",
+    "product_version": "1.9.30",
+    "last_observed_version": 49,
+    "status": "existing_publication_no_deploy_in_this_change",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_434b56631a4481918efe3d440c373076",
+    "deployment_id": "appgdep_6ad221d9b95c8191be591cadf1fc2e26",
+    "site_commit": "763edb8b72a2de65e7d2b7dc9a3858832e9af7fb",
     "attempted_in_this_cycle": false
   },
   "verification": {
-    "typescript": "passed_this_cycle",
-    "offline_tests": "230/230 in 31 files; Firebase staging integration excluded",
-    "build": "passed_this_cycle",
+    "typescript": "passed_on_exact_sites_source_with_option3",
+    "offline_tests": "222/222, 30 files; staging Firebase excluded",
+    "build": "passed_on_exact_sites_source_with_option3",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Not performed this cycle; historical public inspection retained only in previous report",
+    "browser": "not_run_control_browser_unavailable",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -49,14 +48,14 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "pending"
+    "packaged_grass": "all_three_hashes_match_manifest"
   },
   "blockers": [
-    "control-browser indisponível: validação visual obrigatória pendente; nenhum deploy neste ciclo."
+    "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "Validar rótulo do ponto seguro em navegador suportado nos cinco viewports, zoom e deslocamento; verificar repouso e ataque.",
-    "Revisar retrato e fluidez móvel da 1.9.26 sem expandir campanha antes do aceite."
+    "Reconcile latest Site and GitHub before publishing; inspect five viewports, overview/zoom and walking.",
+    "Preserve options 1 and 2 for future user-selected applications."
   ],
   "rollback": {
     "production_changed": true,
@@ -65,7 +64,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-ground-option3.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -356,5 +355,17 @@
     "browser": "not_run; user authorized publication for immediate phone review",
     "rollback": "1.9.27",
     "next": "user texture review then expansion/minimap brief"
+  },
+  "ground_proposals": {
+    "selected": 3,
+    "preserved": [
+      1,
+      2
+    ],
+    "manifest": "client/public/forest-adventure/ground-proposals-20261016/manifest.json",
+    "loaded_by_pilot": [
+      3
+    ],
+    "status": "not_published"
   }
 }

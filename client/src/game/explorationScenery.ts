@@ -4,14 +4,14 @@ import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
 /** Moss-green base harmonizes the floor with the approved garden atlas. */
-export const FOREST_GROUND:GroundTheme={id:'grass-moss-fine-v8',seed:5102026,base:'#486b29',light:'#91b83b',shade:'#426e27'};
+export const FOREST_GROUND:GroundTheme={id:'grass-moss-proposal3-20261016',seed:5102026,base:'#486b29',light:'#91b83b',shade:'#426e27'};
 /** Match the rendered chapter-one clearing, not the brighter source image alone.
  * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
 export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;
 /** Quieter floor variation; scenery keeps the chapter lighting approved by David. */
-const GROUND_TEXTURE_OPACITY=.32;
-/** Finer moss-like strokes; preserve overlap ratios to avoid holes or seams. */
-export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:1.8,step:.81,jitter:.072,atlasColumns:2,atlasRows:2};
+const GROUND_TEXTURE_OPACITY=.68;
+/** Selected proposal 3: low moss with tiny grass tips; preserve current scale and overlap. */
+export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3.8,step:1.71,jitter:.152,atlasColumns:1,atlasRows:1};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 const PILOT_STATIC_GROUND={id:PILOT_BIOME.id,draw:(ctx:CanvasRenderingContext2D,bounds:import('./terrainTexture').TerrainBounds)=>drawBiomeStatic(ctx,bounds,PILOT_BIOME)};
 export function groundVariations(seed:number){
