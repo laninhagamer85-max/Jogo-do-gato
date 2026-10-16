@@ -3,14 +3,15 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-/** Moss-green base harmonizes the floor with the garden atlas; keep the existing
- * texture opacity and chapter shadows so brush detail and depth remain visible. */
-export const FOREST_GROUND:GroundTheme={id:'grass-moss-tone-v7',seed:5102026,base:'#486b29',light:'#91b83b',shade:'#426e27'};
+/** Moss-green base harmonizes the floor with the approved garden atlas. */
+export const FOREST_GROUND:GroundTheme={id:'grass-moss-fine-v8',seed:5102026,base:'#486b29',light:'#91b83b',shade:'#426e27'};
 /** Match the rendered chapter-one clearing, not the brighter source image alone.
  * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
 export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;
-/** Larger illustrated strokes match the chapter art; patch overlap ratios stay unchanged. */
-export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3,step:1.35,jitter:.12,atlasColumns:2,atlasRows:2};
+/** Quieter floor variation; scenery keeps the chapter lighting approved by David. */
+const GROUND_TEXTURE_OPACITY=.32;
+/** Finer moss-like strokes; preserve overlap ratios to avoid holes or seams. */
+export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:1.8,step:.81,jitter:.072,atlasColumns:2,atlasRows:2};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 const PILOT_STATIC_GROUND={id:PILOT_BIOME.id,draw:(ctx:CanvasRenderingContext2D,bounds:import('./terrainTexture').TerrainBounds)=>drawBiomeStatic(ctx,bounds,PILOT_BIOME)};
 export function groundVariations(seed:number){
@@ -20,7 +21,7 @@ export function groundVariations(seed:number){
 /** Material parameters can be reused with the grass, soil, sand and snow assets of future biomes. */
 export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,height:number,image:HTMLImageElement,left:number,top:number,tile:number,theme:GroundTheme=FOREST_GROUND,pilotComposition=false){
   ctx.fillStyle=theme.base;ctx.fillRect(0,0,width,height);
-  ctx.save();ctx.globalAlpha=CHAPTER_ONE_LIGHTING.textureOpacity;
+  ctx.save();ctx.globalAlpha=GROUND_TEXTURE_OPACITY;
   drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined);
   ctx.restore();
   ctx.fillStyle=CHAPTER_ONE_LIGHTING.shade;ctx.fillRect(0,0,width,height);
