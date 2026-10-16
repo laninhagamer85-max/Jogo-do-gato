@@ -21,3 +21,7 @@ Navegador `control-browser` indisponível em ambiente managed-linux. Nenhum prev
 ## Próxima revisão
 
 David: conferir a grama escolhida em retrato/paisagem, zoom 1–2 e Ver sala; caminhar e voltar pelo mesmo percurso para observar emendas, repetição e fluidez. Corrigir conforme evidências antes de expandir a composição do bioma para outros capítulos. A vegetação nova e a construção das dez salas por capítulo continuam pendentes.
+
+## Publicação confirmada
+
+Produto **1.9.19**, Sites **38**, status **succeeded**, em **15/10/2026 às 22:07:29 (America/Sao_Paulo)**. URL: https://meupet.aquimeusite.chatgpt.site. Commit GitHub `ccf1a7e2415a83642184d88b84ec17e6ab8f89fd`; fonte Sites `843606530fd9dd1b7d0f63107637900cf704c7aa`; versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1`; deployment `appgdep_6ad178bcbc0481919973d21b868c2fae`. TypeScript, build e 22 testes de terreno/cenário aprovados. A primeira tentativa de salvar o pacote foi rejeitada como arquivo incompleto, sem versão/deploy criado. Pacote refeito a partir do mesmo commit e sem repetir build já válido; leitura completa do tar e hash do WebP conferidos antes do reenvio. Uma versão salva e um deploy concluído. Inspeção visual no jogo e fluidez no aparelho continuam pendentes de David.

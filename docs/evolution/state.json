@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review_publication",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "4682bcb15fb760ee81ec1a8b44c5662f926f7b6f",
+    "source_site_commit": "843606530fd9dd1b7d0f63107637900cf704c7aa",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "26f2234a371dfaa6f62e353b3e7d1a6a41543861",
+    "code_commit": "ccf1a7e2415a83642184d88b84ec17e6ab8f89fd",
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
@@ -23,21 +23,21 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.19",
-    "last_observed_version": 37,
-    "status": "preparing",
-    "version_id": null,
-    "deployment_id": null,
-    "site_commit": null,
-    "published_at": null,
+    "last_observed_version": 38,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1",
+    "deployment_id": "appgdep_6ad178bcbc0481919973d21b868c2fae",
+    "site_commit": "843606530fd9dd1b7d0f63107637900cf704c7aa",
+    "published_at": "2026-10-16T01:07:29.488473+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
     "offline_tests": "22/22_terrain_scenery_tests_passed_2_files",
-    "build": "pending_final",
+    "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_control_browser_unavailable; authorized for David to test",
+    "browser": "not_run_control_browser_unavailable; selected static art applied for user device review",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -48,7 +48,7 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "pending_archive_check"
+    "packaged_grass": "sha256_passed_complete_retry_archive"
   },
   "blockers": [],
   "next_actions": [
@@ -56,7 +56,7 @@
     "Revisar composição com vegetação do capítulo 1 após teste da textura escolhida; dez salas por capítulo ainda pendentes."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.18",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6ef571683908191b8312f6aa3b87011",
     "instructions": "Reimplantar 1.9.18 se necessário; preservar saves e não sobrescrever publicação posterior."
@@ -242,12 +242,15 @@
   },
   "grass_option4": {
     "date": "2026-10-15",
-    "status": "preparing_user_review_publication",
+    "status": "published_for_user_review",
     "product_version": "1.9.19",
     "asset": "client/public/forest-adventure/grass-moss-option4-v1.webp",
     "sha256": "dabb9d6bfecf1f3ff0149d450380fc9267f043d518fa44af47ccf77a1382d356",
     "selected_by_user": true,
     "world_scale_and_cache": "unchanged",
-    "browser": "not_run_control_browser_unavailable"
+    "browser": "not_run_control_browser_unavailable",
+    "code_commit": "ccf1a7e2415a83642184d88b84ec17e6ab8f89fd",
+    "site_commit": "843606530fd9dd1b7d0f63107637900cf704c7aa",
+    "publication_version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d5ec53e6411c8191beda6815db8208a1"
   }
 }
