@@ -11,3 +11,7 @@ Implementar após a revisão da textura do gramado.
 - Verificar colisão, rotas por toque, câmera, limites naturais, primeiro acesso/reload e minimapa em retrato/paisagem.
 
 Estado: requisito registrado, ainda não implementado. Não faz parte da revisão 1.9.28 do piso.
+
+## Complemento solicitado
+
+Minimapa circular no canto superior direito, mostrando o pet com ponto vermelho e marcadores diferenciados de objetivos/metas, desafios, pontos de interesse e inimigos próximos para orientar o jogador. Respeitar névoa de exploração; alcance de detecção e regras de visibilidade a definir na implementação. Não inventar objetivos que não existam no estado do jogo.
