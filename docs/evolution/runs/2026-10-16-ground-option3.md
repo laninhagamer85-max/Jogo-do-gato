@@ -19,3 +19,7 @@ Pesquisa consultada em 16/10/2026: https://developer.mozilla.org/en-US/docs/Web/
 ## Próximo passo
 
 Comparar escala dos detalhes, emendas e repetição nos cinco viewports, visão geral e zoom durante caminhada; confirmar harmonia com a vegetação aprovada e fluidez. Preservar proporção da textura e as outras duas opções. Rollback: restaurar somente o caminho anterior do background e o id do material; nenhuma migração de saves necessária. Publicação e fonte atuais devem ser conferidas novamente antes de qualquer deploy.
+
+## Publicação confirmada após autorização explícita
+
+Produto **1.9.31**, Sites **50**, status **succeeded** em 2026-10-16T13:31:22.079989+00:00. URL: https://meupet.aquimeusite.chatgpt.site. Fonte Sites: `cb1822e39ed7dcd339f8fa46df29b4c17698640f`; versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_fb84ca4677b08191844e31587ac24835`; deployment `appgdep_6ad2271046608191b6bd7fe248eef5d2`. Código GitHub de preparação: `9a0f3f6549bc5f1de9ebcc839c90025663c4f25c`. Helper oficial refez TypeScript e build; pacote conferido por leitura do tar e hashes das três texturas. Nenhuma inspeção real de gameplay/browser executada; aguardando teste de David, conforme pedido explícito posterior ao limite informado. Não publicar novamente por esta atualização documental.

@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "publishing_for_user_phone_review",
+  "status": "published_for_user_phone_review",
   "active_run": "2026-10-16-ground-option3",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,25 +11,27 @@
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "763edb8b72a2de65e7d2b7dc9a3858832e9af7fb",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "6b8283c87808f9c53cf841416b3e8fbd5d2827d4",
+    "code_commit": "9a0f3f6549bc5f1de9ebcc839c90025663c4f25c",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6",
-    "code_commit_status": "saved_not_published"
+    "code_commit_status": "saved_not_published",
+    "published_source_site_commit": "cb1822e39ed7dcd339f8fa46df29b4c17698640f"
   },
   "current_improvement": {
     "id": "user-selected-ground-option3",
-    "implementation_status": "implemented_and_built_on_exact_sites_source",
-    "acceptance_status": "user_authorized_publication_for_phone_test_after_disclosed_browser_limit"
+    "implementation_status": "published_1.9.31",
+    "acceptance_status": "awaiting_user_phone_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.30",
-    "last_observed_version": 49,
-    "status": "existing_publication_no_deploy_in_this_change",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_434b56631a4481918efe3d440c373076",
-    "deployment_id": "appgdep_6ad221d9b95c8191be591cadf1fc2e26",
-    "site_commit": "763edb8b72a2de65e7d2b7dc9a3858832e9af7fb",
-    "attempted_in_this_cycle": false
+    "product_version": "1.9.31",
+    "last_observed_version": 50,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_fb84ca4677b08191844e31587ac24835",
+    "deployment_id": "appgdep_6ad2271046608191b6bd7fe248eef5d2",
+    "site_commit": "cb1822e39ed7dcd339f8fa46df29b4c17698640f",
+    "published_at": "2026-10-16T13:31:22.079989+00:00",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed_on_exact_sites_source_with_option3",
@@ -51,18 +53,17 @@
     "packaged_grass": "all_three_hashes_match_manifest"
   },
   "blockers": [
-    "Browser inspection required by evolution skill; control-browser unavailable."
+    "No supported browser inspection performed; user explicitly authorized publication to test on their phone."
   ],
   "next_actions": [
-    "Reconcile latest Site and GitHub before publishing; inspect five viewports, overview/zoom and walking.",
-    "Preserve options 1 and 2 for future user-selected applications."
+    "David: confirm 1.9.31 and review Exploration > combat pilot in portrait/landscape.",
+    "Check ground readability, repetition, zoom and walking fluency before further biome changes."
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.9.25",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_38326b2e9d008191b7973c7ab8c56764",
-    "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
-    "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
+    "product_version": "1.9.30",
+    "site_commit": "763edb8b72a2de65e7d2b7dc9a3858832e9af7fb",
+    "instructions": "Revert only this ground change after checking newer publications; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-16-ground-option3.md",
   "source_reconciliation": {
@@ -366,6 +367,6 @@
     "loaded_by_pilot": [
       3
     ],
-    "status": "not_published"
+    "status": "option3_published_options1_2_preserved"
   }
 }
