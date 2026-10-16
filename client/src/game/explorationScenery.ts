@@ -3,7 +3,9 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'grass-four-variants-v6',seed:5102026,base:'#52783e',light:'#a2cc41',shade:'#4d8f2b'};
+/** Moss-green base harmonizes the floor with the garden atlas; keep the existing
+ * texture opacity and chapter shadows so brush detail and depth remain visible. */
+export const FOREST_GROUND:GroundTheme={id:'grass-moss-tone-v7',seed:5102026,base:'#486b29',light:'#91b83b',shade:'#426e27'};
 /** Match the rendered chapter-one clearing, not the brighter source image alone.
  * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
 export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;
