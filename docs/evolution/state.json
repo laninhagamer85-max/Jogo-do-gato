@@ -343,5 +343,18 @@
     "user_authorization": "2026-10-16: Pode publicar, eu vou testar aqui agora",
     "visual_validation": "pending_user_playtest",
     "next_request": "Área expansível conforme mapa, substituindo perímetro retangular por limites naturais; requires camera/pathfinding/collision work; not included in 1.9.27."
+  },
+  "fine_moss_ground": {
+    "status": "published_for_user_review",
+    "product_version": "1.9.28",
+    "site_commit": "d4985661c0452e3327e70e6f104d1db9a40b186a",
+    "code_commit": "320d8ca6f4f342697ab1892de2727c15f86e69bf",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_329d7f835810819188a9e27a72206d4e",
+    "deployment_id": "appgdep_6ad21a60748481919a40847b0b540a7c",
+    "change": "texture span 3→1.8; step 1.35→.81; jitter .12→.072; floor opacity .48→.32; garden/scenery lighting unchanged",
+    "checks": "TypeScript/build/188 game tests passed; existing chunk warning",
+    "browser": "not_run; user authorized publication for immediate phone review",
+    "rollback": "1.9.27",
+    "next": "user texture review then expansion/minimap brief"
   }
 }
