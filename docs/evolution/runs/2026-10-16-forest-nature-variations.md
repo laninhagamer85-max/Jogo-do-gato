@@ -49,3 +49,15 @@ David aprovou aspecto do gramado, musgo, flores e borboletas. Pediu: casinha rec
 - Dois mini besouros ambientais sobre o tronco e o toco usam o primeiro quadro do atlas existente em escala 0,16 unidade; abelha junto de plantas em 0,13 unidade. Movimento local limitado, congelado com redução de movimento. Sem entidades de combate, XP, loot ou hitbox.
 - Somente base do gramado passou de #416a3c para #52783e. Textura, mistura, distribuição e cor das plantas preservadas. A tentativa intermediária de tingir folhagem foi abandonada antes de publicar, conforme a correção de David.
 - 222 testes passaram; build final em andamento. Não foram implementados terrenos mistos nem expansão de campanha.
+
+## Publicação final e análise real — 1.9.26
+
+GitHub código: 4b95cb468263a339796dc869b0c9639cc6584921. Sites: eb56883dc7661a15b8712aa8c1e285777adfc798; versão interna 45; appgprj_6ac40994d8d881919d46203a60801e46~appgver_805df287976c8191a1cd9c576bdcba8d; deployment appgdep_6ad1c4e03b04819188b22a4412e0d6a3; sucesso em 2026-10-16T06:32:24.066505+00:00. URL: https://meupet.aquimeusite.chatgpt.site.
+
+222 testes/30 arquivos e TypeScript aprovados; build final aprovado. Interrupção durante primeiro salvamento da 1.9.26: serviço ainda mostrava versão 44; salvamento retomado sem novo deploy duplicado e concluído como versão 45. Native deploy confirmou succeeded.
+
+Reabri a publicação e entrei em Exploração → Sala piloto. Casinha de gato aparece à esquerda, no chão, com o gato do lado de fora; tom do gramado levemente aproximado dos verdes das plantas. Pequenos insetos pousados aparecem sobre toco/tronco. Percurso real pela parte superior, direita, parte inferior contornando os sólidos e lateral esquerda, retornando ao ponto seguro. Pet recebeu 9 de dano e coletou automaticamente 3 fibras e 1 erva; não houve ataque comandado, XP, desbloqueio nem conclusão de sala. A inspeção não simula resultados de respawn online; esses seguem cobertos pelos testes offline.
+
+Análise: integração de grama/plantas melhor e abrigo mais reconhecível. Feixes de luz ainda têm limites retos perceptíveis; texto de local seguro pode se aproximar da cabeça conforme posição; HUD sobrepõe elementos no modo de visão geral. Registrar para próximo ciclo, sem alterar a versão após a instrução de limitar o ajuste atual à tonalidade. Retrato e FPS não medidos. Screenshot de evidência em docs/evolution/screenshots/meupet-1.9.26-safe-house.jpg.
+
+SHA256 casinha nova: 0644430946dd078baeb4f76e2c93e85621f365282fc83439b456d5bf361bf528. Nenhum terreno misto novo, bioma novo ou expansão foi publicado.

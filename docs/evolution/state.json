@@ -3,32 +3,32 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_requested_followup",
-  "active_run": "2026-10-16-forest-nature-variations",
+  "status": "published_for_user_review",
+  "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
+    "source_site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "5ca43a7fd9c0c869fcc5dad98b015b253904137a",
+    "code_commit": "4b95cb468263a339796dc869b0c9639cc6584921",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6"
   },
   "current_improvement": {
     "id": "forest-nature-and-independent-respawn",
-    "implementation_status": "1.9.25_published_1.9.26_followup_in_preparation",
-    "acceptance_status": "pending_phone_review"
+    "implementation_status": "published_1.9.26",
+    "acceptance_status": "grass_style_approved_by_David_final_tone_and_shelter_phone_review_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.25",
-    "last_observed_version": 44,
+    "product_version": "1.9.26",
+    "last_observed_version": 45,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_38326b2e9d008191b7973c7ab8c56764",
-    "deployment_id": "appgdep_6ad1c1c1135081918fca59d352502f2f",
-    "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
-    "published_at": "2026-10-16T06:19:04.422079+00:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_805df287976c8191a1cd9c576bdcba8d",
+    "deployment_id": "appgdep_6ad1c4e03b04819188b22a4412e0d6a3",
+    "site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
+    "published_at": "2026-10-16T06:32:24.066505+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -37,7 +37,7 @@
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.9.25 inspected live in landscape; walked left/lower/right sectors, received damage and returned to camp after defeat. Upper perimeter not completed; no combat respawn observed online. Phone/FPS not tested.",
+    "browser": "1.9.26 live landscape: verified cat house on left, ground tone and ambient insects. Walked upper, right, lower detour and left back to safe camp; 9 HP damage, 3 fibre and 1 herb collected automatically. No enemy killed/room completed. Online respawn full cycle not exercised. Phone portrait/FPS not tested.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -52,15 +52,15 @@
   },
   "blockers": [],
   "next_actions": [
-    "Publish 1.9.26 with cat shelter on left, tiny ambient perched insects, slight grass base color adjustment only; approved plants preserved.",
-    "Mixed surfaces and future biomes remain planned, explicitly deferred by David."
+    "David: review 1.9.26 on phone, especially slight grass color change and left cat shelter.",
+    "Future refinement: feather sunlight edges; verify safe-label placement and overview HUD overlap. Mixed terrain deferred by user."
   ],
   "rollback": {
-    "production_changed": false,
-    "product_version": "1.9.24",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_12d8f80299b081918e1f6989c7670ad4",
-    "site_commit": "76dacf405cf5a19286d8252b00dce50a68f9676b",
-    "instructions": "Only redeploy while immediate predecessor; preserve saved progress and later collaborators."
+    "production_changed": true,
+    "product_version": "1.9.25",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_38326b2e9d008191b7973c7ab8c56764",
+    "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
+    "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-16-forest-nature-variations.md",
   "source_reconciliation": {
