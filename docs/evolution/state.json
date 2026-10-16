@@ -9,35 +9,35 @@
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
+    "source_site_commit": "f2d17db2cae5adf7898b443a08a0a96e79a3a095",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "4324394c548e95735083f17773c33c5fe6de744b",
-    "implementation_base_github_commit": "1fdffde7d7a3c9448dce129f553d526a80832285"
+    "code_commit": "3febb7ec4681a91913c015caf8cd4c01379ed1c5",
+    "implementation_base_github_commit": "499f2ac3e0e3c050dd5d85538961fe444fbb1cc7"
   },
   "current_improvement": {
-    "id": "chapter1-painted-grass-match",
-    "implementation_status": "implemented",
-    "acceptance_status": "pending_user_comparison"
+    "id": "room-navigation-and-rendered-clearing",
+    "implementation_status": "offline_verified",
+    "acceptance_status": "desktop_navigation_and_static_pilot_observed_phone_review_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.22",
-    "last_observed_version": 41,
+    "product_version": "1.9.23",
+    "last_observed_version": 42,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_34b5eb038b6081918cd8be9790820e30",
-    "deployment_id": "appgdep_6ad1b242ad7481919440ee149610f69b",
-    "site_commit": "f2d17db2cae5adf7898b443a08a0a96e79a3a095",
-    "published_at": "2026-10-16T05:12:55.511185+00:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8525cc60460c819181dbae320b9ba415",
+    "deployment_id": "appgdep_6ad1b5faaf3881918d456ececb04ffcc",
+    "site_commit": "15e491444fd4055200f6a226d6cc663383905bb0",
+    "published_at": "2026-10-16T05:28:43.432526+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "33/33 pertinent terrain/scenery/biome tests passed; prior 211-test offline suite unchanged outside terrain",
+    "offline_tests": "212/212 in 29 files; Firebase staging integration excluded for missing credentials",
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Post-deploy 1.9.22 loaded in authenticated cloud browser; landscape overview inspected. Grass is brighter and painterly, with visible dense tonal variation. Color/style acceptance pending David; portrait and FPS not verified.",
+    "browser": "Published desktop: all three shortcuts and returns work; pilot follow/overview inspected; no phone portrait/FPS playtest; home WebGL unavailable",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -48,21 +48,22 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "first gzip incomplete; rebuilt separately, full tar and exact grass hash passed; native save succeeded"
+    "packaged_grass": "pending"
   },
   "blockers": [],
   "next_actions": [
-    "David: comparar paleta e acabamento com a clareira do capítulo 1; avaliar retrato/paisagem e caminhada.",
-    "Aceitar a base antes de expandir o piloto para salas reais do capítulo 1."
+    "David: inspect portrait/landscape room centre, Cuidar/Status/Mochila and the three mode shortcuts.",
+    "Review the softened pilot grass in motion on the phone; FPS not measured.",
+    "Only after base acceptance, plan room expansion/progressive map reveal."
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.9.21",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_151986417ea481918a913b68df89b365",
-    "site_commit": "3855e6697699dd2dd111cabf8a27e5b104087d95",
-    "instructions": "Reimplantar 1.9.21 somente se ainda for a publicação imediatamente anterior; preservar saves."
+    "product_version": "1.9.22",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_34b5eb038b6081918cd8be9790820e30",
+    "site_commit": "f2d17db2cae5adf7898b443a08a0a96e79a3a095",
+    "instructions": "Only redeploy if still the immediate predecessor; preserve saves and later collaborators."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-chapter1-grass-match.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-room-navigation-and-rendered-clearing.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -295,5 +296,16 @@
     ],
     "new_gameplay_content": false,
     "post_deploy_visual": "actual landscape overview observed; closer light green palette, not a claim of identical chapter rendering or user acceptance"
+  },
+  "room_navigation": {
+    "product_version": "1.9.23",
+    "status": "published_for_phone_review",
+    "direct_modes": [
+      "Aventura",
+      "Exploração",
+      "Minijogos"
+    ],
+    "portrait_panels": "care/status on-demand; backpack edge shortcut",
+    "expansion": "planned_not_implemented"
   }
 }
