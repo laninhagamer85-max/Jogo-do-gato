@@ -84,3 +84,26 @@ it('paints a fully covered cached terrain at every corner, zoom and overview',()
  }
  }finally{vi.unstubAllGlobals();}
 });
+
+
+describe('world camera zoom independent of lens',()=>{
+  it('enlarges the pet and scenery consistently and preserves touch-to-world coordinates',()=>{
+    const player={x:6.5,y:4.5};
+    for(const [w,h] of [[375,667],[390,844],[844,390],[1366,768]]){
+      const base=combatView(w,h,player,1);
+      for(const zoom of [1,1.25,1.5,1.75,2]){
+        const v=combatView(w,h,player,zoom);
+        expect(v.tile/base.tile).toBeCloseTo(zoom);
+        const target={x:player.x+.3,y:player.y+.2};
+        const screen={x:v.left+target.x*v.tile,y:v.top+target.y*v.tile};
+        expect((screen.x-v.left)/v.tile).toBeCloseTo(target.x);
+        expect((screen.y-v.top)/v.tile).toBeCloseTo(target.y);
+        expect(v.left+GROUND_WORLD.left*v.tile).toBeLessThanOrEqual(1e-7);
+        expect(v.top+GROUND_WORLD.top*v.tile).toBeLessThanOrEqual(1e-7);
+        expect(v.left+(GROUND_WORLD.left+GROUND_WORLD.width)*v.tile).toBeGreaterThanOrEqual(w-1e-7);
+        expect(v.top+(GROUND_WORLD.top+GROUND_WORLD.height)*v.tile).toBeGreaterThanOrEqual(h-1e-7);
+      }
+      expect(combatView(w,h,player,2,true)).toEqual(combatView(w,h,player,1,true));
+    }
+  });
+});

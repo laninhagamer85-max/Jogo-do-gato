@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_phone_review",
-  "active_run": "2026-10-16-lens-shortcut-dock",
+  "status": "publishing_for_user_phone_review",
+  "active_run": "2026-10-16-world-camera-zoom",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,28 +16,28 @@
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
-    "id": "circular-minimap",
+    "id": "world-camera-zoom",
     "implementation_status": "implemented",
-    "acceptance_status": "awaiting_phone_review"
+    "acceptance_status": "user_explicitly_requests_publication_to_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.36",
     "last_observed_version": 55,
-    "status": "succeeded",
+    "status": "published_previous_release",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8da3efe91af88191b4c1a22dc764f416",
     "deployment_id": "appgdep_6ad2573f3c648191b154975cd0e5549e",
     "site_commit": "260acaf65552fd41d0c9cffea68672a1a2a24499",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": false
   },
   "verification": {
-    "typescript": "passed_on_exact_sites_source_with_option3",
-    "offline_tests": "26 targeted tests passed",
-    "build": "passed_on_exact_sites_source_with_option3",
+    "typescript": "passed",
+    "offline_tests": "45 targeted tests passed; projection and touch inverse at four viewport sizes",
+    "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "unavailable; user phone review pending",
+    "browser": "unavailable; not run",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -54,7 +54,7 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "David tests all five reversible slots, lens size, paused panels, overview and phone orientations."
+    "Publish camera zoom release1.9.37; user tests touch/layout in portrait/landscape."
   ],
   "rollback": {
     "production_changed": true,
@@ -63,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-lens-shortcut-dock.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-world-camera-zoom.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -401,7 +401,7 @@
   "lens_shortcut_dock": {
     "product_version": "1.9.36",
     "base_source": "c77279a439922d8feef6327d5fe19c9fb0c65f0b",
-    "status": "published_for_user_phone_review",
+    "status": "implemented_checks_passed",
     "controls": [
       "sound on/off",
       "pause/resume",
@@ -413,7 +413,13 @@
     "size": "normal 136–168px portrait, expanded160–214px; landscape124/158px; five44px targets",
     "verification": "TypeScript and 213 game tests passed; 8 dock tests repeated after focus changes; final build passed",
     "browser": "unavailable_control_browser; user requests publication for phone test",
-    "scope": "approved lens/control UI only; preserve world vegetation, grass, collision, portal, progress and account code",
-    "code_commit": "386858ab2dda2f233fbd6f561d04738084e69c4c"
+    "scope": "approved lens/control UI only; preserve world vegetation, grass, collision, portal, progress and account code"
+  },
+  "camera_zoom_release": {
+    "product_version": "1.9.37",
+    "implemented_source": "e7e1228f445b663a083ae9f324aad2e318e5b222",
+    "status": "preparing_publication",
+    "authorization": "David: Publique e eu vou fazer o teste",
+    "browser": "unavailable, user phone review pending"
   }
 }

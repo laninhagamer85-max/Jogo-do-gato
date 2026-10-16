@@ -27,7 +27,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const route = useRef<CombatPoint[]>([]), panelRef = useRef<Panel>(null), overviewRef = useRef(false);
   const canvas = useRef<HTMLCanvasElement>(null), dialog = useRef<HTMLDialogElement>(null), pauseButton = useRef<HTMLButtonElement>(null);
   const [assetStatus, setAssetStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom] = useState(1);
+  const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom, setZoom] = useState(1);
   const [lensExpanded,setLensExpanded]=useState(false);
   const [viewport,setViewport]=useState(()=>({width:typeof window==='undefined'?390:window.innerWidth,height:typeof window==='undefined'?844:window.innerHeight}));
   const zoomRef = useRef(zoom), lastSaved = useRef('');
@@ -157,6 +157,13 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
           <button className="combat-lens-slot combat-lens-map" onClick={viewRoom} aria-label={overview?'Voltar ao pet':'Ver mapa completo'} aria-pressed={overview} title={overview?'Voltar ao pet':'Ver mapa completo'}>{overview?<X/>:<Map/>}</button>
         </nav>
       </ExplorationMinimap>
+      <div className="combat-world-zoom" role="group" aria-label="Zoom da câmera do jogo">
+        <span>Câmera</span><div>
+          <button type="button" disabled={overview || zoom <= 1} onClick={() => { route.current=[]; setZoom(value => Math.max(1, Math.round((value - .25)*100)/100)); }} aria-label="Afastar câmera do pet" title="Afastar câmera"><Minus size={20}/></button>
+          <output aria-live="polite" aria-label="Aproximação da câmera">{zoom.toLocaleString('pt-BR')}×</output>
+          <button type="button" disabled={overview || zoom >= 2} onClick={() => { route.current=[]; setZoom(value => Math.min(2, Math.round((value + .25)*100)/100)); }} aria-label="Aproximar câmera do pet" title="Aproximar câmera"><Plus size={20}/></button>
+        </div>
+      </div>
       <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(6, fibers)}/6 fibras</span><span>{game.defeated > 0 ? "✓" : "0/1"} adversário</span><span>{game.gateOpen ? "Siga até a saída" : "Ative o marco"}</span></div>
       <div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>
       {!game.completed && <div className="combat-item-tray" aria-label="Itens e uso rápido">
