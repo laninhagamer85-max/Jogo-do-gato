@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "project": "Meu Pet Virtual",
+  "updated_date": "2026-10-15",
+  "timezone": "America/Sao_Paulo",
+  "status": "published_for_user_review",
+  "active_run": null,
+  "collaboration": {
+    "repository": "laninhagamer85-max/Jogo-do-gato",
+    "branch": "feat/exploration-combat-pilot-20261015",
+    "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
+    "source_site_commit": "5c802bc84578f650694f556831662a8114318cee",
+    "coordination_branch": "recovery/mobile-review-20261009",
+    "code_commit": "aa5c551be28c086dac383bb1609291b98b7b10d0"
+  },
+  "current_improvement": {
+    "id": "modular-grass-native-density",
+    "implementation_status": "implemented",
+    "acceptance_status": "offline_verified_pending_user_visual_review"
+  },
+  "publication": {
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "product_version": "1.9.16",
+    "last_observed_version": 35,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
+    "deployment_id": "appgdep_6ad11f4948608191b60a53e95d2bb038",
+    "site_commit": "5c802bc84578f650694f556831662a8114318cee",
+    "published_at": "2026-10-15T18:45:52.719784+00:00",
+    "attempted_in_this_cycle": true
+  },
+  "verification": {
+    "typescript": "passed",
+    "offline_tests": "192/192_passed_27_files",
+    "build": "passed_existing_chunk_warning",
+    "entry_selection": "passed_101_input_states_not_playthroughs",
+    "published_parity": "passed_fake_storage_only",
+    "browser": "not_run_control_browser_unavailable; user review authorization continues",
+    "viewports": {
+      "375x667": "not_tested",
+      "375x812": "not_tested",
+      "390x844": "not_tested",
+      "844x390": "not_tested",
+      "1366x768": "not_tested"
+    },
+    "real_online_phases_completed_in_cycle": 0
+  },
+  "blockers": [],
+  "next_actions": [
+    "David: conferir tamanho da grama, nitidez, ausência de quadrículas visíveis e estabilidade ao caminhar/rotacionar/usar zoom.",
+    "Aceitar o piloto; então construir dez salas reais do capítulo 1 conforme plano já registrado.",
+    "Reutilizar terrainTexture.ts com novas texturas e sementes por bioma, sem usar ilustração de mapa inteiro como piso."
+  ],
+  "rollback": {
+    "production_changed": true,
+    "product_version": "1.9.15",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
+    "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
+  },
+  "latest_report": "docs/evolution/runs/2026-10-15-modular-ground.md",
+  "source_reconciliation": {
+    "status": "implemented_pending_browser_and_isolated_auth_validation",
+    "account_dialog": "restored_in_source",
+    "icon_atlas": "49_regions_67_symbol_mappings_restored",
+    "real_account_actions_performed": false
+  },
+  "pilot_review": {
+    "status": "preparing_v18_pet_only_scale",
+    "variant": [
+      "menino-prata",
+      "menino-preto",
+      "menino-laranja",
+      "menina-creme",
+      "menina-calico",
+      "menina-azul"
+    ],
+    "scope": "silver walk across three modes, camera safe region, inspection input guards",
+    "publication": "v16_succeeded",
+    "offline_tests": 102,
+    "branch": "fix/pet-walk-camera-20261014",
+    "pull_request": 9,
+    "github_commit": "726777ced125823f38a18f37785814bfb166d98f",
+    "user_acceptance": "v16_black_kitten_adventure_approved_only"
+  },
+  "companion_roaming": {
+    "status": "publishing_for_user_review",
+    "product_version": "1.9",
+    "offline_tests": 109,
+    "typescript": "passed",
+    "build": "passed_before_release_label_change_rebuilding",
+    "browser": "unavailable",
+    "paw_animation": "not_implemented_static_companion_art",
+    "github_branch": "fix/companion-room-roaming-20261015",
+    "github_code_commit": "f462070cd2653105dacacb499399ac9a1e46948f",
+    "authorization": "David explicitly requested publishing on 2026-10-15 to inspect on his phone and report back, after being told paws and browser validation remain pending."
+  },
+  "sol_walk": {
+    "product_version": "1.9.1",
+    "status": "preparing_publication",
+    "offline_tests": 116,
+    "typescript": "passed_before_final_packaging",
+    "browser": "not_run_control_browser_unavailable",
+    "art": "original_generated_16_frames_4_directions_alpha",
+    "speed_world_units_per_second": 0.8,
+    "pause_ms": [
+      4000,
+      8000
+    ],
+    "collision": "visibility_graph_around_main_pet_footprint",
+    "rollout": "Sol_house4_only"
+  },
+  "sol_anticipation": {
+    "product_version": "1.9.2",
+    "hold_ms": 1000,
+    "offline_tests": 122,
+    "status": "preparing_publication",
+    "browser": "not_run_control_browser_unavailable",
+    "decoration_depth": "shared_floor_contact_sorting"
+  },
+  "mimo_walk": {
+    "product_version": "1.9.3",
+    "status": "published_for_user_review",
+    "art": "original_generated_16_frames_4_directions_rgba",
+    "asset_sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
+    "rollout": "Mimo_house1; Sol_house4_preserved",
+    "load_safety": "wait_for_own_walk_texture_before_roaming",
+    "visual_validation": "static_atlas_inspected_only; gameplay_pending",
+    "acceptance": "David approved movement on 2026-10-15 after 1.9.3 publication"
+  },
+  "all_companions_walk": {
+    "product_version": "1.9.4",
+    "status": "published_for_user_batch_review",
+    "companions": 12,
+    "new_atlases": 10,
+    "frames_per_atlas": 16,
+    "total_frames": 192,
+    "manifest": "recovery/companion-atlases/manifest.json",
+    "new_png_bytes": 20956694,
+    "load_policy": "only_active_companion; remain_still_until_own_atlas_ready",
+    "accepted_pilot": "1.9.3 movement approved by David; not acceptance of ten new animations",
+    "authorization": "David explicitly requested applying to all friends and testing afterwards on 2026-10-15.",
+    "browser_gameplay": "pending_user_review; not observed in this environment",
+    "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
+  },
+  "exploration_expansion": {
+    "status": "one_combat_pilot_implemented_pending_browser",
+    "chapters": 6,
+    "rooms_per_chapter": 10,
+    "total_rooms": 60,
+    "combat_progression": "separate_from_house_level",
+    "defeat": "last_safe_point_preserve_permanent_items_partial_current_room_common_material_loss",
+    "initial_loss_rule": {
+      "fraction": 0.1,
+      "rounding": "floor",
+      "scope": "current_room_attempt_common_materials_only",
+      "status": "initial_default_not_user_specified_percentage"
+    },
+    "decoration_cards": "permanent_exploration_unlocks_visible_elsewhere_not_sold",
+    "feedback": "damage_negative_red_on_target_healing_positive_green_xp_separate",
+    "specification": "docs/evolution/exploration-product-rules.md",
+    "product_decisions_pending": [],
+    "balance_pending": [
+      "HP/attack/defense curves",
+      "level-up HP restoration",
+      "respawn intervals and rare-drop rates",
+      "safe-point HP restoration"
+    ],
+    "implemented_rooms": 1,
+    "rollout_plan": "docs/evolution/exploration-campaign-plan.json",
+    "rollout_rules": "docs/evolution/exploration-campaign-rollout.md"
+  },
+  "user_review_authorization": {
+    "date": "2026-10-15",
+    "text": "Publique, eu vou digitar e passar um relatório.",
+    "scope": "publish combat pilot for user playtest; no browser validation claim"
+  },
+  "pilot_user_acceptance": {
+    "version": "1.9.5",
+    "date": "2026-10-15",
+    "result": "David completed and approved pilot playtest; requested visual refinements and simpler item use."
+  },
+  "daily_review_20261016": {
+    "product": "1.9.26",
+    "site_version": 45,
+    "source_site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
+    "review_branch": "feat/exploration-combat-pilot-20261015",
+    "code_commit": "6b8283c87808f9c53cf841416b3e8fbd5d2827d4",
+    "status": "saved_awaiting_supported_browser",
+    "published_in_cycle": false,
+    "tests": "TypeScript/build/230 offline tests passed",
+    "report": "docs/evolution/runs/2026-10-16.md"
+  }
+}
