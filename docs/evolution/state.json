@@ -3,17 +3,17 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_user_phone_test",
+  "status": "published_pending_user_playtest",
   "active_run": "2026-10-16-chapter1-expansion",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
-    "source_site_commit": "763edb8b72a2de65e7d2b7dc9a3858832e9af7fb",
+    "source_site_commit": "a5eba01779aae6a898d44ffa9483943df8cd51c1",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "6b8283c87808f9c53cf841416b3e8fbd5d2827d4",
+    "code_commit": "8a576eacf025c0c5341d0a3f275f8b4e373da8d4",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6",
-    "code_commit_status": "saved_not_published"
+    "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "chapter1-expansion-and-wildlife",
@@ -23,13 +23,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.37",
-    "last_observed_version": 56,
-    "status": "previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a396c5f269408191967c4fe6ce42f6a5",
-    "deployment_id": "appgdep_6ad260f1eefc8191a90ebee882f5b709",
-    "site_commit": "4009a9561013ed5ed21b31b51acdeede01872e58",
-    "attempted_in_this_cycle": false
+    "product_version": "1.10.0",
+    "last_observed_version": 58,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_da98708fc60c81919a84702d35a9bdf6",
+    "deployment_id": "appgdep_6ad269af11708191a18199898b259f18",
+    "site_commit": "a5eba01779aae6a898d44ffa9483943df8cd51c1",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",

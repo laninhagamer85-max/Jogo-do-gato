@@ -18,3 +18,5 @@ Artes originais geradas para este projeto: ponte 1983×793, chave 1254×1254, at
 Rollback anterior: Sites 57 / produto 1.9.38; versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_04a931166fc481918432d84bf25028f9`, fonte `3f91ca1881667d06bcbdefcbf564cea2c4be4342`. Preservar saves e considerar proteção v2 descrita acima.
 
 Resultado final: TypeScript, 280 testes offline em 29 arquivos e build aprovados. Aviso existente de tamanho de bundle.
+
+Publicação confirmada: Sites 58, versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_da98708fc60c81919a84702d35a9bdf6`, deployment `appgdep_6ad269af11708191a18199898b259f18`, fonte `a5eba01779aae6a898d44ffa9483943df8cd51c1`. URL https://meupet.aquimeusite.chatgpt.site. Novas salas aguardam teste do usuário no aparelho.
