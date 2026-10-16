@@ -15,7 +15,7 @@ function visible(region:GroundRegion,bounds:TerrainBounds){
 /** Original Canvas materials: fixed fine grains, quiet color variations and feathered margins. */
 function paintMaterial(ctx:CanvasRenderingContext2D,region:GroundRegion,bounds:TerrainBounds){
   const box=regionBounds(region.polygon),water=region.material==='water',sand=region.material==='sand';
-  const base=water?'#6aaba2':sand?'#bcb584':'#929364';
+  const base=water?'#6aaba2':sand?'#6d7948':'#929364';
   ctx.save();trace(ctx,region.polygon);
   if(!water){
     ctx.lineJoin='round';ctx.strokeStyle=base;
@@ -23,8 +23,8 @@ function paintMaterial(ctx:CanvasRenderingContext2D,region:GroundRegion,bounds:T
   }
   ctx.globalAlpha=1;
   const gradient=ctx.createLinearGradient(box.left,box.top,box.right,box.bottom);
-  gradient.addColorStop(0,water?'#81bbb1':sand?'#c7c291':'#9b9c6c');
-  gradient.addColorStop(1,water?'#4f928e':sand?'#ada97c':'#83875c');
+  gradient.addColorStop(0,water?'#81bbb1':sand?'#99a666':'#9b9c6c');
+  gradient.addColorStop(1,water?'#4f928e':sand?'#657947':'#83875c');
   ctx.fillStyle=gradient;ctx.fill();ctx.clip();
   const step=water?.16:.075;
   // Cull in world coordinates; the same grains are emitted after camera/viewport changes.
@@ -48,29 +48,25 @@ export function drawBiomeStatic(ctx:CanvasRenderingContext2D,bounds:TerrainBound
 }
 
 /** Same clipped shoreline as collision. Time is simulation time, so pause also freezes the water. */
-export function drawBiomeWater(ctx:CanvasRenderingContext2D,composition:BiomeComposition,left:number,top:number,tile:number,time:number,reducedMotion:boolean){
+export function drawBiomeWater(ctx:CanvasRenderingContext2D,composition:BiomeComposition,left:number,top:number,tile:number,time:number,reducedMotion:boolean,waterTexture?:HTMLImageElement){
   ctx.save();ctx.translate(left,top);ctx.scale(tile,tile);
   for(const region of composition.regions){
     if(region.material!=='water')continue;
     const box=regionBounds(region.polygon),phase=reducedMotion?0:time*.00045;
     ctx.save();trace(ctx,region.polygon);ctx.clip();ctx.lineCap='round';ctx.lineWidth=.018;
-    // Long coherent ripples span the pond; there is no independent animation per floor block.
-    for(let row=0;row<7;row++){
-      const y=box.top+.16+row*.19;
-      ctx.strokeStyle=row%2?'#d4e4c33b':'#c2d9c248';ctx.beginPath();
-      for(let i=0;i<=24;i++){
-        const x=box.left+i*(box.right-box.left)/24;
-        const wy=y+Math.sin(x*2.8+phase+row*.7)*.027;
-        i?ctx.lineTo(x,wy):ctx.moveTo(x,wy);
-      }
-      ctx.stroke();
+    if(waterTexture?.complete&&waterTexture.naturalWidth){
+      // World-anchored two-unit material patches; same contour as collision, no whole-scene stretch.
+      const span=2.4,spanY=span*waterTexture.naturalHeight/waterTexture.naturalWidth;for(let y=Math.floor(box.top/spanY);y<=Math.ceil(box.bottom/spanY);y++)for(let x=Math.floor(box.left/span);x<=Math.ceil(box.right/span);x++)ctx.drawImage(waterTexture,x*span,y*spanY,span,spanY);
+      trace(ctx,region.polygon);ctx.strokeStyle='#274e48b0';ctx.lineWidth=.10;ctx.stroke();
+      trace(ctx,region.polygon);ctx.strokeStyle='#b5dfbf80';ctx.lineWidth=.025;ctx.stroke();
     }
     // Scattered soft highlights stay inside the authored pond contour.
     for(let i=0;i<5;i++){
       const x=box.left+.35+i*.48,y=box.top+.55+Math.sin(i*2.4)*.18;
       if(!insideRegion({x,y},region.polygon))continue;
       ctx.globalAlpha=reducedMotion?.35:.3+.12*Math.sin(phase+i);
-      ctx.strokeStyle='#e2e8c8';ctx.lineWidth=.012;ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+.1,y-.025,x+.22,y);ctx.stroke();
+      const drift=reducedMotion?0:Math.sin(phase+i)*.04;
+      ctx.strokeStyle='#e2e8c8';ctx.lineWidth=.012;ctx.beginPath();ctx.moveTo(x+drift,y);ctx.quadraticCurveTo(x+.1+drift,y-.025,x+.22+drift,y);ctx.stroke();
     }
     ctx.restore();
   }

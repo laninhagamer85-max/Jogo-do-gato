@@ -35,3 +35,8 @@ Separar progresso de campanha/room/checkpoint do combate global da Exploração.
 
 ## Entrega 1.10.0
 Piloto declarado concluído pelo usuário em 16/10. Dez salas distintas com placas ordenadas, chave, ponte atravessável, consumo real e avanço. Novos NPCs da floresta: Escaravelho Esmeralda, Cogumelo Saltador e Guardião dos Troncos, níveis 2–5, encontros opcionais estáveis por save e chances raras crescentes por nível. Seiva luminosa e Cristal do bosque são materiais de coleção; ainda sem receita de uso. Outros cinco capítulos continuam planejados.
+
+## Atualização 1.11.0 — campanha contínua e segundo bioma
+Vinte salas implementadas em dois capítulos. Portal avança automaticamente após 850 ms de tempo ativo, sem replay ou escolha; último portal da floresta leva ao Riacho dos Cristais. O portal final salva a conclusão; outros biomas ainda planejados. Save v3/campanha v2 migra v1/v2, mantém sala atual, posição, objetivos, inventário, cartões e semente; cliente antigo rejeita a nova versão.
+NPCs opcionais e nível aumentam, perseguição limitada e retorno ao território, mestres maiores obrigatórios nas salas 10 de cada capítulo, ataque forte com aviso de 900 ms. Cartas raras garantidas e sem repetição por respawn: Coração dos Troncos desacelera pelo poder; Coração das Marés cura ao usar poder. Seiva/Pérola são cura, Cristal/Escama equipamentos.
+Área ampliada de 26×20 para 30×24, minimapa migrado por posição. Água substituída por material ilustrado original com margem orgânica, pedras e plantas; sem longas linhas vetoriais. Salas de ponte (índices 4,10,14) têm um rio contínuo dividindo as margens; retirar o deck elimina a rota, provado por navegação offline.

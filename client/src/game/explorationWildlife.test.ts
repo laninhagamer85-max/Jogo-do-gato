@@ -5,12 +5,12 @@ const fixture=(index:number,seed=42)=>{const s=createCombatState(index,seed);s.c
 it('keeps the approved pilot fauna intact and supplies three new species only in the woodland expansion',()=>{
  expect(campaignEnemies(0)).toEqual(campaignRoom(0).enemies);
  const names=new Set(EXPLORATION_ROOMS.flatMap(r=>campaignEnemies(r.index).filter(e=>e.art).map(e=>e.name)));
- expect([...names].sort()).toEqual(['Cogumelo Saltador','Escaravelho Esmeralda','Guardião dos Troncos'].sort());
+ expect([...names].sort()).toEqual(['Cogumelo Saltador','Escaravelho Esmeralda','Guardião dos Troncos','Mestre dos Troncos','Caranguejo Azul','Rã Ametista','Mestre das Marés'].sort());
 });
 it('rolls limited different encounters in safe, reachable woodland slots across seeds',()=>{
  const arrangements=new Set<string>();
  for(let room=1;room<10;room++)for(let seed=1;seed<=30;seed++){
-  const defs=campaignEnemies(room,seed),wild=defs.filter(e=>e.art);expect(wild.length).toBeLessThanOrEqual(2);expect(wild.length).toBeGreaterThan(0);
+  const defs=campaignEnemies(room,seed),wild=defs.filter(e=>e.id.startsWith('wild-'));expect(wild.length).toBeLessThanOrEqual(8);expect(wild.length).toBeGreaterThan(0);
   arrangements.add(JSON.stringify(wild.map(e=>[e.id,e.x,e.y])));
   for(const e of wild){expect(pilotWalkable(e,false,e.radius,room)).toBe(true);expect(Math.hypot(e.x-1.5,e.y-1.5)).toBeGreaterThan(3.3);}
  }
@@ -39,7 +39,7 @@ it('rare drops are collectible once, survive reload and bank separately without 
  s.gateOpen=true;s.player={...campaignRoom(5).exit};s=stepCombat(s,{},0);expect(s.rareStock.seiva).toBe(1);expect(s.rareBag.seiva).toBe(0);expect(advanceCombatRoom(s).rareStock.seiva).toBe(1);
 });
 it('each new creature has a defeatable live duel at level one without forced damage immunity',()=>{
- for(const def of campaignEnemies(9,42).filter(e=>e.art)){
+ for(const def of campaignEnemies(9,42).filter(e=>e.art&&!e.boss)){
   let s=fixture(9,42);s.enemies.forEach(e=>{e.hp=e.id===def.id?e.hp:0;e.respawnAt=1e9;});s.player={x:def.x-.65,y:def.y};
   let n=0;while(s.enemies.find(e=>e.id===def.id)!.hp>0&&n++<400){const e=s.enemies.find(e=>e.id===def.id)!,d=Math.hypot(e.x-s.player.x,e.y-s.player.y);s.facing={x:(e.x-s.player.x)/(d||1),y:(e.y-s.player.y)/(d||1)};s=stepCombat(s,{attack:true},50);}
   expect(s.enemies.find(e=>e.id===def.id)!.hp).toBe(0);expect(s.deaths).toBe(0);

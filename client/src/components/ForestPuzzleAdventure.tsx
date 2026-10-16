@@ -1,3 +1,4 @@
+import {chapterName,roomInChapter} from '@/game/explorationCampaign';
 import {readCombatState} from '@/game/explorationCombat';
 import ExplorationJoystick from "./ExplorationJoystick";
 import { forestStickDirection } from "@/game/combatPresentation";
@@ -446,11 +447,11 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
       </div>
     </header>
     {!game ? <main className="forest-adventure-map">
-      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. As trilhas de enigmas continuam disponíveis. A Clareira dos Troncos agora tem dez salas de combate, coleta e desafios.</p></div>
+      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. As trilhas de enigmas continuam disponíveis. Dois biomas com vinte salas de combate, coleta e desafios.</p></div>
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
-      <div className="forest-map-actions"><button type="button" className="forest-primary" onClick={() => setCombatPilot(true)}>Clareira dos Troncos · Sala {combatRoomNumber}/10</button><p>Dez salas com combate, coleta, placas, chave e ponte. Nível de combate próprio, inventário e ponto seguro.</p></div>
+      <div className="forest-map-actions"><button type="button" className="forest-primary" onClick={() => setCombatPilot(true)}>{chapterName(combatRoomNumber-1)} · Sala {roomInChapter(combatRoomNumber-1)}/10</button><p>Continue de onde parou. Vinte salas, portais automáticos, mestres e cartas raras. Nível de combate próprio, inventário e ponto seguro.</p></div>
       <section className="forest-chapter-grid" aria-label="Seleção de capítulos">
         {FOREST_CHAPTERS.map((chapter) => {
           const isLocked = !supported || chapter.id > unlockedChapter;

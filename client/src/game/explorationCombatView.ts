@@ -1,6 +1,6 @@
-import {campaignRoom,campaignGardens,campaignEnemies,RARE_ITEMS} from './explorationCampaign';
+import {campaignRoom,campaignGardens,campaignEnemies,campaignWaterBlocks,RARE_ITEMS} from './explorationCampaign';
 import {drawBiomeWater} from './biomeCompositionView';
-import {drawCampaignBridge,drawCampaignKey} from './explorationCampaignArt';
+import {drawCampaignBridge,drawCampaignKey,drawRiverProp,drawCampaignShore} from './explorationCampaignArt';
 import {drawPortalEnergy,drawPortalArch} from './explorationPortal';
 import { SCATTERED_GARDENS, OUTER_GARDENS, ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
 import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna,drawForestPerches} from './forestNature';
@@ -25,21 +25,23 @@ export function combatView(width: number, height: number, player: CombatPoint, z
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement) {
-  const room=campaignRoom(state.roomIndex),definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement) {
+  const room=campaignRoom(state.roomIndex),river=room.biome==='river',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
-  if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion);
+  if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
+  drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
+    if(river){if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawRiverProp(ctx,riverProps,prop.index,p.x,p.y,t,prop);return;}
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);
   };
-  if(gardenAtlas)for(const patch of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS]){
+  if(gardenAtlas)for(const patch of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
     const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
-    if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
+    if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)river?drawRiverProp(ctx,riverProps,3+patch.index%2,p.x,p.y,t,{width:patch.width??1.2,height:1}):drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
   }
   drawForestSun(ctx,v.left,v.top,t);
   drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);
@@ -49,7 +51,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(room.marker);
-  if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
+  if(river)drawRiverProp(ctx,riverProps,5,marker.x,marker.y+t*.15,t*.8);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
   const exit = point(room.exit);
   drawPortalEnergy(ctx,exit.x,exit.y,t,state.time,state.gateOpen,reducedMotion);
@@ -65,7 +67,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   }
   for (const loot of state.loot) {
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
-    if(loot.rare&&rareAtlas?.complete&&rareAtlas.naturalWidth){
+    if((loot.rare==='perola'||loot.rare==='escama')&&itemArt?.[loot.rare]?.naturalWidth){const h=t*.58;ctx.drawImage(itemArt[loot.rare]!,p.x-h/2,p.y-h-fall-cue.hover,h,h);ctx.fillStyle='#e9dcac';ctx.font=`600 ${Math.max(10,t*.14)}px sans-serif`;ctx.textAlign='center';ctx.fillText(`${RARE_ITEMS[loot.rare]} ×${loot.quantity}`,p.x,p.y+t*.18);}
+    else if(loot.rare&&rareAtlas?.complete&&rareAtlas.naturalWidth){
       const sw=rareAtlas.naturalWidth/2,sh=rareAtlas.naturalHeight,h=t*.5,w=h*sw/sh;
       ctx.drawImage(rareAtlas,loot.rare==='seiva'?0:sw,0,sw,sh,p.x-w/2,p.y-h-fall-cue.hover,w,h);
       ctx.fillStyle='#e9dcac';ctx.font=`600 ${Math.max(10,t*.14)}px sans-serif`;ctx.textAlign='center';ctx.fillText(`${RARE_ITEMS[loot.rare]} ×${loot.quantity}`,p.x,p.y+t*.18);
@@ -75,7 +78,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='prop'){drawProp(entity.p);continue;}
-    if(entity.type==='portal'){drawPortalArch(ctx,portalAtlas,p.x,p.y,t);continue;}
+    if(entity.type==='portal'){drawPortalArch(ctx,river?riverPortal:portalAtlas,p.x,p.y,t);continue;}
     if(entity.type==='shelter'){
       if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
         const scale=Math.min(t*PILOT_SHELTER.width/shelterAtlas.naturalWidth,t*PILOT_SHELTER.height/shelterAtlas.naturalHeight),w=shelterAtlas.naturalWidth*scale,h=shelterAtlas.naturalHeight*scale;
@@ -89,11 +92,12 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       const range = Math.hypot(state.player.x-enemy.x,state.player.y-enemy.y);
       const safe = Math.hypot(state.player.x-room.camp.x,state.player.y-room.camp.y)<1.6;
       const moving = (!safe && range<4 && range>PILOT_INSECT.stopDistance) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
-      if(def.art&&mobsAtlas?.complete&&mobsAtlas.naturalWidth){
-        const cw=mobsAtlas.naturalWidth/4,ch=mobsAtlas.naturalHeight/3,frame=moving&&!reducedMotion?Math.floor(state.time/170)%4:0;
+      const mobImage=def.art==='river-mobs'?riverMobs:mobsAtlas;
+      if(def.art&&mobImage?.complete&&mobImage.naturalWidth){
+        const cw=mobImage.naturalWidth/4,ch=mobImage.naturalHeight/3,frame=moving&&!reducedMotion?Math.floor(state.time/170)%4:0;
         const dw=t*(def.width??.78),dh=dw*ch/cw;
         ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
-        ctx.drawImage(mobsAtlas,frame*cw,(def.spriteRow??0)*ch,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
+        ctx.drawImage(mobImage,frame*cw,(def.spriteRow??0)*ch,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
       }else if(!def.art&&enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
         const row=def.name==='Besouro'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
         const cw=enemiesAtlas.naturalWidth/4,ch=enemiesAtlas.naturalHeight/2;
@@ -103,10 +107,12 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dw=t*PILOT_INSECT.width, dh=dw*sh/cw;
         ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-dw/2,t*.07-dh,dw,dh);ctx.restore();
       }
-      ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * .72, t * .62, t * .065);
-      ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * .72, t * .62 * enemy.hp / def.hp, t * .065);
+      if(def.boss&&enemy.windupUntil&&enemy.windupUntil>state.time){ctx.save();ctx.strokeStyle='#f3b86c';ctx.lineWidth=t*.04;ctx.setLineDash([t*.12,t*.08]);ctx.beginPath();ctx.ellipse(p.x,p.y,t*2.1,t*2.1,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
+      const labelY=def.boss?1.75:.83;
+      ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62, t * .065);
+      ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      ctx.fillText(`${def.name} · Nv ${def.level}${def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * .83);
+      ctx.fillText(`${def.name} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
     } else {
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);

@@ -8,9 +8,10 @@ export function revealMinimap(previous:readonly number[],player:Point){
   if(Math.hypot(x+EXPLORATION_WORLD.left+.5-player.x,y+EXPLORATION_WORLD.top+.5-player.y)<=MINIMAP_REVEAL_RADIUS)visible.add(y*MINIMAP_WIDTH+x);
  return visible.size===previous.length?previous as number[]:[...visible].sort((a,b)=>a-b);
 }
-export function readMinimap(value:unknown,player:Point,version=2){
- const cells=Array.isArray(value)?[...new Set(value.filter((n):n is number=>typeof n==='number'&&Number.isInteger(n)&&n>=0&&n<MINIMAP_WIDTH*MINIMAP_HEIGHT))]:[];
- const migrated=version===1?cells.filter(i=>i<140).map(i=>(Math.floor(i/14)-EXPLORATION_WORLD.top)*MINIMAP_WIDTH+i%14-EXPLORATION_WORLD.left):cells;
+export function readMinimap(value:unknown,player:Point,version=3){
+ const oldSize=version===1?140:version===2?520:MINIMAP_WIDTH*MINIMAP_HEIGHT;
+ const cells=Array.isArray(value)?[...new Set(value.filter((n):n is number=>typeof n==='number'&&Number.isInteger(n)&&n>=0&&n<oldSize))]:[];
+ const migrated=version===1?cells.filter(i=>i<140).map(i=>(Math.floor(i/14)-EXPLORATION_WORLD.top)*MINIMAP_WIDTH+i%14-EXPLORATION_WORLD.left):version===2?cells.map(i=>(Math.floor(i/26)-5-EXPLORATION_WORLD.top)*MINIMAP_WIDTH+i%26-6-EXPLORATION_WORLD.left):cells;
  return revealMinimap(migrated,player);
 }
 export function minimapDiscovered(cells:readonly number[],p:Point){

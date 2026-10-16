@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_user_playtest",
-  "active_run": "2026-10-16-chapter1-expansion",
+  "status": "preparing_publication_for_user_phone_test",
+  "active_run": "2026-10-16-continuous-biomes",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,16 +16,16 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "chapter1-expansion-and-wildlife",
+    "id": "continuous-biomes-bosses-rare-cards",
     "implementation_status": "implemented",
-    "acceptance_status": "new_rooms_pending_user_playtest"
+    "acceptance_status": "pending_user_device_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.10.0",
     "last_observed_version": 58,
-    "status": "succeeded",
+    "status": "previous_release",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_da98708fc60c81919a84702d35a9bdf6",
     "deployment_id": "appgdep_6ad269af11708191a18199898b259f18",
     "site_commit": "a5eba01779aae6a898d44ffa9483943df8cd51c1",
@@ -33,11 +33,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "280 passed in 29 game test files (offline)",
-    "build": "passed; existing large-chunk warning",
+    "offline_tests": "367 offline tests across 30 files; engine, SSR and Canvas commands",
+    "build": "passed; existing large chunk warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "unavailable; not run",
+    "browser": "not_run_control_browser_unavailable",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -54,8 +54,8 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "Publish first chapter; user tests new rooms and NPC balance on phone.",
-    "Next chapters/biomes remain planned."
+    "Publish 1.11.0 and review lake/bridge/new river biome on phone.",
+    "Chapters 3–6 remain planned."
   ],
   "rollback": {
     "production_changed": true,
@@ -64,7 +64,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-chapter1-expansion.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-continuous-biomes.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -150,7 +150,7 @@
     "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
   },
   "exploration_expansion": {
-    "status": "chapter1_implemented_pending_user_playtest",
+    "status": "two_chapters_implemented_pending_device_review",
     "chapters": 6,
     "rooms_per_chapter": 10,
     "total_rooms": 60,
@@ -172,7 +172,7 @@
       "respawn intervals and rare-drop rates",
       "safe-point HP restoration"
     ],
-    "implemented_rooms": 10,
+    "implemented_rooms": 20,
     "rollout_plan": "docs/evolution/exploration-campaign-plan.json",
     "rollout_rules": "docs/evolution/exploration-campaign-rollout.md"
   },

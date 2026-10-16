@@ -1,5 +1,6 @@
-import {campaignRoom,campaignGardens} from '@/game/explorationCampaign';
-import {drawCampaignBridge,drawCampaignKey} from '@/game/explorationCampaignArt';
+import {drawBiomeWater} from '@/game/biomeCompositionView';
+import {campaignRoom,campaignGardens,campaignWaterBlocks} from '@/game/explorationCampaign';
+import {drawCampaignBridge,drawCampaignKey,drawRiverProp,drawCampaignShore} from '@/game/explorationCampaignArt';
 import { useEffect, useRef, type ReactNode } from 'react';
 import {type CombatState} from '@/game/explorationCombat';
 import { PILOT_SHELTER,ROOM_SCENERY,ROOM_EDGE_SOLIDS,ROOM_GARDENS,ROOM_EDGE_GARDENS,SCATTERED_GARDENS,OUTER_GARDENS } from '@/game/explorationRoom';
@@ -8,7 +9,7 @@ import { lensProjection,discoveredWorldPoint } from '@/game/explorationLens';
 import { drawExplorationGround,drawWoodlandProp,FOREST_GROUND } from '@/game/explorationScenery';
 import { drawGardenPatch,FOREST_NATURE } from '@/game/forestNature';
 
-type LensArt={ground:HTMLImageElement;props:HTMLImageElement;garden:HTMLImageElement;shelter:HTMLImageElement;portal:HTMLImageElement;bridge:HTMLImageElement;key:HTMLImageElement};
+type LensArt={ground:HTMLImageElement;props:HTMLImageElement;garden:HTMLImageElement;shelter:HTMLImageElement;portal:HTMLImageElement;bridge:HTMLImageElement;key:HTMLImageElement;riverProps:HTMLImageElement;riverPortal:HTMLImageElement;water:HTMLImageElement};
 /** The full lens shows actual terrain, clipped discovery and north-up world markers. */
 export default function ExplorationMinimap({state,children}:{state:CombatState;children?:ReactNode}){
  const canvas=useRef<HTMLCanvasElement>(null),art=useRef<LensArt|null>(null),latest=useRef(state);
@@ -16,7 +17,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  const draw=()=>{
   const el=canvas.current,ctx=el?.getContext('2d'),images=art.current;
   if(!el||!ctx||!images)return;
-  const size=el.width,s=latest.current,v=lensProjection(size,s.player),t=v.scale,room=campaignRoom(s.roomIndex);
+  const size=el.width,s=latest.current,v=lensProjection(size,s.player),t=v.scale,room=campaignRoom(s.roomIndex),river=room.biome==='river';
   const point=(p:{x:number;y:number})=>({x:v.left+p.x*t,y:v.top+p.y*t});
   const ready=(im:HTMLImageElement)=>im.complete&&im.naturalWidth>0;
   ctx.clearRect(0,0,size,size);ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();
@@ -28,17 +29,19 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   for(const i of s.exploredCells){const p=point(discoveredWorldPoint(i));ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
   ctx.clip();
   if(ready(images.ground))drawExplorationGround(ctx,size,size,images.ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
+  if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
+  drawCampaignShore(ctx,room,v.left,v.top,t,images.props,images.garden,images.riverProps);
   const visible=(p:{x:number;y:number})=>{const q=point(p);return q.x>-t*2&&q.y>-t*2&&q.x<size+t*2&&q.y<size+t*2;};
-  if(ready(images.garden))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS]){
-   if(visible(garden)){const q=point(garden);drawGardenPatch(ctx,images.garden,garden,q.x,q.y,t,0,true);}
+  if(ready(images.garden))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
+   if(visible(garden)){const q=point(garden);river?drawRiverProp(ctx,images.riverProps,3+garden.index%2,q.x,q.y,t,{width:garden.width,height:garden.height}):drawGardenPatch(ctx,images.garden,garden,q.x,q.y,t,0,true);}
   }
   if(ready(images.props))for(const prop of [...room.scenery,...ROOM_EDGE_SOLIDS].sort((a,b)=>a.y-b.y)){
-   if(visible(prop)){const q=point(prop);drawWoodlandProp(ctx,images.props,prop.index,q.x,q.y,t,prop,true);}
+   if(visible(prop)){const q=point(prop);river?drawRiverProp(ctx,images.riverProps,prop.index,q.x,q.y,t,prop):drawWoodlandProp(ctx,images.props,prop.index,q.x,q.y,t,prop,true);}
   }
   const sprite=(im:HTMLImageElement,p:{x:number;y:number},width:number)=>{
    if(!ready(im)||!visible(p))return;const q=point(p),w=t*width,h=w*im.naturalHeight/im.naturalWidth;ctx.drawImage(im,q.x-w/2,q.y-h,w,h);
   };
-  sprite(images.shelter,PILOT_SHELTER,1.55);sprite(images.portal,room.exit,1.95);drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
+  sprite(images.shelter,PILOT_SHELTER,1.55);sprite(river?images.riverPortal:images.portal,room.exit,1.95);drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
   if(room.key&&!s.hasRoomKey)drawCampaignKey(ctx,images.key,room.key,v.left,v.top,t,0,true);
   const dot=(p:{x:number;y:number},color:string,r=3.5)=>{
    const q=point(p);ctx.shadowColor='#182619';ctx.shadowBlur=3;ctx.fillStyle=color;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
@@ -61,7 +64,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  useEffect(()=>{
   let active=true;
   const make=(src:string)=>{const image=new Image();image.onload=()=>{if(active)draw();};image.src=src;return image;};
-  art.current={ground:make('/forest-adventure/ground-proposals-20261016/option-3.webp'),props:make('/forest-adventure/woodland-props-v2.png'),garden:make(FOREST_NATURE.garden.asset),shelter:make(PILOT_SHELTER.asset),portal:make('/forest-adventure/woodland-portal-v2.webp'),bridge:make('/forest-adventure/chapter1-bridge-v1.webp'),key:make('/forest-adventure/chapter1-key-v1.webp')};
+  art.current={ground:make('/forest-adventure/ground-proposals-20261016/option-3.webp'),props:make('/forest-adventure/woodland-props-v2.png'),garden:make(FOREST_NATURE.garden.asset),shelter:make(PILOT_SHELTER.asset),portal:make('/forest-adventure/woodland-portal-v2.webp'),bridge:make('/forest-adventure/chapter1-bridge-v1.webp'),key:make('/forest-adventure/chapter1-key-v1.webp'),riverProps:make('/forest-adventure/river-props-v1.webp'),riverPortal:make('/forest-adventure/river-portal-v1.webp'),water:make('/forest-adventure/painted-water-v1.webp')};
   draw();return ()=>{active=false;};
  },[]);
  useEffect(draw,[state]);

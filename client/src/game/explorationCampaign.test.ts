@@ -12,10 +12,10 @@ const walk=(s:CombatState,target:{x:number;y:number})=>{
 };
 describe('ten authored chapter-one rooms',()=>{
  it('contains ten distinct playable layouts and varied challenges',()=>{
-  expect(EXPLORATION_ROOMS).toHaveLength(10);
-  expect(new Set(EXPLORATION_ROOMS.map(r=>JSON.stringify([r.walls,r.nodes,r.marker,r.exit]))).size).toBe(10);
-  expect(EXPLORATION_ROOMS.filter(r=>r.switches.length).length).toBe(2);
-  expect(EXPLORATION_ROOMS.filter(r=>r.key).length).toBe(2);
+  expect(EXPLORATION_ROOMS).toHaveLength(20);
+  expect(new Set(EXPLORATION_ROOMS.map(r=>JSON.stringify([r.walls,r.nodes,r.marker,r.exit]))).size).toBe(20);
+  expect(EXPLORATION_ROOMS.slice(0,10).filter(r=>r.switches.length).length).toBe(2);
+  expect(EXPLORATION_ROOMS.slice(0,10).filter(r=>r.key).length).toBe(2);
  });
  it.each(EXPLORATION_ROOMS)('room $index: all authored goals and encounters have valid paths',room=>{
   for(const target of [room.camp,room.marker,room.exit,...room.nodes,...room.enemies,...room.switches,...(room.key?[room.key]:[])]){
@@ -28,11 +28,11 @@ describe('ten authored chapter-one rooms',()=>{
  it.each(EXPLORATION_ROOMS)('room $index: gates require current goals and completion advances monotonically',room=>{
   let s=fixture(room.index);s.player={...room.marker};s.stock.fibra=900;s.enemies.forEach(e=>{e.hp=0;e.respawnAt=1e9;});
   expect(stepCombat(s,{interact:true},0).gateOpen).toBe(false);
-  s.roomCollectedFibers=room.fibers;s.defeated=room.encounters;s.switchStep=room.switches.length;s.hasRoomKey=Boolean(room.key);s.bridgeCrossed=Boolean(room.bridge);s.consumablesUsed=room.useConsumable?1:0;
+  s.roomCollectedFibers=room.fibers;s.defeated=room.encounters;s.defeatedEnemyIds=s.enemies.map(e=>e.id);s.switchStep=room.switches.length;s.hasRoomKey=Boolean(room.key);s.bridgeCrossed=Boolean(room.bridge);s.consumablesUsed=room.useConsumable?1:0;
   s=stepCombat(s,{interact:true},0);expect(s.gateOpen).toBe(true);s.player={...room.exit};s.bag.fibra=5;s=stepCombat(s,{},0);
   expect(s.completed).toBe(true);expect(s.completedRooms).toContain(room.index);expect(s.claimedRooms).toContain(room.index);expect(stepCombat(s,{},50)).toBe(s);
   const parsed=read(s);expect(parsed.roomIndex).toBe(room.index);expect(parsed.completed).toBe(true);
-  const next=advanceCombatRoom(parsed);if(room.index===9){expect(next).toBe(parsed);return;}
+  const next=advanceCombatRoom(parsed);if(room.index===19){expect(next).toBe(parsed);return;}
   expect(next.roomIndex).toBe(room.index+1);expect(next.stock).toEqual(parsed.stock);expect(next.hp).toBe(parsed.hp);expect(next.xp).toBe(parsed.xp);expect(next.deaths).toBe(parsed.deaths);expect(next.revision).toBeGreaterThan(parsed.revision);expect(next.exploredCells).not.toBe(parsed.exploredCells);
   expect(next.collectedNodes).toEqual([]);expect(next.roomCollectedFibers).toBe(0);expect(next.gateOpen).toBe(false);expect(read(next).roomIndex).toBe(next.roomIndex);
  });
@@ -85,12 +85,12 @@ it.each(EXPLORATION_ROOMS)('room $index: headless movement collects resources an
  for(const plate of room.switches){s=walk(s,plate);s=stepCombat(s,{interact:true},0);}expect(s.switchStep).toBe(room.switches.length);
  if(room.bridge){s=walk(s,{x:6.5,y:5.5});s=walk(s,{x:10.5,y:5.5});expect(s.bridgeCrossed).toBe(true);}
  if(room.useConsumable){s=stepCombat(s,{power:true},0);s=consumeCombatItem(s,'fruta');expect(s.consumablesUsed).toBeGreaterThan(0);}
- s.defeated=room.encounters;s=walk(s,room.marker);s=stepCombat(s,{interact:true},0);expect(s.gateOpen).toBe(true);
+ s.defeated=room.encounters;s.defeatedEnemyIds=s.enemies.map(e=>e.id);s=walk(s,room.marker);s=stepCombat(s,{interact:true},0);expect(s.gateOpen).toBe(true);
  s=walk(s,room.exit);s=stepCombat(s,{},0);expect(s.completed).toBe(true);
 });
-it.each(EXPLORATION_ROOMS)('room $index: each enemy can be defeated with level-one melee in an isolated live duel',room=>{
+it.each(EXPLORATION_ROOMS)('room $index: each enemy can be defeated with chapter-appropriate melee in an isolated live duel',room=>{
  for(const def of room.enemies){
-  let s=fixture(room.index);s.enemies.forEach(e=>{if(e.id!==def.id){e.hp=0;e.respawnAt=1e9;}});
+  let s=fixture(room.index);s.xp=40*Math.pow(Math.floor(room.index/2)+2,2);s.hp=combatMaxHp(s.xp);s.enemies.forEach(e=>{if(e.id!==def.id){e.hp=0;e.respawnAt=1e9;}});
   const approach=[{x:def.x-.65,y:def.y},{x:def.x+.65,y:def.y},{x:def.x,y:def.y+.65},{x:def.x,y:def.y-.65}].find(p=>pilotWalkable(p,false,.22,room.index));expect(approach).toBeDefined();s.player=approach!;
   let steps=0;while(s.enemies.find(e=>e.id===def.id)!.hp>0&&steps++<300){const e=s.enemies.find(e=>e.id===def.id)!,d=Math.hypot(e.x-s.player.x,e.y-s.player.y);s.facing={x:(e.x-s.player.x)/(d||1),y:(e.y-s.player.y)/(d||1)};s=stepCombat(s,{attack:true},50);}
   expect(s.enemies.find(e=>e.id===def.id)!.hp).toBe(0);expect(s.deaths).toBe(0);expect(s.xp).toBeGreaterThan(0);

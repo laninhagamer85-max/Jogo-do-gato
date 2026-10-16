@@ -1,4 +1,4 @@
-import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,EXPLORATION_ROOMS} from './explorationCampaign';
+import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
 import {EXPLORATION_WORLD,insideExploration} from './explorationWorld';
 import {readMinimap,revealMinimap} from './explorationMinimap';
 import { ROOM_WALLS, PILOT_SHELTER, hitsEdgeScenery } from "./explorationRoom";
@@ -19,15 +19,15 @@ export function insectRespawnMs(enemy:{level:number;rarity:'common'|'uncommon'|'
 }
 /** Smaller insects share their footprint and contact distances with the renderer. */
 export const PILOT_INSECT={width:.64,radius:.17,stopDistance:.55,attackDistance:.82};
-export type CombatEnemy = CombatPoint & { id: string; hp: number; generation: number; attackAt: number; respawnAt: number };
+export type CombatEnemy = CombatPoint & { id: string; hp: number; generation: number; attackAt: number; respawnAt: number;specialAt?:number;windupUntil?:number;slowUntil?:number };
 export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity: number; rare?:RareItem; bornAt?: number; landedAt?: number; expiresAt?:number };
 /** Active play time, paused with the room: common piles last longer than uncommon amber. */
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  campaignVersion:1;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
-  exploredCells: number[]; minimapVersion: 2;
-  version: 2; revision: number; time: number; xp: number; hp: number; energy: number;
+  campaignVersion:2;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  exploredCells: number[]; minimapVersion: 3;
+  version: 3; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
   stock: Record<CombatItem, number>; bag: Record<CombatItem, number>;
   enemies: CombatEnemy[]; loot: CombatLoot[]; collectedNodes: string[];
@@ -44,10 +44,10 @@ const number = (v: unknown, fallback: number, min = 0, max = 1e9) => typeof v ==
 const distance = (a: CombatPoint, b: CombatPoint) => Math.hypot(a.x - b.x, a.y - b.y);
 export const combatLevel = (xp: number) => Math.min(20, 1 + Math.floor(Math.sqrt(Math.max(0, xp) / 40)));
 export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
-export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0);
+export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
-  return {campaignVersion:1,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0},rareBag:{seiva:0,cristal:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 2, exploredCells: readMinimap([],room.camp), version: 2, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {campaignVersion:2,cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 3, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -80,14 +80,14 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value: unknown): CombatRead {
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 2 || Number(raw.campaignVersion??1)>1) return { supported: false, version };
-  const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<10))]:raw.completed===true?[0]:[];
-  let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<9)unlocked++;
+  if (version > 3 || Number(raw.campaignVersion??1)>2) return { supported: false, version };
+  const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
+  let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=Math.floor(number(raw.roomIndex,0,0,unlocked));
   const room=campaignRoom(index),s = createCombatState(index,number(raw.encounterSeed,290519+index*101,0,0xffffffff));
   const definitions=campaignEnemies(index,s.encounterSeed);
-  for(const group of ['rareStock','rareBag'] as const)for(const item of ['seiva','cristal'] as const)s[group][item]=Math.floor(number(object(raw[group])[item],0,0,9999));
-  s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<10))]:completedRooms.slice();
+  for(const group of ['rareStock','rareBag'] as const)for(const item of Object.keys(RARE_ITEMS) as RareItem[])s[group][item]=Math.floor(number(object(raw[group])[item],0,0,9999));
+  s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
   if (!Object.keys(raw).length) return { supported: true, state: s };
   s.xp = Math.floor(number(raw.xp, 0, 0, 2e6)); s.hp = number(raw.hp, combatMaxHp(s.xp), 0, combatMaxHp(s.xp));
   s.time = number(raw.time, 0); s.revision = Math.floor(number(raw.revision, 0)); s.energy = number(raw.energy, 100, 0, 100);
@@ -102,9 +102,15 @@ export function readCombatState(value: unknown): CombatRead {
   s.roomCollectedFibers=Math.floor(number(raw.roomCollectedFibers,index===0?s.stock.fibra+s.bag.fibra:0,0,9999));
   const point = object(raw.player); const p = { x: number(point.x, room.camp.x, PILOT_SIZE.left, PILOT_SIZE.left+PILOT_SIZE.width), y: number(point.y, room.camp.y, PILOT_SIZE.top, PILOT_SIZE.top+PILOT_SIZE.height) };
   s.player = nearestPilotPoint(p, s.gateOpen,s.roomIndex);
-  s.exploredCells = readMinimap(raw.exploredCells,s.player,raw.minimapVersion===2?2:1);
+  s.exploredCells = readMinimap(raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
+  s.cards=Array.isArray(raw.cards)?[...new Set(raw.cards.filter((c):c is CombatCard=>c==='roots'||c==='tide'))]:[];
+  s.activeCard=s.cards.includes(raw.activeCard as CombatCard)?raw.activeCard as CombatCard:null;
+  s.rareEquipped=raw.rareEquipped==='cristal'||raw.rareEquipped==='escama'?raw.rareEquipped:null;
+  if(s.rareEquipped&&s.rareStock[s.rareEquipped]+s.rareBag[s.rareEquipped]<1)s.rareEquipped=null;
+  s.portalElapsed=number(raw.portalElapsed,0,0,2000);
+  s.defeatedEnemyIds=Array.isArray(raw.defeatedEnemyIds)?[...new Set(raw.defeatedEnemyIds.filter((id):id is string=>typeof id==='string'&&definitions.some(e=>e.id===id)))]:[];
   s.collectedNodes = room.nodes.filter(n => Array.isArray(raw.collectedNodes) && raw.collectedNodes.includes(n.id)).map(n => n.id);
   s.defeated = Math.floor(number(raw.defeated, 0)); s.deaths = Math.floor(number(raw.deaths, 0)); s.seed = number(raw.seed, s.seed, 1, 0xffffffff) >>> 0;
   s.attackAt = number(raw.attackAt, s.time, 0, s.time + 2000); s.invulnerableUntil = number(raw.invulnerableUntil, s.time, 0, s.time + 3000);
@@ -112,15 +118,17 @@ export function readCombatState(value: unknown): CombatRead {
     const rawEnemy = object(Array.isArray(raw.enemies) ? raw.enemies.find(e => object(e).id === def.id) : null);
     const ep = { x: number(rawEnemy.x, def.x, PILOT_SIZE.left, PILOT_SIZE.left+PILOT_SIZE.width), y: number(rawEnemy.y, def.y, PILOT_SIZE.top, PILOT_SIZE.top+PILOT_SIZE.height) };
     return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen,s.roomIndex), hp: number(rawEnemy.hp, def.hp, 0, def.hp),
-      generation: Math.floor(number(rawEnemy.generation, 0)), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + Math.max(45000,insectRespawnMs(def))) };
+      generation: Math.floor(number(rawEnemy.generation, 0)), specialAt:number(rawEnemy.specialAt,s.time+3000,0,s.time+6000),windupUntil:number(rawEnemy.windupUntil,0,0,s.time+1000),slowUntil:number(rawEnemy.slowUntil,0,0,s.time+2000), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + Math.max(45000,insectRespawnMs(def))) };
   });
+  if(!Array.isArray(raw.defeatedEnemyIds))s.defeatedEnemyIds=s.enemies.filter(e=>e.hp===0||e.generation>0).map(e=>e.id);
+  if(room.bossId&&!s.completed&&!s.defeatedEnemyIds.includes(room.bossId))s.gateOpen=false;
   // Earlier generations can still have a drop after their owner has respawned.
   const allowedLoot = new Set<string>();
-  s.loot = Array.isArray(raw.loot) ? raw.loot.slice(0, 20).flatMap(v => {
+  s.loot = Array.isArray(raw.loot) ? raw.loot.slice(0, 48).flatMap(v => {
     const l = object(v); const id = String(l.id); const item = String(l.item) as CombatItem;
     const p = { x: number(l.x, 999, -1e9), y: number(l.y, 999, -1e9) };
     const owner=s.enemies.find(e=>id.startsWith(`${e.id}:`));
-    const parts=id.split(':'),generation=Number(parts[1]),rare=(l.rare==='seiva'||l.rare==='cristal')?l.rare as RareItem:undefined;
+    const parts=id.split(':'),generation=Number(parts[1]),rare=(typeof l.rare==='string'&&l.rare in RARE_ITEMS)?l.rare as RareItem:undefined;
     const ownerKey=owner?.id+(rare?':rare':'');
     const def=definitions.find(e=>e.id===owner?.id);
     if (!owner || !def || id!==`${owner.id}:${generation}${rare?':rare':''}` || !Number.isInteger(generation) || generation<0 || generation>owner.generation || (generation===owner.generation && owner.hp>0) || allowedLoot.has(ownerKey) || (!rare&&item!==def.item)||(rare&&(rareDropChance(def)===0||rare!==rareDropKind(def)||item!=='ambar')) || !insideExploration(p)) return [];
@@ -133,7 +141,7 @@ export function combatSnapshot(s: CombatState): Record<string, unknown> {
   const { feedback: _feedback, message: _message, strikeUntil: _strike, walking: _walking, walkPhase: _phase, ...save } = s;
   return save;
 }
-function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms] }; }
+function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms],cards:[...s.cards],defeatedEnemyIds:[...s.defeatedEnemyIds] }; }
 function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeedback['kind']) {
   s.feedback.push({ ...p, id: s.revision * 100 + s.feedback.length, text, kind, until: s.time + 1100 });
   s.feedback = s.feedback.slice(-16);
@@ -172,15 +180,16 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) s.energy -= 25;
+    if(power&&s.activeCard==='tide'){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
     s.attackAt = s.time + (power ? 1000 : 500); s.strikeUntil = s.time + 320;
     for (const enemy of s.enemies) {
       const def = definitions.find(e => e.id === enemy.id)!; const range = distance(s.player, enemy);
       const dot = range ? ((enemy.x - s.player.x) * s.facing.x + (enemy.y - s.player.y) * s.facing.y) / range : 1;
       if (enemy.hp <= 0 || range > (power ? 1.7 : 1.25) || (!power && dot < .25) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
       const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6 : 1) - def.defense)));
-      enemy.hp -= damage; feedback(s, enemy, `−${damage} HP`, 'damage');
+      enemy.hp -= damage; if(power&&s.activeCard==='roots')enemy.slowUntil=s.time+2000; feedback(s, enemy, `−${damage} HP`, 'damage');
       if (enemy.hp === 0) {
-        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; enemy.respawnAt = s.time + insectRespawnMs(def);
+        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; if(!s.defeatedEnemyIds.includes(enemy.id))s.defeatedEnemyIds.push(enemy.id); if(def.boss){const card:CombatCard=room.biome==='river'?'tide':'roots';if(!s.cards.includes(card)){s.cards.push(card);s.activeCard=card;feedback(s,s.player,`Carta rara: ${COMBAT_CARDS[card].name}`,'info');}s.rareBag[rareDropKind(def)]++;} enemy.respawnAt = s.time + insectRespawnMs(def);
         feedback(s, s.player, `+${def.xp} XP`, 'xp');
         const increase = combatMaxHp(s.xp) - oldMax; s.hp += increase;
         if (combatLevel(s.xp) > oldLevel) { feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
@@ -195,7 +204,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
           feedback(s,enemy,'Item raro!','info');
         }
         if (random(s) < .12 && !s.equipmentOwned) { s.equipmentOwned = true; feedback(s, s.player, 'Broche encontrado', 'info'); }
-        s.message = `${def.name} superado. Aproxime-se para coletar ${COMBAT_ITEMS[def.item]}.`;
+        s.message = def.boss?`Carta rara desbloqueada: ${COMBAT_CARDS[room.biome==='river'?'tide':'roots'].description}`:`${def.name} superado. Aproxime-se para coletar ${COMBAT_ITEMS[def.item]}.`;
       }
     }
   }
@@ -203,17 +212,19 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
     const def = definitions.find(e => e.id === enemy.id)!;
     if (enemy.hp === 0) {
       const occupied = distance(s.player, def) < 2;
-      if (s.time >= enemy.respawnAt && !occupied) { Object.assign(enemy, { x: def.x, y: def.y, hp: def.hp, generation: enemy.generation + 1, attackAt: s.time + 1500, respawnAt: 0 }); }
+      if (!def.boss && s.time >= enemy.respawnAt && !occupied) { Object.assign(enemy, { x: def.x, y: def.y, hp: def.hp, generation: enemy.generation + 1, attackAt: s.time + 1500, respawnAt: 0 }); }
       continue;
     }
     const range = distance(s.player, enemy), safe = distance(s.player, room.camp) < 1.6;
     if (!safe && range < (def.detection??4) && distance(s.player,def)<(def.leash??99) && range > (def.art? .62:PILOT_INSECT.stopDistance)) {
-      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * (def.speed??.00085), (s.player.y - enemy.y) / range * dt * (def.speed??.00085), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex));
+      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), (s.player.y - enemy.y) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex));
     } else if (safe || range > (def.detection??4) || distance(s.player,def)>=(def.leash??99)) {
       const home = distance(enemy, def); if (home > .1) Object.assign(enemy, move(enemy, (def.x - enemy.x) / home * dt * .0006, (def.y - enemy.y) / home * dt * .0006, s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex));
     }
-    if (!safe && distance(s.player, enemy) <= (def.attackRange??PILOT_INSECT.attackDistance) && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) {
-      const damage = Math.min(s.hp, Math.max(1, def.attack - Math.floor(combatLevel(s.xp) / 2) - (s.equipmentOn ? 1 : 0)));
+    if(def.boss&&!safe&&range<3.2&&s.time>=(enemy.specialAt??3000)&&!enemy.windupUntil){enemy.windupUntil=s.time+900;enemy.specialAt=s.time+5500;feedback(s,enemy,'Afaste-se: golpe do mestre!','info');}
+    if(enemy.windupUntil&&s.time>=enemy.windupUntil){enemy.windupUntil=0;if(!safe&&range<2.1&&s.time>=s.invulnerableUntil&&clearPilotLine(s.player,enemy,s.gateOpen,s.roomIndex)){const damage=Math.min(s.hp,Math.round(def.attack*1.5));s.hp-=damage;s.invulnerableUntil=s.time+550;feedback(s,s.player,`−${damage} HP`,'damage');if(!s.hp)return defeatCombat(s);}}
+    if (!safe && !enemy.windupUntil && distance(s.player, enemy) <= (def.attackRange??PILOT_INSECT.attackDistance) && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) {
+      const damage = Math.min(s.hp, Math.max(1, def.attack - Math.floor(combatLevel(s.xp) / 2) - (s.equipmentOn ? 1 : 0)-(s.rareEquipped==='escama'?4:0)));
       s.hp -= damage; s.invulnerableUntil = s.time + 550; enemy.attackAt = s.time + 1500;
       feedback(s, s.player, `−${damage} HP`, 'damage');
       if (s.hp === 0) return defeatCombat(s);
@@ -227,7 +238,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   if(room.key&&!s.hasRoomKey&&distance(s.player,room.key)<.55){s.hasRoomKey=true;s.message='Chave da trilha encontrada!';feedback(s,room.key,'Chave encontrada','info');}
   if(room.bridge){const b=room.bridge;
     if(s.player.x>=b.x&&s.player.x<b.x+.9&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeEntered=true;
-    if(s.bridgeEntered&&s.player.x>b.x+b.width-.55&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeCrossed=true;
+    if(s.bridgeEntered&&s.player.x>b.x+b.width-.9&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeCrossed=true;
   }
   if(input.interact){
     const plate=room.switches.findIndex(p=>distance(s.player,p)<1);
@@ -237,14 +248,14 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
     }
     if(distance(s.player,room.marker)<1.2){
       const fibers=s.roomIndex===0?s.stock.fibra+s.bag.fibra:s.roomCollectedFibers;
-      if(fibers>=room.fibers&&s.defeated>=room.encounters&&s.switchStep>=room.switches.length&&(!room.key||s.hasRoomKey)&&(!room.bridge||s.bridgeCrossed)&&(!room.useConsumable||s.consumablesUsed>0)){
+      if(fibers>=room.fibers&&(s.roomIndex===0?s.defeated:s.defeatedEnemyIds.length)>=room.encounters&&(!room.bossId||s.defeatedEnemyIds.includes(room.bossId))&&s.switchStep>=room.switches.length&&(!room.key||s.hasRoomKey)&&(!room.bridge||s.bridgeCrossed)&&(!room.useConsumable||s.consumablesUsed>0)){
         s.gateOpen=true;s.message='Marco ativado. Siga até o portal luminoso.';
       }else s.message=`Ainda falta um objetivo. ${room.hint}`;
     }
   }
   if (s.gateOpen && distance(s.player, room.exit) < .7) {
     for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) { s.stock[item] += s.bag[item]; s.bag[item] = 0; }
-    for(const item of ['seiva','cristal'] as const){s.rareStock[item]+=s.rareBag[item];s.rareBag[item]=0;}
+    for(const item of Object.keys(RARE_ITEMS) as RareItem[]){s.rareStock[item]+=s.rareBag[item];s.rareBag[item]=0;}
     s.completed = true;
     const firstCompletion = !s.completionRewardClaimed;
     if (firstCompletion) { s.equipmentOwned = true; s.completionRewardClaimed = true; }
@@ -290,7 +301,7 @@ export function replayCompletedCombat(current: CombatState): CombatState {
   next.xp = current.xp;
   next.hp = combatMaxHp(current.xp);
   next.energy = current.energy;
-  next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
+  next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
   next.enemies=campaignEnemies(next.roomIndex,next.encounterSeed).map(e=>({id:e.id,x:e.x,y:e.y,hp:e.hp,generation:0,attackAt:current.time+1500,respawnAt:0}));
   next.bag = { ...current.bag };
   next.equipmentOwned = current.equipmentOwned;
@@ -307,11 +318,28 @@ export function replayCompletedCombat(current: CombatState): CombatState {
 
 /** Forward-only portal transition; no inventory refill, reset of XP or replay bonus. */
 export function advanceCombatRoom(current:CombatState):CombatState{
- if(!current.completed||current.roomIndex>=9)return current;
+ if(!current.completed||current.roomIndex>=EXPLORATION_ROOMS.length-1)return current;
  const next=createCombatState(current.roomIndex+1,(Math.imul(current.seed,1664525)+1013904223)>>>0);
  next.revision=current.revision+1;next.time=current.time;next.xp=current.xp;next.hp=Math.min(current.hp,combatMaxHp(current.xp));next.energy=current.energy;
- next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
+ next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
  next.completedRooms=[...new Set([...current.completedRooms,current.roomIndex])];next.claimedRooms=[...new Set([...current.claimedRooms,current.roomIndex])];next.completionRewardClaimed=next.claimedRooms.includes(next.roomIndex);
  next.deaths=current.deaths;next.seed=current.seed;next.invulnerableUntil=next.time+2500;next.attackAt=next.time;
  next.enemies=next.enemies.map(e=>({...e,attackAt:next.time+1500}));return next;
+}
+
+export type CombatCard='roots'|'tide';
+export const COMBAT_CARDS:Record<CombatCard,{name:string;description:string}>={roots:{name:'Coração dos Troncos',description:'Carta rara do Mestre dos Troncos. Equipada, seu poder desacelera adversários por 2 segundos.'},tide:{name:'Coração das Marés',description:'Carta rara do Mestre das Marés. Equipada, cada uso do poder recupera até 15 HP.'}};
+export function equipCombatCard(current:CombatState,card:CombatCard){return current.cards.includes(card)?{...current,activeCard:current.activeCard===card?null:card,revision:current.revision+1}:current;}
+export function useRareCombatItem(current:CombatState,item:RareItem):CombatState{
+ if(current.completed||current.rareStock[item]+current.rareBag[item]<1)return current;
+ const s=clone(current);
+ if(item==='cristal'||item==='escama'){s.rareEquipped=s.rareEquipped===item?null:item;s.message=item==='cristal'?'Cristal do bosque: +6 de ataque.':'Escama das marés: reduz dano comum em 4.';}
+ else{const amount=Math.min(item==='perola'?90:60,combatMaxHp(s.xp)-s.hp);if(amount<=0)return current;if(s.rareBag[item]>0)s.rareBag[item]--;else s.rareStock[item]--;s.hp+=amount;s.consumablesUsed++;feedback(s,s.player,`+${amount} HP`,'heal');s.message=`${RARE_ITEMS[item]}: +${amount} HP.`;}
+ s.revision++;return s;
+}
+/** Paused/hidden time never advances teleport. Save both sides; resume completed legacy rooms automatically. */
+export function tickCombatPortal(current:CombatState,elapsedMs:number):CombatState{
+ if(!current.completed||current.roomIndex>=EXPLORATION_ROOMS.length-1||!Number.isFinite(elapsedMs)||elapsedMs<0)return current;
+ const next={...current,portalElapsed:current.portalElapsed+Math.min(50,elapsedMs),revision:current.revision+1};
+ return next.portalElapsed>=850?advanceCombatRoom(next):next;
 }

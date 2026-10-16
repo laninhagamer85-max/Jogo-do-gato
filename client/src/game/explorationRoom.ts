@@ -60,7 +60,7 @@ export const EXPANDED_GARDENS=Array.from({length:44},(_,i)=>{
 /** Dense outer forest follows the rounded world edge, leaving the old pockets untouched. */
 export const OUTER_GARDENS=Array.from({length:96},(_,i)=>{
  const angle=i*Math.PI*2/96;
- return {x:7+Math.cos(angle)*(13.15+.18*Math.sin(i*1.7)),y:5+Math.sin(angle)*(10.15+.15*Math.cos(i)),index:[4,1,0,2,5,3,1][i%7],width:1.2+(i%3)*.18,height:1.0+(i%4)*.13,blocking:false as const};
+ return {x:7+Math.cos(angle)*(15.15+.18*Math.sin(i*1.7)),y:5+Math.sin(angle)*(12.15+.15*Math.cos(i)),index:[4,1,0,2,5,3,1][i%7],width:1.2+(i%3)*.18,height:1.0+(i%4)*.13,blocking:false as const};
 });
 
 /** Low vegetation is traversable; rock/log bases now share collision with the visible props.

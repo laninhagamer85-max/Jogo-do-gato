@@ -62,3 +62,8 @@ export function touchesRegion(p:GroundPoint,radius:number,polygon:readonly Groun
 export function biomeBlocks(p:GroundPoint,radius=.22,composition=PILOT_BIOME){
   return composition.regions.some(r=>r.material==='water'&&touchesRegion(p,radius,r.polygon));
 }
+
+/** A continuous river divides the world. Only the matching bridge deck is walkable. */
+export function crossingComposition(id:string):BiomeComposition{
+ return {id,regions:[{id:id+'-bank',material:'sand',seed:9301,polygon:organicOutline([{x:6.1,y:-10},{x:10.9,y:-10},{x:10.8,y:-3},{x:11,y:3},{x:10.9,y:9},{x:10.7,y:15},{x:10.9,y:21},{x:6.1,y:21},{x:6,y:14},{x:6.1,y:8},{x:6.15,y:1},{x:6,y:-5}])},{id:id+'-water',material:'water',seed:9302,polygon:organicOutline([{x:6.5,y:-10},{x:10.4,y:-10},{x:10.35,y:-3},{x:10.4,y:3},{x:10.35,y:9},{x:10.3,y:15},{x:10.4,y:21},{x:6.5,y:21},{x:6.45,y:14},{x:6.5,y:8},{x:6.45,y:1},{x:6.5,y:-5}])}]};
+}
