@@ -9,35 +9,35 @@
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "f2d17db2cae5adf7898b443a08a0a96e79a3a095",
+    "source_site_commit": "76dacf405cf5a19286d8252b00dce50a68f9676b",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "3febb7ec4681a91913c015caf8cd4c01379ed1c5",
-    "implementation_base_github_commit": "499f2ac3e0e3c050dd5d85538961fe444fbb1cc7"
+    "code_commit": "a4e49ad94a70b3bbfa1cdd14820ef0af346fd79e",
+    "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6"
   },
   "current_improvement": {
-    "id": "room-navigation-and-rendered-clearing",
-    "implementation_status": "offline_verified",
-    "acceptance_status": "desktop_navigation_and_static_pilot_observed_phone_review_pending"
+    "id": "compact-room-library-icons",
+    "implementation_status": "published",
+    "acceptance_status": "desktop_appearance_observed_phone_review_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.23",
-    "last_observed_version": 42,
+    "product_version": "1.9.24",
+    "last_observed_version": 43,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8525cc60460c819181dbae320b9ba415",
-    "deployment_id": "appgdep_6ad1b5faaf3881918d456ececb04ffcc",
-    "site_commit": "15e491444fd4055200f6a226d6cc663383905bb0",
-    "published_at": "2026-10-16T05:28:43.432526+00:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_12d8f80299b081918e1f6989c7670ad4",
+    "deployment_id": "appgdep_6ad1b84b099081919eeefec09bb3ffb7",
+    "site_commit": "76dacf405cf5a19286d8252b00dce50a68f9676b",
+    "published_at": "2026-10-16T05:38:41.443728+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "212/212 in 29 files; Firebase staging integration excluded for missing credentials",
+    "offline_tests": "212/212 in 29 files; Firebase staging integration excluded",
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Published desktop: all three shortcuts and returns work; pilot follow/overview inspected; no phone portrait/FPS playtest; home WebGL unavailable",
+    "browser": "Published desktop: uniform compact buttons and illustrated care icons observed. Portrait panel and edge icons require phone review; home WebGL unavailable.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -52,18 +52,17 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: inspect portrait/landscape room centre, Cuidar/Status/Mochila and the three mode shortcuts.",
-    "Review the softened pilot grass in motion on the phone; FPS not measured.",
-    "Only after base acceptance, plan room expansion/progressive map reveal."
+    "David: evaluate portrait Cuidar size and illustrated edge shortcuts.",
+    "Confirm desired uniform button style, then resume pilot refinement/expansion planning."
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.9.22",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_34b5eb038b6081918cd8be9790820e30",
-    "site_commit": "f2d17db2cae5adf7898b443a08a0a96e79a3a095",
-    "instructions": "Only redeploy if still the immediate predecessor; preserve saves and later collaborators."
+    "product_version": "1.9.23",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8525cc60460c819181dbae320b9ba415",
+    "site_commit": "15e491444fd4055200f6a226d6cc663383905bb0",
+    "instructions": "Only redeploy while immediate predecessor; preserve saves and later collaborators."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-room-navigation-and-rendered-clearing.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-compact-room-icons.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -307,5 +306,12 @@
     ],
     "portrait_panels": "care/status on-demand; backpack edge shortcut",
     "expansion": "planned_not_implemented"
+  },
+  "compact_room_icons": {
+    "product_version": "1.9.24",
+    "status": "published_for_phone_review",
+    "icon_source": "existing ui/pet-icons-atlas-v1.png",
+    "care_grid": "2x2 portrait; height from content; up to 252px width",
+    "no_new_art": true
   }
 }
