@@ -4,8 +4,8 @@ import type { User } from "firebase/auth";
 import PlayerAccountDialog from "@/components/PlayerAccountDialog";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type DragEvent, type MouseEvent } from "react";
 import {
-  Activity, Backpack, Bath, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Compass, Gamepad2, Gift, Heart,
-  Home as HomeIcon, LockKeyhole, MapPin, Moon, PawPrint, Plus, Settings, ShoppingBag,
+  Backpack, BookOpen, Camera, Check, ChevronDown, ChevronRight, Coins, Gamepad2, Gift, Heart,
+  Home as HomeIcon, LockKeyhole, MapPin, PawPrint, Plus, Settings, ShoppingBag,
   Eye, EyeOff, LogOut, ShieldCheck, Sparkles, Star, Trophy, Utensils, Volume2, VolumeX, X,
 } from "lucide-react";
 import MiniGameBoard from "@/components/MiniGameBoard";
@@ -936,16 +936,16 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
             <button className="icon-button focus-mode-toggle" type="button" onClick={() => { setFocusMode((value) => !value); setActiveCareAction(null); }} aria-pressed={focusMode} aria-label={focusMode ? "Mostrar todas as informações" : "Ativar tela limpa"} title={focusMode ? "Mostrar interface completa" : "Tela limpa"}>{focusMode ? <Eye size={19} /> : <EyeOff size={19} />}</button>
           </div>
           <nav className="home-game-modes" aria-label="Modos de jogo">
-            <button type="button" data-room-tour="adventure" onClick={openAdventure}><Gamepad2 size={20} aria-hidden="true" /><span>Aventura</span></button>
-            <button type="button" data-room-tour="exploration" onClick={openExploration}><Compass size={20} aria-hidden="true" /><span>Exploração</span></button>
-            <button type="button" data-room-tour="minigames" onClick={openMiniHub}><Sparkles size={20} aria-hidden="true" /><span>Minijogos</span></button>
+            <button type="button" data-room-tour="adventure" onClick={openAdventure}><PetSymbol symbol="adventure" /><span>Aventura</span></button>
+            <button type="button" data-room-tour="exploration" onClick={openExploration}><PetSymbol symbol="exploration" /><span>Exploração</span></button>
+            <button type="button" data-room-tour="minigames" onClick={openMiniHub}><PetSymbol symbol="minigames" /><span>Minijogos</span></button>
           </nav>
         </header>
 
         <nav className="home-room-tools" aria-label="Atalhos da sala de estar">
-          <button type="button" className="home-room-care" data-room-tour="care-shortcut" aria-expanded={mobileRoomPanel === "care"} aria-controls="home-room-care-panel" onClick={() => toggleMobileRoomPanel("care")}><Heart size={21} aria-hidden="true" /><span>Cuidar</span></button>
-          <button type="button" className="home-room-status" aria-expanded={mobileRoomPanel === "stats"} aria-controls="home-room-status-panel" onClick={() => toggleMobileRoomPanel("stats")}><Activity size={21} aria-hidden="true" /><span>Status</span></button>
-          <button type="button" className="home-room-backpack" data-room-tour="inventory-shortcut" onClick={() => openShop("inventory")}><Backpack size={21} aria-hidden="true" /><span>Mochila</span></button>
+          <button type="button" className="home-room-care" data-room-tour="care-shortcut" aria-expanded={mobileRoomPanel === "care"} aria-controls="home-room-care-panel" onClick={() => toggleMobileRoomPanel("care")}><PetSymbol symbol="care" /><span>Cuidar</span></button>
+          <button type="button" className="home-room-status" aria-expanded={mobileRoomPanel === "stats"} aria-controls="home-room-status-panel" onClick={() => toggleMobileRoomPanel("stats")}><PetSymbol symbol="status" /><span>Status</span></button>
+          <button type="button" className="home-room-backpack" data-room-tour="inventory-shortcut" onClick={() => openShop("inventory")}><PetSymbol symbol="inventory" /><span>Mochila</span></button>
         </nav>
 
         <main className="dashboard-grid">
@@ -958,9 +958,9 @@ export default function Home({ localAccountId, onSignOut, accountUser }: { local
               <div className="panel-heading"><h2>Cuidar</h2><div className="panel-heading-actions"><span className="panel-caption">um gesto de carinho</span><CollapseButton collapsed={collapsed.care} onClick={() => { if (!collapsed.care) setActiveCareAction(null); togglePanel("care"); }} label="cuidados" /></div></div>
               {!collapsed.care && <div className="care-grid">
                 <button className={`care-button feed ${activeCareAction === "food" ? "is-active" : ""}`} aria-expanded={activeCareAction === "food"} onClick={() => openCareAction("food")}><span><PetSymbol symbol="🍎" /></span><b>Alimentar</b><small>{game.inventory.sardinha > 0 ? `${game.inventory.sardinha} na mochila` : "ver petiscos"}</small></button>
-                <button className={`care-button bath ${activeCareAction === "bath" ? "is-active" : ""}`} aria-expanded={activeCareAction === "bath"} onClick={() => openCareAction("bath")}><span><Bath size={22} /></span><b>Banho</b><small>{game.inventory.banho > 0 ? `${game.inventory.banho} na mochila` : "12 moedas"}</small></button>
-                <button className={`care-button love ${activeCareAction === "love" ? "is-active" : ""}`} aria-expanded={activeCareAction === "love"} onClick={() => openCareAction("love")}><span><Heart size={22} fill="currentColor" /></span><b>Carinho</b><small>{game.inventory.novelo > 0 ? `${game.inventory.novelo} na mochila` : "grátis"}</small></button>
-                <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""} ${activeCareAction === "sleep" ? "is-active" : ""}`} aria-expanded={activeCareAction === "sleep"} onClick={() => openCareAction("sleep")}><span><Moon size={22} fill="currentColor" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>{game.inventory.caminha > 0 && !game.sleeping ? `${game.inventory.caminha} na mochila` : "recupera energia"}</small></button>
+                <button className={`care-button bath ${activeCareAction === "bath" ? "is-active" : ""}`} aria-expanded={activeCareAction === "bath"} onClick={() => openCareAction("bath")}><span><PetSymbol symbol="🫧" /></span><b>Banho</b><small>{game.inventory.banho > 0 ? `${game.inventory.banho} na mochila` : "12 moedas"}</small></button>
+                <button className={`care-button love ${activeCareAction === "love" ? "is-active" : ""}`} aria-expanded={activeCareAction === "love"} onClick={() => openCareAction("love")}><span><PetSymbol symbol="♥" /></span><b>Carinho</b><small>{game.inventory.novelo > 0 ? `${game.inventory.novelo} na mochila` : "grátis"}</small></button>
+                <button className={`care-button sleep ${game.sleeping ? "sleeping" : ""} ${activeCareAction === "sleep" ? "is-active" : ""}`} aria-expanded={activeCareAction === "sleep"} onClick={() => openCareAction("sleep")}><span><PetSymbol symbol="🛏️" /></span><b>{game.sleeping ? "Acordar" : "Dormir"}</b><small>{game.inventory.caminha > 0 && !game.sleeping ? `${game.inventory.caminha} na mochila` : "recupera energia"}</small></button>
               </div>}
               {!collapsed.care && activeCareAction && !focusMode && renderCareActionTray()}
             </section>

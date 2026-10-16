@@ -345,6 +345,12 @@ export const PET_ICON_ATLAS = {
   }
 } as const;
 export const PET_SYMBOLS: Record<string, readonly [keyof typeof PET_ICON_ATLAS, string]> = {
+  adventure: ["boot", "Aventura"],
+  exploration: ["leaf", "Exploração"],
+  minigames: ["gamepad", "Minijogos"],
+  care: ["paw", "Cuidar"],
+  status: ["heart", "Status"],
+  inventory: ["basket", "Mochila"],
   "🍎": [
     "apple",
     "Maçã"
