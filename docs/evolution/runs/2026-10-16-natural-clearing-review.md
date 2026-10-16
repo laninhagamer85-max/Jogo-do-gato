@@ -30,3 +30,9 @@ Fontes primárias consultadas em 16/10/2026:
 ## Revisão no aparelho
 
 Conferir Aventura → Exploração → Sala piloto: combate e coleta; gramado perto/longe, Ver sala, quatro bordas, retrato/paisagem, ida e volta, coleta e combate. Aceitar a base visual antes de implementar as dez salas distintas do capítulo 1. Rollback conhecido: 1.9.20 / Sites 39; preservar os saves e não sobrescrever uma publicação posterior.
+
+## Publicação confirmada
+
+Produto 1.9.21 / Sites 40, status succeeded. Commit Sites `3855e6697699dd2dd111cabf8a27e5b104087d95`; código GitHub `eda4cee99c462d85581b3b0fd035f0d85e8c06b9`. Versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_151986417ea481918a913b68df89b365`, deployment `appgdep_6ad1b01e65448191b913a6ae86bfeec0`. URL: https://meupet.aquimeusite.chatgpt.site. Pacote verificado por leitura integral do tar, manifesto e hash da grama. Revisão no aparelho permanece pendente.
+
+Após a publicação, recarregado o mesmo navegador autenticado e percorrido Minha Casa → Aventura → Exploração → sala piloto → Ver sala. A captura em paisagem mostra a grama nova, os grupos irregulares e os dois insetos menores. Isto é inspeção visual estática em desktop, não avaliação em retrato nem medição de movimento/FPS. Nenhum desbloqueio ou conclusão de fase foi simulado na conta.

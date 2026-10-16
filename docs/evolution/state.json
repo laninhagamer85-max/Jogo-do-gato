@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_user_review_publication",
+  "status": "published_for_user_review",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,7 +11,7 @@
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
     "source_site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "c3182cf8bc8e0f1643d88446aca3fc1cb6036708",
+    "code_commit": "eda4cee99c462d85581b3b0fd035f0d85e8c06b9",
     "implementation_base_github_commit": "38136dec5a85837aaaa080fb9275e1d19c4a1c40"
   },
   "current_improvement": {
@@ -23,12 +23,12 @@
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.9.21",
-    "last_observed_version": 39,
-    "status": "preparing",
-    "version_id": null,
-    "deployment_id": null,
-    "site_commit": null,
-    "published_at": null,
+    "last_observed_version": 40,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_151986417ea481918a913b68df89b365",
+    "deployment_id": "appgdep_6ad1b01e65448191b913a6ae86bfeec0",
+    "site_commit": "3855e6697699dd2dd111cabf8a27e5b104087d95",
+    "published_at": "2026-10-16T05:03:47.759540+00:00",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -37,7 +37,7 @@
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Production 1.9.20 inspected with cloud browser in landscape. New 1.9.21 build not inspected; control-browser unavailable for managed preview. User device review authorized.",
+    "browser": "Post-deploy 1.9.21 loaded and inspected in cloud browser, landscape overview only. New grass, clusters and smaller insects visible. Portrait, motion, FPS and user device acceptance not tested.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -48,7 +48,7 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "pending"
+    "packaged_grass": "passed_exact_sha256_in_deployment_archive"
   },
   "blockers": [],
   "next_actions": [
@@ -56,7 +56,7 @@
     "Depois do aceite visual, implementar salas reais do capítulo 1 com dificuldade, encontros, drops e desbloqueios próprios; não apenas duplicar o piloto."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.9.20",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_e82df9a594e08191b2c46f9410f2b54b",
     "site_commit": "e7924f17c689d3c33f021b799fdef056a9d80b69",
@@ -271,7 +271,7 @@
   },
   "natural_clearing_review": {
     "date": "2026-10-16",
-    "status": "implemented_pending_publication_and_user_review",
+    "status": "published_for_user_review",
     "scope": "one pilot, chapter-one art basis",
     "asset": "client/public/forest-adventure/grass-woodland-soft-v3.webp",
     "edge_clusters": 17,
@@ -280,6 +280,7 @@
     "enemy_collision_radius": 0.17,
     "new_biomes_implemented": 0,
     "new_enemies_implemented": 0,
-    "campaign_expansion": "planning only, existing 60-room gate preserved"
+    "campaign_expansion": "planning only, existing 60-room gate preserved",
+    "post_deploy_visual": "landscape overview observed; phone portrait and gameplay pending"
   }
 }
