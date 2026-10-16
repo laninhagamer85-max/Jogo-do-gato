@@ -1,0 +1,68 @@
+[
+  {
+    "previous": {
+      "wallMs": 47900,
+      "elapsed": 47.71853600000073,
+      "x": 1578.120000000002,
+      "y": 229.4647646993858,
+      "vy": 0,
+      "grounded": true,
+      "hearts": 3,
+      "input": null,
+      "enemies": null
+    },
+    "after": {
+      "wallMs": 48000,
+      "elapsed": 47.81933600000074,
+      "x": 81.14999999999999,
+      "y": 250.39421875,
+      "vy": 0,
+      "grounded": true,
+      "hearts": 2
+    }
+  },
+  {
+    "previous": {
+      "wallMs": 135405,
+      "elapsed": 92.05893600000219,
+      "x": 3266.8499999999954,
+      "y": 460.1238881584426,
+      "vy": 900,
+      "grounded": false,
+      "hearts": 2,
+      "input": null,
+      "enemies": null
+    },
+    "after": {
+      "wallMs": 135505,
+      "elapsed": 92.15973600000221,
+      "x": 3014.5800000000017,
+      "y": 226.82491315844723,
+      "vy": -61.199999999989814,
+      "grounded": false,
+      "hearts": 1
+    }
+  },
+  {
+    "previous": {
+      "wallMs": 190100,
+      "elapsed": 98.88063600000244,
+      "x": 4738.469999999988,
+      "y": 458.8869090196405,
+      "vy": 882.1750000000102,
+      "grounded": false,
+      "hearts": 1,
+      "input": null,
+      "enemies": null
+    },
+    "after": {
+      "wallMs": 190200,
+      "elapsed": 98.94783600000245,
+      "x": 4758.629999999992,
+      "y": 519.0674490196509,
+      "vy": 900,
+      "grounded": false,
+      "hearts": 0
+    }
+  }
+]

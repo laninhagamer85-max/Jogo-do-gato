@@ -1,0 +1,74 @@
+{
+  "method": "automated browser UI and emulated multi-touch, simulated visibility lifecycle",
+  "tests": [
+    {
+      "name": "no autoplay without opt-in",
+      "passed": true
+    },
+    {
+      "name": "pause freezes position and timer",
+      "passed": true,
+      "before": {
+        "hud": "1\n/28\n\ud83d\udc1f\n0\n/3",
+        "x": 171.83999999999997,
+        "elapsed": 2.3039420000000015,
+        "coins": 1
+      },
+      "paused": {
+        "x": 171.83999999999997,
+        "elapsed": 2.387942000000002,
+        "paused": true
+      }
+    },
+    {
+      "name": "simulated hide/show keeps explicit pause",
+      "passed": true,
+      "result": {
+        "paused": true,
+        "elapsedUnchanged": true
+      }
+    },
+    {
+      "name": "resume preserves collected coin HUD immediately",
+      "passed": true,
+      "before": {
+        "hud": "1\n/28\n\ud83d\udc1f\n0\n/3",
+        "x": 171.83999999999997,
+        "elapsed": 2.3039420000000015,
+        "coins": 1
+      },
+      "after": {
+        "hud": "1\n/28\n\ud83d\udc1f\n0\n/3",
+        "coins": 1
+      }
+    },
+    {
+      "name": "mobile left touch moves left",
+      "passed": true,
+      "before": 171.83999999999997,
+      "after": 101.24999999999997
+    },
+    {
+      "name": "simultaneous mobile move and jump with released pointers",
+      "passed": true,
+      "snapshot": {
+        "x": 161.73000000000008,
+        "grounded": false,
+        "input": {
+          "left": false,
+          "right": false,
+          "jump": false
+        }
+      }
+    },
+    {
+      "name": "tap starts next unlocked stage from synthetic memory only",
+      "passed": true,
+      "entry": "Fase 2 \u00b7 Casa do Come\u00e7o",
+      "started": "Fase 2: Atravesse a ponte saltitante",
+      "notAStage1Completion": true,
+      "stage2StartedOnlyNotPlayed": true
+    }
+  ],
+  "errors": []
+}

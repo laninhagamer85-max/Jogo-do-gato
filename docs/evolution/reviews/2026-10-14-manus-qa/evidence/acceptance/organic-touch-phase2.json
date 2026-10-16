@@ -1,0 +1,854 @@
+{
+  "method": "CDP emulated touch on Continue Adventure after organic phase1 victory; Escape pause",
+  "before": {
+    "engine": {
+      "x": 5545.379999999957,
+      "y": 264.76737269205967,
+      "grounded": true,
+      "groundedOnGround": true,
+      "currentSurface": {
+        "x": 5366.599999999999,
+        "y": 324.76737269205967,
+        "width": 302.4,
+        "kind": "ground"
+      },
+      "hearts": 3,
+      "playerWidth": 52,
+      "playerHeight": 60,
+      "goalX": 5592.999999999999,
+      "surfaces": [
+        {
+          "x": 0,
+          "y": 310.39421875,
+          "width": 360
+        },
+        {
+          "x": 421,
+          "y": 326.39421875,
+          "width": 290.4
+        },
+        {
+          "x": 801.4,
+          "y": 326.39421875,
+          "width": 251.4
+        },
+        {
+          "x": 1135.8,
+          "y": 302.03320565842836,
+          "width": 274.4
+        },
+        {
+          "x": 1169.8,
+          "y": 202.03320565842836,
+          "width": 124
+        },
+        {
+          "x": 1486.1999999999998,
+          "y": 289.4647646993858,
+          "width": 297.4
+        },
+        {
+          "x": 1852.6,
+          "y": 308.8122337056464,
+          "width": 258.4
+        },
+        {
+          "x": 1886.6,
+          "y": 224.8122337056464,
+          "width": 122
+        },
+        {
+          "x": 2173,
+          "y": 326.39421875,
+          "width": 281.4
+        },
+        {
+          "x": 2509.4,
+          "y": 315.138877894736,
+          "width": 304.4
+        },
+        {
+          "x": 2543.4,
+          "y": 217.13887789473603,
+          "width": 120
+        },
+        {
+          "x": 2897.8,
+          "y": 290.36299315844775,
+          "width": 265.4
+        },
+        {
+          "x": 3240.2000000000003,
+          "y": 291.7352474174703,
+          "width": 288.4
+        },
+        {
+          "x": 3274.2000000000003,
+          "y": 209.7352474174703,
+          "width": 118
+        },
+        {
+          "x": 3598.6000000000004,
+          "y": 317.05852361195815,
+          "width": 311.4
+        },
+        {
+          "x": 3973.0000000000005,
+          "y": 325.7877100964058,
+          "width": 272.4
+        },
+        {
+          "x": 4007.0000000000005,
+          "y": 229.78771009640582,
+          "width": 116
+        },
+        {
+          "x": 4301.400000000001,
+          "y": 303.9465015196357,
+          "width": 295.4
+        },
+        {
+          "x": 4681.8,
+          "y": 286.5048691214149,
+          "width": 256.4
+        },
+        {
+          "x": 4715.8,
+          "y": 206.5048691214149,
+          "width": 114
+        },
+        {
+          "x": 5016.2,
+          "y": 301.38862026705027,
+          "width": 279.4
+        },
+        {
+          "x": 5366.599999999999,
+          "y": 324.76737269205967,
+          "width": 302.4
+        }
+      ],
+      "groundSurfaces": [
+        {
+          "x": 0,
+          "y": 310.39421875,
+          "width": 360
+        },
+        {
+          "x": 421,
+          "y": 326.39421875,
+          "width": 290.4
+        },
+        {
+          "x": 801.4,
+          "y": 326.39421875,
+          "width": 251.4
+        },
+        {
+          "x": 1135.8,
+          "y": 302.03320565842836,
+          "width": 274.4
+        },
+        {
+          "x": 1486.1999999999998,
+          "y": 289.4647646993858,
+          "width": 297.4
+        },
+        {
+          "x": 1852.6,
+          "y": 308.8122337056464,
+          "width": 258.4
+        },
+        {
+          "x": 2173,
+          "y": 326.39421875,
+          "width": 281.4
+        },
+        {
+          "x": 2509.4,
+          "y": 315.138877894736,
+          "width": 304.4
+        },
+        {
+          "x": 2897.8,
+          "y": 290.36299315844775,
+          "width": 265.4
+        },
+        {
+          "x": 3240.2000000000003,
+          "y": 291.7352474174703,
+          "width": 288.4
+        },
+        {
+          "x": 3598.6000000000004,
+          "y": 317.05852361195815,
+          "width": 311.4
+        },
+        {
+          "x": 3973.0000000000005,
+          "y": 325.7877100964058,
+          "width": 272.4
+        },
+        {
+          "x": 4301.400000000001,
+          "y": 303.9465015196357,
+          "width": 295.4
+        },
+        {
+          "x": 4681.8,
+          "y": 286.5048691214149,
+          "width": 256.4
+        },
+        {
+          "x": 5016.2,
+          "y": 301.38862026705027,
+          "width": 279.4
+        },
+        {
+          "x": 5366.599999999999,
+          "y": 324.76737269205967,
+          "width": 302.4
+        }
+      ],
+      "hazards": [],
+      "enemies": [
+        {
+          "x": 1278.3132499999933,
+          "y": 274.03320565842836
+        },
+        {
+          "x": 1669.6127500000064,
+          "y": 261.4647646993858
+        },
+        {
+          "x": 2347.2927500000014,
+          "y": 298.39421875
+        },
+        {
+          "x": 3062.9727500000013,
+          "y": 262.36299315844775
+        },
+        {
+          "x": 3390.693249999999,
+          "y": 263.7352474174703
+        },
+        {
+          "x": 4114.373249999987,
+          "y": 297.7877100964058
+        },
+        {
+          "x": 4483.672750000013,
+          "y": 275.9465015196357
+        },
+        {
+          "x": 5189.352750000013,
+          "y": 273.38862026705027
+        }
+      ],
+      "vx": 300,
+      "vy": 0,
+      "input": {
+        "left": false,
+        "right": true,
+        "jump": false
+      },
+      "jumpLatched": false,
+      "invulnerableFor": 0,
+      "elapsed": 33.505300000000425,
+      "paused": false,
+      "running": false,
+      "coins": 13,
+      "items": 2,
+      "cameraX": 5380.668327489046,
+      "checkpoint": true
+    },
+    "state": {
+      "level": 1,
+      "activeRoom": 1,
+      "xp": 0,
+      "xpMax": 260,
+      "coins": 545,
+      "missionProgress": 0,
+      "missionClaimed": false,
+      "missionsCompleted": 0,
+      "gamesPlayed": 0,
+      "stats": {
+        "felicidade": 82,
+        "fome": 76,
+        "higiene": 90,
+        "energia": 88
+      },
+      "sleeping": false,
+      "skin": "tigrinho",
+      "ownedSkins": [
+        "tigrinho"
+      ],
+      "profile": {
+        "name": "Pudim",
+        "age": 2,
+        "gender": "menino",
+        "characterId": "menino-prata"
+      },
+      "tutorialComplete": true,
+      "inventory": {
+        "sardinha": 3,
+        "novelo": 0,
+        "banho": 0,
+        "caminha": 0
+      },
+      "ownedCompanions": [],
+      "activeCompanionId": null,
+      "decorInventory": {
+        "tower": 1,
+        "bed": 0,
+        "plant": 0,
+        "lamp": 0,
+        "casa-tapete-nuvem": 0,
+        "casa-cesto-novelo": 0,
+        "casa-quadro-peixes": 0,
+        "casa-mesa-petiscos": 0,
+        "casa-relogio-patinhas": 0,
+        "casa-arranhador-peixe": 0,
+        "jardim-arco-flores": 0,
+        "jardim-banco-folha": 0,
+        "jardim-vaso-margaridas": 0,
+        "jardim-fonte-orvalho": 0,
+        "jardim-toquinho-cogumelo": 0,
+        "jardim-rede-lanterna": 0,
+        "jardim-casinha-passaros": 0,
+        "jardim-mobile-borboletas": 0,
+        "jardim-regador-azul": 0,
+        "jardim-ponte-musgo": 0,
+        "mercado-banca-peixes": 0,
+        "mercado-carrinho-petiscos": 0,
+        "mercado-caixa-sardinhas": 0,
+        "mercado-barril-peixinhos": 0,
+        "mercado-toldo-listrado": 0,
+        "mercado-pote-biscoitos": 0,
+        "mercado-cesta-frutas": 0,
+        "mercado-placa-bigodes": 0,
+        "mercado-tapete-escamas": 0,
+        "mercado-fonte-moedas": 0,
+        "terraco-espreguicadeira": 0,
+        "terraco-luzes-varal": 0,
+        "terraco-telescopio": 0,
+        "terraco-catavento": 0,
+        "terraco-ninho-passaro": 0,
+        "terraco-vaso-sol": 0,
+        "terraco-almofada-nuvem": 0,
+        "terraco-lanterna-pata": 0,
+        "terraco-banco-luar": 0,
+        "terraco-tapete-estrelas": 0,
+        "praia-cadeira-concha": 0,
+        "praia-guarda-sol": 0,
+        "praia-castelo-areia": 0,
+        "praia-prancha-peixe": 0,
+        "praia-boia-patinhas": 0,
+        "praia-bandeja-perolas": 0,
+        "praia-caranguejo-pelucia": 0,
+        "praia-fonte-conchas": 0,
+        "praia-almofada-estrela": 0,
+        "praia-banco-madeira": 0,
+        "bosque-luminaria-vagalume": 0,
+        "bosque-mesa-toco": 0,
+        "bosque-rede-folhas": 0,
+        "bosque-ponte-troncos": 0,
+        "bosque-banco-bolota": 0,
+        "bosque-tapete-musgo": 0,
+        "bosque-pinha-brinquedo": 0,
+        "bosque-lago-sapo": 0,
+        "bosque-cogumelo-luz": 0,
+        "bosque-casa-arvore": 0,
+        "neve-cama-iglu": 0,
+        "neve-luminaria-floco": 0,
+        "neve-trenozinho": 0,
+        "neve-caneca-cacau": 0,
+        "neve-tapete-luvas": 0,
+        "neve-pinheiro": 0,
+        "neve-cristal-gelo": 0,
+        "neve-cesto-cachecois": 0,
+        "neve-boneco-patinha": 0,
+        "neve-banco-cabana": 0,
+        "biblioteca-nicho-livros": 0,
+        "biblioteca-torre-livros": 0,
+        "biblioteca-globo-patinhas": 0,
+        "biblioteca-escadinha": 0,
+        "biblioteca-luminaria-leitura": 0,
+        "biblioteca-apoio-bigodes": 0,
+        "biblioteca-tubo-pergaminho": 0,
+        "biblioteca-pena-tinteiro": 0,
+        "biblioteca-almofada-atlas": 0,
+        "biblioteca-corujinha": 0,
+        "observatorio-telescopio-lunar": 0,
+        "observatorio-poltrona-lua": 0,
+        "observatorio-mobile-planetas": 0,
+        "observatorio-arranhador-foguete": 0,
+        "observatorio-globo-estelar": 0,
+        "observatorio-lanterna-cosmica": 0,
+        "observatorio-meteoritos": 0,
+        "observatorio-tapete-constelacao": 0,
+        "observatorio-cometa-brinquedo": 0,
+        "observatorio-vaso-lua": 0,
+        "festival-varal-bandeirolas": 0,
+        "festival-trofeu-pata": 0,
+        "festival-mesa-bolo": 0,
+        "festival-arco-baloes": 0,
+        "festival-suporte-mascaras": 0,
+        "festival-tambor-pata": 0,
+        "festival-fonte-confetes": 0,
+        "festival-cabine-fotos": 0,
+        "festival-carro-alegorico": 0,
+        "festival-lanterna-estrela": 0
+      },
+      "roomDecorations": {},
+      "gifts": [],
+      "platformProgress": {
+        "unlockedStage": 2,
+        "completedStages": [
+          1
+        ],
+        "starsByStage": {
+          "1": 2
+        }
+      }
+    },
+    "dialog": null,
+    "won": false,
+    "failed": false,
+    "stage": null,
+    "storage": {
+      "local": [],
+      "session": []
+    }
+  },
+  "after": {
+    "engine": {
+      "x": 66,
+      "y": 250.39421875,
+      "grounded": true,
+      "groundedOnGround": true,
+      "currentSurface": {
+        "x": 0,
+        "y": 310.39421875,
+        "width": 360,
+        "kind": "ground"
+      },
+      "hearts": 3,
+      "playerWidth": 52,
+      "playerHeight": 60,
+      "goalX": 5552.999999999999,
+      "surfaces": [
+        {
+          "x": 0,
+          "y": 310.39421875,
+          "width": 360
+        },
+        {
+          "x": 434,
+          "y": 326.39421875,
+          "width": 307.4
+        },
+        {
+          "x": 808.4,
+          "y": 321.851180674074,
+          "width": 268.4
+        },
+        {
+          "x": 832.4,
+          "y": 225.851180674074,
+          "width": 112
+        },
+        {
+          "x": 1136.8,
+          "y": 296.25759661652535,
+          "width": 291.4
+        },
+        {
+          "x": 1517.1999999999998,
+          "y": 290.5913682932394,
+          "width": 252.4
+        },
+        {
+          "x": 1541.1999999999998,
+          "y": 210.59136829323938,
+          "width": 138
+        },
+        {
+          "x": 1851.6,
+          "y": 313.92469703441213,
+          "width": 275.4
+        },
+        {
+          "x": 2202,
+          "y": 326.39421875,
+          "width": 298.4
+        },
+        {
+          "x": 2226,
+          "y": 232.39421875,
+          "width": 136
+        },
+        {
+          "x": 2568.4,
+          "y": 309.03396244038925,
+          "width": 259.4
+        },
+        {
+          "x": 2888.8,
+          "y": 287.1350857475637,
+          "width": 282.4
+        },
+        {
+          "x": 2912.8,
+          "y": 209.13508574756372,
+          "width": 134
+        },
+        {
+          "x": 3261.2000000000003,
+          "y": 295.7598923640859,
+          "width": 305.4
+        },
+        {
+          "x": 3649.6000000000004,
+          "y": 321.0991996035582,
+          "width": 266.4
+        },
+        {
+          "x": 3673.6000000000004,
+          "y": 229.0991996035582,
+          "width": 132
+        },
+        {
+          "x": 3992.0000000000005,
+          "y": 322.5822285054051,
+          "width": 289.4
+        },
+        {
+          "x": 4350.400000000001,
+          "y": 297.83450066734224,
+          "width": 250.4
+        },
+        {
+          "x": 4374.400000000001,
+          "y": 221.83450066734224,
+          "width": 130
+        },
+        {
+          "x": 4662.8,
+          "y": 286.47961694024434,
+          "width": 273.4
+        },
+        {
+          "x": 4991.2,
+          "y": 306.69788799564805,
+          "width": 296.4
+        },
+        {
+          "x": 5015.2,
+          "y": 216.69788799564805,
+          "width": 128
+        },
+        {
+          "x": 5371.599999999999,
+          "y": 326.1178287648532,
+          "width": 257.4
+        }
+      ],
+      "groundSurfaces": [
+        {
+          "x": 0,
+          "y": 310.39421875,
+          "width": 360
+        },
+        {
+          "x": 434,
+          "y": 326.39421875,
+          "width": 307.4
+        },
+        {
+          "x": 808.4,
+          "y": 321.851180674074,
+          "width": 268.4
+        },
+        {
+          "x": 1136.8,
+          "y": 296.25759661652535,
+          "width": 291.4
+        },
+        {
+          "x": 1517.1999999999998,
+          "y": 290.5913682932394,
+          "width": 252.4
+        },
+        {
+          "x": 1851.6,
+          "y": 313.92469703441213,
+          "width": 275.4
+        },
+        {
+          "x": 2202,
+          "y": 326.39421875,
+          "width": 298.4
+        },
+        {
+          "x": 2568.4,
+          "y": 309.03396244038925,
+          "width": 259.4
+        },
+        {
+          "x": 2888.8,
+          "y": 287.1350857475637,
+          "width": 282.4
+        },
+        {
+          "x": 3261.2000000000003,
+          "y": 295.7598923640859,
+          "width": 305.4
+        },
+        {
+          "x": 3649.6000000000004,
+          "y": 321.0991996035582,
+          "width": 266.4
+        },
+        {
+          "x": 3992.0000000000005,
+          "y": 322.5822285054051,
+          "width": 289.4
+        },
+        {
+          "x": 4350.400000000001,
+          "y": 297.83450066734224,
+          "width": 250.4
+        },
+        {
+          "x": 4662.8,
+          "y": 286.47961694024434,
+          "width": 273.4
+        },
+        {
+          "x": 4991.2,
+          "y": 306.69788799564805,
+          "width": 296.4
+        },
+        {
+          "x": 5371.599999999999,
+          "y": 326.1178287648532,
+          "width": 257.4
+        }
+      ],
+      "hazards": [],
+      "enemies": [
+        {
+          "x": 958.0769720000035,
+          "y": 293.851180674074
+        },
+        {
+          "x": 1306.2090279999964,
+          "y": 268.25759661652535
+        },
+        {
+          "x": 2011.8890279999964,
+          "y": 285.92469703441213
+        },
+        {
+          "x": 2368.7769720000033,
+          "y": 298.39421875
+        },
+        {
+          "x": 3046.4569720000036,
+          "y": 259.1350857475637
+        },
+        {
+          "x": 3438.5890279999967,
+          "y": 267.7598923640859
+        },
+        {
+          "x": 4160.269027999997,
+          "y": 294.5822285054051
+        },
+        {
+          "x": 4821.949027999996,
+          "y": 258.47961694024434
+        },
+        {
+          "x": 5156.836972000004,
+          "y": 278.69788799564805
+        }
+      ],
+      "vx": 0,
+      "vy": 0,
+      "input": {
+        "left": false,
+        "right": false,
+        "jump": false
+      },
+      "jumpLatched": false,
+      "invulnerableFor": 0,
+      "elapsed": 0.06757199999992736,
+      "paused": true,
+      "running": true,
+      "coins": 0,
+      "items": 0,
+      "cameraX": 0,
+      "checkpoint": false
+    },
+    "state": {
+      "level": 1,
+      "activeRoom": 1,
+      "xp": 0,
+      "xpMax": 260,
+      "coins": 545,
+      "missionProgress": 0,
+      "missionClaimed": false,
+      "missionsCompleted": 0,
+      "gamesPlayed": 0,
+      "stats": {
+        "felicidade": 82,
+        "fome": 76,
+        "higiene": 90,
+        "energia": 88
+      },
+      "sleeping": false,
+      "skin": "tigrinho",
+      "ownedSkins": [
+        "tigrinho"
+      ],
+      "profile": {
+        "name": "Pudim",
+        "age": 2,
+        "gender": "menino",
+        "characterId": "menino-prata"
+      },
+      "tutorialComplete": true,
+      "inventory": {
+        "sardinha": 3,
+        "novelo": 0,
+        "banho": 0,
+        "caminha": 0
+      },
+      "ownedCompanions": [],
+      "activeCompanionId": null,
+      "decorInventory": {
+        "tower": 1,
+        "bed": 0,
+        "plant": 0,
+        "lamp": 0,
+        "casa-tapete-nuvem": 0,
+        "casa-cesto-novelo": 0,
+        "casa-quadro-peixes": 0,
+        "casa-mesa-petiscos": 0,
+        "casa-relogio-patinhas": 0,
+        "casa-arranhador-peixe": 0,
+        "jardim-arco-flores": 0,
+        "jardim-banco-folha": 0,
+        "jardim-vaso-margaridas": 0,
+        "jardim-fonte-orvalho": 0,
+        "jardim-toquinho-cogumelo": 0,
+        "jardim-rede-lanterna": 0,
+        "jardim-casinha-passaros": 0,
+        "jardim-mobile-borboletas": 0,
+        "jardim-regador-azul": 0,
+        "jardim-ponte-musgo": 0,
+        "mercado-banca-peixes": 0,
+        "mercado-carrinho-petiscos": 0,
+        "mercado-caixa-sardinhas": 0,
+        "mercado-barril-peixinhos": 0,
+        "mercado-toldo-listrado": 0,
+        "mercado-pote-biscoitos": 0,
+        "mercado-cesta-frutas": 0,
+        "mercado-placa-bigodes": 0,
+        "mercado-tapete-escamas": 0,
+        "mercado-fonte-moedas": 0,
+        "terraco-espreguicadeira": 0,
+        "terraco-luzes-varal": 0,
+        "terraco-telescopio": 0,
+        "terraco-catavento": 0,
+        "terraco-ninho-passaro": 0,
+        "terraco-vaso-sol": 0,
+        "terraco-almofada-nuvem": 0,
+        "terraco-lanterna-pata": 0,
+        "terraco-banco-luar": 0,
+        "terraco-tapete-estrelas": 0,
+        "praia-cadeira-concha": 0,
+        "praia-guarda-sol": 0,
+        "praia-castelo-areia": 0,
+        "praia-prancha-peixe": 0,
+        "praia-boia-patinhas": 0,
+        "praia-bandeja-perolas": 0,
+        "praia-caranguejo-pelucia": 0,
+        "praia-fonte-conchas": 0,
+        "praia-almofada-estrela": 0,
+        "praia-banco-madeira": 0,
+        "bosque-luminaria-vagalume": 0,
+        "bosque-mesa-toco": 0,
+        "bosque-rede-folhas": 0,
+        "bosque-ponte-troncos": 0,
+        "bosque-banco-bolota": 0,
+        "bosque-tapete-musgo": 0,
+        "bosque-pinha-brinquedo": 0,
+        "bosque-lago-sapo": 0,
+        "bosque-cogumelo-luz": 0,
+        "bosque-casa-arvore": 0,
+        "neve-cama-iglu": 0,
+        "neve-luminaria-floco": 0,
+        "neve-trenozinho": 0,
+        "neve-caneca-cacau": 0,
+        "neve-tapete-luvas": 0,
+        "neve-pinheiro": 0,
+        "neve-cristal-gelo": 0,
+        "neve-cesto-cachecois": 0,
+        "neve-boneco-patinha": 0,
+        "neve-banco-cabana": 0,
+        "biblioteca-nicho-livros": 0,
+        "biblioteca-torre-livros": 0,
+        "biblioteca-globo-patinhas": 0,
+        "biblioteca-escadinha": 0,
+        "biblioteca-luminaria-leitura": 0,
+        "biblioteca-apoio-bigodes": 0,
+        "biblioteca-tubo-pergaminho": 0,
+        "biblioteca-pena-tinteiro": 0,
+        "biblioteca-almofada-atlas": 0,
+        "biblioteca-corujinha": 0,
+        "observatorio-telescopio-lunar": 0,
+        "observatorio-poltrona-lua": 0,
+        "observatorio-mobile-planetas": 0,
+        "observatorio-arranhador-foguete": 0,
+        "observatorio-globo-estelar": 0,
+        "observatorio-lanterna-cosmica": 0,
+        "observatorio-meteoritos": 0,
+        "observatorio-tapete-constelacao": 0,
+        "observatorio-cometa-brinquedo": 0,
+        "observatorio-vaso-lua": 0,
+        "festival-varal-bandeirolas": 0,
+        "festival-trofeu-pata": 0,
+        "festival-mesa-bolo": 0,
+        "festival-arco-baloes": 0,
+        "festival-suporte-mascaras": 0,
+        "festival-tambor-pata": 0,
+        "festival-fonte-confetes": 0,
+        "festival-cabine-fotos": 0,
+        "festival-carro-alegorico": 0,
+        "festival-lanterna-estrela": 0
+      },
+      "roomDecorations": {},
+      "gifts": [],
+      "platformProgress": {
+        "unlockedStage": 2,
+        "completedStages": [
+          1
+        ],
+        "starsByStage": {
+          "1": 2
+        }
+      }
+    },
+    "dialog": "FASE 2 · PAUSADA\nRespire um pouquinho\n\nSeu progresso e as moedas deste caminho ficam guardados durante a pausa.\n\nContinuar\nVoltar ao mapa",
+    "won": false,
+    "failed": false,
+    "stage": "Fase 2: Atravesse a ponte saltitante",
+    "storage": {
+      "local": [],
+      "session": []
+    }
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "guided-original-attempt1",
+    "elapsed": 45.63500000000061,
+    "wallSeconds": 54.9,
+    "lifeLosses": 3,
+    "defeat": true,
+    "maxX": 867.4800000000004,
+    "maxDistancePercent": 15.510101913105675,
+    "coins": 2,
+    "groundedSamples": 426,
+    "maxFootSurfaceErrorPx": 0,
+    "missingSupport": 0,
+    "storage": []
+  },
+  {
+    "name": "guided-original-rotation",
+    "elapsed": 56.95910000000107,
+    "wallSeconds": 57.1,
+    "lifeLosses": 1,
+    "defeat": false,
+    "maxX": 1240.4699999999984,
+    "maxDistancePercent": 22.178973717146405,
+    "coins": 4,
+    "groundedSamples": 542,
+    "maxFootSurfaceErrorPx": 0,
+    "missingSupport": 0,
+    "storage": []
+  },
+  {
+    "name": "final-guided-attempt1",
+    "elapsed": 98.94783600000245,
+    "wallSeconds": 205.3,
+    "lifeLosses": 3,
+    "defeat": true,
+    "maxX": 4758.629999999992,
+    "maxDistancePercent": 85.08188807437854,
+    "coins": 11,
+    "groundedSamples": 1723,
+    "maxFootSurfaceErrorPx": 0,
+    "missingSupport": 0,
+    "storage": []
+  }
+]
