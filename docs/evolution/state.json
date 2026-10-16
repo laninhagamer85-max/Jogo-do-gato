@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-15",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
+  "status": "preparing_user_review_publication",
   "active_run": null,
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -15,26 +15,26 @@
     "implementation_base_github_commit": "a120b3007af7d89e3680aa62019f543f95ebd8f6"
   },
   "current_improvement": {
-    "id": "terrain-stutter-and-rejected-composition",
+    "id": "apply-selected-grass-option4",
     "implementation_status": "implemented",
-    "acceptance_status": "offline_verified_pending_user_review"
+    "acceptance_status": "selected_static_art_pending_in_game_user_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.18",
+    "product_version": "1.9.19",
     "last_observed_version": 37,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6ef571683908191b8312f6aa3b87011",
-    "deployment_id": "appgdep_6ad12db7a1108191b266d168de080fb7",
-    "site_commit": "4682bcb15fb760ee81ec1a8b44c5662f926f7b6f",
-    "published_at": "2026-10-15T19:47:27.109901+00:00",
+    "status": "preparing",
+    "version_id": null,
+    "deployment_id": null,
+    "site_commit": null,
+    "published_at": null,
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "202/202_passed_28_files_excluding_firebase_staging_integration",
-    "build": "passed_existing_chunk_warning",
+    "offline_tests": "22/22_terrain_scenery_tests_passed_2_files",
+    "build": "pending_final",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
     "browser": "not_run_control_browser_unavailable; authorized for David to test",
@@ -48,21 +48,20 @@
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "sha256_passed_for_actual_archive"
+    "packaged_grass": "pending_archive_check"
   },
   "blockers": [],
   "next_actions": [
-    "David: revisar grama e caminhada contínua/retorno, zoom, retrato/paisagem e coleta na sala piloto.",
-    "Se persistir stutter, perfilar frames em navegador suportado antes de nova mudança ampla.",
-    "Redesenhar lago/trilha com arte compatível somente após validar base; não expandir a composição rejeitada aos capítulos."
+    "David: revisar opção 4 no jogo, em retrato/paisagem, zoom e Ver sala, incluindo caminhada e retorno.",
+    "Revisar composição com vegetação do capítulo 1 após teste da textura escolhida; dez salas por capítulo ainda pendentes."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.9.17",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_842d146556188191ac2a34d6e656f293",
-    "instructions": "Reimplantar somente se adequado; 1.9.17 tem falha de qualidade/travamento reportada, 1.9.16 preservada como alternativa anterior."
+    "production_changed": false,
+    "product_version": "1.9.18",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6ef571683908191b8312f6aa3b87011",
+    "instructions": "Reimplantar 1.9.18 se necessário; preservar saves e não sobrescrever publicação posterior."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-terrain-stutter-fix.md",
+  "latest_report": "docs/evolution/runs/2026-10-15-grass-option4.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -240,5 +239,15 @@
     "site_commit": "4682bcb15fb760ee81ec1a8b44c5662f926f7b6f",
     "art": "new low-contrast original generated grass, WebP1254x1254; static inspection only",
     "gameplay_performance": "not measured on device"
+  },
+  "grass_option4": {
+    "date": "2026-10-15",
+    "status": "preparing_user_review_publication",
+    "product_version": "1.9.19",
+    "asset": "client/public/forest-adventure/grass-moss-option4-v1.webp",
+    "sha256": "dabb9d6bfecf1f3ff0149d450380fc9267f043d518fa44af47ccf77a1382d356",
+    "selected_by_user": true,
+    "world_scale_and_cache": "unchanged",
+    "browser": "not_run_control_browser_unavailable"
   }
 }

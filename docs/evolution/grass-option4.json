@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-15",
+  "selection": "option 4 — Grama com musgo delicado",
+  "user_instruction": "Aplique a opção 4",
+  "method": "existing built-in imagegen preview selected by user; WebP encoding only",
+  "asset": "client/public/forest-adventure/grass-moss-option4-v1.webp",
+  "dimensions": [1254,1254],
+  "bytes": 629016,
+  "sha256": "dabb9d6bfecf1f3ff0149d450380fc9267f043d518fa44af47ccf77a1382d356",
+  "original_png_sha256": "364940809d41d20359c4bbc0b9ffcc0e4f6a6c7b8053fbdf4fdf13d758a1c921",
+  "prompt": "Use case: stylized-concept. Create one original full-bleed square grass ground texture preview for the children's 2D game Meu Pet Virtual. The supplied image is a STYLE AND PALETTE reference only. Preserve the family-friendly hand-painted woodland clearing look and a fresh medium leafy green palette compatible with mossy grey rocks, warm wooden logs and leafy ferns. Orthographic overhead view, same close viewing scale as the reference, no horizon or perspective. Improve definition and readable small details without sharpening halos, blur, photographic grain or oversized leaves. Quiet large-scale tonal distribution, no high-contrast light/dark blotches, no diagonal bands or diamond pattern, no rectangular grid. Continuous material to every edge, designed for later seamless blending. No trees, bushes, rocks, flowers, water, dirt, paths, UI, labels, numbers, borders or text. This is a material comparison preview, not a complete map. VARIANT 4 — SOFT WOODLAND GRASS WITH MOSS. A low lush groundcover combining very short painted grass with small soft velvety moss cushions seamlessly integrated at a tiny scale. About 80 percent grass and 20 percent finely textured moss, no big round moss islands. Gentle deep-to-fresh greens, tiny brighter tips and subtle volume, slightly more shaded forest feeling than the reference. Detailed yet quiet and readable for gameplay.",
+  "validation": "selected and inspected as static source image; real in-game visual and performance review pending"
+}

@@ -3,7 +3,7 @@ import {PILOT_BIOME} from './biomeComposition';
 import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
-export const FOREST_GROUND:GroundTheme={id:'grass-block-v2',seed:5102026,base:'#70934e',light:'#789958',shade:'#638446'};
+export const FOREST_GROUND:GroundTheme={id:'grass-moss-option4-v1',seed:5102026,base:'#6b9c35',light:'#8bb343',shade:'#44762c'};
 export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
 const PILOT_STATIC_GROUND={id:PILOT_BIOME.id,draw:(ctx:CanvasRenderingContext2D,bounds:import('./terrainTexture').TerrainBounds)=>drawBiomeStatic(ctx,bounds,PILOT_BIOME)};
 export function groundVariations(seed:number){
