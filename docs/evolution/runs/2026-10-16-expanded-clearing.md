@@ -13,3 +13,5 @@ Verificação: TypeScript e 195 testes em 24 arquivos de game passaram. Inclui c
 Referências técnicas consultadas em 16/10/2026: https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection (separação de decoração/hitbox); https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage (dimensões de sprites).
 
 Rollback: preservar versão 52 do Sites (1.9.33), não reverter publicação posterior. Próximo: usuário testa retrato/paisagem, atravessa as quatro antigas bordas, retorna ao abrigo, verifica minimapa, portal e fluidez.
+
+Publicação concluída: Sites 53 / produto 1.9.34, appgdep_6ad232b2bda08191bd52c7bdfa261da6; versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_42e6378904508191b8a330b3faed6669; fonte aec0e87bfb11056203e92311d9682c77c0b34f0c; código GitHub 74a2bade7a4ed5649e6288d93b0941c5515d79b8. Build aprovado. URL https://meupet.aquimeusite.chatgpt.site. Aparência/fluidez aguardam teste do usuário.

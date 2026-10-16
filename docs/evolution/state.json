@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "ready_for_user_phone_review",
+  "status": "published_for_user_phone_review",
   "active_run": "2026-10-16-expanded-clearing",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -23,13 +23,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.32",
-    "last_observed_version": 49,
-    "status": "published_previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_434b56631a4481918efe3d440c373076",
-    "deployment_id": "appgdep_6ad221d9b95c8191be591cadf1fc2e26",
-    "site_commit": "24a891740ef0d376cd956a5e9aa08c6801c34fe8",
-    "attempted_in_this_cycle": false
+    "product_version": "1.9.34",
+    "last_observed_version": 53,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_42e6378904508191b8a330b3faed6669",
+    "deployment_id": "appgdep_6ad232b2bda08191bd52c7bdfa261da6",
+    "site_commit": "aec0e87bfb11056203e92311d9682c77c0b34f0c",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed_on_exact_sites_source_with_option3",
@@ -50,12 +50,9 @@
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
     "packaged_grass": "all_three_hashes_match_manifest"
   },
-  "blockers": [
-    "Browser inspection required by evolution skill; control-browser unavailable."
-  ],
+  "blockers": [],
   "next_actions": [
-    "Reconcile latest Site and GitHub before publishing; inspect five viewports, overview/zoom and walking.",
-    "Preserve options 1 and 2 for future user-selected applications."
+    "David tests expanded clearing, minimap, portal and performance in portrait/landscape."
   ],
   "rollback": {
     "production_changed": true,
@@ -376,12 +373,13 @@
   "expanded_clearing": {
     "product_version": "1.9.34",
     "base_site_commit": "17c0bd0b182a9287d393b6e82704cb4e5f4ffcdb",
-    "status": "implemented_pending_publication_for_user_test",
+    "status": "published_for_user_phone_review",
     "map": "rounded 26x20 world units, old 14x10 framing removed",
     "preserved": "approved upright option 3 grass; existing objectives and progress",
     "portal": "original generated woodland-portal-v1.webp; active glow and fireflies; reduced motion supported",
-    "checks": "TypeScript and 195 game tests passed; build in progress",
+    "checks": "TypeScript, build and 195 game tests passed",
     "browser": "unavailable; user explicitly requests publication to test",
-    "saves": "negative coordinates supported; legacy discoveries migrated by world position"
+    "saves": "negative coordinates supported; legacy discoveries migrated by world position",
+    "code_commit": "74a2bade7a4ed5649e6288d93b0941c5515d79b8"
   }
 }
