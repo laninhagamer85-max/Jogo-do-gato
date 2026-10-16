@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_user_phone_test",
+  "status": "published_for_user_phone_review",
   "active_run": "2026-10-16-camera-rim-toggle",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -23,13 +23,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.37",
-    "last_observed_version": 56,
-    "status": "previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a396c5f269408191967c4fe6ce42f6a5",
-    "deployment_id": "appgdep_6ad260f1eefc8191a90ebee882f5b709",
-    "site_commit": "4009a9561013ed5ed21b31b51acdeede01872e58",
-    "attempted_in_this_cycle": false
+    "product_version": "1.9.38",
+    "last_observed_version": 57,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_04a931166fc481918432d84bf25028f9",
+    "deployment_id": "appgdep_6ad263674d6481918f78a7f0ad6038ec",
+    "site_commit": "3f91ca1881667d06bcbdefcbf564cea2c4be4342",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -54,7 +54,7 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "Publish compact camera shortcut for phone review; inspect six targets and portrait/landscape."
+    "David tests compact camera toggle and independent lens-size slot on his phone."
   ],
   "rollback": {
     "production_changed": true,
@@ -425,9 +425,10 @@
   "camera_rim_toggle": {
     "product_version": "1.9.38",
     "base_source": "4009a9561013ed5ed21b31b51acdeede01872e58",
-    "status": "implemented",
+    "status": "published_for_user_phone_review",
     "change": "remove camera bar; one ZoomIn/ZoomOut button lower right of wooden rim; 1x <-> 2x; size remains separate",
     "tests": "TypeScript and 215 tests in 26 game files passed; build passed",
-    "browser": "unavailable; user has approved 1.9.37 camera behavior and requests compact rim adjustment"
+    "browser": "unavailable; user has approved 1.9.37 camera behavior and requests compact rim adjustment",
+    "code_commit": "9e334f8a139ce09d41bb30640bbd2566dd644c06"
   }
 }
