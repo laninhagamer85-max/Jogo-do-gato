@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_phone_review",
-  "active_run": "2026-10-16-rocks-portal-lens",
+  "status": "preparing_publication_for_user_review",
+  "active_run": "2026-10-16-lens-shortcut-dock",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -23,13 +23,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.35",
-    "last_observed_version": 54,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7b5696b9b4388191a6778bbabb49256e",
-    "deployment_id": "appgdep_6ad24bbabbf88191b273da926bbbb759",
-    "site_commit": "c77279a439922d8feef6327d5fe19c9fb0c65f0b",
-    "attempted_in_this_cycle": true
+    "product_version": "1.9.32",
+    "last_observed_version": 49,
+    "status": "published_previous_release",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_434b56631a4481918efe3d440c373076",
+    "deployment_id": "appgdep_6ad221d9b95c8191be591cadf1fc2e26",
+    "site_commit": "24a891740ef0d376cd956a5e9aa08c6801c34fe8",
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed_on_exact_sites_source_with_option3",
@@ -54,7 +54,7 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "David tests rocks beside shelter, touch paths, active portal and circular full lens in portrait/landscape; future biome-specific portals and rooms remain planned."
+    "Publish 1.9.36 then user checks lens sizing, five slot toggles, panels and landscape."
   ],
   "rollback": {
     "production_changed": true,
@@ -63,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-rocks-portal-lens.md",
+  "latest_report": "docs/evolution/runs/2026-10-16-lens-shortcut-dock.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -386,7 +386,7 @@
   "rock_portal_lens_review": {
     "product_version": "1.9.35",
     "source_base": "aec0e87bfb11056203e92311d9682c77c0b34f0c",
-    "status": "published_for_user_phone_review",
+    "status": "implemented_checks_passed",
     "changes": [
       "edge rock/log foot collisions shared with walkability and touch paths",
       "save relocation preserves XP HP stock bag",
@@ -396,7 +396,23 @@
     ],
     "verification": "TypeScript, build and 205 game tests passed",
     "browser": "unavailable_control_browser; user explicitly requests publication to test",
-    "biome_portals": "forest implemented; ice/desert variants planned alongside future biomes, not included",
-    "code_commit": "6d9d4a629b55bef04eea20d0e356c63305dd048c"
+    "biome_portals": "forest implemented; ice/desert variants planned alongside future biomes, not included"
+  },
+  "lens_shortcut_dock": {
+    "product_version": "1.9.36",
+    "base_source": "c77279a439922d8feef6327d5fe19c9fb0c65f0b",
+    "status": "implemented_checks_passed",
+    "controls": [
+      "sound on/off",
+      "pause/resume",
+      "backpack open/close",
+      "lens size + / - in ONE slot",
+      "whole room / return to pet"
+    ],
+    "interaction": "nonmodal panels pause game while keeping the rim controls reachable; ESC/P/I toggle; world touch/joystick blocked by panel/overview",
+    "size": "normal 136–168px portrait, expanded160–214px; landscape124/158px; five44px targets",
+    "verification": "TypeScript and 213 game tests passed; 8 dock tests repeated after focus changes; final build passed",
+    "browser": "unavailable_control_browser; user requests publication for phone test",
+    "scope": "approved lens/control UI only; preserve world vegetation, grass, collision, portal, progress and account code"
   }
 }

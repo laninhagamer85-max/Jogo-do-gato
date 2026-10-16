@@ -1,10 +1,11 @@
+import {lensDockAction,lensDockLayout,type ExplorationPanel} from '@/game/explorationLens';
 import ExplorationMinimap from './ExplorationMinimap';
 import CombatInventory from "./CombatInventory";
 import ExplorationJoystick from "./ExplorationJoystick";
 import { playPlatformSfx, unlockPlatformAudio } from "@/game/platformerAudio";
 import ExplorationItemIcon from "./ExplorationItemIcon";
-import { useEffect, useRef, useState } from 'react';
-import { Backpack, Map, Pause, Play, Shield, Sparkles, ZoomIn, ZoomOut, Volume2, VolumeX, PawPrint, X } from 'lucide-react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { Backpack, Map, Pause, Play, Shield, Sparkles, Plus, Minus, Volume2, VolumeX, PawPrint, X } from 'lucide-react';
 import { GAME_ASSETS } from '@/game/assets';
 import type { PetProfile } from '@/game/PetGame';
 import { ForestControls } from '@/game/forestControls';
@@ -17,7 +18,7 @@ import {PILOT_SHELTER} from '@/game/explorationRoom';
 import './ExplorationCombatPilot.css';
 
 type Props = { soundOn: boolean; onToggleSound: () => void; profile: PetProfile | null; progress: Record<string, unknown>; onSave: (save: Record<string, unknown>) => void; onBack: () => void };
-type Panel = 'pause' | 'inventory' | 'exit' | null;
+type Panel = ExplorationPanel;
 export default function ExplorationCombatPilot({ profile, progress, onSave, onBack, soundOn, onToggleSound }: Props) {
   const [initial] = useState(() => readCombatState(progress));
   const [game, setGame] = useState<CombatState>(() => initial.supported ? initial.state : createCombatState());
@@ -26,7 +27,9 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const route = useRef<CombatPoint[]>([]), panelRef = useRef<Panel>(null), overviewRef = useRef(false);
   const canvas = useRef<HTMLCanvasElement>(null), dialog = useRef<HTMLDialogElement>(null), pauseButton = useRef<HTMLButtonElement>(null);
   const [assetStatus, setAssetStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom, setZoom] = useState(1);
+  const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom] = useState(1);
+  const [lensExpanded,setLensExpanded]=useState(false);
+  const [viewport,setViewport]=useState(()=>({width:typeof window==='undefined'?390:window.innerWidth,height:typeof window==='undefined'?844:window.innerHeight}));
   const zoomRef = useRef(zoom), lastSaved = useRef('');
   const accessibleTimers = useRef(new Set<number>());
   const stick = useRef({ x: 0, y: 0, pointer: -1 });
@@ -35,19 +38,23 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   saveRef.current = onSave; zoomRef.current = zoom;
   function clear() { stick.current = { x: 0, y: 0, pointer: -1 }; controls.current.clear(); route.current = []; pending.current = { attack: false, power: false, interact: false }; for (const id of accessibleTimers.current) window.clearTimeout(id); accessibleTimers.current.clear(); }
   function persist() { if (!initial.supported) return; const snapshot = combatSnapshot(current.current), key = JSON.stringify(snapshot); if (key !== lastSaved.current) { lastSaved.current = key; saveRef.current(snapshot); } }
-  function openPanel(value: Panel) { clear(); persist(); panelRef.current = value; setPanel(value); }
+  function openPanel(value: Panel) { clear(); persist(); overviewRef.current=false;setOverview(false);panelRef.current = value; setPanel(value); }
   function change(next: CombatState) { if (next === current.current) return; current.current = next; setGame(next); persist(); }
   function replay() { clear(); overviewRef.current = false; setOverview(false); panelRef.current = null; setPanel(null); change(replayCompletedCombat(current.current)); }
   function leave() { clear(); persist(); onBack(); }
   function action(kind: keyof typeof pending.current) { if (!panelRef.current && !overviewRef.current && !current.current.completed) { unlockPlatformAudio(); route.current = []; pending.current[kind] = true; } }
-  function viewRoom() { clear(); overviewRef.current = !overviewRef.current; setOverview(overviewRef.current); }
+  function dockAction(action:'pause'|'inventory'|'map'){
+    const next=lensDockAction(panelRef.current,overviewRef.current,action);
+    clear();persist();overviewRef.current=next.overview;setOverview(next.overview);panelRef.current=next.panel;setPanel(next.panel);
+  }
+  function viewRoom(){dockAction('map');}
 
   useEffect(() => {
     const el = dialog.current;
-    if (panel && el && !el.open) el.showModal();
-    else if (!panel && el?.open) el.close();
+    if(panel)el?.querySelector<HTMLButtonElement>('button')?.focus();
     if (!panel) pauseButton.current?.focus();
   }, [panel]);
+  useEffect(()=>{const resize=()=>setViewport({width:window.innerWidth,height:window.innerHeight});window.addEventListener('resize',resize);resize();return ()=>window.removeEventListener('resize',resize);},[]);
   useEffect(() => {
     if (!initial.supported) return;
     const el = canvas.current, ctx = el?.getContext('2d'); if (!el || !ctx) return;
@@ -107,14 +114,16 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const map: Record<string, ForestDirection> = { arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down', arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right' };
     const down = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase(); if (event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
+      if(!event.repeat&&['escape','p'].includes(key)){event.preventDefault();dockAction('pause');return;}
+      if(!event.repeat&&key==='i'){event.preventDefault();dockAction('inventory');return;}
       if (panelRef.current) return;
+      if(event.target instanceof HTMLElement&&event.target.closest('button,a,select,textarea')&&[' ','enter'].includes(key))return;
       if (map[key] || [' ', 'e', 'q', 'f', 'i', 'escape', 'p'].includes(key)) event.preventDefault();
       if (map[key]) { overviewRef.current = false; setOverview(false); controls.current.keyDown(key, map[key]); }
       else if (!event.repeat && [' ', 'e'].includes(key)) action('attack');
       else if (!event.repeat && key === 'q') action('power');
       else if (!event.repeat && key === 'f') action('interact');
-      else if (!event.repeat && key === 'i') openPanel('inventory');
-      else if (!event.repeat && ['escape', 'p'].includes(key)) openPanel('pause');
+
     };
     const up = (event: KeyboardEvent) => controls.current.keyUp(event.key.toLowerCase());
     const hidden = () => { if (document.hidden) openPanel('pause'); };
@@ -127,8 +136,10 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const useItem = (item: 'erva' | 'fruta') => { if (!panelRef.current && !overviewRef.current) change(consumeCombatItem(current.current, item)); };
   const modalTitle = panel === 'inventory' ? 'Mochila da Exploração' : panel === 'exit' ? 'Voltar aos capítulos?' : 'Clareira pausada';
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
-  return <section className="combat-pilot" aria-label="Exploração, sala piloto de combate">
-    <header className="combat-top"><div><small>SALA PILOTO · CLAREIRA</small><h1>{profile?.name ?? 'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span><button onClick={onToggleSound} aria-label={soundOn ? "Silenciar efeitos" : "Ativar efeitos"} aria-pressed={soundOn}>{soundOn ? <Volume2 size={18}/> : <VolumeX size={18}/>}</button><button onClick={() => openPanel('inventory')} aria-label="Abrir mochila"><Backpack size={19}/></button><button ref={pauseButton} onClick={() => openPanel('pause')} aria-label="Pausar exploração"><Pause size={21} /></button></div></header>
+  const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
+  const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
+  return <section style={dockStyle} className="combat-pilot combat-pilot--lens-dock" aria-label="Exploração, sala piloto de combate">
+    <header className="combat-top"><div><small>SALA PILOTO · CLAREIRA</small><h1>{profile?.name ?? 'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
       <canvas ref={canvas} aria-label="Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila." onPointerUp={event => {
@@ -137,8 +148,15 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         route.current = pilotRoute(current.current.player, { x: (event.clientX - r.left - v.left) / v.tile, y: (event.clientY - r.top - v.top) / v.tile }, current.current.gateOpen);
       }} />
       <div className="combat-vitals"><label>HP <strong>{Math.ceil(game.hp)}/{combatMaxHp(game.xp)}</strong><progress value={game.hp} max={combatMaxHp(game.xp)} aria-label="Vida do pet" /></label><label>Energia <strong>{Math.floor(game.energy)}/100</strong><progress value={game.energy} max={100} aria-label="Energia de combate" /></label></div>
-      <ExplorationMinimap state={game}/>
-      <nav className="combat-camera" aria-label="Câmera"><button aria-label="Reduzir zoom do cenário" disabled={zoom <= 1 || overview} onClick={() => setZoom(z => Math.max(1, z - .25))}><ZoomOut size={18} /></button><button aria-label="Aumentar zoom do cenário" disabled={zoom >= 2 || overview} onClick={() => setZoom(z => Math.min(2, z + .25))}><ZoomIn size={18} /></button><button onClick={viewRoom} aria-pressed={overview}><Map size={17} />{overview ? 'Voltar ao pet' : 'Ver sala'}</button></nav>
+      <ExplorationMinimap state={game}>
+        <nav className="combat-lens-dock" aria-label="Atalhos da Exploração">
+          <button className="combat-lens-slot combat-lens-sound" onClick={onToggleSound} aria-label={soundOn?'Desligar som':'Ligar som'} aria-pressed={soundOn} title={soundOn?'Desligar som':'Ligar som'}>{soundOn?<Volume2/>:<VolumeX/>}</button>
+          <button className="combat-lens-slot combat-lens-pause" ref={pauseButton} onClick={()=>dockAction('pause')} aria-label={panel||overview?'Continuar exploração':'Pausar exploração'} aria-pressed={Boolean(panel)||overview} title={panel||overview?'Continuar':'Pausar'}>{panel||overview?<Play/>:<Pause/>}</button>
+          <button className="combat-lens-slot combat-lens-inventory" onClick={()=>dockAction('inventory')} aria-label={panel==='inventory'?'Fechar mochila':'Abrir mochila'} aria-expanded={panel==='inventory'} aria-controls="combat-panel" title={panel==='inventory'?'Fechar mochila':'Abrir mochila'}>{panel==='inventory'?<X/>:<Backpack/>}</button>
+          <button className="combat-lens-slot combat-lens-size" onClick={()=>setLensExpanded(value=>!value)} aria-label={lensExpanded?'Reduzir tamanho da lupa':'Ampliar tamanho da lupa'} aria-pressed={lensExpanded} title={lensExpanded?'Reduzir lupa':'Ampliar lupa'}>{lensExpanded?<Minus/>:<Plus/>}</button>
+          <button className="combat-lens-slot combat-lens-map" onClick={viewRoom} aria-label={overview?'Voltar ao pet':'Ver mapa completo'} aria-pressed={overview} title={overview?'Voltar ao pet':'Ver mapa completo'}>{overview?<X/>:<Map/>}</button>
+        </nav>
+      </ExplorationMinimap>
       <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(6, fibers)}/6 fibras</span><span>{game.defeated > 0 ? "✓" : "0/1"} adversário</span><span>{game.gateOpen ? "Siga até a saída" : "Ative o marco"}</span></div>
       <div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>
       {!game.completed && <div className="combat-item-tray" aria-label="Itens e uso rápido">
@@ -153,7 +171,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
       </div>}
       {game.completed && <div className="combat-victory"><h2>Sala piloto concluída!</h2><p>Coleta guardada. Você pode repetir para explorar e testar novamente, mantendo seu nível, inventário e broche. O bônus de conclusão não é entregue outra vez.</p><button onClick={replay}>Repetir sala piloto</button><button onClick={leave}>Voltar aos capítulos</button></div>}
     </div>
-    <dialog ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
+    <dialog id="combat-panel" open={Boolean(panel)} ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
       <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel === 'inventory' && <button onClick={() => openPanel(null)} aria-label="Fechar mochila e retomar"><X size={20}/></button>}</header>
       {panel === 'inventory' ? <CombatInventory game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>Arraste o direcional, use WASD/Setas ou toque no chão para mover. E/Espaço: patada à frente. Q: poder ao redor. F: marco. I: mochila.</p><p>Consiga seis fibras e vença um besouro. Ative o marco e siga até a saída. Nv 3 indica um adversário mais forte. O círculo do acampamento é seguro.</p></>}
       {panel !== 'inventory' && <div className="combat-dialog-actions"><button autoFocus onClick={() => openPanel(null)}><Play size={16} />{panel === 'exit' ? 'Continuar aqui' : 'Retomar'}</button>{panel === 'exit' ? <button onClick={leave}>Salvar e voltar</button> : <button onClick={() => openPanel('exit')}>Voltar aos capítulos</button>}</div>}

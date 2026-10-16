@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { PILOT_CAMP,PILOT_EXIT,PILOT_MARKER,PILOT_NODES,type CombatState } from '@/game/explorationCombat';
 import { PILOT_SHELTER,ROOM_SCENERY,ROOM_EDGE_SOLIDS,ROOM_GARDENS,ROOM_EDGE_GARDENS,SCATTERED_GARDENS,OUTER_GARDENS } from '@/game/explorationRoom';
 import { minimapDiscovered,minimapNearby } from '@/game/explorationMinimap';
@@ -8,7 +8,7 @@ import { drawGardenPatch,FOREST_NATURE } from '@/game/forestNature';
 
 type LensArt={ground:HTMLImageElement;props:HTMLImageElement;garden:HTMLImageElement;shelter:HTMLImageElement;portal:HTMLImageElement};
 /** The full lens shows actual terrain, clipped discovery and north-up world markers. */
-export default function ExplorationMinimap({state}:{state:CombatState}){
+export default function ExplorationMinimap({state,children}:{state:CombatState;children?:ReactNode}){
  const canvas=useRef<HTMLCanvasElement>(null),art=useRef<LensArt|null>(null),latest=useRef(state);
  latest.current=state;
  const draw=()=>{
@@ -63,8 +63,9 @@ export default function ExplorationMinimap({state}:{state:CombatState}){
  useEffect(draw,[state]);
  const enemies=state.enemies.filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
  return <aside className="combat-minimap combat-minimap--lens" aria-label="Minimapa da clareira">
-  <canvas ref={canvas} width={256} height={256} role="img" aria-label={`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
+  <canvas ref={canvas} width={384} height={384} role="img" aria-label={`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
   <img className="combat-minimap-frame" src="/forest-adventure/map-lens-circle-v1.webp" alt="" aria-hidden="true"/>
   <span className="combat-minimap-north" aria-hidden="true">N</span>
+  {children}
  </aside>;
 }

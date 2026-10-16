@@ -75,3 +75,26 @@
 .combat-minimap--lens canvas{position:absolute;left:10%;top:10%;width:80%;height:80%;border-radius:50%;display:block}
 .combat-minimap--lens .combat-minimap-frame{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .combat-minimap-north{position:absolute;top:14%;left:44%;font-size:9px;font-weight:700;color:#fff8d7;text-shadow:0 1px 3px #122219;pointer-events:none}
+/* 1.9.36 — approved circular utility dock, with one reversible control per slot. */
+.combat-pilot--lens-dock .combat-minimap{top:max(var(--lens-top),calc(env(safe-area-inset-top) + var(--lens-top)));right:max(12px,env(safe-area-inset-right));width:var(--lens-size);height:var(--lens-size);z-index:7;pointer-events:none}
+.combat-lens-dock{position:absolute;inset:0;pointer-events:none}
+.combat-pilot--lens-dock .combat-lens-slot{position:absolute;transform:translate(-50%,-50%);width:44px;height:44px;min-width:44px;min-height:44px;padding:10px;border:0;border-radius:50%;background:#503119 url('/forest-adventure/map-dock-button-v1.webp') center/100% 100% no-repeat;color:#fff0c3;box-shadow:0 2px 4px #1b261c66;pointer-events:auto;touch-action:manipulation;backdrop-filter:none;transition:filter .15s}
+.combat-lens-slot svg{width:23px!important;height:23px!important;display:block;filter:drop-shadow(0 1px 1px #321c0c)}
+.combat-pilot--lens-dock .combat-lens-slot:hover{filter:brightness(1.12)}
+.combat-pilot--lens-dock .combat-lens-slot[aria-pressed=true]{filter:brightness(1.16)}
+.combat-pilot--lens-dock .combat-lens-slot:focus-visible{outline:3px solid #fff0bc;outline-offset:3px}
+.combat-lens-sound{left:14.645%;top:14.645%}.combat-lens-pause{left:50%;top:0}.combat-lens-inventory{left:85.355%;top:14.645%}.combat-lens-size{left:14.645%;top:85.355%}.combat-lens-map{left:50%;top:100%}
+.combat-pilot--lens-dock .combat-minimap-north{left:48%;top:22%;font-size:10px}
+.combat-pilot--lens-dock .combat-top h1{max-width:var(--lens-hud-width)}
+.combat-pilot--lens-dock .combat-vitals{width:min(185px,var(--lens-hud-width))}
+.combat-pilot--lens-dock .combat-objective{max-width:var(--lens-hud-width);flex-wrap:wrap;font-size:10px;gap:4px;right:auto}
+.combat-pilot--lens-dock .combat-goal{top:max(180px,calc(env(safe-area-inset-top) + 172px));max-width:var(--lens-hud-width);font-size:10px;width:auto;max-height:60px;overflow:auto}
+/* Nonmodal panels pause gameplay while keeping the same rim shortcut available to close. */
+.combat-pilot--lens-dock .combat-dialog{position:absolute;z-index:6;inset:calc(var(--lens-bottom) + env(safe-area-inset-top) + 10px) auto auto 12px;margin:0;width:min(370px,calc(100% - 24px));max-width:none;max-height:calc(100% - var(--lens-bottom) - env(safe-area-inset-top) - 22px);overflow:auto;box-sizing:border-box;box-shadow:0 4px 22px #10251b80}
+@media(max-height:500px) and (orientation:landscape){
+ .combat-pilot--lens-dock .combat-dialog{inset:72px auto auto 12px;width:min(56vw,490px);max-height:calc(100% - 84px)}
+ .combat-pilot--lens-dock .combat-objective{left:210px;top:10px;max-width:calc(100% - var(--lens-size) - 254px);font-size:10px}
+ .combat-pilot--lens-dock .combat-goal{left:210px;top:65px;max-width:calc(100% - var(--lens-size) - 254px);max-height:65px}
+}
+@media(prefers-reduced-motion:reduce){.combat-pilot--lens-dock .combat-lens-slot{transition:none}}
+.combat-pilot--lens-dock .combat-victory{top:calc(var(--lens-bottom) + 30px);max-height:calc(100% - var(--lens-bottom) - 42px)}
