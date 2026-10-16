@@ -324,5 +324,17 @@
     "geometry_tests": 8,
     "browser": "unavailable_control_browser",
     "real_saves_modified": false
+  },
+  "moss_ground_review": {
+    "status": "compiled_awaiting_visual_validation",
+    "code_commit": "27c98e73a54b307c8de0081f71a79cfd9549385f",
+    "ground_base": "#486b29",
+    "interior_walkable_moss_patches": 6,
+    "typescript": "passed",
+    "offline_tests": "188 passed in client/src/game",
+    "build": "passed_existing_chunk_warning",
+    "browser": "not_run_control_browser_unavailable",
+    "production_changed": false,
+    "report": "docs/evolution/runs/2026-10-16-moss-ground.md"
   }
 }
