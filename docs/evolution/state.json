@@ -326,7 +326,7 @@
     "real_saves_modified": false
   },
   "moss_ground_review": {
-    "status": "compiled_awaiting_visual_validation",
+    "status": "published_for_user_review",
     "code_commit": "27c98e73a54b307c8de0081f71a79cfd9549385f",
     "ground_base": "#486b29",
     "interior_walkable_moss_patches": 6,
@@ -334,7 +334,14 @@
     "offline_tests": "188 passed in client/src/game",
     "build": "passed_existing_chunk_warning",
     "browser": "not_run_control_browser_unavailable",
-    "production_changed": false,
-    "report": "docs/evolution/runs/2026-10-16-moss-ground.md"
+    "production_changed": true,
+    "report": "docs/evolution/runs/2026-10-16-moss-ground.md",
+    "product_version": "1.9.27",
+    "site_commit": "477972c1694cb7baf5622d880c4598b9640ea513",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_ee304f8eb16c81919fcc08737abb3a61",
+    "deployment_id": "appgdep_6ad2191e69788191af2eff18db9f0f43",
+    "user_authorization": "2026-10-16: Pode publicar, eu vou testar aqui agora",
+    "visual_validation": "pending_user_playtest",
+    "next_request": "Área expansível conforme mapa, substituindo perímetro retangular por limites naturais; requires camera/pathfinding/collision work; not included in 1.9.27."
   }
 }
