@@ -19,3 +19,5 @@ Rollback: manter publicação corrente; descartar somente commit deste ciclo se 
 
 ## Publicação autorizada para teste
 David solicitou explicitamente: “Publique e eu vou fazer o teste”. Recuperada fonte Sites e7e1228f445b663a083ae9f324aad2e318e5b222 com a mudança já salva, sem substituir por ramo GitHub anterior. Rótulo atualizado para1.9.37 para distinguir da1.9.36 pública. Conferência visual continua pendente no aparelho. Recompilar pelo helper de release antes de empacotar; não usar o arquivo world-camera-review.zip de outro ambiente, cujo conteúdo/manifesto não correspondem ao fluxo corrente.
+
+Publicação concluída: produto1.9.37 / Sites56; versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_a396c5f269408191967c4fe6ce42f6a5; deployment appgdep_6ad260f1eefc8191a90ebee882f5b709; fonte 4009a9561013ed5ed21b31b51acdeede01872e58; GitHub 78c49bd6f6f4897488c6282e5b4801154288b304. TypeScript/build e214 testes game aprovados. URL https://meupet.aquimeusite.chatgpt.site. Aparência e toque pendentes do teste do usuário.

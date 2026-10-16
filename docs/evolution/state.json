@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "publishing_for_user_phone_review",
+  "status": "published_for_user_phone_review",
   "active_run": "2026-10-16-world-camera-zoom",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -17,23 +17,23 @@
   },
   "current_improvement": {
     "id": "world-camera-zoom",
-    "implementation_status": "implemented",
-    "acceptance_status": "user_explicitly_requests_publication_to_test"
+    "implementation_status": "published",
+    "acceptance_status": "pending_user_phone_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.36",
-    "last_observed_version": 55,
-    "status": "published_previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8da3efe91af88191b4c1a22dc764f416",
-    "deployment_id": "appgdep_6ad2573f3c648191b154975cd0e5549e",
-    "site_commit": "260acaf65552fd41d0c9cffea68672a1a2a24499",
-    "attempted_in_this_cycle": false
+    "product_version": "1.9.37",
+    "last_observed_version": 56,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a396c5f269408191967c4fe6ce42f6a5",
+    "deployment_id": "appgdep_6ad260f1eefc8191a90ebee882f5b709",
+    "site_commit": "4009a9561013ed5ed21b31b51acdeede01872e58",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "45 targeted tests passed; projection and touch inverse at four viewport sizes",
+    "offline_tests": "214 passed in 26 game files",
     "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
@@ -50,11 +50,9 @@
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
     "packaged_grass": "all_three_hashes_match_manifest"
   },
-  "blockers": [
-    "Browser inspection required by evolution skill; control-browser unavailable."
-  ],
+  "blockers": [],
   "next_actions": [
-    "Publish camera zoom release1.9.37; user tests touch/layout in portrait/landscape."
+    "David tests camera +/- and minimap size independently, touch navigation and full map in portrait/landscape."
   ],
   "rollback": {
     "production_changed": true,
@@ -418,8 +416,9 @@
   "camera_zoom_release": {
     "product_version": "1.9.37",
     "implemented_source": "e7e1228f445b663a083ae9f324aad2e318e5b222",
-    "status": "preparing_publication",
+    "status": "published_for_user_phone_review",
     "authorization": "David: Publique e eu vou fazer o teste",
-    "browser": "unavailable, user phone review pending"
+    "browser": "unavailable, user phone review pending",
+    "code_commit": "78c49bd6f6f4897488c6282e5b4801154288b304"
   }
 }
