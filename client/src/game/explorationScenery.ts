@@ -4,15 +4,15 @@ import {drawBiomeStatic} from './biomeCompositionView';
 /** Quiet terrain: small world-anchored texture patches with blended borders. */
 export type GroundTheme = { id:string; seed:number; base:string; light:string; shade:string };
 /** Moss-green base harmonizes the floor with the approved garden atlas. */
-export const FOREST_GROUND:GroundTheme={id:'grass-moss-proposal3-20261016',seed:5102026,base:'#486b29',light:'#91b83b',shade:'#426e27'};
+export const FOREST_GROUND:GroundTheme={id:'grass-moss-proposal3-upright-20261016',seed:5102026,base:'#639238',light:'#a2cb55',shade:'#527e31'};
 /** Match the rendered chapter-one clearing, not the brighter source image alone.
  * Reference: ForestPuzzleAdventure.drawRoom. Grade scenery only; keep actors/UI legible. */
 export const CHAPTER_ONE_LIGHTING={textureOpacity:.48,shade:'rgba(20,40,29,.22)'} as const;
 /** Quieter floor variation; scenery keeps the chapter lighting approved by David. */
-const GROUND_TEXTURE_OPACITY=.68;
+const GROUND_TEXTURE_OPACITY=.90;
 /** Selected proposal 3: low moss with tiny grass tips; preserve current scale and overlap. */
-export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3.8,step:1.71,jitter:.152,atlasColumns:1,atlasRows:1};
-export const GROUND_WORLD={left:-8,top:-11,width:30,height:32,pixelsPerTile:36};
+export const FOREST_GRASS_MATERIAL={...GRASS_MATERIAL,span:3.8,step:1.71,jitter:.152,atlasColumns:1,atlasRows:1,upright:true};
+export const GROUND_WORLD={left:-18,top:-18,width:50,height:48,pixelsPerTile:36};
 const PILOT_STATIC_GROUND={id:PILOT_BIOME.id,draw:(ctx:CanvasRenderingContext2D,bounds:import('./terrainTexture').TerrainBounds)=>drawBiomeStatic(ctx,bounds,PILOT_BIOME)};
 export function groundVariations(seed:number){
   let value=seed>>>0;const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
@@ -24,7 +24,7 @@ export function drawExplorationGround(ctx:CanvasRenderingContext2D,width:number,
   ctx.save();ctx.globalAlpha=GROUND_TEXTURE_OPACITY;
   drawTerrainTexture(ctx,width,height,image,left,top,tile,{...FOREST_GRASS_MATERIAL,id:theme.id,seed:theme.seed},pilotComposition?PILOT_STATIC_GROUND:undefined);
   ctx.restore();
-  ctx.fillStyle=CHAPTER_ONE_LIGHTING.shade;ctx.fillRect(0,0,width,height);
+  ctx.fillStyle='rgba(20,40,29,.06)';ctx.fillRect(0,0,width,height);
 }
 /** Centered source crop preserves the original artwork proportions. */
 export function chapterGroundCrop(width:number,height:number,aspect=14/10){

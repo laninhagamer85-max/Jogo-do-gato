@@ -53,3 +53,15 @@ it('opens the space released by smaller scenery without invisible old walls',()=
  expect(pilotWalkable({x:6.5,y:3.5},true)).toBe(false);
  expect(pilotWalkable({x:10.5,y:6.5},true)).toBe(false);
 });
+
+it('crosses all four old room boundaries and preserves positions in expanded saves',()=>{
+ for(const p of [{x:-2.5,y:4.5},{x:17.5,y:4.5},{x:7.5,y:-2.5},{x:7.5,y:12.5}]){
+  expect(pilotWalkable(p,true)).toBe(true);
+  const route=pilotRoute(PILOT_CAMP,p,true);expect(route.length).toBeGreaterThan(0);
+  route.forEach((q,i)=>expect(clearPilotWalkLine(i?route[i-1]:PILOT_CAMP,q,true)).toBe(true));
+  const save=createCombatState();save.player=p;save.xp=94;save.stock.ambar=9;
+  const parsed=readCombatState(save);if(!parsed.supported)throw Error();
+  expect(parsed.state.player).toEqual(p);expect(parsed.state.xp).toBe(94);expect(parsed.state.stock.ambar).toBe(9);
+ }
+ expect(pilotWalkable({x:-6,y:-5},true)).toBe(false);
+});

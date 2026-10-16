@@ -1,11 +1,10 @@
-import { ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
+import { EXPANDED_GARDENS, OUTER_GARDENS, ROOM_EDGE_SOLIDS, ROOM_SCENERY, ROOM_GARDENS, ROOM_EDGE_GARDENS, PILOT_SHELTER } from "./explorationRoom";
 import {drawGardenPatch,gardenPlacement,drawForestSun,drawForestFauna,drawForestPerches} from './forestNature';
 import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
-import { combatSafeLabel } from './combatSafeLabel';
 
 /** Match phone pixel density while bounding the backing buffer to six million pixels. */
 export function combatCanvasScale(width:number,height:number,pixelRatio:number){
@@ -15,14 +14,14 @@ export function combatView(width: number, height: number, player: CombatPoint, z
   const desiredTile = overview ? Math.min(width / PILOT_SIZE.width, Math.max(1, height - 100) / PILOT_SIZE.height) : Math.max(52, width / 11, height / 9) * zoom;
   const tile=Math.max(desiredTile,width/GROUND_WORLD.width,height/GROUND_WORLD.height);
   const bw = tile * PILOT_SIZE.width, bh = tile * PILOT_SIZE.height;
-  const left = overview ? (width - bw) / 2 : width / 2 - player.x * tile;
-  const top = overview ? (height - bh) / 2 : height * .46 - player.y * tile;
+  const left = overview ? (width - bw) / 2 - PILOT_SIZE.left*tile : width / 2 - player.x * tile;
+  const top = overview ? (height - bh) / 2 - PILOT_SIZE.top*tile : height * .46 - player.y * tile;
   return {tile,
     left:Math.max(width-(GROUND_WORLD.left+GROUND_WORLD.width)*tile,Math.min(-GROUND_WORLD.left*tile,left)),
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement) {
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
@@ -31,7 +30,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);
   };
-  if(gardenAtlas)for(const patch of [...ROOM_GARDENS,...ROOM_EDGE_GARDENS]){
+  if(gardenAtlas)for(const patch of [...ROOM_GARDENS,...ROOM_EDGE_GARDENS,...EXPANDED_GARDENS,...OUTER_GARDENS]){
     const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
     if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
   }
@@ -41,10 +40,29 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2,width:1.28,height:1.28});
   const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(PILOT_MARKER);
   if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
-  const exit = point(PILOT_EXIT); ctx.strokeStyle = state.gateOpen ? '#ffe4a2' : '#80907c'; ctx.lineWidth = Math.max(3, t * .06); ctx.beginPath(); ctx.arc(exit.x, exit.y, t * .4, 0, Math.PI * 2); ctx.stroke();
+  // Painted arch shares the exit foot anchor; moving light never shifts the interaction target.
+  const exit = point(PILOT_EXIT);
+  if(portalAtlas?.complete&&portalAtlas.naturalWidth){
+    if(state.gateOpen){
+      const glow=ctx.createRadialGradient(exit.x,exit.y-t*.5,0,exit.x,exit.y-t*.5,t*.9);
+      glow.addColorStop(0,'rgba(185,245,151,.22)');glow.addColorStop(1,'rgba(185,245,151,0)');
+      ctx.fillStyle=glow;ctx.fillRect(exit.x-t,exit.y-t*1.5,t*2,t*2);
+    }
+    const pw=t*1.65,ph=pw*portalAtlas.naturalHeight/portalAtlas.naturalWidth;
+    ctx.drawImage(portalAtlas,exit.x-pw/2,exit.y-ph+t*.13,pw,ph);
+    if(state.gateOpen)for(let i=0;i<5;i++){
+      const phase=reducedMotion?.5:(state.time/3200+i/5)%1;
+      const x=exit.x+Math.sin(i*2.4+phase*2)*t*.32,y=exit.y-phase*t*1.15;
+      ctx.save();ctx.globalAlpha=.35+.3*Math.sin(phase*Math.PI);
+      const light=ctx.createRadialGradient(x,y,0,x,y,t*.055);light.addColorStop(0,'#fffad1');light.addColorStop(1,'rgba(202,242,161,0)');ctx.fillStyle=light;
+      ctx.fillRect(x-t*.055,y-t*.055,t*.11,t*.11);ctx.restore();
+    }
+  }
+
   for (const n of PILOT_NODES) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
     drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2,itemArt?.[n.item]);
@@ -101,14 +119,6 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     }
   }
   drawForestPerches(ctx,v.left,v.top,t,state.time,reducedMotion,width,height,enemiesAtlas);
-  ctx.save();
-  ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`;
-  const safeLabel = combatSafeLabel(width,height,t,camp,point(state.player),ctx.measureText('Local seguro').width);
-  if(safeLabel){
-    ctx.fillStyle='#18382bcc';ctx.beginPath();ctx.roundRect(safeLabel.x,safeLabel.y,safeLabel.width,safeLabel.height,5);ctx.fill();
-    ctx.fillStyle='#e8f4c2';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Local seguro',camp.x,safeLabel.y+safeLabel.height/2);
-  }
-  ctx.restore();
   state.feedback.forEach((f, i) => {
     const p = point(f), life = Math.max(0, Math.min(1, (f.until - state.time) / 1100));
     ctx.save(); ctx.globalAlpha = Math.min(1, life * 4); ctx.font = `600 ${Math.min(13, Math.max(11, t * .17))}px sans-serif`; ctx.textAlign = 'center';

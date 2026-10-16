@@ -51,3 +51,14 @@ const ROOM_MEADOW_PATCHES=[
 export const ROOM_GARDENS=[...ROOM_UNDERGROWTH.map((p,i)=>({...p,index:[0,1,2,4,5,1,2,3,4,5,0][i%11]})),...ROOM_MEADOW_PATCHES];
 export const ROOM_EDGE_GARDENS=ROOM_EDGES.filter(p=>p.index===1||p.index===3).map((p,i)=>({...p,index:[4,1,0,2,5,3,1][i%7],blocking:false as const}));
 export const ROOM_EDGE_SOLIDS=ROOM_EDGES.filter(p=>p.index!==1&&p.index!==3);
+
+/** Sparse walkable groups beyond the old rectangle; fixed world coordinates, no rotations. */
+export const EXPANDED_GARDENS=Array.from({length:44},(_,i)=>{
+ const angle=i*2.39996323,ring=3.5+((i*17)%29)/29*5;
+ return {x:7+Math.cos(angle)*ring*1.25,y:5+Math.sin(angle)*ring,index:[2,4,1,5,0][i%5],width:.42+(i%4)*.12,height:.35+(i%3)*.09,blocking:false as const};
+}).filter(p=>p.x<-.6||p.x>14.7||p.y<-.5||p.y>10.8);
+/** Dense outer forest follows the rounded world edge, leaving the old pockets untouched. */
+export const OUTER_GARDENS=Array.from({length:96},(_,i)=>{
+ const angle=i*Math.PI*2/96;
+ return {x:7+Math.cos(angle)*(13.15+.18*Math.sin(i*1.7)),y:5+Math.sin(angle)*(10.15+.15*Math.cos(i)),index:[4,1,0,2,5,3,1][i%7],width:1.2+(i%3)*.18,height:1.0+(i%4)*.13,blocking:false as const};
+});

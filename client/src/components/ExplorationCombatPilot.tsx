@@ -1,3 +1,4 @@
+import ExplorationMinimap from './ExplorationMinimap';
 import CombatInventory from "./CombatInventory";
 import ExplorationJoystick from "./ExplorationJoystick";
 import { playPlatformSfx, unlockPlatformAudio } from "@/game/platformerAudio";
@@ -52,17 +53,18 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const el = canvas.current, ctx = el?.getContext('2d'); if (!el || !ctx) return;
     const props = new Image(); props.src = '/forest-adventure/woodland-props-v2.png';
     const garden = new Image(); garden.src = FOREST_NATURE.garden.asset;
+    const portal = new Image(); portal.src = '/forest-adventure/woodland-portal-v1.webp';
     const shelter = new Image(); shelter.src = PILOT_SHELTER.asset;
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
     const itemArt=Object.fromEntries(Object.keys(COMBAT_ITEMS).map(id=>{const image=new Image();image.src='/forest-adventure/items/'+id+'.svg';return [id,image];})) as Record<CombatItem,HTMLImageElement>;
     const bg = new Image(); bg.src = '/forest-adventure/ground-proposals-20261016/option-3.webp';
     let assetsReady = false;
-    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && garden.naturalWidth && shelter.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
+    const checkAssets = () => { if (pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && garden.naturalWidth && shelter.naturalWidth && portal.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
     pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; garden.onload = checkAssets; bg.onload = checkAssets;
-    shelter.onload=checkAssets;
+    shelter.onload=checkAssets; portal.onload=checkAssets;
     pet.onerror = atlas.onerror = enemies.onerror = props.onerror = garden.onerror = bg.onerror = () => { assetsReady = false; setAssetStatus('error'); };
-    shelter.onerror=pet.onerror;
+    shelter.onerror=pet.onerror; portal.onerror=pet.onerror;
     Object.values(itemArt).forEach(image=>{image.onload=checkAssets;image.onerror=()=>{assetsReady=false;setAssetStatus('error');};});
     checkAssets();
     let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0;
@@ -93,7 +95,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         if (changedEvent || now - savedAt > 1000) { persist(); savedAt = now; }
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
       }
-      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter);
+      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal);
       frame = window.requestAnimationFrame(loop);
     };
     frame = window.requestAnimationFrame(loop);
@@ -135,6 +137,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         route.current = pilotRoute(current.current.player, { x: (event.clientX - r.left - v.left) / v.tile, y: (event.clientY - r.top - v.top) / v.tile }, current.current.gateOpen);
       }} />
       <div className="combat-vitals"><label>HP <strong>{Math.ceil(game.hp)}/{combatMaxHp(game.xp)}</strong><progress value={game.hp} max={combatMaxHp(game.xp)} aria-label="Vida do pet" /></label><label>Energia <strong>{Math.floor(game.energy)}/100</strong><progress value={game.energy} max={100} aria-label="Energia de combate" /></label></div>
+      <ExplorationMinimap state={game}/>
       <nav className="combat-camera" aria-label="Câmera"><button aria-label="Reduzir zoom do cenário" disabled={zoom <= 1 || overview} onClick={() => setZoom(z => Math.max(1, z - .25))}><ZoomOut size={18} /></button><button aria-label="Aumentar zoom do cenário" disabled={zoom >= 2 || overview} onClick={() => setZoom(z => Math.min(2, z + .25))}><ZoomIn size={18} /></button><button onClick={viewRoom} aria-pressed={overview}><Map size={17} />{overview ? 'Voltar ao pet' : 'Ver sala'}</button></nav>
       <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(6, fibers)}/6 fibras</span><span>{game.defeated > 0 ? "✓" : "0/1"} adversário</span><span>{game.gateOpen ? "Siga até a saída" : "Ative o marco"}</span></div>
       <div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>

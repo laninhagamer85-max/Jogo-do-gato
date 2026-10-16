@@ -1,7 +1,9 @@
+import {EXPLORATION_WORLD,insideExploration} from './explorationWorld';
+import {readMinimap,revealMinimap} from './explorationMinimap';
 import { ROOM_WALLS, PILOT_SHELTER } from "./explorationRoom";
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
 export type CombatPoint = { x: number; y: number };
-export const PILOT_SIZE = { width: 14, height: 10 };
+export const PILOT_SIZE = EXPLORATION_WORLD;
 export const PILOT_CAMP = { x: 1.5, y: 1.5 };
 export const PILOT_MARKER = { x: 8.5, y: 4.5 };
 export const PILOT_EXIT = { x: 12.4, y: 4.5 };
@@ -29,6 +31,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
+  exploredCells: number[]; minimapVersion: 2;
   version: 1; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
   stock: Record<CombatItem, number>; bag: Record<CombatItem, number>;
@@ -48,7 +51,7 @@ export const combatLevel = (xp: number) => Math.min(20, 1 + Math.floor(Math.sqrt
 export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0);
 export function createCombatState(): CombatState {
-  return { version: 1, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return { minimapVersion: 2, exploredCells: readMinimap([],PILOT_CAMP), version: 1, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...PILOT_CAMP }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: PILOT_ENEMIES.map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -58,7 +61,7 @@ export function createCombatState(): CombatState {
     message: 'Colete 6 fibras, enfrente um besouro e ative o marco com F.' };
 }
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): boolean {
-  if (p.x < 1 + radius || p.y < 1 + radius || p.x > 13 - radius || p.y > 9 - radius) return false;
+  if (!insideExploration(p,radius)) return false;
   const walls = gateOpen ? PILOT_WALLS : [...PILOT_WALLS, { x: 9, y: 4 }];
   const f=PILOT_SHELTER.footprint;
   if(p.x+radius>f.x && p.x-radius<f.x+f.width && p.y+radius>f.y && p.y-radius<f.y+f.height)return false;
@@ -67,8 +70,8 @@ export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22): 
 /** Relocate positions covered by revised scenery, preserving earned state. */
 export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean):CombatPoint {
   if(pilotWalkable(p,gateOpen))return {...p};
-  if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||p.x<1||p.x>13||p.y<1||p.y>9)return {...PILOT_CAMP};
-  const candidates=Array.from({length:96},(_,i)=>({x:1.5+i%12,y:1.5+Math.floor(i/12)})).filter(q=>pilotWalkable(q,gateOpen));
+  if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||!insideExploration(p))return {...PILOT_CAMP};
+  const candidates=Array.from({length:PILOT_SIZE.width*PILOT_SIZE.height},(_,i)=>({x:PILOT_SIZE.left+.5+i%PILOT_SIZE.width,y:PILOT_SIZE.top+.5+Math.floor(i/PILOT_SIZE.width)})).filter(q=>pilotWalkable(q,gateOpen));
   candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...PILOT_CAMP};
 }
 function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22): CombatPoint {
@@ -87,8 +90,9 @@ export function readCombatState(value: unknown): CombatRead {
   s.completionRewardClaimed = raw.completionRewardClaimed === true || s.completed;
   s.equipmentOwned = raw.equipmentOwned === true; s.equipmentOn = s.equipmentOwned && raw.equipmentOn === true;
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
-  const point = object(raw.player); const p = { x: number(point.x, PILOT_CAMP.x), y: number(point.y, PILOT_CAMP.y) };
+  const point = object(raw.player); const p = { x: number(point.x, PILOT_CAMP.x, PILOT_SIZE.left, PILOT_SIZE.left+PILOT_SIZE.width), y: number(point.y, PILOT_CAMP.y, PILOT_SIZE.top, PILOT_SIZE.top+PILOT_SIZE.height) };
   s.player = nearestPilotPoint(p, s.gateOpen);
+  s.exploredCells = readMinimap(raw.exploredCells,s.player,raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
   s.collectedNodes = PILOT_NODES.filter(n => Array.isArray(raw.collectedNodes) && raw.collectedNodes.includes(n.id)).map(n => n.id);
@@ -96,7 +100,7 @@ export function readCombatState(value: unknown): CombatRead {
   s.attackAt = number(raw.attackAt, s.time, 0, s.time + 2000); s.invulnerableUntil = number(raw.invulnerableUntil, s.time, 0, s.time + 3000);
   s.enemies = PILOT_ENEMIES.map(def => {
     const rawEnemy = object(Array.isArray(raw.enemies) ? raw.enemies.find(e => object(e).id === def.id) : null);
-    const ep = { x: number(rawEnemy.x, def.x), y: number(rawEnemy.y, def.y) };
+    const ep = { x: number(rawEnemy.x, def.x, PILOT_SIZE.left, PILOT_SIZE.left+PILOT_SIZE.width), y: number(rawEnemy.y, def.y, PILOT_SIZE.top, PILOT_SIZE.top+PILOT_SIZE.height) };
     return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen), hp: number(rawEnemy.hp, def.hp, 0, def.hp),
       generation: Math.floor(number(rawEnemy.generation, 0)), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + Math.max(45000,insectRespawnMs(def))) };
   });
@@ -104,11 +108,11 @@ export function readCombatState(value: unknown): CombatRead {
   const allowedLoot = new Set<string>();
   s.loot = Array.isArray(raw.loot) ? raw.loot.slice(0, 20).flatMap(v => {
     const l = object(v); const id = String(l.id); const item = String(l.item) as CombatItem;
-    const p = { x: number(l.x, 0), y: number(l.y, 0) };
+    const p = { x: number(l.x, 999, -1e9), y: number(l.y, 999, -1e9) };
     const owner=s.enemies.find(e=>id.startsWith(`${e.id}:`));
     const generation=Number(id.slice(id.indexOf(':')+1));
     const def=PILOT_ENEMIES.find(e=>e.id===owner?.id);
-    if (!owner || !def || id!==`${owner.id}:${generation}` || !Number.isInteger(generation) || generation<0 || generation>owner.generation || (generation===owner.generation && owner.hp>0) || allowedLoot.has(owner.id) || item!==def.item || (p.x < 1 || p.x > 13 || p.y < 1 || p.y > 9)) return [];
+    if (!owner || !def || id!==`${owner.id}:${generation}` || !Number.isInteger(generation) || generation<0 || generation>owner.generation || (generation===owner.generation && owner.hp>0) || allowedLoot.has(owner.id) || item!==def.item || !insideExploration(p)) return [];
     allowedLoot.add(owner.id); return [{ id, item, ...nearestPilotPoint(p,s.gateOpen), bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), expiresAt:number(l.expiresAt,s.time+combatLootLifetime(item),0,s.time+combatLootLifetime(item)), quantity: Math.floor(number(l.quantity, 1, 1, 9999)) }];
   }) : [];
   if (s.hp === 0) return { supported: true, state: defeatCombat(s) };
@@ -153,6 +157,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   const dx = clamp(input.dx || 0, -1, 1), dy = clamp(input.dy || 0, -1, 1), length = Math.hypot(dx, dy);
   const previous = s.player;
   if (length) { s.facing = { x: dx / length, y: dy / length }; s.player = move(s.player, s.facing.x * Math.min(1, length) * dt * .003, s.facing.y * Math.min(1, length) * dt * .003, s.gateOpen); }
+  s.exploredCells = revealMinimap(s.exploredCells,s.player);
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) s.energy -= 25;
@@ -247,6 +252,7 @@ export function replayCompletedCombat(current: CombatState): CombatState {
   const next = createCombatState();
   next.revision = current.revision + 1;
   next.time = current.time;
+  next.exploredCells = [...current.exploredCells];
   next.xp = current.xp;
   next.hp = combatMaxHp(current.xp);
   next.energy = current.energy;
