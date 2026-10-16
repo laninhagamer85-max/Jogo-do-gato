@@ -26,3 +26,5 @@ Verificação: typecheck, motor offline, caminhos com/sem ponte, objetivos de vi
 Rollback anterior: produto1.10.0 / Sites58 / fonte `a5eba01779aae6a898d44ffa9483943df8cd51c1` / versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_da98708fc60c81919a84702d35a9bdf6`.
 
 Resultado: TypeScript, 367 testes offline em 30 arquivos e build aprovados. Aviso existente de tamanho de bundle. Nenhum resultado de navegador ou FPS alegado.
+
+Publicação confirmada: produto1.11.0 / Sites59 / fonte `5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c` / versão `appgprj_6ac40994d8d881919d46203a60801e46~appgver_d544641ad4788191acc19a7e2a543874` / deployment `appgdep_6ad27395580081919a18ca7b62b938aa` / https://meupet.aquimeusite.chatgpt.site. Visual e gameplay no aparelho aguardam usuário.

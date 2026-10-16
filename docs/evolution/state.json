@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_user_phone_test",
+  "status": "published_pending_user_device_test",
   "active_run": "2026-10-16-continuous-biomes",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
-    "source_site_commit": "a5eba01779aae6a898d44ffa9483943df8cd51c1",
+    "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "8a576eacf025c0c5341d0a3f275f8b4e373da8d4",
+    "code_commit": "9470199b32323054b67d1f2a362250a029644d43",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6",
     "code_commit_status": "published"
   },
@@ -23,12 +23,12 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.10.0",
-    "last_observed_version": 58,
-    "status": "previous_release",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_da98708fc60c81919a84702d35a9bdf6",
-    "deployment_id": "appgdep_6ad269af11708191a18199898b259f18",
-    "site_commit": "a5eba01779aae6a898d44ffa9483943df8cd51c1",
+    "product_version": "1.11.0",
+    "last_observed_version": 59,
+    "status": "succeeded",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_d544641ad4788191acc19a7e2a543874",
+    "deployment_id": "appgdep_6ad27395580081919a18ca7b62b938aa",
+    "site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -54,7 +54,7 @@
     "Browser inspection required by evolution skill; control-browser unavailable."
   ],
   "next_actions": [
-    "Publish 1.11.0 and review lake/bridge/new river biome on phone.",
+    "User tests continuing current room, lake style, bridge crossing, automatic portal, masters/cards and second biome on device.",
     "Chapters 3–6 remain planned."
   ],
   "rollback": {
