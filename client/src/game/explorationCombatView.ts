@@ -1,7 +1,7 @@
 import { ROOM_EDGES, ROOM_SCENERY, ROOM_UNDERGROWTH } from "./explorationRoom";
 import { drawExplorationGround, drawWoodlandProp, woodlandPropPlacement, GROUND_WORLD } from "./explorationScenery";
 import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPresentation";
-import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
+import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
 
@@ -51,25 +51,26 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='prop'){drawProp(entity.p);continue;}
-    ctx.fillStyle = 'rgba(10,24,15,.3)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + t * .07, t * .28, t * .10, 0, 0, Math.PI * 2); ctx.fill();
+    const shadow=entity.type==='enemy'?.21:.28;
+    ctx.fillStyle = 'rgba(10,24,15,.3)'; ctx.beginPath(); ctx.ellipse(p.x, p.y + t * .07, t * shadow, t * shadow*.36, 0, 0, Math.PI * 2); ctx.fill();
     if (entity.type === 'enemy') {
       const enemy = entity.p as CombatState['enemies'][number], def = PILOT_ENEMIES.find(e => e.id === enemy.id)!;
       const range = Math.hypot(state.player.x-enemy.x,state.player.y-enemy.y);
       const safe = Math.hypot(state.player.x-PILOT_CAMP.x,state.player.y-PILOT_CAMP.y)<1.6;
-      const moving = (!safe && range<4 && range>.65) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
+      const moving = (!safe && range<4 && range>PILOT_INSECT.stopDistance) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
       if(enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
         const row=enemy.id==='beetle'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
         const cw=enemiesAtlas.naturalWidth/4,ch=enemiesAtlas.naturalHeight/2;
         ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         const attacking=enemy.attackAt-state.time>1250 && enemy.attackAt-state.time<=1500;
         if(attacking&&!reducedMotion)ctx.rotate(-.08*Math.sin((1500-enemy.attackAt+state.time)/250*Math.PI));
-        const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dh=t*.82*sh/cw;
-        ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-t*.41,t*.07-dh,t*.82,dh);ctx.restore();
+        const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dw=t*PILOT_INSECT.width, dh=dw*sh/cw;
+        ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-dw/2,t*.07-dh,dw,dh);ctx.restore();
       }
-      ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .37, p.y - t * .88, t * .74, t * .075);
-      ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .37, p.y - t * .88, t * .74 * enemy.hp / def.hp, t * .075);
+      ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * .72, t * .62, t * .065);
+      ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * .72, t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      ctx.fillText(`${def.name} · Nv ${def.level}`, p.x, p.y - t * .99);
+      ctx.fillText(`${def.name} · Nv ${def.level}`, p.x, p.y - t * .83);
     } else {
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);

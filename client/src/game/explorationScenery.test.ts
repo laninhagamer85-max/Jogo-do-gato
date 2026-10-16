@@ -1,7 +1,23 @@
 import {describe,it,expect,vi} from 'vitest';
 import { groundVariations,GROUND_WORLD } from './explorationScenery';
-import {combatView,combatCanvasScale} from './explorationCombatView';
+import {combatView,combatCanvasScale,drawCombatPilot} from './explorationCombatView';
+import {createCombatState,PILOT_INSECT} from './explorationCombat';
 describe('non repeating woodland ground',()=>{
+  it('renders both smaller insect sprites with uniform scale and grounded feet',()=>{
+    const calls:unknown[][]=[];
+    const ctx=new Proxy({drawImage:(...args:unknown[])=>calls.push(args),measureText:()=>({width:20}),createRadialGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}}) as unknown as CanvasRenderingContext2D;
+    const unloaded={complete:false,naturalWidth:0} as HTMLImageElement;
+    const insects={complete:true,naturalWidth:1024,naturalHeight:512} as HTMLImageElement;
+    const state=createCombatState(),v=combatView(390,844,state.player);
+    drawCombatPilot(ctx,390,844,state,unloaded,unloaded,unloaded,1,false,true,insects);
+    const sprites=calls.filter(c=>c[0]===insects);expect(sprites).toHaveLength(2);
+    for(const c of sprites){
+      const [,sx,sy,sw,sh,dx,dy,dw,dh]=c as number[];
+      expect(dw).toBeCloseTo(v.tile*PILOT_INSECT.width);
+      expect(dw/sw).toBeCloseTo(dh/sh);
+      expect(dy+dh).toBeCloseTo(v.tile*.07);
+    }
+  });
   it('preserves the same regional appearance after reload',()=>{expect(groundVariations(123)).toEqual(groundVariations(123));});
   it('allows distinct regional layouts without changing the combat map',()=>{expect(groundVariations(123)).not.toEqual(groundVariations(456));expect(new Set(groundVariations(123).map(v=>`${v.x}:${v.y}`)).size).toBe(18);});
   it.each([[375,667],[375,812],[390,844],[844,390],[1366,768]])('covers %i × %i in follow and overview modes without repeating the plane',(w,h)=>{

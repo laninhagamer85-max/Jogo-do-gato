@@ -1,7 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { createCombatState, replayCompletedCombat, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER } from './explorationCombat';
+import { createCombatState, replayCompletedCombat, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER, PILOT_INSECT, pilotWalkable } from './explorationCombat';
 import { createInitialGameState, saveExplorationCombatProgress, migrateGameState } from './PetGame';
 describe('Exploration combat pilot', () => {
+  it('uses the smaller insect footprint near a log without shrinking the player',()=>{
+    expect(pilotWalkable({x:4.81,y:3.5},false,PILOT_INSECT.radius)).toBe(true);
+    expect(pilotWalkable({x:4.81,y:3.5},false)).toBe(false);
+  });
+  it('requires smaller insects to approach before dealing contact damage',()=>{
+    const s=createCombatState();s.player={x:4,y:5.6};s.enemies[0].attackAt=0;
+    expect(stepCombat(s,{},0).hp).toBe(100);
+    s.player={x:4,y:5.8};expect(stepCombat(s,{},0).hp).toBeLessThan(100);
+  });
   it('keeps diagonal speed bounded and accepts short route steps', () => {
     const s=createCombatState(); const a=stepCombat(s,{dx:1,dy:1},50);
     expect(Math.hypot(a.player.x-s.player.x,a.player.y-s.player.y)).toBeCloseTo(.15);

@@ -1,3 +1,4 @@
+import {composeForestClusters,FOREST_EDGE_CLUSTERS} from './biomeScenery';
 /** Room geometry and art share the same ground footprints. */
 export const PILOT_OBSTACLES = [
   {id:'fallen-log', x:5,y:3,width:2,height:1,index:2,artWidth:2.1,artHeight:1.08},
@@ -33,9 +34,4 @@ export const ROOM_UNDERGROWTH=[
   {x:5.35,y:8.65,index:3,width:.38,height:.3},
   {x:2.1,y:8.4,index:3,width:.48,height:.38},
 ].map(p=>({...p,blocking:false as const}));
-// Irregular larger clusters mark the perimeter without a repeating tile hedge.
-export const ROOM_EDGES=[
-  ...[1.3,3.7,6.6,9.1,12.1].map((x,i)=>({x,y:.85,index:i%2?3:0,width:1.35,height:.95})),
-  ...[1.4,4.2,7.1,10,12.7].map((x,i)=>({x,y:10.1,index:i%2?0:3,width:1.5,height:1.05})),
-  ...[2.4,5,7.9].flatMap((y,i)=>[{x:.15,y,index:i%2?3:0,width:1.1,height:1.25},{x:13.9,y:y+.3,index:i%2?0:3,width:1.1,height:1.25}]),
-];
+export const ROOM_EDGES=composeForestClusters(FOREST_EDGE_CLUSTERS);

@@ -17,6 +17,8 @@ export const PILOT_ENEMIES = [
   { id: 'beetle', name: 'Besouro', level: 1, hp: 40, attack: 9, defense: 1, xp: 25, item: 'fibra' as CombatItem, quantity: 3, x: 4, y: 6.5 },
   { id: 'caterpillar', name: 'Lagarta', level: 3, hp: 80, attack: 16, defense: 3, xp: 55, item: 'ambar' as CombatItem, quantity: 2, x: 10.5, y: 3 },
 ];
+/** Smaller insects share their footprint and contact distances with the renderer. */
+export const PILOT_INSECT={width:.64,radius:.17,stopDistance:.55,attackDistance:.82};
 export type CombatEnemy = CombatPoint & { id: string; hp: number; generation: number; attackAt: number; respawnAt: number };
 export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity: number; bornAt?: number; landedAt?: number };
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
@@ -61,9 +63,9 @@ export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean):CombatPoint {
   const candidates=Array.from({length:96},(_,i)=>({x:1.5+i%12,y:1.5+Math.floor(i/12)})).filter(q=>pilotWalkable(q,gateOpen));
   candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...PILOT_CAMP};
 }
-function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean): CombatPoint {
-  const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen) ? p.x + dx : p.x;
-  return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen) ? p.y + dy : p.y };
+function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22): CombatPoint {
+  const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen, radius) ? p.x + dx : p.x;
+  return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen, radius) ? p.y + dy : p.y };
 }
 function object(v: unknown): Record<string, unknown> { return v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : {}; }
 /** Forward-version saves are never replaced; known fields are bounded on read. */
@@ -167,12 +169,12 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
       continue;
     }
     const range = distance(s.player, enemy), safe = distance(s.player, PILOT_CAMP) < 1.6;
-    if (!safe && range < 4 && range > .65) {
-      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * .00085, (s.player.y - enemy.y) / range * dt * .00085, s.gateOpen));
+    if (!safe && range < 4 && range > PILOT_INSECT.stopDistance) {
+      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * .00085, (s.player.y - enemy.y) / range * dt * .00085, s.gateOpen, PILOT_INSECT.radius));
     } else if (safe || range > 4) {
-      const home = distance(enemy, def); if (home > .1) Object.assign(enemy, move(enemy, (def.x - enemy.x) / home * dt * .0006, (def.y - enemy.y) / home * dt * .0006, s.gateOpen));
+      const home = distance(enemy, def); if (home > .1) Object.assign(enemy, move(enemy, (def.x - enemy.x) / home * dt * .0006, (def.y - enemy.y) / home * dt * .0006, s.gateOpen, PILOT_INSECT.radius));
     }
-    if (!safe && distance(s.player, enemy) <= .95 && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen)) {
+    if (!safe && distance(s.player, enemy) <= PILOT_INSECT.attackDistance && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen)) {
       const damage = Math.min(s.hp, Math.max(1, def.attack - Math.floor(combatLevel(s.xp) / 2) - (s.equipmentOn ? 1 : 0)));
       s.hp -= damage; s.invulnerableUntil = s.time + 550; enemy.attackAt = s.time + 1500;
       feedback(s, s.player, `−${damage} HP`, 'damage');

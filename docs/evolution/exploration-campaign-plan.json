@@ -1019,5 +1019,18 @@
         }
       ]
     }
-  ]
+  ],
+  "chapter_biome_policy": {
+    "status": "confirmed_direction_not_implemented",
+    "confirmed_date": "2026-10-16",
+    "chapter_1_basis": "revised combat pilot; woodland clearing",
+    "rules": [
+      "Each chapter has its own biome art, appropriate insects and challenges.",
+      "Each room increases challenge through encounter numbers, species, behavior, space and enemy levels, with recovery intervals.",
+      "Enemy drop tables feed explicit unlock requirements for permanent cards and accessories.",
+      "Do not multiply the pilot contents unchanged across chapters.",
+      "Counts, rates, thresholds and rewards require room-specific implementation and playtest."
+    ],
+    "current_live_content": "one combat pilot with beetle and caterpillar; three legacy puzzle chapters remain separate"
+  }
 }

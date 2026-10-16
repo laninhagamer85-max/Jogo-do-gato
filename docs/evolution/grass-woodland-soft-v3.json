@@ -1,0 +1,13 @@
+{
+  "tool": "built-in imagegen",
+  "source": "exec-33118e4c-f31e-4e20-a153-e87513735eb3.png",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "asset": "client/public/forest-adventure/grass-woodland-soft-v3.webp",
+  "sha256": "32513853b9af71220f6db9512fd5a7eb66d718f4ae75e12eb6525993671161fc",
+  "encoding": "WebP q92, no resizing, recoloring or crop",
+  "world_span": "existing 1.88–2.12 world units per blended patch; cache unchanged",
+  "prompt": "Use case: stylized-concept. Asset type: production ground texture for an existing children's top-down 2D forest game, NOT a full scene. Generate a square high-definition 2048x2048 natural short woodland grass material. Painterly hand-painted digital illustration, small crisp fine grass blades interwoven with tiny soft moss, restrained muted fresh leaf green midtones. Coverage completely uniform in brightness at macro scale; very subtle microvariation only. No clumps, circular bushes, streaks, flowers, rocks, soil, water, shadows of trees, objects, border, grid, text or recognizable motifs. No yellow chartreuse, neon lime or photographic coarse lawn. Flat overhead orthographic view with neutral diffuse light, balanced detail and low contrast so sprites stand out. Texture should tile seamlessly with identical tonal density on all four edges; no bright centre or vignette. The image will be blended in small patches across an extensive scrolling game map so every dark or bright spot would repeat: avoid all large-scale mottling. Refined stylized botanical detail without noisy sharpening. Output must be only the grass surface edge to edge."
+}
