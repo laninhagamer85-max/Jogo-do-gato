@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão de produto publicada para revisão: **1.9.4**, caminhada própria para os 12 amiguinhos. A 1.9.3 é o piloto aprovado por David. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status de publicação.
+Versão publicada verificada em 16/10/2026: **1.9.26** (Sites 45). O ajuste do rótulo do ponto seguro está somente na fonte, aguardando validação em navegador suportado. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status de publicação.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

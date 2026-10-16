@@ -3,21 +3,21 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-16",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
-  "active_run": null,
+  "status": "implemented_awaiting_supported_browser",
+  "active_run": "2026-10-16",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
-    "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
+    "base_commit": "c23654907b47d217e27d6eb29fe140b7749c1de7",
     "source_site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "4b95cb468263a339796dc869b0c9639cc6584921",
     "implementation_base_github_commit": "b0b243151c49607e8360c467d742267170a467a6"
   },
   "current_improvement": {
-    "id": "forest-nature-and-independent-respawn",
-    "implementation_status": "published_1.9.26",
-    "acceptance_status": "grass_style_approved_by_David_final_tone_and_shelter_phone_review_pending"
+    "id": "safe-point-label-clearance",
+    "implementation_status": "source_and_230_offline_tests_passed",
+    "acceptance_status": "awaiting_supported_browser"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -29,15 +29,15 @@
     "deployment_id": "appgdep_6ad1c4e03b04819188b22a4412e0d6a3",
     "site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
     "published_at": "2026-10-16T06:32:24.066505+00:00",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": false
   },
   "verification": {
-    "typescript": "passed",
-    "offline_tests": "222/222 in 30 files; Firebase staging integration excluded",
-    "build": "passed",
+    "typescript": "passed_this_cycle",
+    "offline_tests": "230/230 in 31 files; Firebase staging integration excluded",
+    "build": "passed_this_cycle",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.9.26 live landscape: verified cat house on left, ground tone and ambient insects. Walked upper, right, lower detour and left back to safe camp; 9 HP damage, 3 fibre and 1 herb collected automatically. No enemy killed/room completed. Online respawn full cycle not exercised. Phone portrait/FPS not tested.",
+    "browser": "Not performed this cycle; historical public inspection retained only in previous report",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -50,10 +50,12 @@
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
     "packaged_grass": "pending"
   },
-  "blockers": [],
+  "blockers": [
+    "control-browser indisponível: validação visual obrigatória pendente; nenhum deploy neste ciclo."
+  ],
   "next_actions": [
-    "David: review 1.9.26 on phone, especially slight grass color change and left cat shelter.",
-    "Future refinement: feather sunlight edges; verify safe-label placement and overview HUD overlap. Mixed terrain deferred by user."
+    "Validar rótulo do ponto seguro em navegador suportado nos cinco viewports, zoom e deslocamento; verificar repouso e ataque.",
+    "Revisar retrato e fluidez móvel da 1.9.26 sem expandir campanha antes do aceite."
   ],
   "rollback": {
     "production_changed": true,
@@ -62,7 +64,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-16-forest-nature-variations.md",
+  "latest_report": "docs/evolution/runs/2026-10-16.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -313,5 +315,13 @@
     "icon_source": "existing ui/pet-icons-atlas-v1.png",
     "care_grid": "2x2 portrait; height from content; up to 252px width",
     "no_new_art": true
+  },
+  "safe_label_review": {
+    "date": "2026-10-16",
+    "base_product": "1.9.26",
+    "status": "not_published",
+    "geometry_tests": 8,
+    "browser": "unavailable_control_browser",
+    "real_saves_modified": false
   }
 }

@@ -5,6 +5,7 @@ import { combatAttackPose, combatLootLift, combatPickupCue } from "./combatPrese
 import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PILOT_EXIT, PILOT_MARKER, PILOT_NODES, PILOT_SIZE, PILOT_WALLS, type CombatPoint, type CombatState } from './explorationCombat';
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
+import { combatSafeLabel } from './combatSafeLabel';
 
 /** Match phone pixel density while bounding the backing buffer to six million pixels. */
 export function combatCanvasScale(width:number,height:number,pixelRatio:number){
@@ -40,7 +41,6 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(!state.gateOpen)scenery.push({x:9.5,y:4.9,index:2,width:1.28,height:1.28});
   const camp = point(PILOT_CAMP); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(PILOT_MARKER);
   if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
   ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':'6 fibras',marker.x,marker.y-t*.4);
@@ -101,6 +101,14 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     }
   }
   drawForestPerches(ctx,v.left,v.top,t,state.time,reducedMotion,width,height,enemiesAtlas);
+  ctx.save();
+  ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`;
+  const safeLabel = combatSafeLabel(width,height,t,camp,point(state.player),ctx.measureText('Local seguro').width);
+  if(safeLabel){
+    ctx.fillStyle='#18382bcc';ctx.beginPath();ctx.roundRect(safeLabel.x,safeLabel.y,safeLabel.width,safeLabel.height,5);ctx.fill();
+    ctx.fillStyle='#e8f4c2';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Local seguro',camp.x,safeLabel.y+safeLabel.height/2);
+  }
+  ctx.restore();
   state.feedback.forEach((f, i) => {
     const p = point(f), life = Math.max(0, Math.min(1, (f.until - state.time) / 1100));
     ctx.save(); ctx.globalAlpha = Math.min(1, life * 4); ctx.font = `600 ${Math.min(13, Math.max(11, t * .17))}px sans-serif`; ctx.textAlign = 'center';
