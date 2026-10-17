@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-17",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_checks_passed_pending_publication",
+  "status": "published_pending_phone_test",
   "active_run": "2026-10-17-trail-audit-stars",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -23,21 +23,21 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.13.0",
-    "last_observed_version": 62,
+    "product_version": "1.13.1",
+    "last_observed_version": 64,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_927ec0a07f1c8191ac89336ff181a88a",
-    "deployment_id": "appgdep_6ad3eee526c081918a085f5f3f05e35f",
-    "site_commit": "025e642e64e6cafdc9d471ea1b98f3e204c6864d",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_5bddc1867c00819198ea70f30c49c101",
+    "deployment_id": "appgdep_6ad3f1d9be7c8191a03bf5a8a90d70e4",
+    "site_commit": "7637dbbb6787eaba5bc0f1ca52055bda72aefa30",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
     "offline_tests": "423 offline tests across40files passed",
-    "build": "passed; existing largechunkwarning",
+    "build": "passed; existinglargechunkwarning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Production1.13.0 whole horizontal map inspected to scrollLeft2022=max; chapter2lastroom visible; no scroll lock. New changes visual check pending.",
+    "browser": "ProductioncloudChrome: entire map toend2022=max; backgrounds now reachworldedge, lockedroutegray; haloandthreeemptystarsdisplayed; legacycheckpointpreserved. Badge corrected after observedthirdstaroverlap. Phoneunverified.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
