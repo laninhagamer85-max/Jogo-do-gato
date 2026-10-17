@@ -7,3 +7,5 @@ Checks TypeScriptpassed;427offline tests/41files passed; buildpassed. New cropbo
 User also asks what continuousmapwouldlooklike inAventura. Separate visualconcept uses current homebackground, Mimo,Florita references; no Aventura gameplay/UI/source changes inthisrelease. Real existing10worlds100stages preserved.
 
 BaseSite7637dbbb6787eaba5bc0f1ca52055bda72aefa30; GitHubparent1d1a5073aa4dc3782f44bdca48de667315b62cec; branchreview/grass-option3-20261016. Rollback previousSite64 if immediatepredecessor; preserveplayersaves/latercollaborators. Existing MDNSVGclipping reference applied: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/clipPath .
+
+Published1.13.2 Sites65 succeeded; sourcea92c76ba5804ed33db23b81957e2e12e90fe3921; versionappgprj_6ac40994d8d881919d46203a60801e46~appgver_ff534806b3d081919bfd7e64ea18c15c; deploymentappgdep_6ad3f7115e9c819195da50980e8da1a9. SVG intrinsicwidth/heightmatchviewBox with CSSheightauto, preventing letterbox fromshowingneighborcells. Adventureconceptgeneratedfromexisting3references; illustrativeonly, not newAventuraimplementation. Phoneacceptancepending.
