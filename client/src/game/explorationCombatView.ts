@@ -1,3 +1,4 @@
+import {explorationMobFrame} from './explorationMobArt';
 import {campaignRoom,campaignGardens,campaignEnemies,campaignWaterBlocks,RARE_ITEMS} from './explorationCampaign';
 import {drawBiomeWater} from './biomeCompositionView';
 import {drawCampaignBridge,drawCampaignKey,drawRiverProp,drawCampaignShore} from './explorationCampaignArt';
@@ -94,10 +95,10 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       const moving = (!safe && range<4 && range>PILOT_INSECT.stopDistance) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
       const mobImage=def.art==='river-mobs'?riverMobs:mobsAtlas;
       if(def.art&&mobImage?.complete&&mobImage.naturalWidth){
-        const cw=mobImage.naturalWidth/4,ch=mobImage.naturalHeight/3,frame=moving&&!reducedMotion?Math.floor(state.time/170)%4:0;
+        const frame=moving&&!reducedMotion?Math.floor(state.time/170)%4:0,rect=explorationMobFrame(def.art,def.spriteRow??0,frame,mobImage.naturalWidth,mobImage.naturalHeight),cw=rect.width,ch=rect.height;
         const dw=t*(def.width??.78),dh=dw*ch/cw;
         ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
-        ctx.drawImage(mobImage,frame*cw,(def.spriteRow??0)*ch,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
+        ctx.drawImage(mobImage,rect.x,rect.y,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
       }else if(!def.art&&enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
         const row=def.name==='Besouro'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
         const cw=enemiesAtlas.naturalWidth/4,ch=enemiesAtlas.naturalHeight/2;

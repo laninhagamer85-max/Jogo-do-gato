@@ -1,0 +1,11 @@
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {expect,it,vi} from 'vitest';
+import {explorationMobFrame} from './explorationMobArt';
+import ExplorationCampaignMap from '../components/ExplorationCampaignMap';
+import {createCombatState} from './explorationCombat';
+vi.stubGlobal('React',React);
+it('isolates frog and complete taller river master in every animation frame',()=>{for(let frame=0;frame<4;frame++){const frog=explorationMobFrame('river-mobs',1,frame,1448,1086),master=explorationMobFrame('river-mobs',2,frame,1448,1086);expect(frog.y+frog.height).toBeCloseTo(master.y);expect(master.y).toBeLessThan(630);expect(master.y+master.height).toBeCloseTo(1086);expect(master.height).toBeGreaterThan(frog.height);expect(master.x+master.width).toBeLessThanOrEqual(1448);}});
+it('scales crop coordinates with image resolution without distorting aspect',()=>{const a=explorationMobFrame('river-mobs',2,0,1448,1086),b=explorationMobFrame('river-mobs',2,0,724,543);for(const key of ['x','y','width','height'] as const)expect(b[key]).toBeCloseTo(a[key]/2);});
+it('retains uniform forest animation cells',()=>expect(explorationMobFrame('forest-mobs',2,3,1448,1086)).toEqual({x:1086,y:724,width:362,height:362.00000000000006}));
+it('shows one chapter heading and crops decorative mobs with the same renderer rectangles',()=>{const html=renderToStaticMarkup(React.createElement(ExplorationCampaignMap,{state:createCombatState(),onContinue:()=>{},onReplay:()=>{}}));expect(html).not.toContain('trail-chapter-sign');expect(html).toContain('trail-view-label');expect(html).toContain('preserveAspectRatio="xMidYMax meet"');expect(html).toContain('river-mobs-v1.webp');});

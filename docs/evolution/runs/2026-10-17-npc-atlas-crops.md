@@ -1,0 +1,9 @@
+# NPC crop and mobile chapter label correction —1.13.2
+
+User phone screenshots Screenshot_20261017-192131_Meu Pet.png and Screenshot_20261017-191858_Meu Pet.png visually inspected. Confirmed duplicate sticky/map chapter headings overlapportrait. Removed redundant chapter signs; keep single live chapterlabel. Confirmed river atlas unequal character bands: masterhead startsaround625px rather than724px; uniform thirds clipheadandbleedmasterheadunderfrog. Added shared explorationMobFrame normalized cropmetadata: river .08-.29 crab,.31-.575 frog,.575-1 master; forestuniformthirds. Map uses clipped nestedSVG viewBox with preserveaspect and whole originalatlas; liveCanvas uses same source rectangles/destinationratio. No assetredraw, no gamecollision/progress changes. Animationcolumn width unchanged.
+
+Checks TypeScriptpassed;427offline tests/41files passed; buildpassed. New cropbounds/scaling/forestparity/SSR singlelabel tests. Firebaseintegration excluded missingstagingcredential. Phone screenshots suppliedbyuser confirmproblem; newphoneresultpending. Localbrowserpreview unavailable managedSites/control-browser absent; productioncloudcheck after authorizedpublish. No fabricated unlocked state for verification.
+
+User also asks what continuousmapwouldlooklike inAventura. Separate visualconcept uses current homebackground, Mimo,Florita references; no Aventura gameplay/UI/source changes inthisrelease. Real existing10worlds100stages preserved.
+
+BaseSite7637dbbb6787eaba5bc0f1ca52055bda72aefa30; GitHubparent1d1a5073aa4dc3782f44bdca48de667315b62cec; branchreview/grass-option3-20261016. Rollback previousSite64 if immediatepredecessor; preserveplayersaves/latercollaborators. Existing MDNSVGclipping reference applied: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/clipPath .

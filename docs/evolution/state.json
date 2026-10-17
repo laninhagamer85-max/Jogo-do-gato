@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-17",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_phone_test",
-  "active_run": "2026-10-17-trail-audit-stars",
+  "status": "implemented_checks_passed",
+  "active_run": "2026-10-17-npc-atlas-crops",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -33,8 +33,8 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "423 offline tests across40files passed",
-    "build": "passed; existinglargechunkwarning",
+    "offline_tests": "427 passed across41files",
+    "build": "passed",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
     "browser": "ProductioncloudChrome: entire map toend2022=max; backgrounds now reachworldedge, lockedroutegray; haloandthreeemptystarsdisplayed; legacycheckpointpreserved. Badge corrected after observedthirdstaroverlap. Phoneunverified.",
@@ -63,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-17-trail-audit-stars.md",
+  "latest_report": "docs/evolution/runs/2026-10-17-npc-atlas-crops.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -447,5 +447,15 @@
     "best_only": true,
     "legacy": "unknown performance remains unrated; replay evaluates",
     "schema": "4 additive optional fields, legacy preserved"
+  },
+  "npc_atlas_fix": {
+    "product_version": "1.13.2",
+    "cause": "riverboss taller than uniform row; duplicate chapter labels",
+    "changes": [
+      "shared unequal river atlas bands for Canvas and SVG map",
+      "preserve aspect",
+      "single sticky chapter title"
+    ],
+    "adventure": "concept only; gameplay unchanged"
   }
 }
