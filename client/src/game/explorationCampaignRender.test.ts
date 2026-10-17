@@ -10,7 +10,7 @@ import CombatInventory from '../components/CombatInventory';
 it.each(EXPLORATION_ROOMS)('room $index: UI, minimap and live-NPC renderer use the active room',room=>{
  const s=createCombatState(room.index,42);s.completedRooms=Array.from({length:room.index},(_,i)=>i);
  const markup=renderToStaticMarkup(React.createElement(ExplorationCombatPilot,{soundOn:false,onToggleSound:()=>{},profile:null,progress:combatSnapshot(s),onSave:()=>{},onBack:()=>{}}));
- expect(markup).toContain(`SALA ${room.index%10+1}/10`);expect(markup).toContain(room.title.toUpperCase());
+ expect(markup).toContain(`SALA ${room.index+1}/20`);expect(markup).toContain(room.title.toUpperCase());
  const labels:string[]=[],ctx=new Proxy({measureText:()=>({width:40}),fillText:(text:string)=>labels.push(text),createRadialGradient:()=>({addColorStop:()=>{}}),createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}}) as unknown as CanvasRenderingContext2D;
  const unloaded={complete:false,naturalWidth:0} as HTMLImageElement;
  drawCombatPilot(ctx,390,844,s,unloaded,unloaded,unloaded,1,false,true);

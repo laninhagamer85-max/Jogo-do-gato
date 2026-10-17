@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-17",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_phone_review",
-  "active_run": "2026-10-17-npc-atlas-crops",
+  "status": "implemented_checks_passed",
+  "active_run": "2026-10-17-adventure-continuous-trail",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,9 +16,9 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "trail-audit-current-glow-room-stars",
+    "id": "adventure-trail-real-rewards-continuous-numbering",
     "implementation_status": "implemented",
-    "acceptance_status": "pending_phone_test"
+    "acceptance_status": "pending_visual_phone_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -33,11 +33,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "427 passed across41files",
-    "build": "passed",
+    "offline_tests": "431passed across42files",
+    "build": "finalbuildinprogress",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "ProductioncloudChrome: entire map toend2022=max; backgrounds now reachworldedge, lockedroutegray; haloandthreeemptystarsdisplayed; legacycheckpointpreserved. Badge corrected after observedthirdstaroverlap. Phoneunverified.",
+    "browser": "pendingnewrelease",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -63,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-17-npc-atlas-crops.md",
+  "latest_report": "docs/evolution/runs/2026-10-17-adventure-continuous-trail.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -457,5 +457,14 @@
       "single sticky chapter title"
     ],
     "adventure": "concept only; gameplay unchanged"
+  },
+  "adventure_trail": {
+    "target_version": "1.14.0",
+    "worlds": 10,
+    "stages": 100,
+    "rewards": "existing stage reward decoration + world companion on10/20/etc",
+    "locked": "selectablepreview; launchdisabled",
+    "numbers": "Adventure1..100 Exploration1..20; chapterIDs/savepositionsunchanged",
+    "art": "originaltenhomebackgrounds/companions/decorations; no newbitmap"
   }
 }
