@@ -15,3 +15,5 @@
 @media(prefers-reduced-motion:reduce){.trail-current-halo{animation:none;opacity:.85}}
 
 .trail-room-node>span:not(.trail-stars){transform:translateY(-6px)}
+
+.trail-room-node>small{top:-7px;bottom:auto;right:-7px}
