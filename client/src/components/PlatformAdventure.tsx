@@ -1,4 +1,3 @@
-import AdventureTrailMap from "./AdventureTrailMap";
 import PetSymbol from "@/components/PetSymbol";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import {
@@ -14,6 +13,7 @@ import { getPlatformStage, getPlatformWorld } from "@/game/platformerLevels";
 import "./PlatformAdventure.css";
 import "./AdventureMobile.css";
 import "./AdventureEntry.css";
+import AdventureTrailMap from "./AdventureTrailMap";
 import { getAdventureEntry } from "@/game/adventureEntry";
 import ForestPuzzleAdventure from "@/components/ForestPuzzleAdventure";
 
