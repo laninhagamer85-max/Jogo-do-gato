@@ -13,3 +13,5 @@
 .trail-locked-route .trail-route-bank{stroke:#737e7d}.trail-locked-route .trail-route-earth{stroke:#a8b2ad}.trail-locked-route .trail-route-grain{stroke:#c4ccc5}.trail-sr-only{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}.trail-stars-help{font-size:11px;color:#ddd9b7;margin:0;text-align:center;line-height:1.3}
 @media(max-height:500px) and (orientation:landscape){.trail-stars-help{display:none}}
 @media(prefers-reduced-motion:reduce){.trail-current-halo{animation:none;opacity:.85}}
+
+.trail-room-node>span:not(.trail-stars){transform:translateY(-6px)}
