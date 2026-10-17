@@ -10,7 +10,7 @@ export function startExplorationReplay(campaign:CombatState,index:number):Combat
  let attempt:CombatState|null=null;
  try{const raw=JSON.parse(campaign.roomAttempts[index]??'null');if(raw&&typeof raw==='object'){const read=readCombatState({...raw,roomAttempts:{}});if(read.supported&&read.state.roomIndex===index&&!read.state.completed)attempt=read.state;}}catch{/* An invalid attempt starts afresh, never changes campaign progress. */}
  const s=attempt??createCombatState(index,campaign.encounterSeed+index+1);
- s.roomAttempts={};s.completedRooms=[...campaign.completedRooms];s.claimedRooms=[...campaign.claimedRooms];s.completionRewardClaimed=true;
+ s.roomStars={...campaign.roomStars};s.roomAttempts={};s.completedRooms=[...campaign.completedRooms];s.claimedRooms=[...campaign.claimedRooms];s.completionRewardClaimed=true;
  s.xp=campaign.xp;s.stock={...campaign.stock};s.rareStock={...campaign.rareStock};s.equipmentOwned=campaign.equipmentOwned;s.equipmentOn=campaign.equipmentOn;s.cards=[...campaign.cards];s.activeCard=campaign.activeCard;s.rareEquipped=campaign.rareEquipped;
  if(s.rareEquipped&&s.rareStock[s.rareEquipped]+s.rareBag[s.rareEquipped]<1)s.rareEquipped=null;
  if(!attempt)s.hp=combatMaxHp(s.xp);s.hp=Math.min(s.hp,combatMaxHp(s.xp));s.revision=campaign.revision+1;
@@ -26,5 +26,5 @@ export function saveExplorationReplay(campaign:CombatState,replayValue:unknown):
  const snapshot=JSON.stringify({...combatSnapshot(replay),roomAttempts:{}});
  if(campaign.roomAttempts[replay.roomIndex]===snapshot)return campaign;
  try{const previous=JSON.parse(campaign.roomAttempts[replay.roomIndex]??'null');if(previous&&previous.revision>replay.revision)return campaign;}catch{/* Replace only the invalid attempt. */}
- return {...campaign,revision:Math.max(campaign.revision,replay.revision)+1,xp:Math.max(campaign.xp,replay.xp),stock:{...replay.stock},rareStock:{...replay.rareStock},equipmentOwned:campaign.equipmentOwned||replay.equipmentOwned,equipmentOn:replay.equipmentOn,cards:[...new Set([...campaign.cards,...replay.cards])],activeCard:replay.activeCard,rareEquipped:replay.rareEquipped,roomAttempts:{...campaign.roomAttempts,[replay.roomIndex]:snapshot}};
+ return {...campaign,roomStars:{...campaign.roomStars,...(replay.completed&&replay.roomStars[replay.roomIndex]?{[replay.roomIndex]:Math.max(campaign.roomStars[replay.roomIndex]??0,replay.roomStars[replay.roomIndex])}:{})},revision:Math.max(campaign.revision,replay.revision)+1,xp:Math.max(campaign.xp,replay.xp),stock:{...replay.stock},rareStock:{...replay.rareStock},equipmentOwned:campaign.equipmentOwned||replay.equipmentOwned,equipmentOn:replay.equipmentOn,cards:[...new Set([...campaign.cards,...replay.cards])],activeCard:replay.activeCard,rareEquipped:replay.rareEquipped,roomAttempts:{...campaign.roomAttempts,[replay.roomIndex]:snapshot}};
 }

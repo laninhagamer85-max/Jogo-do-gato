@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-17",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_user_phone_test",
-  "active_run": "2026-10-17-continuous-exploration-map",
+  "status": "implemented_checks_passed_pending_publication",
+  "active_run": "2026-10-17-trail-audit-stars",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,9 +16,9 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "continuous-exploration-biome-trail",
+    "id": "trail-audit-current-glow-room-stars",
     "implementation_status": "implemented",
-    "acceptance_status": "pending_user_device_test"
+    "acceptance_status": "pending_phone_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -33,11 +33,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "418 passed across39files; Firebaseintegration excluded because staging credential absent",
+    "offline_tests": "423 offline tests across40files passed",
     "build": "passed; existing largechunkwarning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Production cloud Chrome: map rendered, actual room2 checkpoint preserved, room1 replay selection, native horizontal scroll to locked chapter2 and Meu progresso return checked; current pet CSS corrected after observed width0. Phone orientations pending.",
+    "browser": "Production1.13.0 whole horizontal map inspected to scrollLeft2022=max; chapter2lastroom visible; no scroll lock. New changes visual check pending.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -63,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-17-continuous-exploration-map.md",
+  "latest_report": "docs/evolution/runs/2026-10-17-trail-audit-stars.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -436,5 +436,16 @@
     "save_schema": "4 unchanged",
     "mobile_visual_qa": "pending",
     "authorization": "user requests implement and publish for their test; native local browser unavailable"
+  },
+  "room_stars": {
+    "version": "1.13.1",
+    "rules": [
+      "1:complete",
+      "2:no defeats",
+      "3:no defeats and damage<=25%maxHP"
+    ],
+    "best_only": true,
+    "legacy": "unknown performance remains unrated; replay evaluates",
+    "schema": "4 additive optional fields, legacy preserved"
   }
 }

@@ -25,7 +25,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  campaignVersion:2;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -47,7 +47,7 @@ export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
-  return {campaignVersion:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -90,6 +90,8 @@ export function readCombatState(value: unknown): CombatRead {
   for(const [key,value] of Object.entries(object(raw.roomAttempts)))if(completedRooms.includes(Number(key))&&String(Number(key))===key&&typeof value==='string'&&value.length<100000)s.roomAttempts[key]=value;
   s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
   if (!Object.keys(raw).length) return { supported: true, state: s };
+  s.roomPerformance=raw.roomPerformance&&typeof raw.roomPerformance==='object'?{damage:number(object(raw.roomPerformance).damage,0),defeats:Math.floor(number(object(raw.roomPerformance).defeats,0))}:null;
+  for(const [key,value] of Object.entries(object(raw.roomStars)))if(completedRooms.includes(Number(key))&&String(Number(key))===key&&typeof value==='number'&&Number.isInteger(value)&&value>=1&&value<=3)s.roomStars[key]=value;
   s.xp = Math.floor(number(raw.xp, 0, 0, 2e6)); s.hp = number(raw.hp, combatMaxHp(s.xp), 0, combatMaxHp(s.xp));
   s.time = number(raw.time, 0); s.revision = Math.floor(number(raw.revision, 0)); s.energy = number(raw.energy, 100, 0, 100);
   s.gateOpen = raw.gateOpen === true; s.completed = raw.completed === true;
@@ -142,7 +144,7 @@ export function combatSnapshot(s: CombatState): Record<string, unknown> {
   const { feedback: _feedback, message: _message, strikeUntil: _strike, walking: _walking, walkPhase: _phase, ...save } = s;
   return save;
 }
-function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms],roomAttempts:{...s.roomAttempts},cards:[...s.cards],defeatedEnemyIds:[...s.defeatedEnemyIds] }; }
+function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms],roomStars:{...s.roomStars},roomPerformance:s.roomPerformance?{...s.roomPerformance}:null,roomAttempts:{...s.roomAttempts},cards:[...s.cards],defeatedEnemyIds:[...s.defeatedEnemyIds] }; }
 function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeedback['kind']) {
   s.feedback.push({ ...p, id: s.revision * 100 + s.feedback.length, text, kind, until: s.time + 1100 });
   s.feedback = s.feedback.slice(-16);
@@ -150,7 +152,7 @@ function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeed
 export function defeatCombat(current: CombatState): CombatState {
   const s = clone(current),room=campaignRoom(s.roomIndex); let lost = 0;
   for (const item of ['fibra', 'ambar'] as const) { const loss = Math.floor(s.bag[item] * .1); s.bag[item] -= loss; lost += loss; }
-  s.hp = combatMaxHp(s.xp); s.player = { ...room.camp }; s.walking = false; s.deaths++; s.revision++;
+  s.hp = combatMaxHp(s.xp); s.player = { ...room.camp }; s.walking = false; s.deaths++; if(s.roomPerformance)s.roomPerformance.defeats++; s.revision++;
   s.invulnerableUntil = s.time + 2500; s.strikeUntil = 0;
   s.message = `Retorno ao ponto seguro. ${lost} material(is) da tentativa perdido(s); itens permanentes preservados.`;
   feedback(s, s.player, 'Ponto seguro', 'info'); return s;
@@ -223,10 +225,10 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
       const home = distance(enemy, def); if (home > .1) Object.assign(enemy, move(enemy, (def.x - enemy.x) / home * dt * .0006, (def.y - enemy.y) / home * dt * .0006, s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex));
     }
     if(def.boss&&!safe&&range<3.2&&s.time>=(enemy.specialAt??3000)&&!enemy.windupUntil){enemy.windupUntil=s.time+900;enemy.specialAt=s.time+5500;feedback(s,enemy,'Afaste-se: golpe do mestre!','info');}
-    if(enemy.windupUntil&&s.time>=enemy.windupUntil){enemy.windupUntil=0;if(!safe&&range<2.1&&s.time>=s.invulnerableUntil&&clearPilotLine(s.player,enemy,s.gateOpen,s.roomIndex)){const damage=Math.min(s.hp,Math.round(def.attack*1.5));s.hp-=damage;s.invulnerableUntil=s.time+550;feedback(s,s.player,`−${damage} HP`,'damage');if(!s.hp)return defeatCombat(s);}}
+    if(enemy.windupUntil&&s.time>=enemy.windupUntil){enemy.windupUntil=0;if(!safe&&range<2.1&&s.time>=s.invulnerableUntil&&clearPilotLine(s.player,enemy,s.gateOpen,s.roomIndex)){const damage=Math.min(s.hp,Math.round(def.attack*1.5));s.hp-=damage;if(s.roomPerformance)s.roomPerformance.damage+=damage;s.invulnerableUntil=s.time+550;feedback(s,s.player,`−${damage} HP`,'damage');if(!s.hp)return defeatCombat(s);}}
     if (!safe && !enemy.windupUntil && distance(s.player, enemy) <= (def.attackRange??PILOT_INSECT.attackDistance) && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) {
       const damage = Math.min(s.hp, Math.max(1, def.attack - Math.floor(combatLevel(s.xp) / 2) - (s.equipmentOn ? 1 : 0)-(s.rareEquipped==='escama'?4:0)));
-      s.hp -= damage; s.invulnerableUntil = s.time + 550; enemy.attackAt = s.time + 1500;
+      s.hp -= damage; if(s.roomPerformance)s.roomPerformance.damage+=damage; s.invulnerableUntil = s.time + 550; enemy.attackAt = s.time + 1500;
       feedback(s, s.player, `−${damage} HP`, 'damage');
       if (s.hp === 0) return defeatCombat(s);
     }
@@ -258,6 +260,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
     for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) { s.stock[item] += s.bag[item]; s.bag[item] = 0; }
     for(const item of Object.keys(RARE_ITEMS) as RareItem[]){s.rareStock[item]+=s.rareBag[item];s.rareBag[item]=0;}
     s.completed = true;
+    if(s.roomPerformance){const stars=1+(s.roomPerformance.defeats===0?1:0)+(s.roomPerformance.defeats===0&&s.roomPerformance.damage<=combatMaxHp(s.xp)*.25?1:0);s.roomStars[s.roomIndex]=Math.max(s.roomStars[s.roomIndex]??0,stars);}
     const firstCompletion = !s.completionRewardClaimed;
     if (firstCompletion) { s.equipmentOwned = true; s.completionRewardClaimed = true; }
     if(!s.completedRooms.includes(s.roomIndex))s.completedRooms.push(s.roomIndex);
@@ -302,7 +305,7 @@ export function replayCompletedCombat(current: CombatState): CombatState {
   next.xp = current.xp;
   next.hp = combatMaxHp(current.xp);
   next.energy = current.energy;
-  next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
+  next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
   next.enemies=campaignEnemies(next.roomIndex,next.encounterSeed).map(e=>({id:e.id,x:e.x,y:e.y,hp:e.hp,generation:0,attackAt:current.time+1500,respawnAt:0}));
   next.bag = { ...current.bag };
   next.equipmentOwned = current.equipmentOwned;
@@ -322,7 +325,7 @@ export function advanceCombatRoom(current:CombatState):CombatState{
  if(!current.completed||current.roomIndex>=EXPLORATION_ROOMS.length-1)return current;
  const next=createCombatState(current.roomIndex+1,(Math.imul(current.seed,1664525)+1013904223)>>>0);
  next.revision=current.revision+1;next.time=current.time;next.xp=current.xp;next.hp=Math.min(current.hp,combatMaxHp(current.xp));next.energy=current.energy;
- next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
+ next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
  next.completedRooms=[...new Set([...current.completedRooms,current.roomIndex])];next.claimedRooms=[...new Set([...current.claimedRooms,current.roomIndex])];next.completionRewardClaimed=next.claimedRooms.includes(next.roomIndex);
  next.deaths=current.deaths;next.seed=current.seed;next.invulnerableUntil=next.time+2500;next.attackAt=next.time;
  next.enemies=next.enemies.map(e=>({...e,attackAt:next.time+1500}));return next;
