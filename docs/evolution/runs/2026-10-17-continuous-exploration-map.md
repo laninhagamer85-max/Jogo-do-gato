@@ -1,0 +1,15 @@
+# Continuous exploration map —1.13.0
+
+User approved continuous chapters with biome transitions, mobile portrait/landscape adaptation, current checkpoint and replay. Latest steering adds NPCs and game elements around the route. Header retains Explore com seu pet; adventurer/name with quick Continuar jogo; Sua exploração map; description below. Trilhas de enigmas entry removed from this selection only; legacy engine and saves retained.
+
+Two actual chapters and20rooms share one scrollable route; future chapter art/NPCs desaturated with fog; disabled future stage buttons. Current pet marker; selected completed stage offers replay or saved replay; Meu progresso centres checkpoint. No fake playable future chapters. Existing automatic portal/gameplay untouched; schema4 unchanged.
+
+Art: original generated painterly forest/river environment plates, no embedded text/controls. Prompt: overhead three-quarter child-friendly illustrated woodland clearing / turquoise crystal riverbanks, open centre, no path/markers/UI/text/characters. Converted lossily to WebP quality90. Existing licensed project atlases forest-mobs,river-mobs,woodland-props,river-props reused as CSS cell sprites. Decorative only, pointer-events none, aria-hidden. Assets:
+- client/public/forest-adventure/trail-forest-v1.webp: SHA256 33d93f68b1ac7a0235de942d49e6f2f176090305bf7612c129d1897ed0991da7, 609946 bytes;1536x1024.
+- client/public/forest-adventure/trail-river-v1.webp: SHA256 8169100ed8098a7d38a4fd15eb677936cf7b0b0eaeaa21cc2be1086d75488270, 650844 bytes;1536x1024.
+
+Research 2026-10-17: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow and https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView — native overflow and progressive recentering; reduced motion respected. Implementation uses scrollTo for exact world coordinates.
+
+Checks: TypeScript passed;418offline tests passed/39files; Firebase staging integration excluded after full suite failed for absent credential. Layout geometry at320x570,390x600,768x900,844x220,1280x540; mathematical checks only, not browser/mobile screenshots. Existing save/replay tests retained; SSR verifieslocked states,NPC assets,currentstage. Production build pending final completion. Browser preview unavailable under managed Sites rules without control-browser. User has repeatedly authorized publishing for their own phone test; device acceptance pending. Cloud session previous1.12 actually completedroom1 and reachedroom2; that does not validate new map.
+
+Base Site source089303ac1ff2ffa68d3d0772b5c266a1a4d9d4e1; GitHub parentb6bfd15792c0b0c2f8cb91940437df8266d424d6; branchreview/grass-option3-20261016. Rollback: previous saved Site1.12.0 version60, preserve later collaborator changes and progress. No auth/backend changes.

@@ -445,31 +445,20 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
 
   return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label="Bosque dos Caminhos, modo de exploração">
     <header className="forest-adventure-topbar">
-      <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>Bosque dos Caminhos</strong><small>EXPLORAÇÃO E QUEBRA-CABEÇAS</small></div></div>
+      <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>Meu Pet Virtual</strong><small>EXPLORAÇÃO</small></div></div>
       <div className="forest-adventure-top-actions">
         <button type="button" onClick={onToggleSound} aria-label={soundOn ? "Silenciar efeitos" : "Ativar efeitos"} aria-pressed={soundOn} title={soundOn ? "Silenciar efeitos" : "Ativar efeitos"}>{soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}</button>
         {!game && <><button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
         <button type="button" onClick={onGoToHouse}><Home size={16} /> Minha Casa</button></>}
       </div>
     </header>
-    {!game ? <main className="forest-adventure-map">
-      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1><p>Procure chaves, mova objetos e encontre caminhos. As trilhas de enigmas continuam disponíveis. Dois biomas com vinte salas de combate, coleta e desafios.</p></div>
-        <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span></div>
+    {!game ? <main className="forest-adventure-map forest-adventure-map--trail">
+      <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1></div>
+        <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
-      {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
-      <h2 className="forest-enigma-heading">Trilhas de enigmas</h2>
-      <section className="forest-chapter-grid" aria-label="Seleção de capítulos">
-        {FOREST_CHAPTERS.map((chapter) => {
-          const isLocked = !supported || chapter.id > unlockedChapter;
-          const isComplete = Boolean(progress?.completedChapters.includes(chapter.id));
-          return <button key={chapter.id} className={`forest-chapter-card ${selectedChapter === chapter.id ? "is-selected" : ""} ${isLocked ? "is-locked" : ""}`} type="button" disabled={isLocked} onClick={() => setSelectedChapter(chapter.id)} aria-pressed={selectedChapter === chapter.id}>
-            <span className="forest-chapter-art"><img src={chapter.image} alt="" loading="lazy" />{isLocked && <span className="forest-chapter-lock">🔒</span>}<span className="forest-chapter-number">CAPÍTULO {chapter.id}</span></span>
-            <span className="forest-chapter-copy"><strong>{chapter.name}</strong><small>{chapter.subtitle}</small><span className={isComplete ? "is-complete" : isLocked ? "is-locked" : "is-open"}>{isComplete ? <><Check size={13} /> Concluído</> : isLocked ? "Conclua o capítulo anterior" : "Disponível · 2 salas"}</span></span>
-          </button>;
-        })}
-      </section>
-      <div className="forest-map-actions"><button className="forest-primary" type="button" onClick={beginSelected} disabled={!supported || selectedChapter > unlockedChapter}><Play size={17} fill="currentColor" /> Entrar na trilha</button><div className="forest-save-note"><KeyRound size={15} /> Progresso próprio por capítulo; esta trilha não altera a Aventura lateral, moedas ou itens.</div></div>
+      {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay} petImage={petImage} petName={petName}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
+      <p className="trail-page-description">Explore biomas, supere desafios e encontre itens raros. Cada portal abre o próximo trecho da sua jornada.</p>
     </main> : <main className="forest-adventure-game">
       <section className="forest-game-heading"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> CAPÍTULO {game.chapter} · SALA {game.room} DE 2</span><h1>{currentSpec?.title}</h1><p>{currentSpec?.objective}</p></div>
         <div className="forest-game-metrics"><span className="forest-key-counter" aria-label={`${game.collectedKeys.length} chaves`}><KeyRound size={18} />{game.collectedKeys.length}</span><button type="button" aria-pressed={overview || inspecting} onClick={() => { stopHeld(); if (overviewRef.current || cameraFocusRef.current) followPet(); else { overviewRef.current = true; setOverview(true); } }} aria-label={overview || inspecting ? "Voltar ao pet" : "Ver sala inteira"}>{overview || inspecting ? "Voltar ao pet" : "Ver sala"}</button><span><strong>{game.steps}</strong><small>passos</small></span><span><strong>{game.actions}</strong><small>ações</small></span><button ref={pauseButtonRef} type="button" onClick={pause} aria-label={overlay === "pause" ? "Retomar" : "Pausar"}>{overlay === "pause" ? <Play size={17} /> : <Pause size={17} />}</button></div>
