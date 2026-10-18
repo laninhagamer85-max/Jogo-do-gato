@@ -4,7 +4,7 @@
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
   "status": "implemented_pending_publication",
-  "active_run": "2026-10-18-responsive-adventure",
+  "active_run": "2026-10-18-adventure-alignment",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -531,5 +531,14 @@
     "rollback": "1.15.1 / Sites77",
     "art_tool": "built-in imagegen; original ten-world atlases, no baked UI",
     "save_schema": "unchanged"
+  },
+  "adventure_alignment": {
+    "product_version": "1.15.3",
+    "scope": "retrace portrait waypoints on painted walkable floor; size by clientWidth/clientHeight excluding native scrollbar",
+    "preserved": "100 stage IDs, real stars, rewards and saves; landscape rightward panorama",
+    "checks": "TypeScript and24 map tests passed; production build in progress",
+    "browser_before": "1.15.2 inspected at390x844 and844x390; portrait first-world markers4/5 cut across furniture; client341/world351 portrait, client214/world224 landscape",
+    "browser_after": "pending",
+    "rollback": "1.15.2/Sites78; da555e383efe04f54ed3203289193f42201e697b"
   }
 }
