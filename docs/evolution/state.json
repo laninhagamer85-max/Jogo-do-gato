@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_browser_checked",
-  "active_run": "2026-10-18-adventure-seams-fix",
+  "status": "simplifying_adventure_for_user_test",
+  "active_run": "2026-10-18-simple-adventure",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,10 +16,10 @@
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
-    "id": "adventure-seams-fix",
-    "product_version": "1.14.8",
-    "implementation_status": "published",
-    "acceptance_status": "live_viewport_checks_passed_physical_phone_pending"
+    "id": "simple-adventure",
+    "product_version": "1.14.9",
+    "implementation_status": "implemented",
+    "acceptance_status": "pending_postdeploy_check"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -65,7 +65,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-adventure-seams-fix.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-simple-adventure.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

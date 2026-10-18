@@ -31,15 +31,8 @@ export default function AdventureWorldScenery({layout,chapter,locked,active}:Pro
  return <div className={`adv-world-scenery ${vertical?'is-vertical':'is-horizontal'} ${locked?'is-locked':''} adv-world-${theme.id}`} style={style} aria-hidden="true" data-world={chapter+1}>
   <img className="adv-room-panorama" src={GAME_ASSETS.levels[chapter]} alt="" loading={active?'eager':'lazy'} decoding="async" draggable={false}/>
   <svg className="adv-world-floor" width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-   <path d={route} fill="none" stroke={theme.edge} strokeWidth="68" strokeLinecap="round" transform="translate(0 7)" opacity=".8"/>
-   <path d={route} fill="none" stroke={theme.surface} strokeWidth="66" strokeLinecap="round"/>
-   <path d={route} fill="none" stroke={theme.detail} strokeWidth="2" strokeLinecap="round" opacity=".65"/>
-   {points.map((p,i)=><g key={i} transform={`translate(${p.x} ${p.y+19})`}>
-    <ellipse cy="6" rx="43" ry="19" fill={theme.edge}/>
-    <ellipse rx="43" ry="18" fill={theme.surface} stroke={theme.detail} strokeWidth="2"/>
-    {/* Quiet location-specific floor joints, never a shared forest texture. */}
-    {[0,2,3,7].includes(chapter)?<path d="M -29 4 H 29 M -17 -9 V 10 M 13 -11 V 12" fill="none" stroke={theme.edge} strokeWidth="1" opacity=".28"/>:chapter===6?<path d="M -26 0 L -15 -7 M 20 5 L 29 -2" stroke={theme.detail} strokeWidth="3"/>:null}
-   </g>)}
+   <path className="adv-route-shadow" d={route} fill="none" stroke={theme.edge} strokeWidth="12" strokeLinecap="round" opacity=".18"/>
+   <path className="adv-route-line" d={route} fill="none" stroke={theme.detail} strokeWidth="7" strokeLinecap="round" opacity=".9"/>
   </svg>
  </div>;
 }

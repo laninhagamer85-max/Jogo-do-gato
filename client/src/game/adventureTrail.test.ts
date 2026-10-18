@@ -25,7 +25,7 @@ it('composes every Adventure world in portrait and landscape without Exploration
    const html=renderToStaticMarkup(React.createElement(Scenery,{layout,chapter,locked:chapter>0,active:true}));
    expect(html).toContain(`adv-world-${ADVENTURE_MATERIALS[chapter].id}`);
    expect(html.match(/<img /g)).toHaveLength(1);expect(html).toContain(GAME_ASSETS.levels[chapter]);
-   expect(html).toContain(vertical?'is-vertical':'is-horizontal');expect(html.match(/<ellipse/g)).toHaveLength(20);
+   expect(html).toContain(vertical?'is-vertical':'is-horizontal');expect(html).not.toContain('<ellipse');expect(html).toContain('adv-route-line');
    expect(html).not.toContain('/forest-adventure/');expect(html).not.toContain('legacy-scene');
   }
   expect(JSON.stringify(layout)).toBe(before);

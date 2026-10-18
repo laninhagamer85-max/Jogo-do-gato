@@ -59,3 +59,9 @@
 /* Keep companions above their own stage rather than over neighbouring numbers. */
 .adventure-trail .trail-viewport.is-horizontal .adv-world-friend img{width:44px;height:52px}
 .adventure-trail .trail-viewport.is-horizontal .adv-world-friend span{display:none}
+
+/* Quiet map: reveal the selected reward instead of displaying 100 props at once. */
+.adventure-trail .adv-stage-prize{display:none}
+.adventure-trail .trail-room-anchor.is-selected .adv-stage-prize{display:flex}
+.adventure-trail .adv-world-friend span{display:none}
+.adventure-trail .adv-room-panorama{opacity:.7}

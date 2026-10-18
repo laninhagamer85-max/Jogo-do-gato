@@ -1,0 +1,5 @@
+# 1.14.9 — Aventura mais simples
+
+David rejeitou o conceito denso e pediu reutilizar os cenários existentes, simplificar e publicar para testar. Não incorporar nenhuma imagem gerada de conceito. Mantidos os dez backgrounds originais GAME_ASSETS.levels. Removidos faixa de68px e100bases elípticas; conexão discreta7px com sombra12px. Somente o prêmio selecionado fica visível junto à fase; todos os100prêmios continuam disponíveis por toque e no painel de detalhes. Dez mascotes nos finais de mundo mantidos, sem legendas sobre a trilha. Arte de fundo com opacidade.7 para legibilidade. Coordenadas, números, estrelas, bloqueios, saves, física e módulo Exploração preservados.
+
+TypeScript passou. Testes/build e publicação pelo pedido explícito pendentes. Validar após publicar844×390 e390×844; não declarar celular físico, multitouch ou FPS. Rollback1.14.8/Sites74, source d90bb3a14f00f34b891c61c9ec63d3c789272d47. Continuidade do fundo e ajuste de máscara da1.14.8 retidos. Nenhum novo asset, pacote ou serviço.
