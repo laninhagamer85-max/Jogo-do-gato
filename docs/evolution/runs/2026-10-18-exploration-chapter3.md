@@ -45,3 +45,5 @@ Sites82 succeeded, sourcec50de3f25be6f90292fd4f53115a9f5272df4a6f, deployment ap
 1.17.1 typecheck,48 focused tests and build19.20s passed. Final1.17.2 typecheck and production build also passed before publication. Full engine suite484/39files passed for chapter release; no new gameplay change in lab-only fix.
 
 Audio integration followup before final1.17.2 publication: outer PlatformAdventure previously started shared forest music over Exploration. Entering Exploration now stops that shared bus; Adventure restarts its own theme on return. This lets the new environment slider and pause control all Exploration ambience without touching Adventure preferences.
+
+Final1.17.2 cloud check Sites84: all rooms21–30 loaded without preparing/error states. Embedded horizontal combat area stable844×330 plus60px lab toolbar. Overview of room30 exposed overlapping ordinary NPC labels at whole-world scale.1.17.3 hides only ordinary names in overview; boss name and health bars stay, close-camera names remain. No combat stats or room geometry changed.

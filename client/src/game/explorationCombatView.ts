@@ -120,7 +120,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62, t * .065);
       ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      ctx.fillText(`${def.name} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
+      if(!overview||def.boss)ctx.fillText(`${def.name} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
     } else {
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
