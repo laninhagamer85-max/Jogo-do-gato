@@ -510,9 +510,16 @@
     "progress": "existing IDs, stars, locks and rewards; no save migration",
     "navigation": "vertical illustrated route with two-axis pan in both orientations; 44px controls; 1.6 native scale",
     "checks": "TypeScript,23 map tests and production build passed",
-    "browser": "post-deployment QA pending; no supported local preview",
+    "browser": "cloud iframe 844x390 and390x844: current stage visible inside map after initial measurement and rotation; stage100 reward preview and blocked launch; stage1 entry,pause,return (1.15.0); no full playthrough",
     "rollback": "1.14.9 / Sites75",
     "initial_publication": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_7616724651ac8191bc5f01563f94bc8c",
-    "resize_followup": "cloud found initial provisional height; recenter effect now responds to measured viewport size"
+    "resize_followup": "cloud found initial provisional height; recenter effect now responds to measured viewport size",
+    "status": "published_for_user_test",
+    "site_version_number": 77,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_66bbd0af76d081919bbdcf3d2565fa14",
+    "deployment_id": "appgdep_6ad4cd27d8c881919d8c8df9272b9c94",
+    "site_commit": "c6e46e41fdab4443976ca4a573fc332ea1c890b0",
+    "code_commit": "89fc13338754af8125c4626f258da8d40cff0443",
+    "limits": "same vertical artwork in landscape; two-axis pan; portrait shows part of each winding section; device playtest pending"
   }
 }

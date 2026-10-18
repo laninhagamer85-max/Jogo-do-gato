@@ -14,3 +14,10 @@ Status: preparando publicação.
 
 ## Correção observada no navegador — 1.15.1
 A publicação 1.15.0 revelou centralização com dimensões provisórias: layout memoizado não repetia o efeito após ResizeObserver. Efeito agora depende da largura e altura medidas; contempla abertura e rotação. Verificação cloud prossegue após correção.
+
+## Publicação e QA final
+Produto 1.15.1, Sites 77. Fonte Sites c6e46e41fdab4443976ca4a573fc332ea1c890b0; código GitHub 89fc13338754af8125c4626f258da8d40cff0443. Versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_66bbd0af76d081919bbdcf3d2565fa14; deployment appgdep_6ad4cd27d8c881919d8c8df9272b9c94, succeeded. URL https://meupet.aquimeusite.chatgpt.site.
+
+Inspeção real cloud em iframe 844×390 e390×844: após correção, fase atual contida na viewport do mapa na abertura e mudança de orientação. Prévia da fase100 exibe Lanterna da Festa e Festeiro, jogar bloqueado. Fase1 abriu, pausou e retornou sem completar nem desbloquear fases. Não equivale a testar fisicamente telefone ou jogar100fases.
+
+Limitação explícita: a arte continua vertical em paisagem, com arraste nos dois eixos; retrato mostra parte das curvas e exige deslocamento lateral. Arte gerada em724×2172, WebP812958bytes. Progresso preservado, Exploração não alterada. Capturas: meupet-1151-vertical.jpg / meupet-1151-horizontal.jpg. Próximo: avaliação do usuário no celular.
