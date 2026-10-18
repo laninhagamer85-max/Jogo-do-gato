@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_browser_review",
+  "status": "published_pending_portrait_device_review",
   "active_run": "2026-10-18-map-seams-compact-hud",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,9 +11,9 @@
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "f79dc56998a18d1c07a6063fb4a3e32983703670",
+    "code_commit": "0da526631309b3885eba8572327bda85c501db43",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "preparing_publication"
+    "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "map-seams-compact-hud",
@@ -24,12 +24,12 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.3",
-    "last_observed_version": 69,
+    "product_version": "1.14.4",
+    "last_observed_version": 70,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_3f197a3889c88191a10efcb134233f7d",
-    "deployment_id": "appgdep_6ad44550b638819180db7141fce6eb44",
-    "site_commit": "09949f2ebd91e39bc692dbc370ecb382ed88c69f",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_06dbaf38addc8191854299b38599cdd2",
+    "deployment_id": "appgdep_6ad44aabd8bc8191a14ae4d2b4740676",
+    "site_commit": "e24e553c65894858f229daf3819c28f5c22b7b34",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -38,7 +38,7 @@
     "build": "passed; existing large-chunk warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.14.3 inspected live: Adventure and Exploration at 1363x936. Portrait assessed from owner screenshot; no viewport resize API available.",
+    "browser": "Live authenticated Adventure and Exploration landscape 1363x936 inspected before/after; overlay open/close and locked reward preview verified. Portrait assessed only from owner screenshot; no viewport resize API.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -476,6 +476,6 @@
   },
   "prepared_revision": {
     "product_version": "1.14.4",
-    "status": "preparing_package"
+    "status": "published"
   }
 }

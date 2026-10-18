@@ -16,3 +16,7 @@ TypeScript passou, 437 testes offline em43arquivos passaram e build passou (avis
 Pesquisa reutilizada: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit e composição por regiões https://kleeam.artstation.com/projects/L3lDBv, consultadas em18/10. Regra do renderer: não ampliar nem reposicionar as placas para esconder a emenda.
 
 Rollback: 1.14.3/Sites69, source09949f2ebd91e39bc692dbc370ecb382ed88c69f, saved appgprj_6ac40994d8d881919d46203a60801e46~appgver_3f197a3889c88191a10efcb134233f7d. GitHub base522d8b183d8bbcc9a759bfa04efac8d040b269b0. Preservar alterações posteriores de colaboradores e saves.
+
+## Publicação e conferência real
+1.14.4/Sites70, sourcee24e553c65894858f229daf3819c28f5c22b7b34, savedappgprj_6ac40994d8d881919d46203a60801e46~appgver_06dbaf38addc8191854299b38599cdd2, deploymentappgdep_6ad44aabd8bc8191a14ae4d2b4740676, statussucceeded, GitHub código0da526631309b3885eba8572327bda85c501db43.
+Navegador após publicação: Exploração área de cenário659px (antes477.92), título flutuante27.59px, painel fechadoaltura0. Aventura cenário602.39px (antes452.2), cartão inicial84.94px (antes171), painel fechado0. Abertura/fechamento de detalhes na Exploração passou; Aventura fase2 mostra Caminha estrela e botão Bloqueada desabilitado; fechar detalhes passou, sem liberar fase. Junção ficou suavizada, mas a composição ainda revela mudança de arte e mistura de elementos: o novo exemplo Farm Heroes enviado por David exige conexões ilustradas, iniciadas como próxima revisão. Nenhuma validação de navegador retrato.
