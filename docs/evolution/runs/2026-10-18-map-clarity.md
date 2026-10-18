@@ -11,3 +11,9 @@ Validation: TypeScript passed; 40 tests in six relevant files passed; official p
 Research: W3C APG Read Me First and MDN aria-disabled informed distinction between selectable preview and unavailable launch. No external art copied.
 
 Publication pending. Rollback: product1.15.3 / Sites79, version appgprj_6ac40994d8d881919d46203a60801e46~appgver_336e6cb901e48191954923c714d47418; source7cc32d3abc935038e95c81ffcd69c15d225e911f.
+
+## Publication and cloud review
+
+Published successfully: Sites80, source6269e4bd01946e77aa311fbfe14359a79ea6d82e; deployment appgdep_6ad507e5ddbc819183c7905f57b02282. GitHub implementation6e12360ca57cde5f59af4d2d5d48dfe9cb9a9806.
+
+Both maps inspected in cloud iframe390x844 and844x390. New backgrounds and labels loaded; Exploration room10 showed actual Coração dos Troncos effect and disabled launch; Adventure phase11 showed Arco de Flores and disabled launch. No saves unlocked. No full playthrough or physical phone validation. The cloud home3D WebGL limitation is unchanged;2D map review worked.

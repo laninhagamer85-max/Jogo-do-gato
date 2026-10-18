@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_pending_publication",
+  "status": "published_for_user_test",
   "active_run": "2026-10-18-map-clarity",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -24,13 +24,12 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.9",
-    "last_observed_version": 75,
+    "product_version": "1.16.0",
+    "last_observed_version": 80,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_dd83615a1c4c8191ad7a284fd8df9b78",
-    "deployment_id": "appgdep_6ad4c2aada708191b447a0451d221601",
-    "site_commit": "7a452de31c315cfa13f4aac1f26792f09e901887",
-    "attempted_in_this_cycle": false
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_10d48e493c988191823d8445cf0c0b23",
+    "deployment_id": "appgdep_6ad507e5ddbc819183c7905f57b02282",
+    "site_commit": "6269e4bd01946e77aa311fbfe14359a79ea6d82e"
   },
   "verification": {
     "typescript": "passed",
@@ -52,11 +51,9 @@
     "packaged_grass": "all_three_hashes_match_manifest",
     "previous_browser_record": "Aventura and Exploracao checked in same-origin iframe viewports; orientation growth bug found in 1.14.5, fixed and rechecked in 1.14.6"
   },
-  "blockers": [
-    "Required supported preview/browser unavailable; no publication without validation in this cycle."
-  ],
+  "blockers": [],
   "next_actions": [
-    "David tests simpler composition on physical phone; selected reward caption near lower-left control in short landscape may need further spacing."
+    "Physical phone acceptance test"
   ],
   "rollback": {
     "production_changed": true,
@@ -543,9 +540,9 @@
   },
   "map_clarity": {
     "product_version": "1.16.0",
-    "status": "implemented_pending_publication",
+    "status": "published_for_user_test",
     "checks": "TypeScript,40 tests in6 files and production build passed",
-    "browser": "post-publication review pending",
+    "browser": "Cloud iframe390x844 and844x390: both modules inspected; SALA/FASE labels, icons and backgrounds loaded; Exploration room10 actual card effect and disabled launch; Adventure phase11 actual reward and disabled launch. No full playthrough or physical phone test.",
     "rollback": "1.15.3 / Sites79",
     "preserved": "100 Adventure stages,20 Exploration rooms,anchors,save IDs,actual rewards",
     "art": "8 original simplified Exploration background edits;9 code-native Adventure passages"
