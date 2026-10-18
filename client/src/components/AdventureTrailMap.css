@@ -7,3 +7,10 @@
 
 .adventure-trail .trail-selection{max-width:none}.adventure-trail .trail-return{bottom:132px}.adventure-trail .trail-biome.composed-biome img{object-position:center}
 @media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-return{bottom:92px}.adventure-trail .adv-world-friend{top:-92px}}
+
+.adventure-trail .trail-room-node{background:linear-gradient(#efcf80,#b78136);border-color:#ffe9ab;box-shadow:0 3px 0 #775027,0 5px 9px #152b2255,inset 0 0 0 2px #fff3be66}
+.adventure-trail .trail-view-label{background:linear-gradient(#73512c,#48321e);border-color:#d1b17e}
+.adventure-trail .trail-selection{background:linear-gradient(100deg,#3e2d1c,#70502d);border-color:#d8b77c}
+.adventure-trail .trail-return{background:linear-gradient(#a7763e,#594024);border-color:#dfba78}
+.adv-stage-prize img{width:34px;height:34px}.adv-stage-prize span{display:none}.trail-room-anchor.is-selected .adv-stage-prize span{display:block}
+@media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-map-frame{min-height:290px}.adventure-trail .trail-selection{min-height:54px}}

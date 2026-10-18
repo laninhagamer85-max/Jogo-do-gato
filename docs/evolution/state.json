@@ -3,42 +3,43 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_pending_visual_validation",
-  "active_run": "2026-10-18-clean-responsive-trails",
+  "status": "preparing_publication_for_user_visual_test",
+  "active_run": "2026-10-18-illustrated-trail-pilot",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "c41b052abe0f6fab1b7228df0ccf4d91dedcbf0d",
-    "implementation_base_github_commit": "b050d558d03a0e55440e53098329c443bf39dba4",
-    "code_commit_status": "awaiting_visual_validation"
+    "code_commit": "9470199b32323054b67d1f2a362250a029644d43",
+    "implementation_base_github_commit": "307c1db0fb84b618ad9565168a2e8eba50f353f9",
+    "code_commit_status": "preparing_publication"
   },
   "current_improvement": {
-    "id": "clean-responsive-trails",
-    "product_version": "1.14.2",
+    "id": "illustrated-trail-pilot",
+    "product_version": "1.14.3",
     "implementation_status": "implemented",
-    "acceptance_status": "pending_supported_browser_visual_review"
+    "acceptance_status": "pending_user_device_review",
+    "scope": "Exploration chapters 1–2; Adventure worlds 1 and 6. Other eight Adventure worlds retain prior art."
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.1",
-    "last_observed_version": 67,
+    "product_version": "1.14.2",
+    "last_observed_version": 68,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a7d504e96f3881919a14f52292cd515d",
-    "deployment_id": "appgdep_6ad4349411f88191961fcd322eb25cc9",
-    "site_commit": "26a8ca219529a6f6f0883cf60f70c637eff57979",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bba603b4a4c0819188e39e9fde1936dc",
+    "deployment_id": "appgdep_6ad43d18e1c081918bc2d62570aa5134",
+    "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "432 tests across 42 files passed; Firebase staging integration excluded (credentials unavailable)",
-    "build": "passed; existing large-chunk warning",
+    "offline_tests": "436 tests across 43 files passed; staging integration excluded (no credential)",
+    "build": "passed; existing large chunk warning; all 12 packaged asset hashes verified",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Not performed: supported local browser unavailable; authenticated cloud map session unavailable",
+    "browser": "Not performed; source geometry/SSR and static asset inspection only. User explicitly authorized publication for phone testing.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -51,11 +52,9 @@
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
     "packaged_grass": "all_three_hashes_match_manifest"
   },
-  "blockers": [
-    "Supported browser visual review required before publication by evolution skill"
-  ],
+  "blockers": [],
   "next_actions": [
-    "Review both maps in portrait and landscape in supported browser, then publish the prepared revision."
+    "David reviews portrait/landscape, seams and stage placement on his device before expanding art to the remaining eight Adventure worlds."
   ],
   "rollback": {
     "production_changed": true,
@@ -64,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-clean-responsive-trails.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-illustrated-trail-pilot.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -477,11 +476,7 @@
     "save_schema": "unchanged"
   },
   "prepared_revision": {
-    "product_version": "1.14.2",
-    "status": "saved_not_deployed",
-    "sites_version": 68,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bba603b4a4c0819188e39e9fde1936dc",
-    "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
-    "github_commit": "c41b052abe0f6fab1b7228df0ccf4d91dedcbf0d"
+    "product_version": "1.14.3",
+    "status": "preparing_package"
   }
 }

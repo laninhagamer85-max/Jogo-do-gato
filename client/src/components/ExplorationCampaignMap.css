@@ -36,3 +36,25 @@
 .composed-biome .trail-biome-fog{background:#253c2510}
 .trail-scenery{width:64px;height:64px}
 @media(max-height:500px) and (orientation:landscape){.trail-view-label{padding:3px 10px;flex-direction:row;justify-content:space-between}.trail-selection{padding:5px 10px;max-width:none;gap:8px}.trail-selection strong{font-size:12px}.trail-selection span{font-size:10px}.trail-selection small{font-size:9px}.trail-selection .forest-primary{min-height:36px}.trail-return{bottom:82px;min-height:38px;min-width:38px;padding:5px}}
+
+/* Illustrated map plates use an identical aspect ratio to the authored node anchors. */
+.trail-biome.illustrated-biome{background:#31503d;mask-image:none!important}
+.trail-art-plate{position:absolute;overflow:hidden}
+.trail-biome.illustrated-biome .trail-art-plate img{width:100%;height:100%;object-fit:contain;object-position:center;opacity:1;display:block}
+.trail-art-plate.legacy-scene{background:#45634e}
+.trail-art-plate.legacy-scene img{mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 88%,transparent)}
+.illustrated-biome .trail-biome-fog{background:linear-gradient(90deg,#0923190c,transparent 22%,transparent 78%,#0923190c)}
+.illustrated-biome.is-locked{filter:grayscale(.9);opacity:.9}
+.illustrated-biome.is-locked img{filter:saturate(.25)}
+.trail-view-label{background:linear-gradient(#73512c,#48321e);border-bottom-color:#d5b16c;color:#fff0c9}
+.trail-view-label small{color:#eedbbb}
+.trail-room-node{background-image:none;background:linear-gradient(#edc56c,#b47e32);border-color:#f2daa0;box-shadow:0 3px 0 #644322,0 5px 8px #14291d66,inset 0 0 0 2px #fff1b950}
+.trail-room-anchor.is-locked .trail-room-node{background:linear-gradient(#a1aca8,#66746d);border-color:#c9d1c9}
+.trail-room-node.is-selected{outline-width:2px;outline-offset:4px}
+.trail-scenery{width:54px;height:54px}
+.trail-return{background:linear-gradient(#a7763e,#594024);border-color:#dfba78}
+@media(max-height:500px) and (orientation:landscape){.trail-map-frame,.forest-adventure-map--trail .trail-map-frame{min-height:290px}.trail-viewport{min-height:200px}.forest-adventure:has(.forest-adventure-map--trail){overflow-y:auto}.forest-adventure-map--trail{flex:none}.trail-view-label small{display:none}.trail-selection small{display:none}.trail-selection .forest-primary{min-height:36px}.trail-selection{min-height:54px}.trail-room-node{width:48px;height:48px;left:-24px;top:-24px}.trail-room-node>span:not(.trail-stars){font-size:22px}.trail-stars{top:28px}.trail-stars svg{width:11px;height:11px}.trail-room-node.is-master{width:54px;height:54px;left:-27px;top:-27px}}
+
+.trail-current-pet{width:62px;height:74px;left:-76px;top:-52px}.trail-current-halo{left:-43px;top:-43px;width:86px;height:86px}
+
+.trail-current-pet{top:-36px}.trail-master-crown{top:-15px}
