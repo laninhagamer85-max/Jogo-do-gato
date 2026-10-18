@@ -31,3 +31,9 @@ Typecheck/build and game tests recorded at publication. Offline path/duel simula
 Rollback predecessor1.16.0/Sites80: appgprj_6ac40994d8d881919d46203a60801e46~appgver_10d48e493c988191823d8445cf0c0b23, source6269e4bd01946e77aa311fbfe14359a79ea6d82e. Do not load new chapter saves into older code: reader safety gate will ask for update.
 
 Validation completed before publication: TypeScript passed;484tests in39gamefiles passed; production build passed18.86s, existing chunk-size warning.
+
+## Sites81 browser review and1.17.1 followup
+
+Initial1.17.0 deployment succeeded Sites81 source9fd2d98d21c8a16e88aebf3a6ba716fbd439faab, deployment appgdep_6ad50eb732848191a262c8b1457b7a5d. Cloud390×844/844×390: settings opened native modal with independent55/18/72 sliders; NPC slider keyboard changed; bestiary displayed master800HP and true rare/card rewards; room30 manual rendered collision/water/goal map with blocked preview; room21 loaded sprite/ground and power spent25energy.
+
+Found inherited map title used40%viewport focal position while horizontal recenter used50%, causing room21 to show chapter2 title. Followup uses same focal point as recentering and tests chapters1/2/3 in both orientations. Isolated test page header height now flexes, preserving available canvas/map height instead of fixed70px subtraction. Hazard warning footprint changed from visual ellipse to circular area matching collision geometry. Product1.17.1. No room anchors/backgrounds or actual campaign saves moved.

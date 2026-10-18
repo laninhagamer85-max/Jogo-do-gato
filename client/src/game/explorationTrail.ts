@@ -16,3 +16,8 @@ export function explorationTrailPath(points:readonly TrailPoint[],vertical:boole
  return `M ${points[0].x} ${points[0].y}`+points.slice(1).map((p,i)=>{const a=points[i];return vertical?` C ${a.x} ${(a.y+p.y)/2}, ${p.x} ${(a.y+p.y)/2}, ${p.x} ${p.y}`:` C ${(a.x+p.x)/2} ${a.y}, ${(a.x+p.x)/2} ${p.y}, ${p.x} ${p.y}`;}).join('');
 }
 export function trailScrollTarget(point:TrailPoint,layout:{width:number;height:number},viewport:{width:number;height:number}){return {left:Math.max(0,Math.min(layout.width-viewport.width,point.x-viewport.width*.5)),top:Math.max(0,Math.min(layout.height-viewport.height,point.y-viewport.height*.44))};}
+/** Use the same focal point as recentering, so the first room names its own chapter. */
+export function trailViewedChapter(layout:{vertical:boolean;chapters:number;chapterSpan:number},scroll:{left:number;top:number;width:number;height:number}){
+ const offset=layout.vertical?scroll.top+scroll.height*.44:scroll.left+scroll.width*.5;
+ return Math.max(0,Math.min(layout.chapters-1,layout.vertical?layout.chapters-1-Math.floor(offset/layout.chapterSpan):Math.floor(offset/layout.chapterSpan)));
+}

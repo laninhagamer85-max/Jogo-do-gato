@@ -548,8 +548,8 @@
     "art": "8 original simplified Exploration background edits;9 code-native Adventure passages"
   },
   "exploration_chapter3": {
-    "product_version": "1.17.0",
-    "status": "implemented_pending_publication",
+    "product_version": "1.17.1",
+    "status": "publishing_mobile_followup",
     "rooms": [
       21,
       22,
@@ -567,6 +567,7 @@
     "balance": "User selected gradual progression; master5x commonHP, no exponential5x levels",
     "save": "CampaignVersion3 only for new biome protects against older reader; existing schema4 unchanged",
     "rollback": "1.16.0 / Sites80 source6269e4bd01946e77aa311fbfe14359a79ea6d82e",
-    "browser": "post-publication cloud review pending; supported local preview unavailable"
+    "browser": "Sites81:390x844/844x390 settings native modal, NPC slider, bestiary master800HP/drop/card, room30 manual locked preview, room21 power75energy inspected. Found focal heading mislabeled prior chapter in landscape and test-page header overflow; corrected before final delivery.",
+    "checks": "TypeScript,484 game tests passed for1.17.0; focused followup tests/build pending completion"
   }
 }

@@ -8,7 +8,7 @@ import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
 import {Check,LockKeyhole,Play,RotateCcw,LocateFixed,Crown,ArrowUp,ArrowRight,Star,Info,X} from 'lucide-react';
 import {EXPLORATION_ROOMS,chapterName,roomInChapter,chapterNumber} from '@/game/explorationCampaign';
 import {explorationRoomStatus} from '@/game/explorationSelection';
-import {explorationTrailLayout,trailScrollTarget} from '@/game/explorationTrail';
+import {explorationTrailLayout,trailScrollTarget,trailViewedChapter} from '@/game/explorationTrail';
 import {COMBAT_CARDS,bossCardForRoom,type CombatState} from '@/game/explorationCombat';
 import './ExplorationCampaignMap.css';
 type Props={state:CombatState;onContinue:()=>void;onReplay:(index:number)=>void;petImage?:string;petName?:string};
@@ -32,7 +32,7 @@ export default function ExplorationCampaignMap({state,onContinue,onReplay,petIma
   <header className="trail-map-heading"><div><h2>Sua exploração</h2><span>{finished?'Expedição concluída':`Capítulo ${chapterNumber(currentIndex)} · Sala ${currentIndex+1}/${EXPLORATION_ROOMS.length}`}</span></div><span>{state.completedRooms.length}/{EXPLORATION_ROOMS.length} salas concluídas</span></header>
   <div className="trail-map-frame">
    <div className="trail-view-label" aria-live="polite"><strong>Capítulo {viewedChapter+1} · {chapterName(viewedChapter*10)}</strong><small>{chapterLocked?'Conclua o capítulo anterior para liberar':`${state.completedRooms.filter(i=>Math.floor(i/10)===viewedChapter).length}/10 concluídas`}</small></div>
-   <div ref={viewport} className={`trail-viewport ${layout.vertical?'is-vertical':'is-horizontal'}`} tabIndex={0} role="region" aria-label="Mapa contínuo dos capítulos. Deslize para explorar os biomas." onScroll={event=>{const el=event.currentTarget,offset=layout.vertical?el.scrollTop+el.clientHeight*.4:el.scrollLeft+el.clientWidth*.4;setViewedChapter(Math.max(0,Math.min(layout.chapters-1,layout.vertical?layout.chapters-1-Math.floor(offset/layout.chapterSpan):Math.floor(offset/layout.chapterSpan))));}}
+   <div ref={viewport} className={`trail-viewport ${layout.vertical?'is-vertical':'is-horizontal'}`} tabIndex={0} role="region" aria-label="Mapa contínuo dos capítulos. Deslize para explorar os biomas." onScroll={event=>{const el=event.currentTarget,chapter=trailViewedChapter(layout,{left:el.scrollLeft,top:el.scrollTop,width:el.clientWidth,height:el.clientHeight});setViewedChapter(chapter);}}
     onPointerDown={event=>{if(event.pointerType!=='mouse'||event.button!==0||(event.target as HTMLElement).closest('button'))return;const el=event.currentTarget;drag.current={id:event.pointerId,x:event.clientX,y:event.clientY,left:el.scrollLeft,top:el.scrollTop};el.setPointerCapture(event.pointerId);}}
     onPointerMove={event=>{const d=drag.current;if(!d||d.id!==event.pointerId)return;const el=event.currentTarget;el.scrollLeft=d.left-(event.clientX-d.x);el.scrollTop=d.top-(event.clientY-d.y);}}
     onPointerUp={()=>{drag.current=null;}} onPointerCancel={()=>{drag.current=null;}}>
