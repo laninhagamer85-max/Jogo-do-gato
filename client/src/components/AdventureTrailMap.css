@@ -79,3 +79,21 @@
 .adv-illustrated-map .trail-current-halo{width:54px;height:54px;left:-27px;top:-27px;pointer-events:none}
 .adv-illustrated-map .trail-room-anchor.is-current{z-index:3}
 .adv-illustrated-map .trail-view-label{padding:5px 12px;gap:1px}
+
+/* Full-width portrait worlds and full-height landscape worlds. Only the progress axis scrolls. */
+.adv-illustrated-map .adv-illustrated-viewport.is-vertical{overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y}
+.adv-illustrated-map .adv-illustrated-viewport.is-horizontal{overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x}
+.adv-illustrated-map .trail-current-pet{width:30px;height:36px;left:-15px;top:-61px}
+@media(max-width:600px) and (orientation:portrait){
+ .adventure-trail .trail-map-frame{height:clamp(360px,calc(100dvh - 300px),600px)}
+ .platform-adventure .pa-map-layout--trail .pa-entry-card{padding:7px 10px;gap:4px}
+ .platform-adventure .pa-map-layout--trail .pa-entry-pet{width:40px!important;height:46px!important}
+ .platform-adventure .pa-map-layout--trail .pa-entry-overview{grid-template-columns:40px minmax(0,1fr)}
+ .platform-adventure .pa-map-layout--trail .pa-entry-kicker{font-size:8px}
+ .platform-adventure .pa-map-layout--trail .pa-entry-intro h1{font-size:18px}
+ .platform-adventure .pa-map-layout--trail .pa-entry-details{display:none}
+ .adventure-trail .trail-map-heading>div{gap:5px}
+ .adventure-trail .trail-map-heading h2{font-size:18px}
+}
+
+.adv-illustrated-map .trail-stars{top:38px}
