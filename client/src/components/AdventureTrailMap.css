@@ -65,3 +65,17 @@
 .adventure-trail .trail-room-anchor.is-selected .adv-stage-prize{display:flex}
 .adventure-trail .adv-world-friend span{display:none}
 .adventure-trail .adv-room-panorama{opacity:.7}
+
+/* One continuous painted route; native art and controls share the same coordinates. */
+.adv-illustrated-map .adv-illustrated-viewport{overflow:auto!important;touch-action:pan-x pan-y;scrollbar-width:thin}
+.adv-illustrated-art{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.adv-illustrated-map .trail-room-node{width:44px;height:44px;left:-22px;top:-22px;border-width:2px;box-shadow:0 3px 0 #19516c,0 4px 7px #142e3b55}
+.adv-illustrated-map .trail-room-node>span:not(.trail-stars){font-size:19px}
+.adv-illustrated-map .trail-room-node>small{width:16px;height:16px;right:-3px;bottom:32px;border-width:1px}
+.adv-illustrated-map .trail-room-node.is-selected{outline-width:2px;outline-offset:2px}
+.adv-illustrated-map .trail-stars{top:43px;bottom:auto;gap:0;left:50%;transform:translateX(-50%)}
+.adv-illustrated-map .trail-current-pet{width:40px;height:46px;left:-20px;top:-73px}
+.adv-illustrated-map .adv-stage-prize,.adv-illustrated-map .trail-room-anchor.is-selected .adv-stage-prize,.adv-illustrated-map .adv-world-friend{display:none}
+.adv-illustrated-map .trail-current-halo{width:54px;height:54px;left:-27px;top:-27px;pointer-events:none}
+.adv-illustrated-map .trail-room-anchor.is-current{z-index:3}
+.adv-illustrated-map .trail-view-label{padding:5px 12px;gap:1px}
