@@ -1,3 +1,4 @@
+import {hazardPhase} from './explorationHazards';
 import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
 import {EXPLORATION_WORLD,insideExploration} from './explorationWorld';
 import {readMinimap,revealMinimap} from './explorationMinimap';
@@ -25,7 +26,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -47,7 +48,7 @@ export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
-  return {roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -80,7 +81,7 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value: unknown): CombatRead {
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>2) return { supported: false, version };
+  if (version > 4 || Number(raw.campaignVersion??1)>3) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=Math.floor(number(raw.roomIndex,0,0,unlocked));
@@ -108,7 +109,7 @@ export function readCombatState(value: unknown): CombatRead {
   s.exploredCells = readMinimap(raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
-  s.cards=Array.isArray(raw.cards)?[...new Set(raw.cards.filter((c):c is CombatCard=>c==='roots'||c==='tide'))]:[];
+  s.cards=Array.isArray(raw.cards)?[...new Set(raw.cards.filter((c):c is CombatCard=>c==='roots'||c==='tide'||c==='amber'))]:[];
   s.activeCard=s.cards.includes(raw.activeCard as CombatCard)?raw.activeCard as CombatCard:null;
   s.rareEquipped=raw.rareEquipped==='cristal'||raw.rareEquipped==='escama'?raw.rareEquipped:null;
   if(s.rareEquipped&&s.rareStock[s.rareEquipped]+s.rareBag[s.rareEquipped]<1)s.rareEquipped=null;
@@ -189,10 +190,10 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
       const def = definitions.find(e => e.id === enemy.id)!; const range = distance(s.player, enemy);
       const dot = range ? ((enemy.x - s.player.x) * s.facing.x + (enemy.y - s.player.y) * s.facing.y) / range : 1;
       if (enemy.hp <= 0 || range > (power ? 1.7 : 1.25) || (!power && dot < .25) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
-      const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6 : 1) - def.defense)));
+      const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6*(s.activeCard==='amber'?1.25:1) : 1) - def.defense)));
       enemy.hp -= damage; if(power&&s.activeCard==='roots')enemy.slowUntil=s.time+2000; feedback(s, enemy, `−${damage} HP`, 'damage');
       if (enemy.hp === 0) {
-        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; if(!s.defeatedEnemyIds.includes(enemy.id))s.defeatedEnemyIds.push(enemy.id); if(def.boss){const card:CombatCard=room.biome==='river'?'tide':'roots';if(!s.cards.includes(card)){s.cards.push(card);s.activeCard=card;feedback(s,s.player,`Carta rara: ${COMBAT_CARDS[card].name}`,'info');}s.rareBag[rareDropKind(def)]++;} enemy.respawnAt = s.time + insectRespawnMs(def);
+        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; if(!s.defeatedEnemyIds.includes(enemy.id))s.defeatedEnemyIds.push(enemy.id); if(def.boss){const card:CombatCard=bossCardForRoom(s.roomIndex);if(!s.cards.includes(card)){s.cards.push(card);s.activeCard=card;feedback(s,s.player,`Carta rara: ${COMBAT_CARDS[card].name}`,'info');}s.rareBag[rareDropKind(def)]++;} enemy.respawnAt = s.time + insectRespawnMs(def);
         feedback(s, s.player, `+${def.xp} XP`, 'xp');
         const increase = combatMaxHp(s.xp) - oldMax; s.hp += increase;
         if (combatLevel(s.xp) > oldLevel) { feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
@@ -207,7 +208,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
           feedback(s,enemy,'Item raro!','info');
         }
         if (random(s) < .12 && !s.equipmentOwned) { s.equipmentOwned = true; feedback(s, s.player, 'Broche encontrado', 'info'); }
-        s.message = def.boss?`Carta rara desbloqueada: ${COMBAT_CARDS[room.biome==='river'?'tide':'roots'].description}`:`${def.name} superado. Aproxime-se para coletar ${COMBAT_ITEMS[def.item]}.`;
+        s.message = def.boss?`Carta rara desbloqueada: ${COMBAT_CARDS[bossCardForRoom(s.roomIndex)].description}`:`${def.name} superado. Aproxime-se para coletar ${COMBAT_ITEMS[def.item]}.`;
       }
     }
   }
@@ -243,6 +244,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
     if(s.player.x>=b.x&&s.player.x<b.x+.9&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeEntered=true;
     if(s.bridgeEntered&&s.player.x>b.x+b.width-.9&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeCrossed=true;
   }
+  for(const hazard of room.hazards??[]){if(hazardPhase(hazard,s.time)==='active'&&distance(s.player,room.camp)>1.6&&distance(s.player,hazard)<hazard.radius+.2&&s.time>=s.invulnerableUntil){const damage=Math.min(s.hp,hazard.kind==='steam'?16:12);s.hp-=damage;if(s.roomPerformance)s.roomPerformance.damage+=damage;s.invulnerableUntil=s.time+1000;feedback(s,s.player,`−${damage} HP`,'damage');s.message=hazard.kind==='steam'?'Vapor ativo: afaste-se do círculo.':'Espinhos abertos: contorne ou aguarde.';if(!s.hp)return defeatCombat(s);}}
   if(input.interact){
     const plate=room.switches.findIndex(p=>distance(s.player,p)<1);
     if(plate>=0){
@@ -331,8 +333,9 @@ export function advanceCombatRoom(current:CombatState):CombatState{
  next.enemies=next.enemies.map(e=>({...e,attackAt:next.time+1500}));return next;
 }
 
-export type CombatCard='roots'|'tide';
-export const COMBAT_CARDS:Record<CombatCard,{name:string;description:string}>={roots:{name:'Coração dos Troncos',description:'Carta rara do Mestre dos Troncos. Equipada, seu poder desacelera adversários por 2 segundos.'},tide:{name:'Coração das Marés',description:'Carta rara do Mestre das Marés. Equipada, cada uso do poder recupera até 15 HP.'}};
+export type CombatCard='roots'|'tide'|'amber';
+export const bossCardForRoom=(index:number):CombatCard=>index>=20?'amber':index>=10?'tide':'roots';
+export const COMBAT_CARDS:Record<CombatCard,{name:string;description:string}>={amber:{name:'Coração do Âmbar',description:'Carta rara do Mestre do Âmbar. Equipada, o poder causa 25% mais dano; continua custando 25 de energia.'},roots:{name:'Coração dos Troncos',description:'Carta rara do Mestre dos Troncos. Equipada, seu poder desacelera adversários por 2 segundos.'},tide:{name:'Coração das Marés',description:'Carta rara do Mestre das Marés. Equipada, cada uso do poder recupera até 15 HP.'}};
 export function equipCombatCard(current:CombatState,card:CombatCard){return current.cards.includes(card)?{...current,activeCard:current.activeCard===card?null:card,revision:current.revision+1}:current;}
 export function useRareCombatItem(current:CombatState,item:RareItem):CombatState{
  if(current.completed||current.rareStock[item]+current.rareBag[item]<1)return current;

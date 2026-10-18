@@ -8,9 +8,9 @@ type Filter = 'all' | 'materials' | 'supplies' | 'equipment';
 export default function CombatInventory({game,onUse,onEquip,onRare,onCard}:{game:CombatState;onUse:(item:'erva'|'fruta')=>void;onEquip:()=>void;onRare?:(item:RareItem)=>void;onCard?:(card:CombatCard)=>void}){
   const [selected,setSelected]=useState<Selection>('erva');
   const [filter,setFilter]=useState<Filter>('all');
-  const items:Selection[]=filter==='equipment'?['broche','cristal','escama','roots','tide']:filter==='materials'?['fibra','ambar']:filter==='supplies'?['erva','fruta','seiva','perola']:['fibra','ambar','seiva','cristal','perola','escama','erva','fruta','broche','roots','tide'];
+  const items:Selection[]=filter==='equipment'?['broche','cristal','escama','roots','tide','amber']:filter==='materials'?['fibra','ambar']:filter==='supplies'?['erva','fruta','seiva','perola']:['fibra','ambar','seiva','cristal','perola','escama','erva','fruta','broche','roots','tide','amber'];
   const rare=(item:Selection):item is RareItem=>item==='seiva'||item==='cristal'||item==='perola'||item==='escama';
-  const card=(item:Selection):item is CombatCard=>item==='roots'||item==='tide';
+  const card=(item:Selection):item is CombatCard=>item==='roots'||item==='tide'||item==='amber';
   const countItem=(item:Selection)=>item==='broche'?Number(game.equipmentOwned):card(item)?Number(game.cards.includes(item)):rare(item)?game.rareStock[item]+game.rareBag[item]:game.stock[item]+game.bag[item];
   const title=selected==='broche'?'Broche da Clareira':card(selected)?COMBAT_CARDS[selected].name:rare(selected)?RARE_ITEMS[selected]:COMBAT_ITEMS[selected];
   const quantity=countItem(selected);

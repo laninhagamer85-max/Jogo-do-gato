@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_test",
-  "active_run": "2026-10-18-map-clarity",
+  "status": "implemented_pending_publication",
+  "active_run": "2026-10-18-exploration-chapter3",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -62,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-map-clarity.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-exploration-chapter3.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -546,5 +546,27 @@
     "rollback": "1.15.3 / Sites79",
     "preserved": "100 Adventure stages,20 Exploration rooms,anchors,save IDs,actual rewards",
     "art": "8 original simplified Exploration background edits;9 code-native Adventure passages"
+  },
+  "exploration_chapter3": {
+    "product_version": "1.17.0",
+    "status": "implemented_pending_publication",
+    "rooms": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "biome": "Bosque do Âmbar",
+    "scope": "Chapter3,settings,three audio buses,guide,bestiary,room manuals,existing inventory expanded with new card",
+    "balance": "User selected gradual progression; master5x commonHP, no exponential5x levels",
+    "save": "CampaignVersion3 only for new biome protects against older reader; existing schema4 unchanged",
+    "rollback": "1.16.0 / Sites80 source6269e4bd01946e77aa311fbfe14359a79ea6d82e",
+    "browser": "post-publication cloud review pending; supported local preview unavailable"
   }
 }

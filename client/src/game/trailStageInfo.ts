@@ -3,7 +3,7 @@ export type TrailChallenge='collect'|'combat'|'puzzle'|'key'|'bridge'|'heal'|'ma
 export function explorationTrailInfo(room:CampaignRoom){
  const kind:TrailChallenge=room.bossId?'master':room.key?'key':room.switches.length?'puzzle':room.bridge?'bridge':room.useConsumable?'heal':room.title.toLowerCase().includes('coleta')||room.index===0?'collect':'combat';
  const labels:Record<TrailChallenge,string>={collect:'Coleta',combat:'Combate',puzzle:'Enigma',key:'Chave',bridge:'Ponte',heal:'Cura',master:'Mestre',route:'Trilha',jump:'Saltos',coins:'Moedas',portal:'Portal'};
- return {kind,label:labels[kind],enemyLevel:Math.max(1,...room.enemies.map(e=>e.level)),reward:room.bossId?(room.biome==='river'?'Coração das Marés':'Coração dos Troncos'):null};
+ return {kind,label:labels[kind],enemyLevel:Math.max(1,...room.enemies.map(e=>e.level)),reward:room.bossId?(room.biome==='autumn'?'Coração do Âmbar':room.biome==='river'?'Coração das Marés':'Coração dos Troncos'):null};
 }
 export function adventureTrailInfo(id:number){const kinds:TrailChallenge[]=['route','bridge','combat','jump','puzzle','combat','collect','route','coins','portal'];return kinds[(id-1)%10];}
 /** Captions may move around their fixed stop, never over another playable target. */

@@ -4,11 +4,13 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import ExplorationLab from './pages/ExplorationLab';
 import PlayerAccess from "./pages/PlayerAccess";
 
 function Router() {
   return (
     <Switch>
+      <Route path={"/qa-exploration-lab"} component={ExplorationLab} />
       <Route path={"/"} component={PlayerAccess} />
       <Route path={"/guardian"} component={PlayerAccess} />
       <Route path={"/game"} component={PlayerAccess} />

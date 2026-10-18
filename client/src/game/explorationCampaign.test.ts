@@ -12,8 +12,8 @@ const walk=(s:CombatState,target:{x:number;y:number})=>{
 };
 describe('ten authored chapter-one rooms',()=>{
  it('contains ten distinct playable layouts and varied challenges',()=>{
-  expect(EXPLORATION_ROOMS).toHaveLength(20);
-  expect(new Set(EXPLORATION_ROOMS.map(r=>JSON.stringify([r.walls,r.nodes,r.marker,r.exit]))).size).toBe(20);
+  expect(EXPLORATION_ROOMS).toHaveLength(30);
+  expect(new Set(EXPLORATION_ROOMS.map(r=>JSON.stringify([r.walls,r.nodes,r.marker,r.exit]))).size).toBe(30);
   expect(EXPLORATION_ROOMS.slice(0,10).filter(r=>r.switches.length).length).toBe(2);
   expect(EXPLORATION_ROOMS.slice(0,10).filter(r=>r.key).length).toBe(2);
  });
@@ -32,7 +32,7 @@ describe('ten authored chapter-one rooms',()=>{
   s=stepCombat(s,{interact:true},0);expect(s.gateOpen).toBe(true);s.player={...room.exit};s.bag.fibra=5;s=stepCombat(s,{},0);
   expect(s.completed).toBe(true);expect(s.completedRooms).toContain(room.index);expect(s.claimedRooms).toContain(room.index);expect(stepCombat(s,{},50)).toBe(s);
   const parsed=read(s);expect(parsed.roomIndex).toBe(room.index);expect(parsed.completed).toBe(true);
-  const next=advanceCombatRoom(parsed);if(room.index===19){expect(next).toBe(parsed);return;}
+  const next=advanceCombatRoom(parsed);if(room.index===EXPLORATION_ROOMS.length-1){expect(next).toBe(parsed);return;}
   expect(next.roomIndex).toBe(room.index+1);expect(next.stock).toEqual(parsed.stock);expect(next.hp).toBe(parsed.hp);expect(next.xp).toBe(parsed.xp);expect(next.deaths).toBe(parsed.deaths);expect(next.revision).toBeGreaterThan(parsed.revision);expect(next.exploredCells).not.toBe(parsed.exploredCells);
   expect(next.collectedNodes).toEqual([]);expect(next.roomCollectedFibers).toBe(0);expect(next.gateOpen).toBe(false);expect(read(next).roomIndex).toBe(next.roomIndex);
  });

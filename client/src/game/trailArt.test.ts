@@ -15,7 +15,7 @@ it('ships twelve distinct original assets with matching hashes and authored aspe
 });
 it('uses separate orientation assets and keeps the eight unauthored Adventure worlds',()=>{
  expect(trailArtKind('adventure',0)).toBe('home');expect(trailArtKind('adventure',5)).toBe('forest');expect(Array.from({length:10},(_,i)=>trailArtKind('adventure',i)).filter(Boolean)).toHaveLength(2);
- expect(trailArtKind('exploration',0)).toBe('forest');expect(trailArtKind('exploration',1)).toBe('river');expect(trailArtKind('exploration',2)).toBeUndefined();
+ expect(trailArtKind('exploration',0)).toBe('forest');expect(trailArtKind('exploration',1)).toBe('river');expect(trailArtKind('exploration',2)).toBe('autumn');
  expect(trailArtSource('river',true,1)).toContain('portrait-b');expect(trailArtSource('river',false,1)).toContain('landscape-b');
 });
 it('positions every stage at its plate clearing without nonuniform scaling',()=>{

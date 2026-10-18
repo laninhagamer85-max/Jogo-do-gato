@@ -112,3 +112,16 @@
 .combat-card-note{max-width:300px;background:#14392dde;padding:10px;border:1px solid #c5b779;border-radius:12px;font-size:13px}
 
 .combat-card-note{position:absolute;left:14px;bottom:190px;z-index:6;pointer-events:none}.combat-card-note p{margin:5px 0;line-height:1.4}@media(max-height:500px){.combat-card-note{bottom:120px;max-width:240px}}
+
+/* Field guide stays inside the paused native modal in either orientation. */
+.combat-settings-trigger{display:inline-grid;place-items:center;width:44px;height:44px;border:1px solid #b4cbac55;border-radius:50%;background:#233c30;color:#eef4ce;margin-left:10px;pointer-events:auto}
+.combat-dialog::backdrop{background:#06181099;backdrop-filter:blur(3px)}
+.combat-dialog{max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;box-sizing:border-box}
+.exp-pause-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}.exp-pause-tabs button{min-height:44px;padding:8px 12px;border:1px solid #c4d3a966;border-radius:12px;background:#294336;color:#edf2d4}.exp-pause-tabs button[aria-pressed=true]{background:#edcf85;color:#293e31}
+.exp-audio-settings label{display:block;margin:18px 0}.exp-audio-settings label span{display:flex;justify-content:space-between;font-weight:700}.exp-audio-settings input{width:100%;min-height:44px;accent-color:#e9c575}.exp-audio-settings>button{min-height:44px;border-radius:12px;padding:8px 16px;background:#edcf85;color:#293e31}
+.exp-guide-copy,.exp-bestiary,.exp-room-manual{font-size:14px;line-height:1.55}.exp-guide-copy h3,.exp-room-manual h3{font-size:17px;font-weight:800;margin:16px 0 8px}.exp-guide-copy ol{list-style:decimal;padding-left:22px}.exp-guide-copy li{margin:8px 0}.exp-bestiary details{border:1px solid #b5c79e44;border-radius:14px;padding:10px;margin:10px 0}.exp-bestiary summary{display:flex;align-items:center;gap:12px;cursor:pointer;min-height:54px}.exp-bestiary summary span{display:grid;gap:3px}.exp-bestiary summary small{opacity:.8}.exp-bestiary summary strong{font-size:16px}.exp-room-manual label{display:grid;gap:8px}.exp-room-manual select{min-height:44px;max-width:100%;background:#223e30;border:1px solid #a5bc8e;border-radius:10px;color:#f5edcd;padding:8px}.exp-room-plan{display:block;width:100%;max-height:320px;margin:12px 0;border-radius:14px}.exp-plan-key{font-size:12px;line-height:1.5}
+@media(max-height:500px) and (orientation:landscape){.combat-dialog{width:min(700px,calc(100vw - 28px));padding:16px}.combat-dialog-heading h2{font-size:19px}.exp-pause-tabs{margin:6px 0 10px}.exp-room-plan{max-height:210px}}
+.combat-pilot--lens-dock .combat-dialog:not(.combat-dialog-inventory){position:fixed;inset:12px;margin:auto;width:min(92vw,640px);height:max-content;max-height:calc(100dvh - 24px);padding:18px}
+.exp-bestiary details p,.exp-guide-copy p,.exp-room-manual p{margin:10px 0}
+
+.exp-lab .combat-pilot{height:calc(100dvh - 70px);min-height:260px}

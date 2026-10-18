@@ -1,9 +1,9 @@
 {
-  "status": "two_chapters_implemented_pending_device_review",
-  "date": "2026-10-16",
-  "implemented_combat_rooms": 20,
+  "status": "chapter3_implemented_validation_in_progress",
+  "date": "2026-10-18",
+  "implemented_combat_rooms": 30,
   "target_rooms": 60,
-  "rollout_gate": "Chapters 1 and 2 implemented with automatic forward portals; later biomes await device review and authoring.",
+  "rollout_gate": "Chapter3 Bosque do Âmbar implemented; publish and playtest each chapter separately. Chapters4–6 remain planned.",
   "chapters": [
     {
       "id": 1,
@@ -345,169 +345,139 @@
     },
     {
       "id": 3,
-      "name": "Bosque das Lanternas",
+      "name": "Bosque do Âmbar",
       "name_status": "existing",
-      "biome": "bosque noturno",
-      "status": "planned",
+      "biome": "autumn woodland / amber",
+      "status": "implemented_validation_in_progress",
       "rooms": [
         {
           "id": "3-1",
-          "room": 1,
-          "title": "Luz de entrada",
-          "suggested_enemy_level": 7,
-          "status": "planned_not_implemented",
+          "room": 21,
+          "title": "Folhas douradas",
+          "suggested_enemy_level": 11,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-2",
-          "room": 2,
-          "title": "Chave de cobre",
-          "suggested_enemy_level": 7,
-          "status": "planned_not_implemented",
+          "room": 22,
+          "title": "Pedras de âmbar",
+          "suggested_enemy_level": 11,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-3",
-          "room": 3,
-          "title": "Ordem das lanternas",
-          "suggested_enemy_level": 7,
-          "status": "planned_not_implemented",
+          "room": 23,
+          "title": "Runas do outono",
+          "suggested_enemy_level": 12,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-4",
-          "room": 4,
-          "title": "Sino e distração",
-          "suggested_enemy_level": 8,
-          "status": "planned_not_implemented",
+          "room": 24,
+          "title": "Lago das folhas",
+          "suggested_enemy_level": 12,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-5",
-          "room": 5,
-          "title": "Trilha escondida",
-          "suggested_enemy_level": 8,
-          "status": "planned_not_implemented",
+          "room": 25,
+          "title": "Ponte das raízes",
+          "suggested_enemy_level": 13,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-6",
-          "room": 6,
-          "title": "Guarda noturno",
-          "suggested_enemy_level": 8,
-          "status": "planned_not_implemented",
+          "room": 26,
+          "title": "Jardim da recuperação",
+          "suggested_enemy_level": 13,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-7",
-          "room": 7,
-          "title": "Duelo entre luzes",
-          "suggested_enemy_level": 9,
-          "status": "planned_not_implemented",
+          "room": 27,
+          "title": "Vapor entre pedras",
+          "suggested_enemy_level": 14,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-8",
-          "room": 8,
-          "title": "Preparar poder",
-          "suggested_enemy_level": 9,
-          "status": "planned_not_implemented",
+          "room": 28,
+          "title": "As quatro sementes",
+          "suggested_enemy_level": 14,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-9",
-          "room": 9,
-          "title": "Charada das três luzes",
-          "suggested_enemy_level": 9,
-          "status": "planned_not_implemented",
+          "room": 29,
+          "title": "Guardiões do âmbar",
+          "suggested_enemy_level": 15,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         },
         {
           "id": "3-10",
-          "room": 10,
-          "title": "Portal das lanternas",
-          "suggested_enemy_level": 10,
-          "status": "planned_not_implemented",
+          "room": 30,
+          "title": "Santuário do Âmbar",
+          "suggested_enemy_level": 15,
+          "status": "implemented_validation_in_progress",
           "audit": {
-            "version": null,
-            "viewport": null,
-            "test_type": null,
-            "attempts": null,
-            "deaths": null,
-            "duration_seconds": null,
-            "completed": false
+            "version": "1.17.0",
+            "test_type": "offline_engine_navigation_and_isolated_duels",
+            "completed_online": false,
+            "physical_phone": false
           }
         }
       ]

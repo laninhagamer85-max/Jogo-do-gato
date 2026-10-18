@@ -22,12 +22,14 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   const ready=(im:HTMLImageElement)=>im.complete&&im.naturalWidth>0;
   ctx.clearRect(0,0,size,size);ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();
   // Dark textured terrain occupies undiscovered parts too, without a rectangular map inset.
+  ctx.save();if(room.biome==='autumn')ctx.filter='sepia(.5) saturate(1.1) hue-rotate(338deg)';
   if(ready(images.ground))drawExplorationGround(ctx,size,size,images.ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   else {ctx.fillStyle='#345331';ctx.fillRect(0,0,size,size);}
+  ctx.restore();
   ctx.fillStyle='rgba(8,24,19,.91)';ctx.fillRect(0,0,size,size);
   ctx.save();ctx.beginPath();
   for(const i of s.exploredCells){const p=point(discoveredWorldPoint(i));ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
-  ctx.clip();
+  ctx.clip();ctx.save();if(room.biome==='autumn')ctx.filter='sepia(.5) saturate(1.1) hue-rotate(338deg)';
   if(ready(images.ground))drawExplorationGround(ctx,size,size,images.ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
   drawCampaignShore(ctx,room,v.left,v.top,t,images.props,images.garden,images.riverProps);
@@ -43,6 +45,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   };
   sprite(images.shelter,PILOT_SHELTER,1.55);sprite(river?images.riverPortal:images.portal,room.exit,1.95);drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
   if(room.key&&!s.hasRoomKey)drawCampaignKey(ctx,images.key,room.key,v.left,v.top,t,0,true);
+  ctx.restore();
   const dot=(p:{x:number;y:number},color:string,r=3.5)=>{
    const q=point(p);ctx.shadowColor='#182619';ctx.shadowBlur=3;ctx.fillStyle=color;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
   };

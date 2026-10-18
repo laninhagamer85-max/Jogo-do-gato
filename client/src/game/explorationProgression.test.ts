@@ -4,9 +4,9 @@ import {createCombatState,stepCombat,combatSnapshot,readCombatState,tickCombatPo
 import {minimapDiscovered} from './explorationMinimap';
 const fixture=(index:number)=>{const s=createCombatState(index,42);s.completedRooms=Array.from({length:index},(_,i)=>i);return s;};
 const read=(s:CombatState)=>{const r=readCombatState(combatSnapshot(s));if(!r.supported)throw Error();return r.state;};
-it('automatically teleports through 19 consecutive portals, preserving all permanent progression',()=>{
+it('automatically teleports through29 consecutive portals, preserving all permanent progression',()=>{
  let s=createCombatState();s.xp=1200;s.stock.erva=7;s.rareStock.cristal=2;s.rareEquipped='cristal';s.cards=['roots'];s.activeCard='roots';
- for(let index=0;index<19;index++){
+ for(let index=0;index<29;index++){
   s.completed=true;s.completedRooms.push(index);s.claimedRooms.push(index);s=read(s);
   const before=s;for(let i=0;i<16;i++)s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index);
   s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index+1);expect(s.xp).toBe(1200);expect(s.stock.erva).toBe(7);expect(s.rareEquipped).toBe('cristal');expect(s.activeCard).toBe('roots');expect(s.revision).toBeGreaterThan(before.revision);expect(s.completed).toBe(false);expect(s.player).toEqual(campaignRoom(index+1).camp);expect(read(s).roomIndex).toBe(index+1);
@@ -25,11 +25,11 @@ it.each([4,10,14])('bridge room %i has no route between banks with its deck remo
  const room=campaignRoom(index),bridge=room.bridge;expect(bridge).toBeDefined();expect(pilotRoute(room.camp,room.exit,false,index).length).toBeGreaterThan(0);
  try{room.bridge=undefined;expect(pilotRoute(room.camp,room.exit,false,index)).toEqual([]);expect(campaignWaterBlocks({x:8.5,y:5.5},.22,room)).toBe(true);}finally{room.bridge=bridge;}
 });
-it.each([9,19])('room %i requires its master, guarantees a single rare card and never respawns the master',index=>{
+it.each([9,19,29])('room %i requires its master, guarantees a single rare card and never respawns the master',index=>{
  const room=campaignRoom(index),def=campaignEnemies(index,42).find(e=>e.boss)!;let s=fixture(index);s.xp=1800;s.hp=combatMaxHp(s.xp);s.roomCollectedFibers=room.fibers;s.defeated=99;s.defeatedEnemyIds=s.enemies.filter(e=>e.id!==def.id).map(e=>e.id);s.hasRoomKey=true;s.switchStep=room.switches.length;s.player={...room.marker};
  expect(stepCombat(s,{interact:true},0).gateOpen).toBe(false);
  s.enemies.forEach(e=>{e.hp=e.id===def.id?1:0;e.respawnAt=1e9;});s.player={x:def.x-.65,y:def.y};s.facing={x:1,y:0};s=stepCombat(s,{attack:true},0);
- const card=index===9?'roots':'tide';expect(s.cards).toEqual([card]);expect(s.activeCard).toBe(card);expect(read(s).cards).toEqual([card]);
+ const card=index===29?'amber':index===9?'roots':'tide';expect(s.cards).toEqual([card]);expect(s.activeCard).toBe(card);expect(read(s).cards).toEqual([card]);
  s=stepCombat(s,{attack:true},50);expect(s.cards).toEqual([card]);s.time=1e6;s=stepCombat(s,{},0);expect(s.enemies.find(e=>e.id===def.id)!.hp).toBe(0);
  s.player={...room.marker};expect(stepCombat(s,{interact:true},0).gateOpen).toBe(true);
 });

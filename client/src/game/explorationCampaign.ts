@@ -1,11 +1,13 @@
+import {AUTUMN_ROOMS,autumnEnemy} from './explorationChapter3';
 import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hitsEdgeScenery} from './explorationRoom';
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
 import {insideExploration} from './explorationWorld';
 import type {CombatItem,CombatPoint} from './explorationCombat';
-export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number};
+export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
 export type CampaignNode=CombatPoint&{id:string;item:CombatItem;quantity:number};
 export type CampaignProp=CombatPoint&{index:number;width:number;height:number};
-export type CampaignRoom={biome:'forest'|'river';bossId?:string;index:number;title:string;hint:string;camp:CombatPoint;marker:CombatPoint;exit:CombatPoint;walls:CombatPoint[];scenery:CampaignProp[];nodes:CampaignNode[];enemies:CampaignEnemy[];fibers:number;encounters:number;switches:CombatPoint[];key?:CombatPoint;useConsumable?:boolean;bridge?:{x:number;y:number;width:number;height:number};composition?:BiomeComposition;gateBlock?:CombatPoint};
+export type CampaignHazard=CombatPoint&{id:string;kind:'bramble'|'steam';radius:number;period:number;activeMs:number;offset:number};
+export type CampaignRoom={biome:'forest'|'river'|'autumn';hazards?:CampaignHazard[];bossId?:string;index:number;title:string;hint:string;camp:CombatPoint;marker:CombatPoint;exit:CombatPoint;walls:CombatPoint[];scenery:CampaignProp[];nodes:CampaignNode[];enemies:CampaignEnemy[];fibers:number;encounters:number;switches:CombatPoint[];key?:CombatPoint;useConsumable?:boolean;bridge?:{x:number;y:number;width:number;height:number};composition?:BiomeComposition;gateBlock?:CombatPoint};
 const camp={x:1.5,y:1.5};
 const node=(id:string,x:number,y:number,item:CombatItem='fibra',quantity=3):CampaignNode=>({id,x,y,item,quantity});
 const enemy=(id:string,x:number,y:number,level:number,kind:'beetle'|'caterpillar'='beetle'):CampaignEnemy=>({id,x,y,level,name:kind==='beetle'?'Besouro':'Lagarta',rarity:kind==='beetle'?'common':'uncommon',hp:(kind==='beetle'?40:58)+(level-1)*9,attack:(kind==='beetle'?9:12)+(level-1)*2,defense:kind==='beetle'?1:3,xp:20+level*8,item:kind==='beetle'?'fibra':'ambar',quantity:kind==='beetle'?3:2});
@@ -58,14 +60,14 @@ for(const r of [...forestRooms,...riverRooms].filter(r=>r.bridge)){
  r.enemies=r.enemies.map((e,i)=>({...e,x:i%2===0?3.5:12.5,y:5.5+Math.floor(i/2)*2}));
 }
 // Keep every authored river objective on a free, reachable cell; edge props are shared.
-for(const r of riverRooms){
+for(const r of [...riverRooms,...AUTUMN_ROOMS]){
  const valid=(p:CombatPoint,radius=.35)=>insideExploration(p,radius)&&!hitsEdgeScenery(p,radius)&&!campaignWaterBlocks(p,radius,r)&&!r.walls.some(w=>p.x+radius>w.x&&p.x-radius<w.x+1&&p.y+radius>w.y&&p.y-radius<w.y+1)&&!(p.x+radius>-.1&&p.x-radius<.9&&p.y+radius>1.45&&p.y-radius<1.9);
  const fit=<T extends CombatPoint>(p:T):T=>{if(valid(p))return p;const candidates=Array.from({length:720},(_,i)=>({x:-7.5+i%30,y:-6.5+Math.floor(i/30)})).filter(q=>valid(q));candidates.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return {...p,...candidates[0]};};
  r.marker=fit(r.marker);r.exit=fit(r.exit);r.nodes=r.nodes.map(fit);r.switches=r.switches.map(fit);if(r.key)r.key=fit(r.key);r.enemies=r.enemies.map(fit);
 }
-export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms];
+export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS];
 export const campaignRoom=(index=0)=>EXPLORATION_ROOMS[Math.max(0,Math.min(EXPLORATION_ROOMS.length-1,Math.floor(index)||0))];
-export const chapterName=(index:number)=>index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
+export const chapterName=(index:number)=>index>=20?'Bosque do Âmbar':index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
 export const roomInChapter=(index:number)=>index%10+1;
 export const chapterNumber=(index:number)=>Math.floor(index/10)+1;
 
@@ -87,12 +89,13 @@ export const RARE_ITEMS:Record<RareItem,string>={seiva:'Seiva luminosa',cristal:
 export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{
  const room=campaignRoom(index);if(!index)return room.enemies;
  let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
- const level=index>=10?5+Math.floor((index-10)/2):Math.min(5,2+Math.floor(index/3));
+ const level=index>=20?11+Math.floor((index-20)/2):index>=10?5+Math.floor((index-10)/2):Math.min(5,2+Math.floor(index/3));
  const spots=[...Array.from({length:48},(_,i)=>({x:-3.5+(i%8)*3,y:-2.5+Math.floor(i/8)*3})),{x:4.5,y:9.5},{x:11.5,y:10.5},{x:15.5,y:4.5},{x:7.5,y:1.5},{x:-2.5,y:6.5},{x:3.5,y:-1.5},{x:9.5,y:11.5},{x:17.5,y:6.5},{x:1.5,y:6.5}]
  .filter(p=>insideExploration(p,.35)&&!hitsEdgeScenery(p,.35)&&!campaignWaterBlocks(p,.35,room)&&!room.walls.some(w=>p.x+.4>w.x&&p.x-.4<w.x+1&&p.y+.4>w.y&&p.y-.4<w.y+1)&&[room.camp,room.marker,room.exit,...room.switches,...room.nodes,...room.enemies,...(room.key?[room.key]:[])].every(q=>Math.hypot(p.x-q.x,p.y-q.y)>(q===room.camp?3.3:1.2)));
- const result=[...room.enemies],count=Math.max(1,(index>=10?8+Math.floor((index-10)/2):2+Math.floor(index*.6))-room.enemies.length);
+ const result=[...room.enemies],count=Math.max(1,(index>=20?12+Math.floor((index-20)/2):index>=10?8+Math.floor((index-10)/2):2+Math.floor(index*.6))-room.enemies.length);
  for(let i=0;i<count&&spots.length;i++){
   const p=spots.splice(Math.floor(random()*spots.length),1)[0];for(let j=spots.length-1;j>=0;j--)if(Math.hypot(spots[j].x-p.x,spots[j].y-p.y)<1.6)spots.splice(j,1);const kind=index===9&&i===0?2:Math.floor(random()*(level>=3?2:1));
+  if(room.biome==='autumn'){result.push(autumnEnemy(`wild-autumn-${i}`,p.x,p.y,level,Math.floor(random()*2)));continue;}
   if(room.biome==='river'){result.push(riverEnemy(`wild-river-${i}`,p.x,p.y,level,Math.floor(random()*2)));continue;}
   const guardian=kind===2,fungus=kind===1,lvl=guardian?5:level;
   result.push({...p,id:`wild-${kind}-${i}`,name:guardian?'Guardião dos Troncos':fungus?'Cogumelo Saltador':'Escaravelho Esmeralda',level:lvl,rarity:guardian?'rare':fungus?'uncommon':'common',hp:guardian?112:fungus?65+lvl*5:42+lvl*6,attack:guardian?19:fungus?9+lvl*2:8+lvl*2,defense:guardian?4:fungus?2:1,xp:guardian?100:35+lvl*10,item:guardian?'ambar':fungus?'erva':'fibra',quantity:guardian?3:fungus?1:3,art:'forest-mobs',spriteRow:kind,speed:guardian?.00055:fungus?.0006:.00105,detection:guardian?3:fungus?2.5:4,leash:guardian?3.5:6,width:guardian?1.05:.78,radius:guardian?.27:.19,attackRange:guardian?.96:.82});

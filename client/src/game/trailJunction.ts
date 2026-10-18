@@ -2,7 +2,7 @@ import {trailChapterTop,type explorationTrailLayout} from './explorationTrail';
 import {trailArtKind,type TrailMode} from './trailArt';
 export function trailJunctionSource(mode:TrailMode,chapter:number,join:number,vertical:boolean){
  const kind=trailArtKind(mode,chapter);if(!kind)return undefined;
- const family=mode==='exploration'&&chapter===0&&join===1?'forest-river':kind;
+ const family=mode==='exploration'&&chapter===1&&join===1?'river-autumn':mode==='exploration'&&chapter===0&&join===1?'forest-river':kind;
  return `/forest-adventure/junction-${family}-${vertical?'portrait':'landscape'}-v1.webp`;
 }
 /** Cross-axis fills the view; junction art has the reciprocal orientation and scales uniformly. */

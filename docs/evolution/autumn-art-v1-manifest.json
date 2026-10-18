@@ -1,0 +1,66 @@
+[
+  {
+    "path": "client/public/forest-adventure/junction-autumn-landscape-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "c97f94c76b07258107c1c9df014fa1212ef4e3cce1d264a52b371194ae663da3",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/junction-autumn-portrait-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "c2965f847c0d646f42ffd09d342fce66ae8043a6436fb470afc3e456fd7d5ea1",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/junction-river-autumn-landscape-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "27cd236f464ce6ce57194b0f2e1a350016ab731b1ed68636baf4b3d4d3c5f261",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/junction-river-autumn-portrait-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "af9bb7f6c9a26456afec039baf1e63f247197fbc0a37050e005ae903efc54eb3",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/map-autumn-landscape-a-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "b9d959f83605bf75838ab739de3d30af1e19127d2c30c5a354a749b1aa49f299",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/map-autumn-landscape-b-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "e27d7a176ae8a852db989549dbc29a538d573348105cc941cf53315e97d0351d",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/map-autumn-portrait-a-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "121f6298ca9689ceb6de8ba64338bf80da43c1c970eed0d05d3f596d76cd9aba",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  },
+  {
+    "path": "client/public/forest-adventure/map-autumn-portrait-b-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "17ef9a2ad44b97b627d4c2e399ec47c3b568cda8b0a0c284757a228bc997f118",
+    "origin": "Original built-in imagegen edit of approved forest / forest-river art; road ports visually preserved",
+    "version": "1.17.0"
+  }
+]
