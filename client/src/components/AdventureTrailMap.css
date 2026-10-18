@@ -4,3 +4,6 @@
 @media(max-height:500px) and (orientation:landscape){.platform-adventure .pa-map-layout--trail .pa-entry-pet{width:42px!important;height:48px!important}.platform-adventure .pa-map-layout--trail .pa-entry-overview{grid-template-columns:42px minmax(0,1fr)}.platform-adventure .pa-map-layout--trail .pa-entry-details{display:none}.platform-adventure .pa-map-layout--trail .pa-entry-card{padding:6px 12px}.adventure-trail .trail-map-frame{height:calc(100dvh - 160px);min-height:220px}.adv-stage-prize{top:33px;left:10px}.adv-stage-prize img{height:28px;width:34px}.adv-stage-prize span{font-size:8px}.adv-world-friend{top:-60px;left:-91px}.adv-world-friend img{height:60px;width:60px}.adventure-trail .trail-selection{max-width:490px}.adventure-trail .trail-return{bottom:108px}}
 
 .adventure-trail .trail-room-anchor.is-current .adv-stage-prize{display:none}.adventure-trail .adv-world-friend{top:-125px}
+
+.adventure-trail .trail-selection{max-width:none}.adventure-trail .trail-return{bottom:132px}.adventure-trail .trail-biome.composed-biome img{object-position:center}
+@media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-return{bottom:92px}.adventure-trail .adv-world-friend{top:-92px}}

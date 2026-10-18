@@ -19,3 +19,20 @@
 .trail-room-node>small{top:-7px;bottom:auto;right:-7px}
 
 .natural-trail{position:absolute;inset:0;pointer-events:none;overflow:visible}.natural-trail-locked{filter:grayscale(1);opacity:.75}.trail-viewport.is-vertical{overflow-x:hidden;overflow-y:auto;touch-action:pan-y}.trail-biome.is-vertical img{object-position:center}.trail-world{overflow:hidden}
+
+/* Keep informational panels out of the scrolling playfield. */
+.trail-map-frame{display:flex;flex-direction:column;overflow:hidden}
+.trail-view-label{position:relative;inset:auto;transform:none;max-width:none;min-width:0;flex:none;border:0;border-bottom:1px solid #b5be973b;border-radius:0;box-shadow:none;padding:7px 12px;gap:2px}
+.trail-viewport{flex:1;min-height:0;height:auto}
+.trail-selection{position:relative;inset:auto;flex:none;margin:0;max-width:none;border:0;border-top:1px solid #b5be9750;border-radius:0;box-shadow:none;padding:10px 14px}
+.trail-return{right:9px;bottom:112px;min-width:44px;min-height:44px;padding:8px;border-radius:50%}
+.trail-return span{display:none}
+.trail-biome.composed-biome{background:#57785b;mask-image:none!important}
+.composed-biome.biome-0{background:#a59164}.composed-biome.biome-1{background:#4d7c78}.composed-biome.biome-2{background:#776c66}.composed-biome.biome-3{background:#ada582}.composed-biome.biome-4{background:#65888d}.composed-biome.biome-5{background:#4b6d50}.composed-biome.biome-6{background:#b0c8cf}.composed-biome.biome-7{background:#8d7361}.composed-biome.biome-8{background:#776b8c}.composed-biome.biome-9{background:#8b8080}
+.trail-scene-plate{position:absolute;display:flex;align-items:center;justify-content:center;mask-image:linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent)}
+.composed-biome.is-horizontal .trail-scene-plate{mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent)}
+.trail-biome.composed-biome img{width:100%;height:100%;object-fit:contain;object-position:center;opacity:.72}
+.composed-biome.is-locked{filter:grayscale(1)}
+.composed-biome .trail-biome-fog{background:#253c2510}
+.trail-scenery{width:64px;height:64px}
+@media(max-height:500px) and (orientation:landscape){.trail-view-label{padding:3px 10px;flex-direction:row;justify-content:space-between}.trail-selection{padding:5px 10px;max-width:none;gap:8px}.trail-selection strong{font-size:12px}.trail-selection span{font-size:10px}.trail-selection small{font-size:9px}.trail-selection .forest-primary{min-height:36px}.trail-return{bottom:82px;min-height:38px;min-width:38px;padding:5px}}
