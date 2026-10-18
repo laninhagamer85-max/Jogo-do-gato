@@ -98,7 +98,9 @@ export default function PlatformAdventure({ state, initialMode = "adventure", so
   }, [audioMix]);
 
   useEffect(() => {
-    startPlatformMusic(forestMode ? "forest" : "adventure");
+    // Exploration owns its NPC/ambient/action buses; do not play shared music over them.
+    if (forestMode) stopPlatformMusic();
+    else startPlatformMusic("adventure");
   }, [forestMode]);
 
   useEffect(() => {
