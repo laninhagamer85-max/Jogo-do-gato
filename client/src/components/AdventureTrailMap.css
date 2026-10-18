@@ -14,3 +14,18 @@
 .adventure-trail .trail-return{background:linear-gradient(#a7763e,#594024);border-color:#dfba78}
 .adv-stage-prize img{width:34px;height:34px}.adv-stage-prize span{display:none}.trail-room-anchor.is-selected .adv-stage-prize span{display:block}
 @media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-map-frame{min-height:290px}.adventure-trail .trail-selection{min-height:54px}}
+
+/* Aventura keeps its blue/turquoise identity; gold marks only the current stage. */
+.adventure-trail .trail-view-label{background:#123e60eb;border-color:#92cdda;color:#effbff}
+.adventure-trail .trail-selection{background:linear-gradient(105deg,#123c56f2,#226277f2);border-color:#8bd6df;max-width:540px}
+.adventure-trail .trail-room-node{background:linear-gradient(#71d5e7,#17769c);border-color:#c0eff8;box-shadow:0 3px 0 #19516c,0 5px 9px #142e3b66,inset 0 0 0 2px #8cdeed}
+.adventure-trail .adv-stage-locked .trail-room-node{background:linear-gradient(#a5b1b4,#687b85);border-color:#d8e4e4}
+.adventure-trail .trail-room-anchor.is-current .trail-room-node{background:linear-gradient(#ffe282,#d9a037);border-color:#fff3b9}
+.adventure-trail .trail-return,.adventure-trail .trail-info-toggle{bottom:10px;background:linear-gradient(#327f99,#183f60);border-color:#a5e0eb;color:#f1fbff}
+.adventure-trail .trail-map-guide{color:#c2e3ed}.adv-selected-reward{width:34px;height:34px}
+.platform-adventure .pa-map-layout--trail .pa-entry-card{padding:8px 12px;gap:8px}
+.platform-adventure .pa-map-layout--trail .pa-entry-pet{width:55px!important;height:64px!important}
+.platform-adventure .pa-map-layout--trail .pa-entry-overview{grid-template-columns:55px minmax(0,1fr)}
+.platform-adventure .pa-map-layout--trail .pa-entry-details:not([open]){width:auto;flex:none;border:0}
+.platform-adventure .pa-map-layout--trail .pa-entry-details>summary{min-height:36px;padding:7px 2px}
+@media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-map-frame{min-height:240px}.adventure-trail .trail-return{bottom:10px}.adventure-trail .trail-selection{max-width:490px}.platform-adventure .pa-map-layout--trail .pa-entry-details{display:none}}

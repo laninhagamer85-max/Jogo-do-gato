@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_user_visual_review",
-  "active_run": "2026-10-18-illustrated-trail-pilot",
+  "status": "preparing_publication_for_browser_review",
+  "active_run": "2026-10-18-map-seams-compact-hud",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -12,15 +12,14 @@
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "f79dc56998a18d1c07a6063fb4a3e32983703670",
-    "implementation_base_github_commit": "307c1db0fb84b618ad9565168a2e8eba50f353f9",
-    "code_commit_status": "published"
+    "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
+    "code_commit_status": "preparing_publication"
   },
   "current_improvement": {
-    "id": "illustrated-trail-pilot",
-    "product_version": "1.14.3",
+    "id": "map-seams-compact-hud",
+    "product_version": "1.14.4",
     "implementation_status": "implemented",
-    "acceptance_status": "pending_user_device_review",
-    "scope": "Exploration chapters 1–2; Adventure worlds 1 and 6. Other eight Adventure worlds retain prior art."
+    "acceptance_status": "pending_post_publish_browser_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -35,11 +34,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "436 tests across 43 files passed; staging integration excluded (no credential)",
-    "build": "passed; existing large chunk warning; all 12 packaged asset hashes verified",
+    "offline_tests": "437 tests / 43 files passed; staging integration excluded",
+    "build": "passed; existing large-chunk warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Not performed; source geometry/SSR and static asset inspection only. User explicitly authorized publication for phone testing.",
+    "browser": "1.14.3 inspected live: Adventure and Exploration at 1363x936. Portrait assessed from owner screenshot; no viewport resize API available.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -63,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-illustrated-trail-pilot.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-map-seams-compact-hud.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -476,7 +475,7 @@
     "save_schema": "unchanged"
   },
   "prepared_revision": {
-    "product_version": "1.14.3",
-    "status": "published_for_user_testing"
+    "product_version": "1.14.4",
+    "status": "preparing_package"
   }
 }

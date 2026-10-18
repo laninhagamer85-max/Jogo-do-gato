@@ -28,3 +28,10 @@ it('positions every stage at its plate clearing without nonuniform scaling',()=>
  }
 });
 it('does not paint an extra connector over the integrated Exploration path',()=>{const html=renderToStaticMarkup(React.createElement(NaturalTrail,{layout:explorationTrailLayout(390,600,20),mode:'exploration',locked:()=>false}));expect(html).not.toContain('<path');expect(html).not.toContain('<pattern');});
+
+it('blends internal and chapter edges in both orientations without changing clearing positions',async()=>{
+ const {default:TrailSeams}=await import('../components/TrailSeams');
+ for(const vertical of [true,false]){const layout=explorationTrailLayout(vertical?390:844,vertical?600:220,20,vertical),before=JSON.stringify(layout.points),html=renderToStaticMarkup(React.createElement(TrailSeams,{layout,mode:'exploration',locked:(chapter:number)=>chapter===1}));
+  expect(html.match(/class="trail-seam/g)).toHaveLength(3);expect(html).toContain(vertical?'to bottom':'to right');expect(html).toContain('is-locked');expect(JSON.stringify(layout.points)).toBe(before);
+ }
+});

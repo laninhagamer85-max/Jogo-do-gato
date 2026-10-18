@@ -1,8 +1,9 @@
+import TrailSeams from "./TrailSeams";
 import TrailScenery from "./TrailScenery";
 import NaturalTrail from "./NaturalTrail";
 import {explorationMobFrame} from '@/game/explorationMobArt';
 import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
-import {Check,LockKeyhole,Play,RotateCcw,LocateFixed,Crown,ArrowUp,ArrowRight,Star} from 'lucide-react';
+import {Check,LockKeyhole,Play,RotateCcw,LocateFixed,Crown,ArrowUp,ArrowRight,Star,Info,X} from 'lucide-react';
 import {EXPLORATION_ROOMS,chapterName,roomInChapter,chapterNumber} from '@/game/explorationCampaign';
 import {explorationRoomStatus} from '@/game/explorationSelection';
 import {explorationTrailLayout,trailScrollTarget} from '@/game/explorationTrail';
@@ -13,13 +14,14 @@ export default function ExplorationCampaignMap({state,onContinue,onReplay,petIma
  const currentIndex=state.completed?Math.min(EXPLORATION_ROOMS.length-1,state.roomIndex+1):state.roomIndex;
  const [selected,setSelected]=useState(currentIndex),[viewedChapter,setViewedChapter]=useState(Math.floor(currentIndex/10));
  const [size,setSize]=useState({width:390,height:600,vertical:true}),viewport=useRef<HTMLDivElement>(null),drag=useRef<{id:number;x:number;y:number;left:number;top:number}|null>(null);
+ const [inspecting,setInspecting]=useState(false);
  const layout=useMemo(()=>explorationTrailLayout(size.width,size.height,EXPLORATION_ROOMS.length,size.vertical),[size.width,size.height,size.vertical]);
  const selectedRoom=EXPLORATION_ROOMS[selected],selectedStatus=explorationRoomStatus(state,selected),finished=state.completedRooms.length===EXPLORATION_ROOMS.length;
  function center(index:number,smooth=false){const el=viewport.current;if(!el)return;const target=trailScrollTarget(layout.points[index],layout,size);el.scrollTo({...target,behavior:smooth&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});}
  useEffect(()=>{const el=viewport.current;if(!el)return;const resize=()=>{const box=el.getBoundingClientRect();setSize({width:Math.max(300,box.width),height:Math.max(160,box.height),vertical:window.innerHeight>=window.innerWidth});};const observer=new ResizeObserver(resize);observer.observe(el);window.addEventListener('resize',resize);resize();return()=>{observer.disconnect();window.removeEventListener('resize',resize);};},[]);
  useEffect(()=>{center(currentIndex);},[layout,currentIndex]);
  useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(event:WheelEvent)=>{if(Math.abs(event.deltaX)>Math.abs(event.deltaY))return;const before=el.scrollLeft;el.scrollLeft+=event.deltaY;if(el.scrollLeft!==before)event.preventDefault();};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
- function select(index:number){if(explorationRoomStatus(state,index)==='locked')return;setSelected(index);}
+ function select(index:number){if(explorationRoomStatus(state,index)==='locked')return;setSelected(index);setInspecting(true);}
  function enter(){if(selectedStatus==='completed')onReplay(selected);else if(selectedStatus==='current')onContinue();}
  let partial=false;try{partial=Boolean(state.roomAttempts[selected]&&!JSON.parse(state.roomAttempts[selected]).completed);}catch{/* Invalid attempt is safely restarted by the engine. */}
  const chapterLocked=Array.from({length:10},(_,i)=>viewedChapter*10+i).filter(i=>i<EXPLORATION_ROOMS.length).every(i=>explorationRoomStatus(state,i)==='locked');
@@ -33,6 +35,7 @@ export default function ExplorationCampaignMap({state,onContinue,onReplay,petIma
     onPointerUp={()=>{drag.current=null;}} onPointerCancel={()=>{drag.current=null;}}>
     <div className="trail-world" style={{width:layout.width,height:layout.height}}>
      {Array.from({length:layout.chapters},(_,chapter)=><TrailScenery mode="exploration" key={chapter} layout={layout} chapter={chapter} locked={EXPLORATION_ROOMS.slice(chapter*10,chapter*10+10).every(r=>explorationRoomStatus(state,r.index)==='locked')} active={Math.abs(chapter-viewedChapter)<=1} src={`/forest-adventure/trail-${chapter===0?'forest':'river'}-v1.webp`}/>)}
+     <TrailSeams layout={layout} mode="exploration" locked={chapter=>EXPLORATION_ROOMS.slice(chapter*10,chapter*10+10).every(r=>explorationRoomStatus(state,r.index)==='locked')}/>
      <NaturalTrail layout={layout} mode="exploration" locked={chapter=>EXPLORATION_ROOMS.slice(chapter*10,chapter*10+10).every(r=>explorationRoomStatus(state,r.index)==='locked')}/>
 
      {Array.from({length:layout.chapters},(_,chapter)=>[1,6].map((stage,j)=>{const room=chapter*10+stage,p=layout.points[room],side=j%2===0?-1:1,locked=explorationRoomStatus(state,chapter*10)==='locked';const style:CSSProperties=layout.vertical?{left:Math.max(40,Math.min(layout.width-40,p.x+side*100)),top:p.y+48}:{left:p.x+57,top:Math.max(38,Math.min(layout.height-38,p.y+side*90))};return <span key={`${chapter}-${stage}`} aria-hidden="true" className={`trail-scenery ${locked?'is-locked':''}`} style={style}>{(()=>{const art=chapter===0?'forest-mobs':'river-mobs',rect=explorationMobFrame(art,j%3,0,1448,1086);return <svg className="trail-npc" width={rect.width} height={rect.height} style={{height:'auto'}} viewBox={`${rect.x} ${rect.y} ${rect.width} ${rect.height}`} preserveAspectRatio="xMidYMax meet" overflow="hidden"><image href={`/forest-adventure/${art}-v1.webp`} width="1448" height="1086"/></svg>;})()}</span>;}))}
@@ -47,9 +50,10 @@ export default function ExplorationCampaignMap({state,onContinue,onReplay,petIma
 
     </div>
    </div>
-   <button type="button" className="trail-return" onClick={()=>{setSelected(currentIndex);center(currentIndex,true);}} aria-label="Voltar ao meu progresso"><LocateFixed size={23}/><span>Meu progresso</span></button>
-   <footer className="trail-selection" aria-live="polite"><div><small>CAPÍTULO {chapterNumber(selected)}</small><strong>Sala {selected+1} · {selectedRoom.title}</strong><span>{selectedStatus==='completed'?partial?'Repetição salva · retome de onde parou':state.roomStars?.[selected]?`Melhor resultado: ${state.roomStars[selected]}/3 estrelas`:'Sem avaliação · jogue novamente para ganhar estrelas':'Sua próxima etapa'}</span></div><button type="button" className="forest-primary" onClick={enter}>{selectedStatus==='completed'?<RotateCcw size={17}/>:<Play size={17}/>} {selectedStatus==='completed'?partial?'Retomar repetição':'Jogar novamente':'Continuar'}</button></footer>
+   <button type="button" className="trail-return" onClick={()=>{setSelected(currentIndex);setInspecting(false);center(currentIndex,true);}} aria-label="Voltar ao meu progresso"><LocateFixed size={23}/><span>Meu progresso</span></button>
+   <button type="button" className="trail-info-toggle" hidden={inspecting} aria-label="Ver detalhes da sala selecionada" aria-expanded={inspecting} onClick={()=>setInspecting(true)}><Info size={21}/></button>
+   <footer className="trail-selection" hidden={!inspecting} aria-live="polite"><button type="button" className="trail-selection-close" aria-label="Fechar detalhes da sala" onClick={()=>setInspecting(false)}><X size={17}/></button><div><small>CAPÍTULO {chapterNumber(selected)}</small><strong>Sala {selected+1} · {selectedRoom.title}</strong><span>{selectedStatus==='completed'?partial?'Repetição salva · retome de onde parou':state.roomStars?.[selected]?`Melhor resultado: ${state.roomStars[selected]}/3 estrelas`:'Sem avaliação · jogue novamente para ganhar estrelas':'Sua próxima etapa'}</span></div><button type="button" className="forest-primary" onClick={enter}>{selectedStatus==='completed'?<RotateCcw size={17}/>:<Play size={17}/>} {selectedStatus==='completed'?partial?'Retomar repetição':'Jogar novamente':'Continuar'}</button></footer>
   </div>
-  <p className="trail-stars-help">Estrelas: concluir · sem derrotas · sem derrotas e dano de até 25% da vida máxima. Vale seu melhor resultado.</p><p className="trail-map-help">{layout.vertical?<ArrowUp size={14}/>:<ArrowRight size={14}/>}{layout.vertical?'Avance para cima':'Avance para a direita'} pela trilha para conhecer os próximos biomas. As áreas bloqueadas ganham cor ao avançar.</p>
+  <details className="trail-map-guide"><summary>Como funciona a exploração</summary><p className="trail-stars-help">Estrelas: concluir · sem derrotas · sem derrotas e dano de até 25% da vida máxima. Vale seu melhor resultado.</p><p className="trail-map-help">{layout.vertical?<ArrowUp size={14}/>:<ArrowRight size={14}/>}{layout.vertical?'Avance para cima':'Avance para a direita'} pela trilha para conhecer os próximos biomas. As áreas bloqueadas ganham cor ao avançar.</p><p>Explore biomas, supere desafios e encontre itens raros. Cada portal abre o próximo trecho da sua jornada.</p></details>
  </section>;
 }
