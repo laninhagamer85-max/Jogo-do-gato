@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_user_visual_test",
+  "status": "published_pending_user_visual_review",
   "active_run": "2026-10-18-illustrated-trail-pilot",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,9 +11,9 @@
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "9470199b32323054b67d1f2a362250a029644d43",
+    "code_commit": "f79dc56998a18d1c07a6063fb4a3e32983703670",
     "implementation_base_github_commit": "307c1db0fb84b618ad9565168a2e8eba50f353f9",
-    "code_commit_status": "preparing_publication"
+    "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "illustrated-trail-pilot",
@@ -25,13 +25,13 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.2",
-    "last_observed_version": 68,
+    "product_version": "1.14.3",
+    "last_observed_version": 69,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bba603b4a4c0819188e39e9fde1936dc",
-    "deployment_id": "appgdep_6ad43d18e1c081918bc2d62570aa5134",
-    "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
-    "attempted_in_this_cycle": false
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_3f197a3889c88191a10efcb134233f7d",
+    "deployment_id": "appgdep_6ad44550b638819180db7141fce6eb44",
+    "site_commit": "09949f2ebd91e39bc692dbc370ecb382ed88c69f",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -58,10 +58,10 @@
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.9.25",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_38326b2e9d008191b7973c7ab8c56764",
-    "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
-    "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
+    "product_version": "1.14.2",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bba603b4a4c0819188e39e9fde1936dc",
+    "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
+    "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-18-illustrated-trail-pilot.md",
   "source_reconciliation": {
@@ -477,6 +477,6 @@
   },
   "prepared_revision": {
     "product_version": "1.14.3",
-    "status": "preparing_package"
+    "status": "published_for_user_testing"
   }
 }
