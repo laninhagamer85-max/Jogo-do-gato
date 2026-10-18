@@ -15,4 +15,4 @@ export function trailArtKind(mode:TrailMode,chapter:number):TrailArtKind|undefin
  return chapter===0?'home':chapter===5?'forest':undefined;
 }
 export function trailArtAnchors(mode:TrailMode,chapter:number,segment:number,vertical:boolean):readonly (readonly [number,number])[]{const kind=trailArtKind(mode,chapter);return kind?anchors[kind][vertical?'portrait':'landscape'][segment]:TRAIL_ART_ANCHORS[vertical?'portrait':'landscape'];}
-export function trailArtSource(kind:TrailArtKind,vertical:boolean,variant:number){return `/forest-adventure/map-${kind}-${vertical?'portrait':'landscape'}-${variant?'b':'a'}-v2.webp`;}
+export function trailArtSource(kind:TrailArtKind,vertical:boolean,variant:number){return `/forest-adventure/map-${kind}-${vertical?'portrait':'landscape'}-${variant?'b':'a'}-${kind==='home'?'v2':'clean-v3'}.webp`;}

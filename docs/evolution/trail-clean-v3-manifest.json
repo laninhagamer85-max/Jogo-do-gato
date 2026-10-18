@@ -1,0 +1,90 @@
+[
+  {
+    "key": "forest-portrait-a",
+    "path": "client/public/forest-adventure/map-forest-portrait-a-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "fe210d288f0b10ad70a83e6cc2d26faa4a30e9463620c1f2514247809cb9e840",
+    "original": "client/public/forest-adventure/map-forest-portrait-a-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "forest-portrait-b",
+    "path": "client/public/forest-adventure/map-forest-portrait-b-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "a141bae80ce9397358455beb2cc4f5b30bfa621440bd2eba6e4e70fd6e8eb868",
+    "original": "client/public/forest-adventure/map-forest-portrait-b-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "forest-landscape-a",
+    "path": "client/public/forest-adventure/map-forest-landscape-a-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "62a63abdd7a240b89c6a2d2325bef52db3ba752f124bba3d94c5a29da09ec57d",
+    "original": "client/public/forest-adventure/map-forest-landscape-a-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "forest-landscape-b",
+    "path": "client/public/forest-adventure/map-forest-landscape-b-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "d2370fe71e20969afd562f8105b3be5f92b1e0824b720075fd77e65e54284ca8",
+    "original": "client/public/forest-adventure/map-forest-landscape-b-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "river-portrait-a",
+    "path": "client/public/forest-adventure/map-river-portrait-a-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "28b187fba1dbb8286b54f1ec0b5376979d89cd169bd4d2e4288117bbddc8b9be",
+    "original": "client/public/forest-adventure/map-river-portrait-a-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "river-portrait-b",
+    "path": "client/public/forest-adventure/map-river-portrait-b-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "7384d0ed72b95546e357e8926df0177f9b82386f4b0a60252df3538d4152f2d2",
+    "original": "client/public/forest-adventure/map-river-portrait-b-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "river-landscape-a",
+    "path": "client/public/forest-adventure/map-river-landscape-a-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "9f91e13c94f607a3c068ace5aa824f71da54c76292cfc77da2dfa837f1bd986e",
+    "original": "client/public/forest-adventure/map-river-landscape-a-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  },
+  {
+    "key": "river-landscape-b",
+    "path": "client/public/forest-adventure/map-river-landscape-b-clean-v3.webp",
+    "source": "original artwork edited with built-in imagegen",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "9f73fd67123329c03a104a4256333221cf935b009f1ffb73602076653eb93e9d",
+    "original": "client/public/forest-adventure/map-river-landscape-b-v2.webp",
+    "path_anchors": "unchanged trailArt.ts anchors; route and clearing positions visually compared",
+    "change": "reduced flowers, stones and repeated plant detail; calm grass groups"
+  }
+]

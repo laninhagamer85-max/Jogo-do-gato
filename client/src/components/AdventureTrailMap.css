@@ -97,3 +97,8 @@
 }
 
 .adv-illustrated-map .trail-stars{top:38px}
+.adv-illustrated-map .trail-room-node>span:not(.trail-stars){line-height:19px;transform:none}
+.adv-illustrated-map .trail-node-kind{font-size:7px;line-height:8px}
+.adv-illustrated-map .trail-challenge-badge{width:18px;height:18px;top:-7px;left:-7px;background:#1d5267}
+.adv-illustrated-map .trail-challenge-badge svg{width:11px;height:11px}
+.adv-world-passages{pointer-events:none}

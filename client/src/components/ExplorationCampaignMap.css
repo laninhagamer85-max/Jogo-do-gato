@@ -76,3 +76,22 @@
 @media(max-width:600px){.trail-view-label strong{font-size:11px}.trail-view-label{max-width:calc(100% - 28px);padding:5px 8px}.trail-selection{min-height:58px;padding:7px 36px 7px 9px}.trail-selection .forest-primary{font-size:11px;padding:6px 9px;max-width:134px}.trail-selection strong{font-size:12px}.trail-selection-close{right:2px;width:30px}.forest-adventure-map--trail .forest-adventure-intro h1{font-size:21px}.forest-adventure-map--trail .forest-adventure-pet-chip small{display:none}}
 @media(max-height:500px) and (orientation:landscape){.trail-map-frame,.forest-adventure-map--trail .trail-map-frame{min-height:240px}.trail-viewport{min-height:0;height:100%}.trail-view-label{top:6px;left:8px;padding:4px 8px}.trail-selection{min-height:52px;max-width:470px}.trail-map-guide{display:none}}
 @media(max-height:500px) and (orientation:landscape){.forest-adventure-map--trail .trail-map-frame{height:calc(100dvh - 150px);min-height:200px;flex:none}.forest-adventure-map--trail .trail-map-heading h2{font-size:16px}.forest-adventure-map--trail .trail-map-heading span{font-size:10px}}
+/* Persistent, compact meaning on every stop; full objective remains in its preview. */
+.trail-node-kind{display:block;font:700 8px/9px 'Trebuchet MS',sans-serif;font-style:normal;letter-spacing:.05em;color:#f6eccb;text-shadow:none}
+.trail-room-node>span:not(.trail-stars){transform:none;line-height:22px}
+.trail-challenge-badge{position:absolute;top:-7px;left:-6px;display:grid;place-items:center;width:20px;height:20px;border:1px solid #e8d9b3;border-radius:50%;background:#244a3f;color:#fff4cc;font-style:normal;box-shadow:0 2px 3px #17342955}
+.trail-room-caption{position:absolute;width:70px;padding:3px 5px;border:1px solid #e5d3a855;border-radius:8px;background:#233e30eb;color:#fff6df;font:700 10px/12px 'Trebuchet MS',sans-serif;text-align:center;pointer-events:none;box-shadow:0 2px 5px #172c2455}
+.trail-room-caption small{display:block;font-size:8px;font-weight:400;line-height:10px;color:#e0e5cd}
+.exploration-campaign-map .trail-master-caption{display:none}
+.exploration-campaign-map .trail-room-anchor.is-locked .trail-room-node{background:#7c887c;border-color:#cad4bf;filter:saturate(.2)}
+.exploration-campaign-map .trail-room-anchor.is-locked .trail-challenge-badge{background:#4f6054}
+.exploration-campaign-map .trail-selection{max-width:650px}
+.exploration-campaign-map .trail-selection small,.exploration-campaign-map .trail-selection span{display:block;font-size:10px;line-height:1.3;margin-top:3px}
+.exploration-campaign-map .trail-selection .trail-objective{color:#fff4da}
+.exploration-campaign-map .trail-selection .forest-primary:disabled{opacity:.65;cursor:not-allowed}
+.exploration-campaign-map .trail-painted-junction{filter:saturate(.65) contrast(.88)}
+.exploration-campaign-map .trail-painted-junction.is-locked{filter:grayscale(.98) contrast(.88)}
+@media(max-height:500px) and (orientation:landscape){.exploration-campaign-map .trail-selection{max-width:650px}.exploration-campaign-map .trail-room-caption{width:60px;font-size:9px;padding:2px 3px}}
+.exploration-campaign-map .trail-current-pet{width:38px;height:46px;left:-19px;top:-80px}
+.exploration-campaign-map .trail-room-node>span:not(.trail-stars){transform:translateY(-9px)}
+@media(max-height:500px) and (orientation:landscape){.exploration-campaign-map .trail-room-node>span:not(.trail-stars){font-size:20px;line-height:20px}.exploration-campaign-map .trail-node-kind{font-size:7px;line-height:7px}}
