@@ -18,3 +18,6 @@ TypeScript passou. 432 testes offline em 42 arquivos passaram, incluindo geometr
 Build passou com aviso já existente de chunks grandes. Nenhuma fase jogada neste ciclo. Sem teste visual de navegador ou medição de FPS. Não chamar SSR/checagem matemática de teste visual. Conforme a skill de evolução, não publicar até a inspeção real em navegador suportado.
 
 Rollback: produção 1.14.1, Sites 67, commit 26a8ca219529a6f6f0883cf60f70c637eff57979; nenhum deploy neste ciclo. GitHub base b050d558d03a0e55440e53098329c443bf39dba4, ramo review/grass-option3-20261016. Não restaurar produção antiga sobre trabalho posterior de outro colaborador.
+
+## Revisão salva
+GitHub implementação: c41b052abe0f6fab1b7228df0ccf4d91dedcbf0d. Sites 68 salva sem deploy: appgprj_6ac40994d8d881919d46203a60801e46~appgver_bba603b4a4c0819188e39e9fde1936dc; source 81784cf2e0b6920a40c5c770bc5e9680cf675f01. Produção permanece 1.14.1.

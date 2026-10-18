@@ -11,7 +11,7 @@
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "9470199b32323054b67d1f2a362250a029644d43",
+    "code_commit": "c41b052abe0f6fab1b7228df0ccf4d91dedcbf0d",
     "implementation_base_github_commit": "b050d558d03a0e55440e53098329c443bf39dba4",
     "code_commit_status": "awaiting_visual_validation"
   },
@@ -475,5 +475,13 @@
     "materials": "originalgeneratedstone/forest/riverWebP, roughorganicedge, sparsepebbles/grass",
     "background": "newhome-to-gardenfirstAdventureworld",
     "save_schema": "unchanged"
+  },
+  "prepared_revision": {
+    "product_version": "1.14.2",
+    "status": "saved_not_deployed",
+    "sites_version": 68,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bba603b4a4c0819188e39e9fde1936dc",
+    "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
+    "github_commit": "c41b052abe0f6fab1b7228df0ccf4d91dedcbf0d"
   }
 }
