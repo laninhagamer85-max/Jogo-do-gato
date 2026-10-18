@@ -37,3 +37,9 @@ Validation completed before publication: TypeScript passed;484tests in39gamefile
 Initial1.17.0 deployment succeeded Sites81 source9fd2d98d21c8a16e88aebf3a6ba716fbd439faab, deployment appgdep_6ad50eb732848191a262c8b1457b7a5d. Cloud390×844/844×390: settings opened native modal with independent55/18/72 sliders; NPC slider keyboard changed; bestiary displayed master800HP and true rare/card rewards; room30 manual rendered collision/water/goal map with blocked preview; room21 loaded sprite/ground and power spent25energy.
 
 Found inherited map title used40%viewport focal position while horizontal recenter used50%, causing room21 to show chapter2 title. Followup uses same focal point as recentering and tests chapters1/2/3 in both orientations. Isolated test page header height now flexes, preserving available canvas/map height instead of fixed70px subtraction. Hazard warning footprint changed from visual ellipse to circular area matching collision geometry. Product1.17.1. No room anchors/backgrounds or actual campaign saves moved.
+
+## Final isolated-lab correction1.17.2
+
+Sites82 succeeded, sourcec50de3f25be6f90292fd4f53115a9f5272df4a6f, deployment appgdep_6ad50ffa0e588191a2d4107d08d0be71. Browser confirmed corrected Chapter3 heading. A test-lab-only nested flex/min-height feedback enlarged its embedded map viewport; normal campaign map was unaffected. Removed that redundant map from the lab: it now launches room21 directly, dropdown chooses21–30, exit opens a simple resume panel. Normal game remains the campaign/trail entry point. Header/canvas use a definite two-row grid. Browser main account check still room1,0/30 completed and350coins; no lab rewards reached the account.
+
+1.17.1 typecheck,48 focused tests and build19.20s passed. Final1.17.2 typecheck and production build also passed before publication. Full engine suite484/39files passed for chapter release; no new gameplay change in lab-only fix.
