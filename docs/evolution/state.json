@@ -11,9 +11,9 @@
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
     "source_site_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "9ef9215a3b042b367f153a4485122c9b2146f36e",
+    "code_commit": "aedc11d282f6f62e699b813fecf42973609a882f",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "followup_pending_commit_not_published"
+    "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
     "id": "adventure-own-worlds",
