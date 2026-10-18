@@ -1,12 +1,16 @@
 import type {CSSProperties} from 'react';
-import {trailChapterTop,type explorationTrailLayout} from '@/game/explorationTrail';
-import {trailArtKind,trailArtSource,type TrailMode} from '@/game/trailArt';
-/** Blend only the edge strips; plates, clearing anchors and their scale stay fixed. */
+import type {explorationTrailLayout} from '@/game/explorationTrail';
+import type {TrailMode} from '@/game/trailArt';
+import {trailJunctionFrame,trailJunctionSource} from '@/game/trailJunction';
+/** Original bridge/shore compositions connect regions; underlying plates and node anchors stay fixed. */
 export default function TrailSeams({layout,mode,locked}:{layout:ReturnType<typeof explorationTrailLayout>;mode:TrailMode;locked:(chapter:number)=>boolean}){
- const vertical=layout.vertical,blend=Math.min(56,layout.tileSpan*.08);
- return <>{Array.from({length:layout.chapters},(_,chapter)=>{const kind=trailArtKind(mode,chapter);if(!kind)return null;const start=trailChapterTop(layout,chapter);
-  return [0,...(chapter<layout.chapters-1?[1]:[])].map(join=>{const boundary=join?(vertical?start:start+layout.chapterSpan):start+layout.tileSpan;
-   const style:CSSProperties={...(vertical?{left:0,top:boundary-blend,width:layout.width,height:blend*2,backgroundSize:`${layout.width}px ${layout.tileSpan}px`,backgroundPosition:'center top'}:{left:boundary-blend,top:0,width:blend*2,height:layout.height,backgroundSize:`${layout.tileSpan}px ${layout.height}px`,backgroundPosition:'right center'}),backgroundImage:`url(${trailArtSource(kind,vertical,join)})`,maskImage:`linear-gradient(to ${vertical?'bottom':'right'},transparent,#000 48%,#000 52%,transparent)`};
-   return <div key={`${chapter}-${join}`} aria-hidden="true" className={`trail-seam ${locked(chapter)?'is-locked':''}`} style={style}/>;
-  });})}</>;
+ return <>{Array.from({length:layout.chapters},(_,chapter)=>[0,...(chapter<layout.chapters-1?[1]:[])].map(join=>{
+  const src=trailJunctionSource(mode,chapter,join,layout.vertical);if(!src)return null;
+  const frame=trailJunctionFrame(layout,chapter,join),radius=Math.min(38,Math.max(28,(layout.vertical?layout.width:layout.height)*.075));
+  const nearby=layout.points.filter(p=>p.x>=frame.left&&p.x<=frame.left+frame.width&&p.y>=frame.top&&p.y<=frame.top+frame.height);
+  const masks=nearby.map(p=>`radial-gradient(circle at ${p.x-frame.left}px ${p.y-frame.top}px,transparent ${radius}px,#000 ${radius+16}px)`);
+  masks.push(`linear-gradient(to ${layout.vertical?'bottom':'right'},transparent,#000 18%,#000 82%,transparent)`);
+  const style:CSSProperties={...frame,backgroundImage:`url(${src})`,backgroundSize:'100% 100%',backgroundPosition:'center',maskImage:masks.join(','),maskComposite:'intersect'};
+  return <div key={`${chapter}-${join}`} aria-hidden="true" className={`trail-seam trail-painted-junction ${locked(chapter)||(join===1&&locked(chapter+1))?'is-locked':''}`} style={style}/>;
+ }))}</>;
 }

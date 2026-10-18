@@ -35,3 +35,17 @@ it('blends internal and chapter edges in both orientations without changing clea
   expect(html.match(/class="trail-seam/g)).toHaveLength(3);expect(html).toContain(vertical?'to bottom':'to right');expect(html).toContain('is-locked');expect(JSON.stringify(layout.points)).toBe(before);
  }
 });
+
+it('uses painted junctions at the correct biome boundaries and preserves uniform asset scale',async()=>{
+ const {trailJunctionSource,trailJunctionFrame}=await import('./trailJunction');
+ expect(trailJunctionSource('exploration',0,1,true)).toContain('forest-river-portrait');expect(trailJunctionSource('adventure',0,0,false)).toContain('home-landscape');expect(trailJunctionSource('adventure',2,0,true)).toBeUndefined();
+ for(const vertical of [true,false]){const l=explorationTrailLayout(vertical?390:844,vertical?600:220,20,vertical),before=JSON.stringify(l.points);
+  for(const chapter of [0,1])for(const join of [0,1]){const f=trailJunctionFrame(l,chapter,join);expect(f.width/f.height).toBeCloseTo(vertical?3/2:2/3,6);expect(vertical?f.width:f.height).toBe(vertical?l.width:l.height);}
+  expect(JSON.stringify(l.points)).toBe(before);
+ }
+});
+it('ships eight original connector plates with verified content and reciprocal aspect ratios',()=>{
+ const manifest=JSON.parse(readFileSync('docs/evolution/trail-junctions-v1-manifest.json','utf8')) as {path:string;sha256:string;width:number;height:number;orientation:string}[];
+ expect(manifest).toHaveLength(8);expect(new Set(manifest.map(a=>a.sha256)).size).toBe(8);
+ for(const a of manifest){const bytes=readFileSync(a.path);expect(bytes.toString('ascii',8,12)).toBe('WEBP');expect(createHash('sha256').update(bytes).digest('hex')).toBe(a.sha256);expect(a.width/a.height).toBeCloseTo(a.orientation==='portrait'?3/2:2/3,6);}
+});

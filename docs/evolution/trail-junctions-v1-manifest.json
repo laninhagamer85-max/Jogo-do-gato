@@ -1,0 +1,90 @@
+[
+  {
+    "kind": "home",
+    "orientation": "portrait",
+    "source": "exec-0e61919b-cb6d-4b4e-a740-c85bc9e421b9.png",
+    "path": "client/public/forest-adventure/junction-home-portrait-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 590076,
+    "sha256": "1932bf413b77b80dd4d8a6cbd4d8418d59f0b501347b076e8a8cb498dbb3c7e5",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "home",
+    "orientation": "landscape",
+    "source": "exec-2f5313de-e647-4c02-9e31-c84ddfe90735.png",
+    "path": "client/public/forest-adventure/junction-home-landscape-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 582084,
+    "sha256": "f9fa22c947b438db741c9cf8bfd0dca09b22a803bde1b4cf7c3f210656c49338",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "forest",
+    "orientation": "portrait",
+    "source": "exec-a560634b-b2be-4e88-9bae-67436cb1f3bd.png",
+    "path": "client/public/forest-adventure/junction-forest-portrait-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 625634,
+    "sha256": "57ddba192bd370aeffb1dab39b527e89675ba01d93c951e79186e76e86dc2a3a",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "forest",
+    "orientation": "landscape",
+    "source": "exec-7a2e90a6-f663-4282-ba00-5c494516ef4f.png",
+    "path": "client/public/forest-adventure/junction-forest-landscape-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 587982,
+    "sha256": "310e4f40407db6cbc5730fc28a93cb805354052aa82a498ae6ea2d76e42e89b1",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "river",
+    "orientation": "portrait",
+    "source": "exec-33c938ff-3841-4a5a-a8f2-59bf0eef7c92.png",
+    "path": "client/public/forest-adventure/junction-river-portrait-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 635440,
+    "sha256": "8849759b236c5a642f574c1648907ac68e0b227db33a8135f03f9a32568b83cd",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "river",
+    "orientation": "landscape",
+    "source": "exec-b2d83612-89cd-48fb-b22b-39c9a66a7906.png",
+    "path": "client/public/forest-adventure/junction-river-landscape-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 674528,
+    "sha256": "44d5af61eb17a27354571efd30364d138408872e8ad77f865063bd161a294509",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "forest-river",
+    "orientation": "portrait",
+    "source": "exec-de266014-37d2-430a-ab53-6a8147acd33e.png",
+    "path": "client/public/forest-adventure/junction-forest-river-portrait-v1.webp",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 627564,
+    "sha256": "f29e2d2e2704769a2b50009f0d236275721c0e2e6bdcec8dcd89c2b99e695195",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  },
+  {
+    "kind": "forest-river",
+    "orientation": "landscape",
+    "source": "exec-ba7f784e-7075-4c68-8b1d-aef178857807.png",
+    "path": "client/public/forest-adventure/junction-forest-river-landscape-v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 627534,
+    "sha256": "0edd8024e9550affa3e28aaa309c3fbce839bb3b8463e25c638b2853dfd8e8b7",
+    "origin": "Original built-in imagegen. Own scene references and third-party reference for composition only; no third-party assets incorporated."
+  }
+]

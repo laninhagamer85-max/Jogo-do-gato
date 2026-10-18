@@ -29,3 +29,13 @@
 .platform-adventure .pa-map-layout--trail .pa-entry-details:not([open]){width:auto;flex:none;border:0}
 .platform-adventure .pa-map-layout--trail .pa-entry-details>summary{min-height:36px;padding:7px 2px}
 @media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-map-frame{min-height:240px}.adventure-trail .trail-return{bottom:10px}.adventure-trail .trail-selection{max-width:490px}.platform-adventure .pa-map-layout--trail .pa-entry-details{display:none}}
+/* Keep the entry card and map within a short phone landscape viewport. */
+@media(max-height:500px) and (orientation:landscape){
+ .platform-adventure:has(.pa-map-layout--trail){overflow-y:auto}
+ .platform-adventure .pa-map-layout.pa-map-layout--trail{padding:6px 10px;gap:6px}
+ .platform-adventure .pa-map-layout--trail .pa-entry-pet{width:42px!important;height:48px!important}
+ .platform-adventure .pa-map-layout--trail .pa-entry-overview{grid-template-columns:42px minmax(0,1fr)}
+ .platform-adventure .pa-map-layout--trail .pa-entry-intro h1{font-size:19px}
+ .adventure-trail .trail-map-heading h2{font-size:16px}.adventure-trail .trail-map-heading span{font-size:10px}
+ .adventure-trail .trail-map-frame{height:calc(100dvh - 160px);min-height:200px}
+}

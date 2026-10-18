@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_portrait_device_review",
-  "active_run": "2026-10-18-map-seams-compact-hud",
+  "status": "preparing_publication_for_viewport_checks",
+  "active_run": "2026-10-18-illustrated-map-junctions",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,10 +16,10 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "map-seams-compact-hud",
-    "product_version": "1.14.4",
+    "id": "illustrated-map-junctions",
+    "product_version": "1.14.5",
     "implementation_status": "implemented",
-    "acceptance_status": "pending_post_publish_browser_review"
+    "acceptance_status": "pending_responsive_browser_check"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -34,11 +34,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "437 tests / 43 files passed; staging integration excluded",
-    "build": "passed; existing large-chunk warning",
+    "offline_tests": "440 tests / 43 files passed; Firebase staging integration excluded",
+    "build": "passed; all 20 map assets in package verified by SHA256; QA page present",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Live authenticated Adventure and Exploration landscape 1363x936 inspected before/after; overlay open/close and locked reward preview verified. Portrait assessed only from owner screenshot; no viewport resize API.",
+    "browser": "1.14.4 live landscape checked; 1.14.5 viewport QA pending",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -62,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-map-seams-compact-hud.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-illustrated-map-junctions.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -475,7 +475,7 @@
     "save_schema": "unchanged"
   },
   "prepared_revision": {
-    "product_version": "1.14.4",
-    "status": "published"
+    "product_version": "1.14.5",
+    "status": "preparing_package"
   }
 }
