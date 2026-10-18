@@ -8,4 +8,8 @@ As coordenadas e numeração das100fases não mudam;100prêmios e10mascotes cont
 
 Pesquisa18/10/2026: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/mask-image — máscaras graduais sem recortar por cover; https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/preserveAspectRatio — SVG dimensionado em coordenadas equivalentes à área real. Nenhum asset externo incorporado.
 
-TypeScript passou;20testes de mapas passaram antes do ajuste final de continuidade nas bordas. Verificação final/build pendentes. Necessária inspeção visual real antes de publicação segundo skill evoluir-meu-pet-virtual. SITES_MANAGED_LINUX_CONTAINER=1 e control-browser não disponível: não iniciar servidor alternativo ou contornar preview. Não publicar até validação. Produção permanece1.14.6/Sites72. Rollback fonte82bfe6a17622f7bf7c85487b5447b15d498d54c0, GitHubbase d9d8586d52ce3ed46bd349f774b55de802e57c81.
+Verificação final: TypeScript,20testes de mapas/3arquivos e build passaram após ajuste de continuidade nas bordas. Aviso de chunks grandes já existente. Necessária inspeção visual real antes de publicação segundo skill evoluir-meu-pet-virtual. SITES_MANAGED_LINUX_CONTAINER=1 e control-browser não disponível: não iniciar servidor alternativo ou contornar preview. Não publicar até validação. Produção permanece1.14.6/Sites72. Rollback fonte82bfe6a17622f7bf7c85487b5447b15d498d54c0, GitHubbase d9d8586d52ce3ed46bd349f774b55de802e57c81.
+
+GitHub implementação:9ef9215a3b042b367f153a4485122c9b2146f36e. Fonte Sites:1aa3ed665eb20b4ee27f38b7e1c86fe383afd303. Não publicar: preview suportado indisponível e verificação visual pendente.
+
+Salva Sites73 (sem deploy):appgprj_6ac40994d8d881919d46203a60801e46~appgver_b13541c710d881919c0383407264fb9f. Produção continua1.14.6/Sites72.

@@ -11,7 +11,7 @@
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "7d834e51df2e082f1b235479661dbcc6fcb450ff",
+    "code_commit": "9ef9215a3b042b367f153a4485122c9b2146f36e",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
@@ -477,5 +477,14 @@
   "prepared_revision": {
     "product_version": "1.14.5",
     "status": "preparing_package"
+  },
+  "review_version": {
+    "product_version": "1.14.7",
+    "site_version_number": 73,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b13541c710d881919c0383407264fb9f",
+    "source_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
+    "status": "saved_not_deployed",
+    "checks": "TypeScript, 20 map tests and build passed",
+    "browser": "pending supported preview"
   }
 }
