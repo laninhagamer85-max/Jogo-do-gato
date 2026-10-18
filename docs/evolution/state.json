@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_awaiting_supported_preview",
+  "status": "published_for_user_testing",
   "active_run": "2026-10-18",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -18,19 +18,18 @@
   "current_improvement": {
     "id": "adventure-own-worlds",
     "product_version": "1.14.7",
-    "implementation_status": "followup_implemented_awaiting_browser",
-    "acceptance_status": "pending_supported_browser_preview",
-    "followup": "preserve_browser_zoom_on_horizontal_map"
+    "implementation_status": "published",
+    "acceptance_status": "user_testing"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.6",
-    "last_observed_version": 72,
+    "product_version": "1.14.7",
+    "last_observed_version": 73,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_872277fc8c98819192ee48752d5f7408",
-    "deployment_id": "appgdep_6ad45083c1bc8191ab5a2decd85ce6a9",
-    "site_commit": "82bfe6a17622f7bf7c85487b5447b15d498d54c0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b13541c710d881919c0383407264fb9f",
+    "deployment_id": "appgdep_6ad4bbf264c08191bc0fdf22f179ef4c",
+    "site_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
     "attempted_in_this_cycle": false
   },
   "verification": {
@@ -39,7 +38,7 @@
     "build": "passed; existing chunk size warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Not run in this cycle: control-browser unavailable",
+    "browser": "1.14.7 live browser selector checks: 844x390 and 390x844; ten own-world scenery elements; Adventure frame230px horizontal; portrait document width390=scrollWidth390. No physical phone, touch or FPS validation.",
     "viewports": {
       "375x667": "not_tested_this_cycle",
       "375x812": "not_tested_this_cycle",
@@ -57,9 +56,8 @@
     "Required supported preview/browser unavailable; no publication without validation in this cycle."
   ],
   "next_actions": [
-    "Reconcile latest GitHub/Sites, include wheel follow-up in candidate; do not deploy old Sites73 as if it contains the fix.",
-    "Inspect five viewports, rotate, Ctrl-wheel/trackpad zoom, map boundaries and both module identities with isolated profile.",
-    "Publish only after required visual/input checks pass."
+    "David tests published Adventure composition and progression on physical phone.",
+    "Refine scene-image edges and transitions after visual feedback; not certified final art."
   ],
   "rollback": {
     "production_changed": true,
@@ -489,7 +487,7 @@
     "site_version_number": 73,
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b13541c710d881919c0383407264fb9f",
     "source_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
-    "status": "saved_not_deployed",
+    "status": "deployed_after_explicit_user_request",
     "checks": "TypeScript, 20 map tests and build passed",
     "browser": "pending supported preview"
   },

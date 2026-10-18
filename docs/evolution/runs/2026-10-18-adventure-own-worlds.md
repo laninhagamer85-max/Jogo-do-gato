@@ -13,3 +13,7 @@ Verificação final: TypeScript,20testes de mapas/3arquivos e build passaram ap�
 GitHub implementação:9ef9215a3b042b367f153a4485122c9b2146f36e. Fonte Sites:1aa3ed665eb20b4ee27f38b7e1c86fe383afd303. Não publicar: preview suportado indisponível e verificação visual pendente.
 
 Salva Sites73 (sem deploy):appgprj_6ac40994d8d881919d46203a60801e46~appgver_b13541c710d881919c0383407264fb9f. Produção continua1.14.6/Sites72.
+
+## Publicação autorizada para teste — 18/10/2026 09:31 BRT
+Usuário pediu explicitamente publicar mesmo com validação prévia pendente. Publicada a versão já salva Sites73, sem rebuild nem mudanças de fonte. Deployment appgdep_6ad4bbf264c08191bc0fdf22f179ef4c succeeded em2026-10-18T12:31:04Z. URL https://meupet.aquimeusite.chatgpt.site . Fonte1aa3ed665eb20b4ee27f38b7e1c86fe383afd303.
+Após publicação inspecionados844×390 e390×844 em iframe same-origin real. Dez .adv-world-scenery; altura horizontal230px estável, portraitsemoverflow390=390. Arte original da casa observada, sem mapa de floresta neste mundo. Ainda há limites perceptíveis no fundo e junção escura entre mundos; não alegar acabamento final ou ausência total de bugs. Provas meupet-1147-horizontal-publicada.jpg / meupet-1147-vertical-publicada.jpg. Nenhuma fase jogada, nenhum save real desbloqueado; localNino criado nesta sessão de teste. Produção anterior1.14.6/Sites72 é rollback.
