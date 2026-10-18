@@ -17,3 +17,5 @@
 .trail-room-node>span:not(.trail-stars){transform:translateY(-6px)}
 
 .trail-room-node>small{top:-7px;bottom:auto;right:-7px}
+
+.natural-trail{position:absolute;inset:0;pointer-events:none;overflow:visible}.natural-trail-locked{filter:grayscale(1);opacity:.75}.trail-viewport.is-vertical{overflow-x:hidden;overflow-y:auto;touch-action:pan-y}.trail-biome.is-vertical img{object-position:center}.trail-world{overflow:hidden}

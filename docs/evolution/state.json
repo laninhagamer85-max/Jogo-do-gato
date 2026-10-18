@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-17",
   "timezone": "America/Sao_Paulo",
-  "status": "published_pending_phone_test",
-  "active_run": "2026-10-17-adventure-continuous-trail",
+  "status": "implemented_checks_passed_pending_publication",
+  "active_run": "2026-10-17-upward-natural-trails",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,28 +16,28 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "adventure-trail-real-rewards-continuous-numbering",
+    "id": "upward-textured-natural-trails",
     "implementation_status": "implemented",
-    "acceptance_status": "pending_visual_phone_test"
+    "acceptance_status": "pending_device_visual_review"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.0",
-    "last_observed_version": 66,
+    "product_version": "1.13.2",
+    "last_observed_version": 65,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_75ac17b6a1e081919e943f0ea2afe46c",
-    "deployment_id": "appgdep_6ad3fac61b0881919b9add3992ded925",
-    "site_commit": "93c29583ba447fad56d12341cc130ac3a1cd3e1b",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_ff534806b3d081919bfd7e64ea18c15c",
+    "deployment_id": "appgdep_6ad3f7115e9c819195da50980e8da1a9",
+    "site_commit": "a92c76ba5804ed33db23b81957e2e12e90fe3921",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "431passed across42files",
-    "build": "passed; existinglargechunkwarning",
+    "offline_tests": "431offline tests/42files passed",
+    "build": "inprogress",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "CloudChrome production1.14.0: Adventureactualmap+originalrewards loaded; stage2preview updatesCaminhaestrela whileplaydisabled; scrollend13866=max reachesworld10/stage100; preview100showsLanternadaFesta+Festeiro; Meu progresso returns1; Explorationactuallabels10,11..20 verified. No save manipulation. Phoneorientationspending.",
+    "browser": "newreleasepending",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
@@ -63,7 +63,7 @@
     "site_commit": "c24a41664f97dee3383c204444f276a4174eb318",
     "instructions": "Redeploy only while immediate predecessor and preserve later collaborators and saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-17-adventure-continuous-trail.md",
+  "latest_report": "docs/evolution/runs/2026-10-17-upward-natural-trails.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -466,5 +466,13 @@
     "locked": "selectablepreview; launchdisabled",
     "numbers": "Adventure1..100 Exploration1..20; chapterIDs/savepositionsunchanged",
     "art": "originaltenhomebackgrounds/companions/decorations; no newbitmap"
+  },
+  "upward_trails": {
+    "version": "1.14.1",
+    "direction": "vertical bottomtotop allorientations",
+    "numbers": "Adventure1..100 Exploration1..20 unchanged",
+    "materials": "originalgeneratedstone/forest/riverWebP, roughorganicedge, sparsepebbles/grass",
+    "background": "newhome-to-gardenfirstAdventureworld",
+    "save_schema": "unchanged"
   }
 }
