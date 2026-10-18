@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_testing",
-  "active_run": "2026-10-18",
+  "status": "fixing_adventure_composition",
+  "active_run": "2026-10-18-adventure-seams-fix",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,10 +16,10 @@
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
-    "id": "adventure-own-worlds",
-    "product_version": "1.14.7",
-    "implementation_status": "published",
-    "acceptance_status": "user_testing"
+    "id": "adventure-seams-fix",
+    "product_version": "1.14.8",
+    "implementation_status": "implemented",
+    "acceptance_status": "pending_build_and_postdeploy_visual_check"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -66,7 +66,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-adventure-seams-fix.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

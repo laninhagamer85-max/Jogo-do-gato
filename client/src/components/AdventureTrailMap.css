@@ -41,12 +41,13 @@
 }
 
 /* Adventure owns its scenery; none of Exploration's illustrated plates are used here. */
-.adv-world-scenery{position:absolute;z-index:-2;pointer-events:none;overflow:hidden;isolation:isolate;background:linear-gradient(150deg,var(--adv-sky),var(--adv-ground));mask-image:linear-gradient(to bottom,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
-.adv-world-scenery.is-horizontal{mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
-.adv-world-scenery.is-locked{filter:grayscale(.92);opacity:.8}
-.adv-room-panorama{position:absolute;left:0;top:12%;width:100%;height:76%;object-fit:contain;object-position:center;opacity:.85;mask-image:radial-gradient(ellipse at center,#000 40%,transparent 73%)}
-.adv-world-scenery.is-horizontal .adv-room-panorama{top:0;left:8%;height:100%;width:84%}
+/* Mask the intrinsic image box, not its letterboxed containing rectangle. */
+.adv-world-scenery{position:absolute;z-index:-2;pointer-events:none;overflow:hidden;isolation:isolate;background:none}
+.adv-room-panorama{position:absolute;left:0;top:50%;transform:translateY(-50%);width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;opacity:.85;mask-image:radial-gradient(ellipse at center,#000 28%,transparent 72%)}
+.adv-world-scenery.is-horizontal .adv-room-panorama{left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:100%;max-width:100%;aspect-ratio:16/9}
 .adv-world-floor{position:absolute;inset:0;overflow:visible}
+.adv-world-scenery.is-locked .adv-room-panorama,.adv-world-scenery.is-locked .adv-world-floor{filter:grayscale(.92);opacity:.8}
+.adv-campaign-sky{position:absolute;left:0;top:0;z-index:-3;pointer-events:none}
 .adventure-trail .trail-world{background:#263953}
 .adventure-trail .trail-info-toggle{background:linear-gradient(#3284a0,#18516b);border-color:#a4e8ed}
 .adventure-trail .trail-selection small{display:block;font-size:10px;color:#d3ebef}
@@ -54,3 +55,7 @@
 .adventure-trail .adv-stage-prize{z-index:2}
 .adventure-trail .adv-world-friend{z-index:3}
 @media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-selection small,.adventure-trail .trail-selection span{display:none}}
+
+/* Keep companions above their own stage rather than over neighbouring numbers. */
+.adventure-trail .trail-viewport.is-horizontal .adv-world-friend img{width:44px;height:52px}
+.adventure-trail .trail-viewport.is-horizontal .adv-world-friend span{display:none}

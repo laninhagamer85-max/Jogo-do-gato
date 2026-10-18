@@ -31,3 +31,15 @@ it('composes every Adventure world in portrait and landscape without Exploration
   expect(JSON.stringify(layout)).toBe(before);
  }
 });
+
+it('uses one shared backdrop with ordered world colors in both orientations',async()=>{
+ const {AdventureWorldBackdrop}=await import('../components/AdventureWorldScenery');
+ const {explorationTrailLayout}=await import('./explorationTrail');const {PLATFORM_PALETTES}=await import('./platformerLevels');
+ for(const vertical of [true,false]){
+  const l=explorationTrailLayout(vertical?390:844,vertical?570:224,100,vertical,'adventure');
+  const html=renderToStaticMarkup(React.createElement(AdventureWorldBackdrop,{layout:l,locked:()=>false}));
+  const colors=Array.from(html.matchAll(/stop-color="([^"]+)"/g),m=>m[1]);
+  expect(colors).toEqual((vertical?[...PLATFORM_PALETTES].reverse():PLATFORM_PALETTES).map(p=>p.skyBottom));
+  expect(html.match(/<rect /g)).toHaveLength(1);expect(html).not.toContain('mask');
+ }
+});

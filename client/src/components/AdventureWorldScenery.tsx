@@ -1,6 +1,6 @@
-import type {CSSProperties} from 'react';
+import {useId,type CSSProperties} from 'react';
 import {GAME_ASSETS} from '@/game/assets';
-import {getPlatformStage} from '@/game/platformerLevels';
+import {PLATFORM_PALETTES} from '@/game/platformerLevels';
 import {explorationTrailPath,trailChapterTop,type explorationTrailLayout} from '@/game/explorationTrail';
 
 type Props={layout:ReturnType<typeof explorationTrailLayout>;chapter:number;locked:boolean;active:boolean};
@@ -22,12 +22,12 @@ export const ADVENTURE_MATERIALS=[
 export default function AdventureWorldScenery({layout,chapter,locked,active}:Props){
  const start=trailChapterTop(layout,chapter),vertical=layout.vertical;
  const width=vertical?layout.width:layout.chapterSpan,height=vertical?layout.chapterSpan:layout.height;
- const stage=getPlatformStage(chapter*10+1)!,theme=ADVENTURE_MATERIALS[chapter],palette=stage.palette;
+ const theme=ADVENTURE_MATERIALS[chapter];
  const points=layout.points.slice(chapter*10,chapter*10+10).map(p=>({x:p.x-(vertical?0:start),y:p.y-(vertical?start:0)}));
  // Extend to the exact region edges so neighbouring worlds share a continuous route.
  const cross=vertical?width:height;
  const route=explorationTrailPath([vertical?{x:cross*.5,y:height}:{x:0,y:cross*.5},...points,vertical?{x:cross*.5,y:0}:{x:width,y:cross*.5}],vertical);
- const style:CSSProperties={left:vertical?0:start,top:vertical?start:0,width,height,'--adv-sky':palette.skyTop,'--adv-ground':palette.skyBottom} as CSSProperties;
+ const style:CSSProperties={left:vertical?0:start,top:vertical?start:0,width,height} as CSSProperties;
  return <div className={`adv-world-scenery ${vertical?'is-vertical':'is-horizontal'} ${locked?'is-locked':''} adv-world-${theme.id}`} style={style} aria-hidden="true" data-world={chapter+1}>
   <img className="adv-room-panorama" src={GAME_ASSETS.levels[chapter]} alt="" loading={active?'eager':'lazy'} decoding="async" draggable={false}/>
   <svg className="adv-world-floor" width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
@@ -42,4 +42,20 @@ export default function AdventureWorldScenery({layout,chapter,locked,active}:Pro
    </g>)}
   </svg>
  </div>;
+}
+
+/** One continuous gradient for the whole campaign: no masked chapter rectangles. */
+export function AdventureWorldBackdrop({layout,locked}:{layout:Props['layout'];locked:(chapter:number)=>boolean}){
+ const id=useId().replace(/:/g,'');
+ const order=Array.from({length:layout.chapters},(_,i)=>layout.vertical?layout.chapters-1-i:i);
+ return <svg className="adv-campaign-sky" width={layout.width} height={layout.height} aria-hidden="true">
+  <defs><linearGradient id={id} x1="0" y1="0" x2={layout.vertical?'0':'1'} y2={layout.vertical?'1':'0'}>
+   {order.map((chapter,i)=>{const hex=PLATFORM_PALETTES[chapter].skyBottom;
+    const rgb=[1,3,5].map(start=>parseInt(hex.slice(start,start+2),16));
+    const gray=Math.round(rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722);
+    return <stop key={chapter} offset={`${(i+.5)/layout.chapters*100}%`} stopColor={locked(chapter)?`rgb(${gray} ${gray} ${gray})`:hex}/>;
+   })}
+  </linearGradient></defs>
+  <rect width="100%" height="100%" fill={`url(#${id})`}/>
+ </svg>;
 }

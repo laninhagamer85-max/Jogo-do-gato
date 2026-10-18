@@ -1,5 +1,4 @@
-import AdventureWorldScenery from "./AdventureWorldScenery";
-import {handleTrailWheel} from '@/game/trailWheel';
+import AdventureWorldScenery,{AdventureWorldBackdrop} from "./AdventureWorldScenery";
 import {useEffect,useMemo,useRef,useState,type RefObject} from 'react';
 import {Check,LockKeyhole,LocateFixed,Play,RotateCcw,Star,Gift,Info,X} from 'lucide-react';
 import {GAME_ASSETS} from '@/game/assets';
@@ -21,7 +20,7 @@ export default function AdventureTrailMap({state,onPlay,headingRef}:Props){
  function center(smooth=false){const el=viewport.current;if(!el)return;el.scrollTo({...trailScrollTarget(layout.points[current-1],layout,size),behavior:smooth&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});}
  useEffect(()=>{const el=viewport.current;if(!el)return;const resize=()=>{const b=el.getBoundingClientRect();setSize({width:Math.max(300,b.width),height:Math.max(160,b.height),vertical:window.innerHeight>=window.innerWidth});};const o=new ResizeObserver(resize);o.observe(el);window.addEventListener('resize',resize);resize();return()=>{o.disconnect();window.removeEventListener('resize',resize);};},[]);
  useEffect(()=>{center();},[layout,current]);
- useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(e:WheelEvent)=>handleTrailWheel(e,el);el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
+ useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(e:WheelEvent)=>{if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;const before=el.scrollLeft;el.scrollLeft+=e.deltaY;if(before!==el.scrollLeft)e.preventDefault();};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
  return <section className="adventure-trail trail-map" aria-label="Mapa contínuo da Aventura">
   <header className="trail-map-heading"><div><h2 ref={headingRef} tabIndex={-1}>Sua aventura</h2><span>{allDone?'Aventura concluída':`Mundo ${Math.ceil(current/10)} · Fase ${current}/100`}</span></div><span>{completed.length}/100 concluídas</span></header>
   <div className="trail-map-frame">
@@ -30,12 +29,13 @@ export default function AdventureTrailMap({state,onPlay,headingRef}:Props){
     onPointerDown={e=>{if(e.pointerType!=='mouse'||e.button!==0||(e.target as HTMLElement).closest('button'))return;const el=e.currentTarget;drag.current={id:e.pointerId,x:e.clientX,y:e.clientY,left:el.scrollLeft,top:el.scrollTop};el.setPointerCapture(e.pointerId);}}
     onPointerMove={e=>{const d=drag.current;if(!d||d.id!==e.pointerId)return;e.currentTarget.scrollLeft=d.left-e.clientX+d.x;e.currentTarget.scrollTop=d.top-e.clientY+d.y;}} onPointerUp={()=>{drag.current=null;}} onPointerCancel={()=>{drag.current=null;}}>
     <div className="trail-world" style={{width:layout.width,height:layout.height}}>
+     <AdventureWorldBackdrop layout={layout} locked={isWorldLocked}/>
      {Array.from({length:10},(_,index)=><AdventureWorldScenery key={index} layout={layout} chapter={index} locked={isWorldLocked(index)} active={Math.abs(index-viewed)<=1}/>)}
      {layout.points.map((p,index)=>{const id=index+1,data=getPlatformStage(id)!,complete=completed.includes(id),isLocked=id>progress.unlockedStage,rating=progress.starsByStage[String(id)]??0;return <div key={id} className={`trail-room-anchor ${id===current&&!allDone?'is-current':''} ${isLocked?'adv-stage-locked':''} ${selected===id?'is-selected':''}`} style={{left:p.x,top:p.y}}>
        <button type="button" className={`trail-room-node ${selected===id?'is-selected':''}`} aria-pressed={selected===id} aria-label={`Fase ${id}, ${data.subtitle}. ${isLocked?'Bloqueada. Ver prêmio':complete?'Concluída':'Disponível'}. Prêmio: ${data.reward.name}${id%10===0?` e ${data.mascot.name}`:''}`} onClick={()=>{setSelected(id);setInspecting(true);}} title={data.reward.name}><span>{id}</span><span className="trail-stars" aria-hidden="true">{[1,2,3].map(n=><Star key={n} size={13} className={n<=rating?'is-earned':''}/>)}</span><small>{isLocked?<LockKeyhole size={13}/>:complete?<Check size={15}/>:<Play size={13}/>}</small></button>
-       {id===current&&!allDone&&<><span className="trail-current-halo" aria-hidden="true"/><img className="trail-current-pet" src={GAME_ASSETS.characters[state.profile?.characterId??'menino-prata']} alt={`${state.profile?.name??'Seu pet'}, fase atual`} draggable={false}/></>}
+       {id===current&&!allDone&&<><span className="trail-current-halo" aria-hidden="true"/><img className="trail-current-pet" style={layout.vertical?undefined:{left:-14,top:-78,width:44,height:52}} src={GAME_ASSETS.characters[state.profile?.characterId??'menino-prata']} alt={`${state.profile?.name??'Seu pet'}, fase atual`} draggable={false}/></>}
        <div className="adv-stage-prize" style={layout.vertical?{left:p.x>layout.width*.55?-115:33,top:-20}:{left:-42,top:42}} aria-hidden="true" title={data.reward.name}><img src={GAME_ASSETS.decorations[data.reward.id]} alt="" loading="lazy" draggable={false}/><span>{data.reward.name}</span></div>
-       {id%10===0&&<div className="adv-world-friend" style={layout.vertical&&p.x<110?{left:40}:undefined} aria-hidden="true"><img src={GAME_ASSETS.companions[data.mascot.id]} alt="" loading="lazy" draggable={false}/><span>{data.mascot.name}<small>{complete?'Conquistado':`Ao vencer a fase ${id}`}</small></span></div>}
+       {id%10===0&&<div className="adv-world-friend" style={layout.vertical?(p.x<110?{left:40}:undefined):{left:-22,top:-80,width:44}} aria-hidden="true"><img src={GAME_ASSETS.companions[data.mascot.id]} alt="" loading="lazy" draggable={false}/><span>{data.mascot.name}<small>{complete?'Conquistado':`Ao vencer a fase ${id}`}</small></span></div>}
       </div>;})}
     </div>
    </div>
