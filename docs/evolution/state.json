@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-17",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_checks_passed_pending_publication",
+  "status": "published_pending_authenticated_visual_review",
   "active_run": "2026-10-17-upward-natural-trails",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -23,21 +23,21 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.13.2",
-    "last_observed_version": 65,
+    "product_version": "1.14.1",
+    "last_observed_version": 67,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_ff534806b3d081919bfd7e64ea18c15c",
-    "deployment_id": "appgdep_6ad3f7115e9c819195da50980e8da1a9",
-    "site_commit": "a92c76ba5804ed33db23b81957e2e12e90fe3921",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a7d504e96f3881919a14f52292cd515d",
+    "deployment_id": "appgdep_6ad4349411f88191961fcd322eb25cc9",
+    "site_commit": "26a8ca219529a6f6f0883cf60f70c637eff57979",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
     "offline_tests": "431offline tests/42files passed",
-    "build": "inprogress",
+    "build": "passed; existinglargechunkwarning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "newreleasepending",
+    "browser": "CloudChrome loginpage displays1.14.1; previoussessionexpired, authenticatedmapvisualcheck NOTperformed. Phoneorientationvisualcheckpending.",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
