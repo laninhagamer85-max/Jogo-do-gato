@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "preparing_publication_for_viewport_checks",
+  "status": "published_browser_viewports_checked",
   "active_run": "2026-10-18-illustrated-map-junctions",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,25 +11,25 @@
     "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
     "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "0da526631309b3885eba8572327bda85c501db43",
+    "code_commit": "7d834e51df2e082f1b235479661dbcc6fcb450ff",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "illustrated-map-junctions",
-    "product_version": "1.14.5",
-    "implementation_status": "implemented",
-    "acceptance_status": "pending_responsive_browser_check"
+    "product_version": "1.14.6",
+    "implementation_status": "published",
+    "acceptance_status": "responsive_browser_checked_physical_phone_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.4",
-    "last_observed_version": 70,
+    "product_version": "1.14.6",
+    "last_observed_version": 72,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_06dbaf38addc8191854299b38599cdd2",
-    "deployment_id": "appgdep_6ad44aabd8bc8191a14ae4d2b4740676",
-    "site_commit": "e24e553c65894858f229daf3819c28f5c22b7b34",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_872277fc8c98819192ee48752d5f7408",
+    "deployment_id": "appgdep_6ad45083c1bc8191ab5a2decd85ce6a9",
+    "site_commit": "82bfe6a17622f7bf7c85487b5447b15d498d54c0",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -38,12 +38,12 @@
     "build": "passed; all 20 map assets in package verified by SHA256; QA page present",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.14.4 live landscape checked; 1.14.5 viewport QA pending",
+    "browser": "Aventura and Exploracao checked in same-origin iframe viewports; orientation growth bug found in 1.14.5, fixed and rechecked in 1.14.6",
     "viewports": {
       "375x667": "not_tested",
       "375x812": "not_tested",
-      "390x844": "not_tested",
-      "844x390": "not_tested",
+      "390x844": "both selector maps inspected; no document horizontal overflow",
+      "844x390": "both selector maps inspected; scroll, details, recenter checked; rotation height stable 230/240px",
       "1366x768": "not_tested"
     },
     "real_online_phases_completed_in_cycle": 0,
@@ -53,7 +53,9 @@
   },
   "blockers": [],
   "next_actions": [
-    "David reviews portrait/landscape, seams and stage placement on his device before expanding art to the remaining eight Adventure worlds."
+    "Review on physical phone: touch, DPR and performance remain untested.",
+    "Extend authored continuous scenery to eight legacy Adventure worlds; original per-world backgrounds remain.",
+    "Polish locked-world scene continuity and boundary labels; no claim of pixel-identical Farm reference."
   ],
   "rollback": {
     "production_changed": true,
