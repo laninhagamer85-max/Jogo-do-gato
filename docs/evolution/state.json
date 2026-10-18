@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "fixing_adventure_composition",
+  "status": "published_browser_checked",
   "active_run": "2026-10-18-adventure-seams-fix",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,25 +11,25 @@
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
     "source_site_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "aedc11d282f6f62e699b813fecf42973609a882f",
+    "code_commit": "84d782b2b63e6b66620a016ef7ee9275c25a8b6b",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
     "id": "adventure-seams-fix",
     "product_version": "1.14.8",
-    "implementation_status": "implemented",
-    "acceptance_status": "pending_build_and_postdeploy_visual_check"
+    "implementation_status": "published",
+    "acceptance_status": "live_viewport_checks_passed_physical_phone_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.7",
-    "last_observed_version": 73,
+    "product_version": "1.14.8",
+    "last_observed_version": 74,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b13541c710d881919c0383407264fb9f",
-    "deployment_id": "appgdep_6ad4bbf264c08191bc0fdf22f179ef4c",
-    "site_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8768f9eb29b481919f2675fc5891928a",
+    "deployment_id": "appgdep_6ad4be8a9c148191b4e3b7a40bb166f7",
+    "site_commit": "d90bb3a14f00f34b891c61c9ec63d3c789272d47",
     "attempted_in_this_cycle": false
   },
   "verification": {
@@ -38,7 +38,7 @@
     "build": "passed; existing chunk size warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.14.7 live browser selector checks: 844x390 and 390x844; ten own-world scenery elements; Adventure frame230px horizontal; portrait document width390=scrollWidth390. No physical phone, touch or FPS validation.",
+    "browser": "1.14.8 live 844x390 and390x844: straight image edge and dark chapter band removed; current pet visible; selected reward locked; stage1 entered, paused, returned to map0/100;123img without failed load; landscape frame230px stable after rotation.",
     "viewports": {
       "375x667": "not_tested_this_cycle",
       "375x812": "not_tested_this_cycle",
@@ -56,8 +56,7 @@
     "Required supported preview/browser unavailable; no publication without validation in this cycle."
   ],
   "next_actions": [
-    "David tests published Adventure composition and progression on physical phone.",
-    "Refine scene-image edges and transitions after visual feedback; not certified final art."
+    "Physical phone touch/performance test by David; no FPS or 100-phase playthrough claim."
   ],
   "rollback": {
     "production_changed": true,
