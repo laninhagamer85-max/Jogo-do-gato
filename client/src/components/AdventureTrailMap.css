@@ -39,3 +39,18 @@
  .adventure-trail .trail-map-heading h2{font-size:16px}.adventure-trail .trail-map-heading span{font-size:10px}
  .adventure-trail .trail-map-frame{height:calc(100dvh - 160px);min-height:200px}
 }
+
+/* Adventure owns its scenery; none of Exploration's illustrated plates are used here. */
+.adv-world-scenery{position:absolute;z-index:-2;pointer-events:none;overflow:hidden;isolation:isolate;background:linear-gradient(150deg,var(--adv-sky),var(--adv-ground));mask-image:linear-gradient(to bottom,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
+.adv-world-scenery.is-horizontal{mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
+.adv-world-scenery.is-locked{filter:grayscale(.92);opacity:.8}
+.adv-room-panorama{position:absolute;left:0;top:12%;width:100%;height:76%;object-fit:contain;object-position:center;opacity:.85;mask-image:radial-gradient(ellipse at center,#000 40%,transparent 73%)}
+.adv-world-scenery.is-horizontal .adv-room-panorama{top:0;left:8%;height:100%;width:84%}
+.adv-world-floor{position:absolute;inset:0;overflow:visible}
+.adventure-trail .trail-world{background:#263953}
+.adventure-trail .trail-info-toggle{background:linear-gradient(#3284a0,#18516b);border-color:#a4e8ed}
+.adventure-trail .trail-selection small{display:block;font-size:10px;color:#d3ebef}
+.adventure-trail .trail-selection span{display:block;font-size:11px;color:#d3ebef}
+.adventure-trail .adv-stage-prize{z-index:2}
+.adventure-trail .adv-world-friend{z-index:3}
+@media(max-height:500px) and (orientation:landscape){.adventure-trail .trail-selection small,.adventure-trail .trail-selection span{display:none}}

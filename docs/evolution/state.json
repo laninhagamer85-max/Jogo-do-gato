@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_browser_viewports_checked",
-  "active_run": "2026-10-18-illustrated-map-junctions",
+  "status": "implemented_awaiting_supported_preview",
+  "active_run": "2026-10-18-adventure-own-worlds",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,10 +16,10 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "illustrated-map-junctions",
-    "product_version": "1.14.6",
-    "implementation_status": "published",
-    "acceptance_status": "responsive_browser_checked_physical_phone_pending"
+    "id": "adventure-own-worlds",
+    "product_version": "1.14.7",
+    "implementation_status": "implemented_review_only",
+    "acceptance_status": "pending_supported_browser_preview"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -53,9 +53,7 @@
   },
   "blockers": [],
   "next_actions": [
-    "Review on physical phone: touch, DPR and performance remain untested.",
-    "Extend authored continuous scenery to eight legacy Adventure worlds; original per-world backgrounds remain.",
-    "Polish locked-world scene continuity and boundary labels; no claim of pixel-identical Farm reference."
+    "Inspect new Adventure composition in supported preview at 390x844 and 844x390; publish only after passing visual QA."
   ],
   "rollback": {
     "production_changed": true,
@@ -64,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-illustrated-map-junctions.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-adventure-own-worlds.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
