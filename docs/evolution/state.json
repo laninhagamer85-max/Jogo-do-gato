@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "simplifying_adventure_for_user_test",
+  "status": "published_for_user_test",
   "active_run": "2026-10-18-simple-adventure",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -11,25 +11,25 @@
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
     "source_site_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "84d782b2b63e6b66620a016ef7ee9275c25a8b6b",
+    "code_commit": "962bf9923ee3423af962e6068283a5cc09292ae1",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
     "id": "simple-adventure",
     "product_version": "1.14.9",
-    "implementation_status": "implemented",
-    "acceptance_status": "pending_postdeploy_check"
+    "implementation_status": "published",
+    "acceptance_status": "browser_checked_user_phone_test_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.14.8",
-    "last_observed_version": 74,
+    "product_version": "1.14.9",
+    "last_observed_version": 75,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_8768f9eb29b481919f2675fc5891928a",
-    "deployment_id": "appgdep_6ad4be8a9c148191b4e3b7a40bb166f7",
-    "site_commit": "d90bb3a14f00f34b891c61c9ec63d3c789272d47",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_dd83615a1c4c8191ad7a284fd8df9b78",
+    "deployment_id": "appgdep_6ad4c2aada708191b447a0451d221601",
+    "site_commit": "7a452de31c315cfa13f4aac1f26792f09e901887",
     "attempted_in_this_cycle": false
   },
   "verification": {
@@ -38,7 +38,7 @@
     "build": "passed; existing chunk size warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "1.14.8 live 844x390 and390x844: straight image edge and dark chapter band removed; current pet visible; selected reward locked; stage1 entered, paused, returned to map0/100;123img without failed load; landscape frame230px stable after rotation.",
+    "browser": "1.14.9 checked live in 844x390 and390x844; wide band/landing ellipses removed; one selected reward shown; phase2 reward Caminha estrela remained locked; portrait width390=scrollWidth390. No physical phone or FPS test.",
     "viewports": {
       "375x667": "not_tested_this_cycle",
       "375x812": "not_tested_this_cycle",
@@ -56,7 +56,7 @@
     "Required supported preview/browser unavailable; no publication without validation in this cycle."
   ],
   "next_actions": [
-    "Physical phone touch/performance test by David; no FPS or 100-phase playthrough claim."
+    "David tests simpler composition on physical phone; selected reward caption near lower-left control in short landscape may need further spacing."
   ],
   "rollback": {
     "production_changed": true,
