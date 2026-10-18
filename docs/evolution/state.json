@@ -4,22 +4,23 @@
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
   "status": "implemented_awaiting_supported_preview",
-  "active_run": "2026-10-18-adventure-own-worlds",
+  "active_run": "2026-10-18",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
-    "base_commit": "93a664bd2b5fc1660dcfb9e128703f4e83c7cf8c",
-    "source_site_commit": "5dd283d5e5de2c62b61d6b9da2a57aaeb76b084c",
+    "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
+    "source_site_commit": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "9ef9215a3b042b367f153a4485122c9b2146f36e",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "published"
+    "code_commit_status": "followup_pending_commit_not_published"
   },
   "current_improvement": {
     "id": "adventure-own-worlds",
     "product_version": "1.14.7",
-    "implementation_status": "implemented_review_only",
-    "acceptance_status": "pending_supported_browser_preview"
+    "implementation_status": "followup_implemented_awaiting_browser",
+    "acceptance_status": "pending_supported_browser_preview",
+    "followup": "preserve_browser_zoom_on_horizontal_map"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -30,30 +31,35 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_872277fc8c98819192ee48752d5f7408",
     "deployment_id": "appgdep_6ad45083c1bc8191ab5a2decd85ce6a9",
     "site_commit": "82bfe6a17622f7bf7c85487b5447b15d498d54c0",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "440 tests / 43 files passed; Firebase staging integration excluded",
-    "build": "passed; all 20 map assets in package verified by SHA256; QA page present",
+    "offline_tests": "456/456 in 44 files; staging Firebase integration excluded",
+    "build": "passed; existing chunk size warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Aventura and Exploracao checked in same-origin iframe viewports; orientation growth bug found in 1.14.5, fixed and rechecked in 1.14.6",
+    "browser": "Not run in this cycle: control-browser unavailable",
     "viewports": {
-      "375x667": "not_tested",
-      "375x812": "not_tested",
-      "390x844": "both selector maps inspected; no document horizontal overflow",
-      "844x390": "both selector maps inspected; scroll, details, recenter checked; rotation height stable 230/240px",
-      "1366x768": "not_tested"
+      "375x667": "not_tested_this_cycle",
+      "375x812": "not_tested_this_cycle",
+      "390x844": "not_tested_this_cycle",
+      "844x390": "not_tested_this_cycle",
+      "1366x768": "not_tested_this_cycle"
     },
     "real_online_phases_completed_in_cycle": 0,
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "all_three_hashes_match_manifest"
+    "packaged_grass": "all_three_hashes_match_manifest",
+    "previous_browser_record": "Aventura and Exploracao checked in same-origin iframe viewports; orientation growth bug found in 1.14.5, fixed and rechecked in 1.14.6"
   },
-  "blockers": [],
+  "blockers": [
+    "Required supported preview/browser unavailable; no publication without validation in this cycle."
+  ],
   "next_actions": [
-    "Inspect new Adventure composition in supported preview at 390x844 and 844x390; publish only after passing visual QA."
+    "Reconcile latest GitHub/Sites, include wheel follow-up in candidate; do not deploy old Sites73 as if it contains the fix.",
+    "Inspect five viewports, rotate, Ctrl-wheel/trackpad zoom, map boundaries and both module identities with isolated profile.",
+    "Publish only after required visual/input checks pass."
   ],
   "rollback": {
     "production_changed": true,
@@ -62,7 +68,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-adventure-own-worlds.md",
+  "latest_report": "docs/evolution/runs/2026-10-18.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -486,5 +492,17 @@
     "status": "saved_not_deployed",
     "checks": "TypeScript, 20 map tests and build passed",
     "browser": "pending supported preview"
+  },
+  "map_wheel_followup": {
+    "status": "source_only_awaiting_supported_browser",
+    "new_offline_cases": 15,
+    "in_saved_sites73": false,
+    "real_player_data_accessed": false,
+    "changed_modules": [
+      "Adventure map wheel input",
+      "Exploration map wheel input"
+    ],
+    "art_changed": false,
+    "product_version": "1.14.7"
   }
 }

@@ -1,4 +1,5 @@
 import AdventureWorldScenery from "./AdventureWorldScenery";
+import {handleTrailWheel} from '@/game/trailWheel';
 import {useEffect,useMemo,useRef,useState,type RefObject} from 'react';
 import {Check,LockKeyhole,LocateFixed,Play,RotateCcw,Star,Gift,Info,X} from 'lucide-react';
 import {GAME_ASSETS} from '@/game/assets';
@@ -20,7 +21,7 @@ export default function AdventureTrailMap({state,onPlay,headingRef}:Props){
  function center(smooth=false){const el=viewport.current;if(!el)return;el.scrollTo({...trailScrollTarget(layout.points[current-1],layout,size),behavior:smooth&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});}
  useEffect(()=>{const el=viewport.current;if(!el)return;const resize=()=>{const b=el.getBoundingClientRect();setSize({width:Math.max(300,b.width),height:Math.max(160,b.height),vertical:window.innerHeight>=window.innerWidth});};const o=new ResizeObserver(resize);o.observe(el);window.addEventListener('resize',resize);resize();return()=>{o.disconnect();window.removeEventListener('resize',resize);};},[]);
  useEffect(()=>{center();},[layout,current]);
- useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(e:WheelEvent)=>{if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;const before=el.scrollLeft;el.scrollLeft+=e.deltaY;if(before!==el.scrollLeft)e.preventDefault();};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
+ useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(e:WheelEvent)=>handleTrailWheel(e,el);el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
  return <section className="adventure-trail trail-map" aria-label="Mapa contínuo da Aventura">
   <header className="trail-map-heading"><div><h2 ref={headingRef} tabIndex={-1}>Sua aventura</h2><span>{allDone?'Aventura concluída':`Mundo ${Math.ceil(current/10)} · Fase ${current}/100`}</span></div><span>{completed.length}/100 concluídas</span></header>
   <div className="trail-map-frame">

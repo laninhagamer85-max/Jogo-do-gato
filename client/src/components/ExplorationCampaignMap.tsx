@@ -1,4 +1,5 @@
 import TrailSeams from "./TrailSeams";
+import {handleTrailWheel} from '@/game/trailWheel';
 import TrailScenery from "./TrailScenery";
 import NaturalTrail from "./NaturalTrail";
 import {explorationMobFrame} from '@/game/explorationMobArt';
@@ -20,7 +21,7 @@ export default function ExplorationCampaignMap({state,onContinue,onReplay,petIma
  function center(index:number,smooth=false){const el=viewport.current;if(!el)return;const target=trailScrollTarget(layout.points[index],layout,size);el.scrollTo({...target,behavior:smooth&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});}
  useEffect(()=>{const el=viewport.current;if(!el)return;const resize=()=>{const box=el.getBoundingClientRect();setSize({width:Math.max(300,box.width),height:Math.max(160,box.height),vertical:window.innerHeight>=window.innerWidth});};const observer=new ResizeObserver(resize);observer.observe(el);window.addEventListener('resize',resize);resize();return()=>{observer.disconnect();window.removeEventListener('resize',resize);};},[]);
  useEffect(()=>{center(currentIndex);},[layout,currentIndex]);
- useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(event:WheelEvent)=>{if(Math.abs(event.deltaX)>Math.abs(event.deltaY))return;const before=el.scrollLeft;el.scrollLeft+=event.deltaY;if(el.scrollLeft!==before)event.preventDefault();};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
+ useEffect(()=>{const el=viewport.current;if(!el||layout.vertical)return;const wheel=(event:WheelEvent)=>handleTrailWheel(event,el);el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel);},[layout.vertical]);
  function select(index:number){if(explorationRoomStatus(state,index)==='locked')return;setSelected(index);setInspecting(true);}
  function enter(){if(selectedStatus==='completed')onReplay(selected);else if(selectedStatus==='current')onContinue();}
  let partial=false;try{partial=Boolean(state.roomAttempts[selected]&&!JSON.parse(state.roomAttempts[selected]).completed);}catch{/* Invalid attempt is safely restarted by the engine. */}
