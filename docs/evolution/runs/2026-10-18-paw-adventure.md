@@ -11,3 +11,6 @@ Pesquisa técnica em 18/10/2026: https://developer.mozilla.org/en-US/docs/Web/SV
 Rollback: Sites75, produto1.14.9, commit Sites7a452de31c315cfa13f4aac1f26792f09e901887. Escopo somente mapa da Aventura; Exploração preservada.
 
 Status: preparando publicação.
+
+## Correção observada no navegador — 1.15.1
+A publicação 1.15.0 revelou centralização com dimensões provisórias: layout memoizado não repetia o efeito após ResizeObserver. Efeito agora depende da largura e altura medidas; contempla abertura e rotação. Verificação cloud prossegue após correção.
