@@ -3,33 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "published_settings_checked",
+  "status": "published_legends_for_user_test",
   "active_run": "2026-10-19-exploration-legends",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
-    "source_site_commit": "10e7cc3c7fdfb888634e79465e92907805ff594f",
+    "source_site_commit": "3689761aa0f4a61db79a00c73d525352ebfd3e5f",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "686e4f09eebed9bf060d43775dbf3512a17cab56",
+    "code_commit": "2debd4189dab62eba45f4292ec09a9142b37323c",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "exploration-settings",
-    "product_version": "1.17.6",
+    "id": "exploration-legends",
+    "product_version": "1.18.1",
     "implementation_status": "published",
-    "acceptance_status": "cloud_tabs_checked_physical_phone_pending"
+    "acceptance_status": "cloud_fixture_checked_physical_phone_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.17.6",
-    "last_observed_version": 88,
+    "product_version": "1.18.1",
+    "last_observed_version": 90,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_46feca1d710481919b74b3a09b0c30d1",
-    "deployment_id": "appgdep_6ad57b16a16c81918b9c4f82fab630a0",
-    "site_commit": "10e7cc3c7fdfb888634e79465e92907805ff594f"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0b8b65ec07f881919309d291a6a9a8ca",
+    "deployment_id": "appgdep_6ad58e6747248191a34390ffc5b5148b",
+    "site_commit": "3689761aa0f4a61db79a00c73d525352ebfd3e5f"
   },
   "verification": {
     "typescript": "passed",
@@ -53,7 +53,8 @@
   },
   "blockers": [],
   "next_actions": [
-    "Confirm physical phone responsiveness; cloud runtime remains slow and root cause is not fully isolated"
+    "Physical phone acceptance of initial Legendary movement/weapon alignment",
+    "Continue investigating pre-existing Exploration runtime slowness separately"
   ],
   "rollback": {
     "production_changed": true,
@@ -602,12 +603,12 @@
   },
   "legends": {
     "product_version": "1.18.1",
-    "status": "publishing_portrait_followup",
+    "status": "published_for_user_test",
     "scope": "Lyra/Kael playable forms,8directions,3crafted weapons,6future previews",
-    "checks": "TypeScript,498game tests passed",
+    "checks": "TypeScript;498game tests;followup6tests;build18.14s passed",
     "preserved": "pet profile,HP/XP,room progress,collision/maps",
     "save": "optional collection;campaignVersion4 guards old readers",
     "physical_phone": "not_tested",
-    "browser": "1.18.0 cloud: bothheroes unlock/select,Kael actualscene+sword,returncat,recipes charge,8directionmatrix,390x844/844x390 bag no horizontal overflow;portrait contamination found and fixed"
+    "browser": "Isolated390x844/844x390:bothstarters unlock/select,Kael scene+sword,returncat,craft costs,8directionmatrix;final8rosterclipPathsvisible;noaccountwrites"
   }
 }
