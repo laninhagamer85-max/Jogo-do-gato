@@ -1,27 +1,43 @@
-import frames from './explorationLegendFrames.json';
+import weapons from './explorationWeaponArt.json';
+import {legendPose,legendHand} from './explorationLegendPose';
 import {legendAnimation,type LegendId} from './explorationLegends';
 import type {CombatState} from './explorationCombat';
-const images=new Map<LegendId,HTMLImageElement>();
-function imageFor(id:LegendId){let image=images.get(id);if(!image&&typeof Image!=='undefined'){image=new Image();image.src=`/forest-adventure/legends/${id}-v1.png`;images.set(id,image);}return image;}
-export function preloadLegend(id:LegendId){imageFor(id);}
-/** Draw only the selected row/cell, with stable foot contact and no atlas-wide filters. */
+const images=new Map<string,HTMLImageElement>();
+const cutouts=new Map<string,HTMLCanvasElement>();let pixels=0;
+const CACHE_PIXELS=6_000_000;
+function imageFor(key:string,src:string){let image=images.get(key);if(!image&&typeof Image!=='undefined'){image=new Image();image.src=src;images.set(key,image);}return image;}
+export function preloadLegend(id:LegendId){imageFor(id,`/forest-adventure/legends/${id}-v1.png`);imageFor('weapons','/forest-adventure/legends/weapons-v1.png');}
+/** Prepare an isolated alpha silhouette once. Original bitmaps remain unchanged. */
+function cutout(key:string,image:HTMLImageElement|undefined,r:{x:number;y:number;width:number;height:number;path:string}){
+ const hit=cutouts.get(key);if(hit)return hit;
+ if(!image?.complete||!image.naturalWidth||typeof document==='undefined')return null;
+ const area=r.width*r.height;while(pixels+area>CACHE_PIXELS&&cutouts.size){const first=cutouts.keys().next().value!;const c=cutouts.get(first)!;pixels-=c.width*c.height;cutouts.delete(first);}
+ const canvas=document.createElement('canvas');canvas.width=r.width;canvas.height=r.height;const ctx=canvas.getContext('2d');if(!ctx)return null;
+ const silhouette=new Path2D(r.path);ctx.fillStyle='#fff';ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.fill(silhouette);ctx.stroke(silhouette);ctx.globalCompositeOperation='source-in';ctx.drawImage(image,-r.x,-r.y);ctx.globalCompositeOperation='source-over';cutouts.set(key,canvas);pixels+=area;return canvas;
+}
+/** Complete poses with shared foot contact; item grip follows the authored gauntlet. */
 export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatState,x:number,y:number,tile:number,reduced:boolean){
- const id=state.legends?.active;if(!id)return false;const image=imageFor(id);if(!image?.complete||!image.naturalWidth)return false;
+ const id=state.legends?.active;if(!id)return false;preloadLegend(id);
  const anim=legendAnimation(state.facing.x,state.facing.y,state.walking,state.walkPhase,state.time,state.strikeUntil,reduced);
- const mirror=id==='kael'&&(anim.row===6||anim.row===7);
- const row=mirror?(anim.row===6?2:1):anim.row;const rect=frames[id][row][anim.frame],dh=tile*1.12,dw=dh*rect.width/rect.height;
- // Walk/attack coordinates are authored in an eight-direction, eight-frame atlas.
- ctx.save();ctx.translate(x,y);if(mirror)ctx.scale(-1,1);ctx.drawImage(image,rect.x,rect.y,rect.width,rect.height,-dw/2,-dh, dw,dh);ctx.restore();
- const weapon=state.legends?.weapon;if(!weapon)return true;
- const a=Math.atan2(state.facing.y,state.facing.x),phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
- ctx.save();ctx.translate(x+state.facing.x*tile*.2,y-tile*.39+state.facing.y*tile*.12);ctx.rotate(a);
- if(weapon==='bow'){
-  ctx.strokeStyle='#986534';ctx.lineWidth=tile*.045;ctx.beginPath();ctx.arc(0,0,tile*.29,-Math.PI/2,Math.PI/2);ctx.stroke();ctx.strokeStyle='#e7d8ae';ctx.lineWidth=tile*.012;ctx.beginPath();ctx.moveTo(0,-tile*.29);ctx.lineTo(anim.attacking?-tile*.12:0,0);ctx.lineTo(0,tile*.29);ctx.stroke();
-  if(anim.attacking){const length=tile*(.3+phase*4.2);ctx.strokeStyle='#ebd59b';ctx.lineWidth=tile*.018;ctx.beginPath();ctx.moveTo(length-tile*.3,0);ctx.lineTo(length,0);ctx.stroke();ctx.fillStyle='#c8e5e7';ctx.beginPath();ctx.moveTo(length+tile*.09,0);ctx.lineTo(length-tile*.05,-tile*.05);ctx.lineTo(length-tile*.05,tile*.05);ctx.closePath();ctx.fill();}
- }else{
-  ctx.rotate(anim.attacking?-.9+phase*1.8:.8);const length=tile*(weapon==='sword'?.64:.37);
-  ctx.fillStyle='#7c4d2d';ctx.fillRect(-tile*.11,-tile*.035,tile*.17,tile*.07);ctx.fillStyle='#d3b165';ctx.fillRect(0,-tile*.11,tile*.04,tile*.22);
-  ctx.fillStyle='#cfeced';ctx.strokeStyle='#567d83';ctx.lineWidth=tile*.012;ctx.beginPath();ctx.moveTo(tile*.04,-tile*.035);ctx.lineTo(length-tile*.1,-tile*.055);ctx.lineTo(length,0);ctx.lineTo(length-tile*.1,tile*.055);ctx.lineTo(tile*.04,tile*.035);ctx.closePath();ctx.fill();ctx.stroke();
+ const pose=legendPose(id,anim.row,anim.frame),rect=pose.rect,sprite=cutout(pose.key,images.get(id),rect);if(!sprite)return false;
+ const dh=tile*1.12,dw=dh*rect.width/rect.height,hand=legendHand(id,pose.sourceRow,pose.sourceFrame);
+ const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
+ const weapon=state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
+ const a=Math.atan2(state.facing.y,state.facing.x),sway=state.walking&&!reduced?Math.sin(state.walkPhase*Math.PI*2)*.065:0;
+ function drawItem(){if(!weapon)return;const meta=weapons[weapon],item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
+  ctx.save();ctx.translate(hx,hy);
+  const swing=anim.attacking?-.85+1.5*(.5-.5*Math.cos(phase*Math.PI)):.65+sway;
+  ctx.rotate(a+(weapon==='bow'?sway:Math.PI/2+swing));
+  const height=tile*(weapon==='sword'?.88:weapon==='dagger'?.5:.92),width=height*meta.width/meta.height;
+  ctx.drawImage(item,-meta.grip[0]*width,-meta.grip[1]*height,width,height);ctx.restore();
+  if(weapon==='bow'){
+   const arrowMeta=weapons.arrow,arrow=cutout('weapon:arrow',images.get('weapons'),arrowMeta);if(!arrow)return;
+   const flight=anim.attacking?Math.max(0,(phase-.36)/.64):0;
+   ctx.save();ctx.translate(hx+Math.cos(a)*tile*flight*4.2,hy+Math.sin(a)*tile*flight*4.2);ctx.rotate(a);
+   const length=tile*.62,thickness=length*arrowMeta.height/arrowMeta.width;ctx.drawImage(arrow,-length*(flight>0?.25:.5),-thickness/2,length,thickness);ctx.restore();
+  }
  }
- ctx.restore();return true;
+ // Rear-facing equipment sits behind the body instead of cutting through the torso.
+ const behind=state.facing.y<-.3;if(behind)drawItem();
+ ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();return true;
 }

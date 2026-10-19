@@ -134,7 +134,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         ctx.save(); ctx.translate(px, py); if (direction.mirror) ctx.scale(-1, 1);
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);
-      if (attack.active) {
+      if (attack.active && !(state.legends?.active&&state.legends.weapon==='bow')) {
         // A short swipe in front of the body, never a synthetic limb over the face.
         ctx.save();ctx.translate(px+state.facing.x*t*.35,py+state.facing.y*t*.28-t*.03);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));
         ctx.globalAlpha=.55*Math.max(0,attack.reach);ctx.strokeStyle='#ecdfb2';ctx.lineWidth=Math.max(1,t*.018);ctx.lineCap='round';
