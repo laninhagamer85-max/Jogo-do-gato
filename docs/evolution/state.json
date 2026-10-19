@@ -3,32 +3,32 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "published_equipment_drag_for_user_test",
+  "status": "published_powers_autumn_for_user_test",
   "active_run": "2026-10-19-powers-autumn",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
-    "source_site_commit": "1b9086a8066d9f1f9721466534c348abb78ce3ca",
+    "source_site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "e2df34b7e2ab3ab4a9386bce71ebbd93dccef0bd",
+    "code_commit": "531223f9432c08abc7baaabddfef5693f711979c",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "powers-autumn",
-    "product_version": "1.21.0",
-    "implementation_status": "validated_pending_publication"
+    "product_version": "1.21.2",
+    "implementation_status": "published"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.20.1",
-    "last_observed_version": 98,
+    "product_version": "1.21.2",
+    "last_observed_version": 102,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_822aa9453b5881918a8dff027a3bbe97",
-    "deployment_id": "appgdep_6ad5bba2270c8191863d8b88e42337aa",
-    "site_commit": "1b9086a8066d9f1f9721466534c348abb78ce3ca"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6c8fdcf5cdb0819182bd1907a7a2f967",
+    "deployment_id": "appgdep_6ad5c689f1c8819198bf0c7fea58d9b3",
+    "site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a"
   },
   "verification": {
     "typescript": "passed",
@@ -62,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-19-equipment-drag.md",
+  "latest_report": "docs/evolution/runs/2026-10-19-powers-autumn.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -624,5 +624,14 @@
     "status": "published",
     "tests": "TypeScript;12focusedtests;build20.11s",
     "browser": "1.20.0 actual roots pointer drag to second slot and incompatible-slot dialog;1.20.1 wrapping Kael->Lyra->Kael, female-only label, sword craft, rotate front/diagonal/left, demo control, responsive844x390/390x844; HP304andenergy100unchanged. Physical touch device not tested."
+  },
+  "powers_autumn": {
+    "status": "published",
+    "product_version": "1.21.2",
+    "checks": "498game tests45files;TypeScript;build17.77s",
+    "browser": "Cloud844x390/390x844 isolated: lensdirectLegends, equiproots,castenergyspent,paintedburstvisiblepausedmap,bestiary4newfamilies/master8000HP. Finalshortcutright387.83within390pxviewport44pxhitarea. Physicalphone and long chapter3fights pending.",
+    "hp_scope": "Chapter3allNPCs/master10x;otherchaptersunchanged",
+    "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
+    "art": "2originalPNGatlases;noPNGpixelediting"
   }
 }
