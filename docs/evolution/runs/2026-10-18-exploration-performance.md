@@ -27,3 +27,9 @@ Production build passed26.28s; existing chunk-size warning.
 1.17.4 published Sites86 source0614efe6dbf7490ef4b8761a6980c86003e63f18 deployment appgdep_6ad56b4c59148191892f73ae483d121b. Cloud confirmed settings before entry, no gear in active room. Autumn room remained slow; renderer still applied Canvas sepia/saturation filters to terrain, foliage and NPC atlas draws. Followup bakes original-dimension palette variants once into native canvas sources, reuses across room/lens by sourceURL+palette+dimensions, bounds cache to12MP, and leaves source files untouched. No PNG encoding or asynchronous reload. Water remains native blue. Terrain/props/native crop geometry unchanged. Actual phone improvement still requires acceptance.
 
 490 game tests passed after the color-cache integration; focused color-cache tests verify one preparation per URL/filter, dimensions, source isolation and budget guards.
+
+## Final publication and verification
+
+1.17.5 / Sites87 succeeded, source f8b2556784ad37ada9035d53d5e79b8b7007073d, deployment appgdep_6ad56cb6a7288191ba9ff4d8ed29b4b5. Production build29.27s; TypeScript and game/focused cache suites passed. GitHub code096f7eea4ecf8070455492cfa9504b087f6b9301.
+
+Cloud390x844 pre-entry native settings modal visibly confirmed with audio/guide/bestiary/room tabs;844x390 active room21 has pause/inventory/lens but no settings gear. Runtime clock advanced450→7500ms, but animation/input remained slow over cloud wall time and pause confirmation was not reliable. This does NOT establish a smooth phone runtime or complete elimination of freezing. No physical phone test or online playthrough completed. Keep runtime acceptance open; do not claim all freezing resolved. Screenshot: meupet-1175-settings.jpg.
