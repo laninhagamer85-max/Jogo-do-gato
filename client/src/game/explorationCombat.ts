@@ -125,7 +125,7 @@ export function readCombatState(value: unknown): CombatRead {
   s.enemies = definitions.map(def => {
     const rawEnemy = object(Array.isArray(raw.enemies) ? raw.enemies.find(e => object(e).id === def.id) : null);
     const ep = { x: number(rawEnemy.x, def.x, PILOT_SIZE.left, PILOT_SIZE.left+PILOT_SIZE.width), y: number(rawEnemy.y, def.y, PILOT_SIZE.top, PILOT_SIZE.top+PILOT_SIZE.height) };
-    return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen,s.roomIndex), hp: number(typeof rawEnemy.hp==='number'&&index>=20&&raw.chapter3BalanceVersion!==2?rawEnemy.hp*10:rawEnemy.hp, def.hp, 0, def.hp),
+    return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen,s.roomIndex), hp: number(typeof rawEnemy.hp==='number'&&index>=20&&raw.chapter3BalanceVersion!==2?rawEnemy.hp*def.hp/(def.previousHp??(def.hp/10)):rawEnemy.hp, def.hp, 0, def.hp),
       generation: Math.floor(number(rawEnemy.generation, 0)), specialAt:number(rawEnemy.specialAt,s.time+3000,0,s.time+6000),windupUntil:number(rawEnemy.windupUntil,0,0,s.time+1000),slowUntil:number(rawEnemy.slowUntil,0,0,s.time+2000), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + Math.max(45000,insectRespawnMs(def))) };
   });
   if(!Array.isArray(raw.defeatedEnemyIds))s.defeatedEnemyIds=s.enemies.filter(e=>e.hp===0||e.generation>0).map(e=>e.id);

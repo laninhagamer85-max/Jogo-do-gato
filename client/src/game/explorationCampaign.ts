@@ -3,7 +3,7 @@ import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hit
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
 import {insideExploration} from './explorationWorld';
 import type {CombatItem,CombatPoint} from './explorationCombat';
-export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs'|'autumn-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
+export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;previousHp?:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs'|'autumn-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
 export type CampaignNode=CombatPoint&{id:string;item:CombatItem;quantity:number};
 export type CampaignProp=CombatPoint&{index:number;width:number;height:number};
 export type CampaignHazard=CombatPoint&{id:string;kind:'bramble'|'steam';radius:number;period:number;activeMs:number;offset:number};
@@ -95,7 +95,7 @@ function buildCampaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[
  const result=[...room.enemies],count=Math.max(1,(index>=20?12+Math.floor((index-20)/2):index>=10?8+Math.floor((index-10)/2):2+Math.floor(index*.6))-room.enemies.length);
  for(let i=0;i<count&&spots.length;i++){
   const p=spots.splice(Math.floor(random()*spots.length),1)[0];for(let j=spots.length-1;j>=0;j--)if(Math.hypot(spots[j].x-p.x,spots[j].y-p.y)<1.6)spots.splice(j,1);const kind=index===9&&i===0?2:Math.floor(random()*(level>=3?2:1));
-  if(room.biome==='autumn'){result.push(autumnEnemy(`wild-autumn-${i}`,p.x,p.y,level,Math.floor(random()*3)));continue;}
+  if(room.biome==='autumn'){const roll=random(),oldRow=Math.floor(roll*2);result.push({...autumnEnemy(`wild-autumn-${i}`,p.x,p.y,level,Math.floor(roll*3)),previousHp:112+(level-11)*12+(oldRow===1?20:0)});continue;}
   if(room.biome==='river'){result.push(riverEnemy(`wild-river-${i}`,p.x,p.y,level,Math.floor(random()*2)));continue;}
   const guardian=kind===2,fungus=kind===1,lvl=guardian?5:level;
   result.push({...p,id:`wild-${kind}-${i}`,name:guardian?'Guardião dos Troncos':fungus?'Cogumelo Saltador':'Escaravelho Esmeralda',level:lvl,rarity:guardian?'rare':fungus?'uncommon':'common',hp:guardian?112:fungus?65+lvl*5:42+lvl*6,attack:guardian?19:fungus?9+lvl*2:8+lvl*2,defense:guardian?4:fungus?2:1,xp:guardian?100:35+lvl*10,item:guardian?'ambar':fungus?'erva':'fibra',quantity:guardian?3:fungus?1:3,art:'forest-mobs',spriteRow:kind,speed:guardian?.00055:fungus?.0006:.00105,detection:guardian?3:fungus?2.5:4,leash:guardian?3.5:6,width:guardian?1.05:.78,radius:guardian?.27:.19,attackRange:guardian?.96:.82});
