@@ -17,7 +17,7 @@
   },
   "current_improvement": {
     "id": "equipment-drag",
-    "product_version": "1.20.0",
+    "product_version": "1.20.1",
     "implementation_status": "validated_pending_publication"
   },
   "publication": {

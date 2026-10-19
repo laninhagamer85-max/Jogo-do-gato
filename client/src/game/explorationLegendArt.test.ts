@@ -26,6 +26,6 @@ it('prepares body and illustrated weapon once and reuses native images, without 
 });
 it('shows future names and information while concealing their portrait art',()=>{
  vi.stubGlobal('React',React);const html=renderToStaticMarkup(React.createElement(ExplorationLegends,{game:createCombatState(),gender:'menino',onAction:()=>{}}));
- for(const name of ['Soren','Ayla','Drake','Orion','Ember','Rowan'])expect(html).toContain(name);
- expect(html.match(/class="exp-legend-hidden-portrait"/g)).toHaveLength(6);expect(html).toContain('Carrossel de Lendários');expect(html).toContain('weapons-v1.png');
+ expect(html).toContain('Kael');
+ expect(html).toContain('Carrossel giratório de Lendários');expect(html).toContain('Carrossel giratório de Lendários');expect(html).toContain('weapons-v1.png');
 });

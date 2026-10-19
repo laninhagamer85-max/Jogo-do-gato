@@ -7,3 +7,9 @@ New paperdoll panel has weapon,two rare cards,power around character; grid bag b
 TypeScript and12focused tests passed. Managed local browser preview unavailable in this environment; user authorized publish/test. Postpublish pointer and responsive QA pending; no physical-device claim.
 
 User steering while packaging: remove roster card frames, larger highlighted active hero, explicit female-only Lyra label. Included before final deployment. Initial1.20.0 package saved but not deployed.
+
+1.20.0 published Sites97 source9021506682c8ebc8b2af346dafb585ab20d8a3af deployappgdep_6ad5ba7ce404819185a9b2060bee262e. Cloud844x390 actual pointer drag via native CUA from roots bag tile to card2 succeeded; current tide card1 retained, roots card2 becomes equipped. Original artwork and unclipped character seen.
+
+Further user steering1.20.1: selector cycles all8heroes at one fixed position with wrapping arrows and horizontal swipe; active glow, named blurred future silhouettes, explicit pet-sex eligibility. Central equipment character now renders actual eight-direction sprite poses with current weapon; tap/drag or left/right buttons rotate. Small demonstration button runs isolated3strike/arrow preview, never changes real combat HP,energy,inventory or save. This is eight-view2D rotation, not a3D mesh. Bounded24Hz drawing during demo/initial image loading, RAF cleanup on unmount/direction change, respects reduced motion.
+
+Research2026-10-19: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events and https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/touch-action — pointer capture, pointercancel, per-tile touch-action to preserve page scroll elsewhere.
