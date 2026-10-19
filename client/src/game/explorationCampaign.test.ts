@@ -88,7 +88,8 @@ it.each(EXPLORATION_ROOMS)('room $index: headless movement collects resources an
  s.defeated=room.encounters;s.defeatedEnemyIds=s.enemies.map(e=>e.id);s=walk(s,room.marker);s=stepCombat(s,{interact:true},0);expect(s.gateOpen).toBe(true);
  s=walk(s,room.exit);s=stepCombat(s,{},0);expect(s.completed).toBe(true);
 });
-it.each(EXPLORATION_ROOMS)('room $index: each enemy can be defeated with chapter-appropriate melee in an isolated live duel',room=>{
+// Chapter3 now explicitly has10xHP; old15second standing-duel guarantee applies to chapters1/2 only.
+it.each(EXPLORATION_ROOMS.slice(0,20))('room $index: each enemy can be defeated with chapter-appropriate melee in an isolated live duel',room=>{
  for(const def of room.enemies){
   let s=fixture(room.index);s.xp=40*Math.pow(Math.floor(room.index/2)+2,2);s.hp=combatMaxHp(s.xp);s.enemies.forEach(e=>{if(e.id!==def.id){e.hp=0;e.respawnAt=1e9;}});
   const approach=[{x:def.x-.65,y:def.y},{x:def.x+.65,y:def.y},{x:def.x,y:def.y+.65},{x:def.x,y:def.y-.65}].find(p=>pilotWalkable(p,false,.22,room.index));expect(approach).toBeDefined();s.player=approach!;

@@ -29,7 +29,7 @@ export function combatView(width: number, height: number, player: CombatPoint, z
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement) {
   const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
   const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
@@ -85,6 +85,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     }else drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
   }
   for(const h of room.hazards??[]){const p=point(h),phase=hazardPhase(h,state.time);ctx.save();ctx.fillStyle=phase==='active'?'#cb754788':phase==='warning'?'#e3bb4f55':'#76593644';ctx.strokeStyle=phase==='active'?'#ffdc96':'#d6b577';ctx.lineWidth=Math.max(1,t*.025);ctx.setLineDash(phase==='warning'?[t*.12,t*.09]:[]);ctx.beginPath();ctx.arc(p.x,p.y,t*h.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);if(phase==='active'){if(h.kind==='steam'){for(let i=0;i<3;i++){ctx.strokeStyle='#f4ead9aa';ctx.beginPath();ctx.moveTo(p.x+(i-1)*t*.2,p.y);ctx.quadraticCurveTo(p.x+(i-1)*t*.2-t*.14,p.y-t*.35,p.x+(i-1)*t*.2,p.y-t*.65);ctx.stroke();}}else{ctx.fillStyle='#987848';for(let i=0;i<5;i++){const x=p.x+(i-2)*t*.2;ctx.beginPath();ctx.moveTo(x-t*.1,p.y);ctx.lineTo(x,p.y-t*.3);ctx.lineTo(x+t*.1,p.y);ctx.fill();}}}ctx.fillStyle='#fff0be';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(h.kind==='steam'?'Vapor':'Espinhos',p.x,p.y+t*.6);ctx.restore();}
+  const fx=state.powerFx;
+  if(fx&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
   const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), {type:'shelter' as const,p:PILOT_SHELTER}, {type:'portal' as const,p:room.exit}, ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
@@ -103,9 +105,9 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       const range = Math.hypot(state.player.x-enemy.x,state.player.y-enemy.y);
       const safe = Math.hypot(state.player.x-room.camp.x,state.player.y-room.camp.y)<1.6;
       const moving = (!safe && range<4 && range>PILOT_INSECT.stopDistance) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
-      const mobImage=def.art==='river-mobs'?riverMobs:mobsAtlas;
+      const mobImage=def.art==='autumn-mobs'?autumnMobs:def.art==='river-mobs'?riverMobs:mobsAtlas;
       if(def.art&&mobImage?.complete&&mobImage.naturalWidth){
-        const frame=moving&&!reducedMotion?Math.floor(state.time/170)%4:0,rect=explorationMobFrame(def.art,def.spriteRow??0,frame,mobImage.naturalWidth,mobImage.naturalHeight),cw=rect.width,ch=rect.height;
+        const frame=def.art==='autumn-mobs'?((enemy.windupUntil??0)>state.time||enemy.attackAt-state.time>1250&&enemy.attackAt-state.time<=1500?3:moving&&!reducedMotion?1+Math.floor(state.time/170)%2:0):moving&&!reducedMotion?Math.floor(state.time/170)%4:0,rect=explorationMobFrame(def.art,def.spriteRow??0,frame,mobImage.naturalWidth,mobImage.naturalHeight),cw=rect.width,ch=rect.height;
         const dw=t*(def.width??.78),dh=dw*ch/cw;
         ctx.save();if(def.tint&&!autumn)ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         ctx.drawImage(mobImage,rect.x,rect.y,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();

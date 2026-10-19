@@ -1,3 +1,4 @@
+import PowerSymbol from './PowerSymbol';
 import {useRef,useState,type ReactNode,type PointerEvent} from 'react';
 import {COMBAT_CARDS,COMBAT_POWERS,type CombatCard,type CombatPower,type CombatState} from '@/game/explorationCombat';
 import {LEGEND_WEAPONS,readLegendProgress,type LegendId,type LegendWeapon,type LegendAction} from '@/game/explorationLegends';
@@ -15,7 +16,7 @@ export default function LegendEquipmentPanel({game,name,portrait,legendId,canEqu
  const drag=useRef<{item:Item;x:number;y:number;moving:boolean;pointer:number}|null>(null),suppressClick=useRef(false),root=useRef<HTMLDivElement>(null);
  const items:Item[]=[...l.weapons.map(id=>({kind:'weapon' as const,id})),...game.cards.map(id=>({kind:'card' as const,id})),{kind:'power',id:'burst'},...game.cards.map(id=>({kind:'power' as const,id}))];
  const title=(i:Item)=>i.kind==='weapon'?LEGEND_WEAPONS[i.id].name:i.kind==='card'?COMBAT_CARDS[i.id].name:COMBAT_POWERS[i.id].name;
- const art=(i:Item)=>i.kind==='weapon'?<WeaponPortrait weapon={i.id}/>:i.kind==='card'?<ExplorationItemIcon item={i.id} size={35}/>:<Sparkles size={30}/>;
+ const art=(i:Item)=>i.kind==='weapon'?<WeaponPortrait weapon={i.id}/>:i.kind==='card'?<ExplorationItemIcon item={i.id} size={35}/>:<PowerSymbol power={i.id}/>;
  const equipped=(i:Item)=>i.kind==='weapon'?l.weapon===i.id:i.kind==='card'?game.activeCard===i.id||game.secondaryCard===i.id:(game.activePower??'burst')===i.id;
  function apply(i:Item,t:Target){
   setChosen(i);
