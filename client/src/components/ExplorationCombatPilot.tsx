@@ -1,3 +1,5 @@
+import {normalizeQuickItems,setCombatQuickItem,quickItemCount,canUseQuickItem,useCombatQuickItem,type CombatQuickItem} from '@/game/explorationCombat';
+import {RARE_ITEMS} from '@/game/explorationCampaign';
 import PowerSymbol from './PowerSymbol';
 import {preloadLegend} from '@/game/explorationLegendView';
 import {changeLegend,eligibleLegend,legendName,readLegendProgress} from '@/game/explorationLegends';
@@ -39,6 +41,8 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
   useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed);},[audioMix,soundOn,panel,overview,assetStatus,game.completed]);
+  const [noticeVisible,setNoticeVisible]=useState(true);
+  useEffect(()=>{setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),4500);return ()=>clearTimeout(timer);},[game.message,game.roomIndex]);
   const [inventoryTab,setInventoryTab]=useState<'all'|'legends'>('all');
   const [lensExpanded,setLensExpanded]=useState(false);
   const [viewport,setViewport]=useState(()=>({width:typeof window==='undefined'?390:window.innerWidth,height:typeof window==='undefined'?844:window.innerHeight}));
@@ -168,8 +172,8 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   }, [initial.supported]);
   const room=campaignRoom(game.roomIndex);
   const fibers = game.roomIndex===0?game.stock.fibra+game.bag.fibra:game.roomCollectedFibers;
-  const canUse = (item: 'erva' | 'fruta') => !game.completed && game.stock[item] + game.bag[item] > 0 && (item === 'erva' ? game.hp < combatMaxHp(game.xp) : game.energy < 100);
-  const useItem = (item: 'erva' | 'fruta') => { if (!panelRef.current && !overviewRef.current) change(consumeCombatItem(current.current, item)); };
+  const canUse = (item:CombatQuickItem) => canUseQuickItem(game,item);
+  const useItem = (item:CombatQuickItem) => {if(!panelRef.current&&!overviewRef.current)change(useCombatQuickItem(current.current,item));};
   const modalTitle=panel==='inventory'?'Mochila da Exploração':panel==='exit'?'Voltar aos capítulos?':'Exploração pausada';
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
@@ -195,12 +199,12 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         </nav>
       </ExplorationMinimap>
       <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(room.fibers, fibers)}/{room.fibers} fibras</span><span>{Math.min(room.encounters,game.roomIndex===0?game.defeated:game.defeatedEnemyIds.length)}/{room.encounters} encontros</span><span>{game.gateOpen ? "Siga ao portal" : "Ative o marco"}</span>{room.switches.length>0&&<span>Placas {game.switchStep}/{room.switches.length}</span>}{room.key&&<span>{game.hasRoomKey?'Chave ✓':'Busque a chave'}</span>}{room.bridge&&<span>{game.bridgeCrossed?'Ponte ✓':'Atravesse a ponte'}</span>}{room.bossId&&<span>{game.defeatedEnemyIds.includes(room.bossId)?'Mestre ✓':'Vença o mestre'}</span>}{room.useConsumable&&<span>{game.consumablesUsed?'Recuperação ✓':'Use fruta/erva'}</span>}</div>
-      <div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>
+      {(overview||noticeVisible)&&<div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>}
       {!game.completed&&room.bossId&&game.defeatedEnemyIds.includes(room.bossId)&&<aside className="combat-card-note" role="status"><strong>Carta rara conquistada</strong><p>{COMBAT_CARDS[bossCardForRoom(game.roomIndex)].description}</p><small>Já equipada · disponível na mochila</small></aside>}
       {!game.completed && <div className="combat-item-tray" aria-label="Itens e uso rápido">
         <span className="combat-collect-slot" title="Fibras coletadas"><ExplorationItemIcon item="fibra" size={28}/><small>{Math.min(room.fibers, fibers)}/{room.fibers}</small></span>
         <span className="combat-collect-slot" title="Âmbar coletado"><ExplorationItemIcon item="ambar" size={28}/><small>{game.stock.ambar + game.bag.ambar}</small></span>
-        {(['erva', 'fruta'] as const).map(item => <button key={item} disabled={!canUse(item) || Boolean(panel) || overview} onClick={() => useItem(item)} aria-label={`Usar ${COMBAT_ITEMS[item]}, ${game.stock[item] + game.bag[item]} disponível, recupera até ${item === 'erva' ? '35 HP' : '30 de energia'}`} title={item === 'erva' ? 'Usar erva: até +35 HP' : 'Usar fruta: até +30 energia'}><ExplorationItemIcon item={item} size={30}/><span>{game.stock[item] + game.bag[item]}</span><small>{item === 'erva' ? 'Curar' : 'Energia'}</small></button>)}
+        {normalizeQuickItems(game.quickItems).map(item => <button key={item} disabled={!canUse(item)||Boolean(panel)||overview} onClick={()=>useItem(item)} aria-label={`Usar ${item==='erva'||item==='fruta'?COMBAT_ITEMS[item]:RARE_ITEMS[item]}, ${quickItemCount(game,item)} disponível`}><ExplorationItemIcon item={item} size={30}/><span>{quickItemCount(game,item)}</span><small>{item==='fruta'?'Energia':'Curar'}</small></button>)}
       </div>}
       {!game.completed && <div className="combat-controls">
         <ExplorationJoystick disabled={Boolean(panel) || overview || game.completed} onChange={value=>{stick.current={...value,pointer:-1};if(value.x||value.y){route.current=[];}}}/>
@@ -211,7 +215,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     </div>
     <dialog id="combat-panel" ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
       <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel && <button onClick={() => openPanel(null)} aria-label={panel==='inventory'?'Fechar mochila e retomar':'Fechar painel e retomar'}><X size={20}/></button>}</header>
-      {panel === 'inventory' ? <CombatInventory key={inventoryTab} initialTab={inventoryTab} gender={profile?.gender??'menino'} onLegend={a=>change(changeLegend(current.current,profile?.gender??'menino',a))} game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} onRare={item=>change(useRareCombatItem(current.current,item))} onPower={power=>change(equipCombatPower(current.current,power))} onCard={(card,slot)=>change(equipCombatCard(current.current,card,slot))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>{room.hint}</p><p>As configurações e os guias ficam na tela de capítulos. Salve e volte ao mapa para consultá-los.</p></>}
+      {panel === 'inventory' ? <CombatInventory onQuick={(slot,item)=>change(setCombatQuickItem(current.current,slot,item))} key={inventoryTab} initialTab={inventoryTab} gender={profile?.gender??'menino'} onLegend={a=>change(changeLegend(current.current,profile?.gender??'menino',a))} game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} onRare={item=>change(useRareCombatItem(current.current,item))} onPower={power=>change(equipCombatPower(current.current,power))} onCard={(card,slot)=>change(equipCombatCard(current.current,card,slot))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>{room.hint}</p><p>As configurações e os guias ficam na tela de capítulos. Salve e volte ao mapa para consultá-los.</p></>}
 
       {panel !== 'inventory' && <div className="combat-dialog-actions"><button onClick={() => openPanel(null)}><Play size={16} />{panel === 'exit' ? 'Continuar aqui' : 'Retomar'}</button>{panel === 'exit' ? <button onClick={leave}>Salvar e voltar</button> : <button onClick={() => openPanel('exit')}>Voltar aos capítulos</button>}</div>}
     </dialog>

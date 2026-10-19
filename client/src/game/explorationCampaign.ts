@@ -3,7 +3,7 @@ import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hit
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
 import {insideExploration} from './explorationWorld';
 import type {CombatItem,CombatPoint} from './explorationCombat';
-export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;previousHp?:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs'|'autumn-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
+export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;previousHp?:number;previousBalanceHp?:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs'|'autumn-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
 export type CampaignNode=CombatPoint&{id:string;item:CombatItem;quantity:number};
 export type CampaignProp=CombatPoint&{index:number;width:number;height:number};
 export type CampaignHazard=CombatPoint&{id:string;kind:'bramble'|'steam';radius:number;period:number;activeMs:number;offset:number};
@@ -110,4 +110,7 @@ const gardenCache=new WeakMap<CampaignRoom,ReturnType<typeof buildCampaignGarden
 export function campaignGardens(room:CampaignRoom){let value=gardenCache.get(room);if(!value){value=buildCampaignGardens(room);gardenCache.set(room,value);}return value;}
 const enemyCache=new Map<string,CampaignEnemy[]>();
 export const CAMPAIGN_ENEMY_CACHE_LIMIT=64;
-export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed);if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
+export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map(enemy=>({...enemy,previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))}));if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
+
+/** Additional resilience; Chapter 3 already includes its earlier tenfold increase. */
+export function npcHpMultiplier(index:number){return index>=20?1.25:index>=10?1.75:1.5;}

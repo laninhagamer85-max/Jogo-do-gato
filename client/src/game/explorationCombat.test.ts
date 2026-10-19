@@ -35,9 +35,9 @@ describe('Exploration combat pilot', () => {
   it('clamps stalled frame time',()=>expect(stepCombat(createCombatState(),{dx:1},10000).player.x).toBeCloseTo(1.65));
   it('requires facing and respects attack cooldown',()=>{
     const s=createCombatState();s.player={x:4,y:5.5};s.facing={x:0,y:1};
-    const a=stepCombat(s,{attack:true},50);expect(a.enemies[0].hp).toBe(25);
-    expect(stepCombat(a,{attack:true},50).enemies[0].hp).toBe(25);
-    s.facing={x:0,y:-1};expect(stepCombat(s,{attack:true},50).enemies[0].hp).toBe(40);
+    const a=stepCombat(s,{attack:true},50);expect(a.enemies[0].hp).toBe(45);
+    expect(stepCombat(a,{attack:true},50).enemies[0].hp).toBe(45);
+    s.facing={x:0,y:-1};expect(stepCombat(s,{attack:true},50).enemies[0].hp).toBe(60);
   });
   it('awards a kill once across reload and reports actual final damage',()=>{
     const s=createCombatState();s.player={x:4,y:5.5};s.facing={x:0,y:1};s.enemies[0].hp=3;
@@ -74,7 +74,7 @@ describe('Exploration combat pilot', () => {
   it('respawns on time with an uncollected drop and preserves that drop across reload',()=>{
     const s=createCombatState();s.time=50000;s.enemies[0].hp=0;s.enemies[0].respawnAt=1;
     s.loot=[{id:'beetle:0',x:4,y:6.5,item:'fibra',quantity:3}];
-    const a=stepCombat(s,{},50);expect(a.enemies[0].hp).toBe(40);expect(a.enemies[0].generation).toBe(1);expect(a.loot).toEqual(s.loot);
+    const a=stepCombat(s,{},50);expect(a.enemies[0].hp).toBe(60);expect(a.enemies[0].generation).toBe(1);expect(a.loot).toEqual(s.loot);
     const r=readCombatState(combatSnapshot(a));if(!r.supported)throw Error('Unsupported fixture');
     expect(r.state.loot).toHaveLength(1);r.state.player={x:4,y:6.5};
     const b=stepCombat(r.state,{},0);expect(b.bag.fibra).toBe(3);expect(b.loot).toHaveLength(0);
@@ -84,7 +84,7 @@ describe('Exploration combat pilot', () => {
     const s=createCombatState();s.enemies[0].hp=0;s.enemies[0].respawnAt=45000;
     expect(stepCombat(s,{},50).enemies[0].hp).toBe(0);
     s.time=45000;s.player={x:4,y:6.5};expect(stepCombat(s,{},0).enemies[0].hp).toBe(0);
-    s.player={...PILOT_CAMP};expect(stepCombat(s,{},0).enemies[0].hp).toBe(40);
+    s.player={...PILOT_CAMP};expect(stepCombat(s,{},0).enemies[0].hp).toBe(60);
   });
   it('combines repeated drops without losing quantities or duplicating collection after reload',()=>{
     const s=createCombatState();s.player={x:4,y:5.5};s.facing={x:0,y:1};s.enemies[0].hp=1;s.enemies[0].generation=8;
@@ -100,12 +100,12 @@ describe('Exploration combat pilot', () => {
   });
   it('blocks attacks through terrain',()=>{
     const s=createCombatState();s.player={x:4.75,y:3.5};s.facing={x:1,y:0};s.enemies[0]={...s.enemies[0],x:6.05,y:3.5};
-    expect(stepCombat(s,{power:true},50).enemies[0].hp).toBe(40);
+    expect(stepCombat(s,{power:true},50).enemies[0].hp).toBe(60);
   });
 
   it('reopens a completed room without resetting earned progression or refilling inventory',()=>{
     const s=createCombatState();s.completed=true;s.revision=900;s.time=50000;s.xp=120;s.stock={fibra:22,ambar:5,erva:0,fruta:0};s.equipmentOwned=true;s.equipmentOn=true;s.deaths=3;s.collectedNodes=['fern-a'];s.gateOpen=true;s.enemies[0].hp=0;
-    const a=replayCompletedCombat(s);expect(a.completed).toBe(false);expect(a.gateOpen).toBe(false);expect(a.collectedNodes).toEqual([]);expect(a.enemies[0].hp).toBe(40);expect(a.enemies[0].attackAt).toBe(51500);expect(a.xp).toBe(120);expect(a.stock).toEqual(s.stock);expect(a.equipmentOn).toBe(true);expect(a.deaths).toBe(3);expect(a.revision).toBe(901);expect(s.completed).toBe(true);
+    const a=replayCompletedCombat(s);expect(a.completed).toBe(false);expect(a.gateOpen).toBe(false);expect(a.collectedNodes).toEqual([]);expect(a.enemies[0].hp).toBe(60);expect(a.enemies[0].attackAt).toBe(51500);expect(a.xp).toBe(120);expect(a.stock).toEqual(s.stock);expect(a.equipmentOn).toBe(true);expect(a.deaths).toBe(3);expect(a.revision).toBe(901);expect(s.completed).toBe(true);
   });
   it('migrates existing completed saves and avoids a second completion bonus',()=>{
     const legacy={...combatSnapshot(createCombatState()),completed:true,equipmentOwned:true};delete legacy.completionRewardClaimed;

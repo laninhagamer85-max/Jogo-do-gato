@@ -3,7 +3,7 @@ import {campaignEnemies,campaignRoom,EXPLORATION_ROOMS,rareDropChance} from './e
 import {createCombatState,stepCombat,readCombatState,combatSnapshot,pilotWalkable,defeatCombat,advanceCombatRoom} from './explorationCombat';
 const fixture=(index:number,seed=42)=>{const s=createCombatState(index,seed);s.completedRooms=Array.from({length:index},(_,i)=>i);s.claimedRooms=[...s.completedRooms];return s;};
 it('keeps the approved pilot fauna intact and supplies three new species only in the woodland expansion',()=>{
- expect(campaignEnemies(0)).toEqual(campaignRoom(0).enemies);
+ expect(campaignEnemies(0)).toEqual(campaignRoom(0).enemies.map(e=>({...e,previousBalanceHp:e.hp,hp:Math.ceil(e.hp*1.5)})));
  const names=new Set(EXPLORATION_ROOMS.flatMap(r=>campaignEnemies(r.index).filter(e=>e.art).map(e=>e.name)));
  expect([...names].sort()).toEqual(['Mariposa Cobre','Tatu do Âmbar','Javali das Avelãs','Mestre do Âmbar','Cogumelo Saltador','Escaravelho Esmeralda','Guardião dos Troncos','Mestre dos Troncos','Caranguejo Azul','Rã Ametista','Mestre das Marés'].sort());
 });
