@@ -3,32 +3,32 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "published_legends_for_user_test",
+  "status": "published_loadout_for_user_test",
   "active_run": "2026-10-19-legend-motion",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
-    "source_site_commit": "3689761aa0f4a61db79a00c73d525352ebfd3e5f",
+    "source_site_commit": "36c6827f2749c29a696bf7acf623bd53ea42b54f",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "2debd4189dab62eba45f4292ec09a9142b37323c",
+    "code_commit": "dbc78c2be07d0c7d90fb6f88d2f7ae7b63f6c90c",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "legend-equipment",
     "product_version": "1.19.0",
-    "implementation_status": "validated_pending_publication"
+    "implementation_status": "published"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.18.1",
-    "last_observed_version": 90,
+    "product_version": "1.19.0",
+    "last_observed_version": 95,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0b8b65ec07f881919309d291a6a9a8ca",
-    "deployment_id": "appgdep_6ad58e6747248191a34390ffc5b5148b",
-    "site_commit": "3689761aa0f4a61db79a00c73d525352ebfd3e5f"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0480a1a004f88191b0f92bd4852280b5",
+    "deployment_id": "appgdep_6ad5b5df07b481919a9dc38e54338923",
+    "site_commit": "36c6827f2749c29a696bf7acf623bd53ea42b54f"
   },
   "verification": {
     "typescript": "passed",
@@ -612,10 +612,11 @@
   },
   "legend_motion": {
     "product_version": "1.19.0",
-    "status": "validated_pending_publication",
+    "status": "published",
     "scope": "equipment layout, active pinned, named blurred silhouettes, two rare cards, unlocked power selection",
     "checks": "TypeScript;504game tests44files",
     "save": "unchanged;campaignVersion4",
-    "phone": "user screenshots inspected;new phone test pending"
+    "phone": "user screenshots inspected;new phone test pending",
+    "browser": "Isolated844x390/390x844: tide slot1+roots slot2, roots power selected, amber locked, preserved across orientation. Earlier1.18.4 verified craft/equip and named silhouettes. No physicalphone test."
   }
 }
