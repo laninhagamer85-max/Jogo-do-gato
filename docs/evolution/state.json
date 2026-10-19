@@ -3,32 +3,32 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "published_loadout_for_user_test",
+  "status": "published_equipment_drag_for_user_test",
   "active_run": "2026-10-19-equipment-drag",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
-    "source_site_commit": "36c6827f2749c29a696bf7acf623bd53ea42b54f",
+    "source_site_commit": "1b9086a8066d9f1f9721466534c348abb78ce3ca",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "dbc78c2be07d0c7d90fb6f88d2f7ae7b63f6c90c",
+    "code_commit": "e2df34b7e2ab3ab4a9386bce71ebbd93dccef0bd",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
   "current_improvement": {
     "id": "equipment-drag",
     "product_version": "1.20.1",
-    "implementation_status": "validated_pending_publication"
+    "implementation_status": "published"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.19.0",
-    "last_observed_version": 95,
+    "product_version": "1.20.1",
+    "last_observed_version": 98,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0480a1a004f88191b0f92bd4852280b5",
-    "deployment_id": "appgdep_6ad5b5df07b481919a9dc38e54338923",
-    "site_commit": "36c6827f2749c29a696bf7acf623bd53ea42b54f"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_822aa9453b5881918a8dff027a3bbe97",
+    "deployment_id": "appgdep_6ad5bba2270c8191863d8b88e42337aa",
+    "site_commit": "1b9086a8066d9f1f9721466534c348abb78ce3ca"
   },
   "verification": {
     "typescript": "passed",
@@ -62,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-exploration-performance.md",
+  "latest_report": "docs/evolution/runs/2026-10-19-equipment-drag.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -618,5 +618,11 @@
     "save": "unchanged;campaignVersion4",
     "phone": "user screenshots inspected;new phone test pending",
     "browser": "Isolated844x390/390x844: tide slot1+roots slot2, roots power selected, amber locked, preserved across orientation. Earlier1.18.4 verified craft/equip and named silhouettes. No physicalphone test."
+  },
+  "equipment_drag": {
+    "product_version": "1.20.1",
+    "status": "published",
+    "tests": "TypeScript;12focusedtests;build20.11s",
+    "browser": "1.20.0 actual roots pointer drag to second slot and incompatible-slot dialog;1.20.1 wrapping Kael->Lyra->Kael, female-only label, sword craft, rotate front/diagonal/left, demo control, responsive844x390/390x844; HP304andenergy100unchanged. Physical touch device not tested."
   }
 }
