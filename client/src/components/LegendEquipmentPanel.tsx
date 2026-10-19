@@ -1,0 +1,43 @@
+import {useRef,useState,type ReactNode,type PointerEvent} from 'react';
+import {COMBAT_CARDS,COMBAT_POWERS,type CombatCard,type CombatPower,type CombatState} from '@/game/explorationCombat';
+import {LEGEND_WEAPONS,readLegendProgress,type LegendWeapon,type LegendAction} from '@/game/explorationLegends';
+import ExplorationItemIcon from './ExplorationItemIcon';
+import {WeaponPortrait} from './ExplorationLegends';
+import {Sparkles,X} from 'lucide-react';
+import './LegendEquipmentPanel.css';
+type Item={kind:'weapon';id:LegendWeapon}|{kind:'card';id:CombatCard}|{kind:'power';id:CombatPower};
+type Target='hero'|'weapon'|'card0'|'card1'|'power';
+export default function LegendEquipmentPanel({game,name,portrait,canEquip,onAction,onCard,onPower}:{game:CombatState;name:string;portrait:ReactNode;canEquip:boolean;onAction:(a:LegendAction)=>void;onCard?:(c:CombatCard,slot?:0|1)=>void;onPower?:(p:CombatPower)=>void}){
+ const l=readLegendProgress(game.legends),[chosen,setChosen]=useState<Item>({kind:'weapon',id:'sword'}),[notice,setNotice]=useState(''),[expanded,setExpanded]=useState(false),[ghost,setGhost]=useState<{item:Item;x:number;y:number}|null>(null),[target,setTarget]=useState<string|null>(null);
+ const drag=useRef<{item:Item;x:number;y:number;moving:boolean;pointer:number}|null>(null),suppressClick=useRef(false),root=useRef<HTMLDivElement>(null);
+ const items:Item[]=[...l.weapons.map(id=>({kind:'weapon' as const,id})),...game.cards.map(id=>({kind:'card' as const,id})),{kind:'power',id:'burst'},...game.cards.map(id=>({kind:'power' as const,id}))];
+ const title=(i:Item)=>i.kind==='weapon'?LEGEND_WEAPONS[i.id].name:i.kind==='card'?COMBAT_CARDS[i.id].name:COMBAT_POWERS[i.id].name;
+ const art=(i:Item)=>i.kind==='weapon'?<WeaponPortrait weapon={i.id}/>:i.kind==='card'?<ExplorationItemIcon item={i.id} size={35}/>:<Sparkles size={30}/>;
+ const equipped=(i:Item)=>i.kind==='weapon'?l.weapon===i.id:i.kind==='card'?game.activeCard===i.id||game.secondaryCard===i.id:(game.activePower??'burst')===i.id;
+ function apply(i:Item,t:Target){
+  setChosen(i);
+  if(game.completed){setNotice('Esta sala já foi concluída. Entre em uma sala ativa para trocar os equipamentos.');return;}
+  if(!canEquip){setNotice('Selecione e ative este Lendário antes de equipar itens. Se ainda estiver bloqueado, conclua a sala 1 para liberá-lo.');return;}
+  if(t!=='hero'&&(i.kind==='weapon'?t!=='weapon':i.kind==='card'?!t.startsWith('card'):t!=='power')){setNotice('Este espaço não aceita esse tipo de item. Use o espaço de arma, carta rara ou poder correspondente.');return;}
+  if(i.kind==='weapon'){
+   if(!l.weapons.includes(i.id)){setNotice('Esta arma ainda não foi fabricada. Confira os materiais na oficina.');return;}
+   if(l.weapon!==i.id)onAction({type:'equip',weapon:i.id});
+  }else if(i.kind==='card'){
+   if(!game.cards.includes(i.id)){setNotice('Carta ainda não desbloqueada. Derrote o mestre do capítulo correspondente.');return;}
+   const slot=t==='card1'?1:t==='card0'?0:game.activeCard===i.id?0:game.secondaryCard===i.id?1:!game.activeCard?0:!game.secondaryCard?1:null;
+   if(slot===null){setNotice('Os dois espaços de cartas estão ocupados. Arraste a carta sobre o espaço que deseja substituir.');return;}
+   if((slot===0?game.activeCard:game.secondaryCard)!==i.id)onCard?.(i.id,slot);
+  }else{
+   if(i.id!=='burst'&&!game.cards.includes(i.id)){setNotice('Este poder ainda está bloqueado. Conquiste a carta do mestre correspondente para liberá-lo.');return;}
+   onPower?.(i.id);
+  }
+ }
+ function hit(x:number,y:number){const el=document.elementFromPoint(x,y)?.closest<HTMLElement>('[data-equip-target]');return el&&root.current?.contains(el)?el.dataset.equipTarget as Target:null;}
+ function start(e:PointerEvent<HTMLButtonElement>,i:Item){if(e.button!==0)return;drag.current={item:i,x:e.clientX,y:e.clientY,moving:false,pointer:e.pointerId};suppressClick.current=false;e.currentTarget.setPointerCapture(e.pointerId);}
+ function move(e:PointerEvent<HTMLButtonElement>){const d=drag.current;if(!d||d.pointer!==e.pointerId)return;if(!d.moving&&Math.hypot(e.clientX-d.x,e.clientY-d.y)<8)return;d.moving=true;setGhost({item:d.item,x:e.clientX,y:e.clientY});setTarget(hit(e.clientX,e.clientY));}
+ function end(e:PointerEvent<HTMLButtonElement>,cancel=false){const d=drag.current;if(!d)return;drag.current=null;setGhost(null);setTarget(null);suppressClick.current=d.moving;if(!cancel&&d.moving){const t=hit(e.clientX,e.clientY);if(t)apply(d.item,t);else setNotice('Solte o item sobre o personagem ou sobre um espaço de equipamento compatível.');}}
+ function inventory(i:Item){return <button key={`${i.kind}:${i.id}`} className={`legend-bag-item ${equipped(i)?'is-equipped':''}`} aria-label={`${title(i)}${equipped(i)?', equipado':''}. Arraste ou toque para selecionar`} onPointerDown={e=>start(e,i)} onPointerMove={move} onPointerUp={e=>end(e)} onPointerCancel={e=>end(e,true)} onClick={()=>{if(suppressClick.current){suppressClick.current=false;return;}setChosen(i);}}>{art(i)}<small>{title(i)}</small>{equipped(i)&&<span className="legend-equipped-dot" aria-label="Equipado"/>}</button>;}
+ function slot(t:Target,label:string,i:Item|null){return <button data-equip-target={t} className={`legend-equipment-slot ${target===t?'is-drop-target':''}`} aria-label={`${label}: ${i?title(i):'vazio'}. Toque para equipar o item selecionado`} onClick={()=>apply(chosen,t)}><small>{label}</small>{i?art(i):<span className="legend-empty-slot">+</span>}<span>{i?title(i):'Vazio'}</span></button>;}
+ const description=chosen.kind==='weapon'?LEGEND_WEAPONS[chosen.id].description:chosen.kind==='card'?COMBAT_CARDS[chosen.id].description:COMBAT_POWERS[chosen.id].description;
+ return <div ref={root} className="legend-rpg-panel"><div className="legend-rpg-layout"><section className="legend-paperdoll" aria-label={`Equipamentos de ${name}`}><div className="legend-slots-left">{slot('weapon','Arma',l.weapon?{kind:'weapon',id:l.weapon}:null)}{slot('card0','Carta rara 1',game.activeCard?{kind:'card',id:game.activeCard}:null)}</div><button className={`legend-paperdoll-hero ${target==='hero'?'is-drop-target':''}`} data-equip-target="hero" aria-label={`Equipar item selecionado em ${name}`} onClick={()=>apply(chosen,'hero')}>{portrait}<strong>{name}</strong><small>Arraste um item para cá</small></button><div className="legend-slots-right">{slot('power','Poder',{kind:'power',id:game.activePower??'burst'})}{slot('card1','Carta rara 2',game.secondaryCard?{kind:'card',id:game.secondaryCard}:null)}</div></section><section className="legend-items-bag" aria-label="Mochila de equipamentos"><h3>Seus itens</h3><p>Arraste para equipar ou toque no item e no espaço.</p><div className="legend-bag-grid">{(expanded?items:items.slice(0,6)).map(inventory)}</div>{items.length>6&&<button className="legend-bag-expand" onClick={()=>setExpanded(v=>!v)}>{expanded?'Recolher itens':`Ver todos (${items.length})`}</button>}</section></div><section className="legend-selected-item" aria-label="Detalhes do equipamento selecionado"><div>{art(chosen)}<strong>{title(chosen)}</strong></div><p>{description}</p><button onClick={()=>apply(chosen,'hero')}>Equipar no personagem</button></section><details className="legend-workshop"><summary>Oficina · fabricar armas</summary>{(Object.entries(LEGEND_WEAPONS) as [LegendWeapon,(typeof LEGEND_WEAPONS)[LegendWeapon]][]).map(([id,w])=>{const crafted=l.weapons.includes(id),enough=game.stock.fibra+game.bag.fibra>=w.fibra&&game.stock.ambar+game.bag.ambar>=w.ambar&&(!w.rare||game.rareStock[w.rare]+game.rareBag[w.rare]>=1);return <article key={id}><WeaponPortrait weapon={id}/><strong>{w.name}</strong><small>{w.fibra} fibras · {w.ambar} âmbar{w.rare?` · 1 ${w.rare==='cristal'?'cristal':'seiva'}`:''}</small><button onClick={()=>{if(crafted){setChosen({kind:'weapon',id});return;}if(!canEquip)setNotice('Ative o Lendário antes de fabricar sua arma.');else if(!enough)setNotice('Faltam materiais para fabricar esta arma. Colete os materiais indicados na Exploração.');else onAction({type:'craft',weapon:id});}}>{crafted?'Ver item':'Fabricar '+w.name}</button></article>;})}</details>{notice&&<div className="legend-notice-backdrop"><div className="legend-equip-notice" role="dialog" aria-modal="true" aria-label="Não foi possível equipar" onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setNotice('');}if(e.key==='Tab'){e.preventDefault();e.currentTarget.querySelector('button')?.focus();}}}><h3>Não foi possível equipar</h3><p>{notice}</p><button autoFocus onClick={()=>setNotice('')}><X size={16}/>Entendi</button></div></div>}{ghost&&<div className="legend-drag-ghost" style={{left:ghost.x,top:ghost.y}} aria-hidden="true">{art(ghost.item)}</div>}</div>;
+}

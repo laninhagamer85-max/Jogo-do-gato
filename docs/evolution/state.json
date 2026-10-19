@@ -4,7 +4,7 @@
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
   "status": "published_loadout_for_user_test",
-  "active_run": "2026-10-19-legend-motion",
+  "active_run": "2026-10-19-equipment-drag",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,9 +16,9 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "legend-equipment",
-    "product_version": "1.19.0",
-    "implementation_status": "published"
+    "id": "equipment-drag",
+    "product_version": "1.20.0",
+    "implementation_status": "validated_pending_publication"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
