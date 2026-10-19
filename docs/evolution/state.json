@@ -4,7 +4,7 @@
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
   "status": "published_runtime_acceptance_pending",
-  "active_run": "2026-10-18-exploration-performance",
+  "active_run": "2026-10-18-exploration-settings",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -587,5 +587,17 @@
     "browser": "Published87: pre-entry settings modal verified at390x844, active room21 at844x390 has no settings gear. Runtime clock advanced, but cloud input/animation remained slow; no reliable FPS claim or physical phone acceptance.",
     "rollback": "live1.17.2/Sites84,8f048e6359bc3e49f81f8b70fe6beaee937cf1ef; saved1.17.3/Sites85 was never deployed",
     "color_cache": "12MP bounded native palette cache removes per-draw autumn filters; original resolution retained"
+  },
+  "settings_review": {
+    "product_version": "1.17.6",
+    "status": "validated_pending_publication",
+    "checks": "TypeScript;16 focused tests passed",
+    "changes": [
+      "scoped high-contrast button colors",
+      "portraits for all12NPCs",
+      "forest portrait crop boundaries",
+      "accurate value ranges and no-rare notice"
+    ],
+    "browser": "all4tabs inspected live before changes; after pending"
   }
 }

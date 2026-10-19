@@ -130,3 +130,18 @@
 
 .exp-lab{display:grid;grid-template-rows:auto minmax(0,1fr)}.exp-lab>div{overflow:hidden!important}.exp-lab .combat-pilot{height:100%;min-height:0}
 .exploration-settings{position:fixed;inset:12px;margin:auto;width:min(92vw,640px);height:max-content;max-height:calc(100dvh - 24px);padding:18px}.exploration-settings button{font:inherit;min-height:44px;min-width:44px;padding:8px 12px;border-radius:12px;border:1px solid #bacda0;cursor:pointer}.exploration-settings .combat-dialog-heading>button{display:grid;place-items:center;border-radius:50%}
+
+/* Settings own their palette even when the chapter page uses a different theme. */
+.exploration-settings{background:#fff9e9;color:#263d31;color-scheme:light}
+.exploration-settings button,.exploration-settings .exp-pause-tabs button,.exploration-settings .exp-audio-settings>button{background:#294b39;color:#fff9e9;border-color:#57765e;font-weight:600;-webkit-text-fill-color:#fff9e9}
+.exploration-settings .exp-pause-tabs button[aria-pressed=true]{background:#3d6248;color:#fff9e9;border:2px solid #9b741f;box-shadow:inset 0 -3px 0 #edcf85}
+.exploration-settings button:hover{background:#365d44}
+.exploration-settings button:focus-visible,.exploration-settings summary:focus-visible,.exploration-settings select:focus-visible,.exploration-settings input:focus-visible{outline:3px solid #896515;outline-offset:3px}
+.exploration-settings h2,.exploration-settings h3,.exploration-settings strong,.exploration-settings label,.exploration-settings p,.exploration-settings li{color:#263d31}
+.exploration-settings .exp-bestiary details{background:#f5f0dd;border-color:#a9b99c}
+.exp-bestiary-portrait{display:block;flex:0 0 56px;width:56px;height:64px;overflow:hidden}
+.exp-bestiary summary>span:not(.exp-bestiary-chevron){min-width:0;overflow-wrap:anywhere}
+.exp-bestiary .exp-bestiary-chevron{margin-left:auto;flex:none;font-size:22px;color:#365d44;transition:transform .15s}
+.exp-bestiary details[open] .exp-bestiary-chevron{transform:rotate(180deg)}
+.exploration-settings .exp-room-manual select{width:100%;min-width:0}
+.exploration-settings .exp-bestiary summary small{color:#445443;opacity:1}
