@@ -109,12 +109,12 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       if(def.art&&mobImage?.complete&&mobImage.naturalWidth){
         const frame=def.art==='autumn-mobs'?((enemy.windupUntil??0)>state.time||enemy.attackAt-state.time>1250&&enemy.attackAt-state.time<=1500?3:moving&&!reducedMotion?1+Math.floor(state.time/170)%2:0):moving&&!reducedMotion?Math.floor(state.time/170)%4:0,rect=explorationMobFrame(def.art,def.spriteRow??0,frame,mobImage.naturalWidth,mobImage.naturalHeight),cw=rect.width,ch=rect.height;
         const dw=t*(def.width??.78),dh=dw*ch/cw;
-        ctx.save();if(def.tint&&!autumn)ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
+        ctx.save();if(def.tint&&(!autumn||def.variantName))ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         ctx.drawImage(mobImage,rect.x,rect.y,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
       }else if(!def.art&&enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
         const row=def.name==='Besouro'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
         const cw=enemiesAtlas.naturalWidth/4,ch=enemiesAtlas.naturalHeight/2;
-        ctx.save();if(def.tint&&!autumn)ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
+        ctx.save();if(def.tint&&(!autumn||def.variantName))ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         const attacking=enemy.attackAt-state.time>1250 && enemy.attackAt-state.time<=1500;
         if(attacking&&!reducedMotion)ctx.rotate(-.08*Math.sin((1500-enemy.attackAt+state.time)/250*Math.PI));
         const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dw=t*PILOT_INSECT.width, dh=dw*sh/cw;
@@ -125,8 +125,18 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62, t * .065);
       ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      if(!overview||def.boss)ctx.fillText(`${def.name} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
+      if(!overview||def.boss)ctx.fillText(`${def.name}${def.variantName?" · "+def.variantName:""} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
     } else {
+      if((state.levelUpUntil??0)>state.time){
+        const remaining=(state.levelUpUntil!-state.time)/2600,fade=Math.min(1,remaining*4),pulse=reducedMotion?1:1+Math.sin(state.time/140)*.06;
+        ctx.save();ctx.globalCompositeOperation='screen';ctx.globalAlpha=fade*.65;
+        const glow=ctx.createRadialGradient(p.x,p.y-t*.38,t*.18,p.x,p.y-t*.38,t*1.05*pulse);
+        glow.addColorStop(0,'rgba(255,235,150,0)');glow.addColorStop(.45,'rgba(255,224,115,.16)');glow.addColorStop(.72,'rgba(255,210,85,.65)');glow.addColorStop(1,'rgba(255,208,90,0)');
+        ctx.fillStyle=glow;ctx.beginPath();ctx.ellipse(p.x,p.y-t*.38,t*1.05*pulse,t*1.12*pulse,0,0,Math.PI*2);ctx.fill();
+        if(!reducedMotion)for(let i=0;i<8;i++){const a=i*Math.PI/4+state.time/900,r=t*(.72+(1-remaining)*.25),sx=p.x+Math.cos(a)*r,sy=p.y-t*.38+Math.sin(a)*r;
+          const spark=ctx.createRadialGradient(sx,sy,0,sx,sy,t*.1);spark.addColorStop(0,'rgba(255,250,208,.95)');spark.addColorStop(1,'rgba(255,219,95,0)');ctx.fillStyle=spark;ctx.fillRect(sx-t*.1,sy-t*.1,t*.2,t*.2);}
+        ctx.restore();
+      }
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
       const px=p.x+state.facing.x*attack.lean*t, py=p.y+state.facing.y*attack.lean*t;

@@ -27,7 +27,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3|4;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3|4;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -147,7 +147,7 @@ export function readCombatState(value: unknown): CombatRead {
   return { supported: true, state: s };
 }
 export function combatSnapshot(s: CombatState): Record<string, unknown> {
-  const { powerFx:_powerFx,feedback: _feedback, message: _message, strikeUntil: _strike, walking: _walking, walkPhase: _phase, ...save } = s;
+  const { levelUpUntil:_levelUpUntil,powerFx:_powerFx,feedback: _feedback, message: _message, strikeUntil: _strike, walking: _walking, walkPhase: _phase, ...save } = s;
   return save;
 }
 function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms],roomStars:{...s.roomStars},roomPerformance:s.roomPerformance?{...s.roomPerformance}:null,roomAttempts:{...s.roomAttempts},cards:[...s.cards],defeatedEnemyIds:[...s.defeatedEnemyIds] }; }
@@ -204,7 +204,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
         const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; if(!s.defeatedEnemyIds.includes(enemy.id))s.defeatedEnemyIds.push(enemy.id); if(def.boss){const card:CombatCard=bossCardForRoom(s.roomIndex);if(!s.cards.includes(card)){s.cards.push(card);if(!s.activeCard)s.activeCard=card;else if(!s.secondaryCard)s.secondaryCard=card;feedback(s,s.player,`Carta rara: ${COMBAT_CARDS[card].name}`,'info');}s.rareBag[rareDropKind(def)]++;} enemy.respawnAt = s.time + insectRespawnMs(def);
         feedback(s, s.player, `+${def.xp} XP`, 'xp');
         const increase = combatMaxHp(s.xp) - oldMax; s.hp += increase;
-        if (combatLevel(s.xp) > oldLevel) { feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
+        if (combatLevel(s.xp) > oldLevel) { s.levelUpUntil=s.time+2600;feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
         // Keep one pending pile per insect so repeated respawns do not grow the scene indefinitely.
         const pending=s.loot.find(l=>l.id.startsWith(`${enemy.id}:`) && l.item===def.item&&!l.rare);
         if(pending){pending.quantity+=def.quantity;pending.expiresAt=s.time+combatLootLifetime(def.item);}

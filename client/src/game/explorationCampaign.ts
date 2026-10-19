@@ -3,7 +3,7 @@ import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hit
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
 import {insideExploration} from './explorationWorld';
 import type {CombatItem,CombatPoint} from './explorationCombat';
-export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;previousHp?:number;previousBalanceHp?:number;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs'|'autumn-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
+export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity:'common'|'uncommon'|'rare';hp:number;previousHp?:number;previousBalanceHp?:number;variantName?:string;attack:number;defense:number;xp:number;item:CombatItem;quantity:number;boss?:boolean;art?:'forest-mobs'|'river-mobs'|'autumn-mobs';spriteRow?:number;speed?:number;detection?:number;leash?:number;width?:number;radius?:number;attackRange?:number;tint?:string};
 export type CampaignNode=CombatPoint&{id:string;item:CombatItem;quantity:number};
 export type CampaignProp=CombatPoint&{index:number;width:number;height:number};
 export type CampaignHazard=CombatPoint&{id:string;kind:'bramble'|'steam';radius:number;period:number;activeMs:number;offset:number};
@@ -110,7 +110,19 @@ const gardenCache=new WeakMap<CampaignRoom,ReturnType<typeof buildCampaignGarden
 export function campaignGardens(room:CampaignRoom){let value=gardenCache.get(room);if(!value){value=buildCampaignGardens(room);gardenCache.set(room,value);}return value;}
 const enemyCache=new Map<string,CampaignEnemy[]>();
 export const CAMPAIGN_ENEMY_CACHE_LIMIT=64;
-export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map(enemy=>({...enemy,previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))}));if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
+export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map(enemy=>({...campaignEnemyVariant(enemy,room.index,seed),previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))}));if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
 
 /** Additional resilience; Chapter 3 already includes its earlier tenfold increase. */
 export function npcHpMultiplier(index:number){return index>=20?1.25:index>=10?1.75:1.5;}
+
+/** Visual variants reuse complete painted frames and never reroll encounter positions or loot. */
+export function campaignEnemyVariant(enemy:CampaignEnemy,index:number,seed:number):CampaignEnemy{
+ if(!enemy.art||enemy.boss||index===0)return enemy;
+ let hash=(seed^Math.imul(index+1,2654435761))>>>0;
+ for(const ch of enemy.id)hash=(Math.imul(hash,31)+ch.charCodeAt(0))>>>0;
+ const variant=hash%3;if(!variant)return enemy;
+ const agile=variant===1,biome=campaignRoom(index).biome;
+ const name=biome==='forest'?(agile?'Musgo':'Casca'):biome==='river'?(agile?'Turquesa':'Ardósia'):(agile?'Dourado':'Castanho');
+ const hue=biome==='forest'?(agile?12:-12):biome==='river'?(agile?-18:18):(agile?8:-10);
+ return {...enemy,variantName:name,width:(enemy.width??.78)*(agile?.9:1.08),speed:(enemy.speed??.0008)*(agile?1.12:.94),tint:`hue-rotate(${hue}deg) saturate(${agile?1.1:.85})`};
+}

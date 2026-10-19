@@ -6,7 +6,7 @@ export function explorationBestiary(){
  for(const room of EXPLORATION_ROOMS)for(const seed of [1,42,999])for(const enemy of campaignEnemies(room.index,seed)){
   let e=entries.get(enemy.name);if(!e){e={name:enemy.name,lore:lore[enemy.name]??'Habitante deste bioma.',rooms:[],variants:[]};entries.set(enemy.name,e);}
   if(!e.rooms.includes(room.index))e.rooms.push(room.index);
-  if(!e.variants.some(v=>v.level===enemy.level&&v.hp===enemy.hp))e.variants.push(enemy);
+  if(!e.variants.some(v=>v.level===enemy.level&&v.hp===enemy.hp&&v.variantName===enemy.variantName))e.variants.push(enemy);
  }
- return [...entries.values()].map(e=>({...e,minLevel:Math.min(...e.variants.map(v=>v.level)),maxLevel:Math.max(...e.variants.map(v=>v.level)),minHp:Math.min(...e.variants.map(v=>v.hp)),maxHp:Math.max(...e.variants.map(v=>v.hp)),drops:[...new Set(e.variants.map(v=>v.item))],rareDrops:[...new Set(e.variants.filter(v=>rareDropChance(v)>0).map(rareDropKind))],minChance:Math.min(...e.variants.map(rareDropChance)),maxChance:Math.max(...e.variants.map(rareDropChance))}));
+ return [...entries.values()].map(e=>({...e,appearances:[...new Set(e.variants.map(v=>v.variantName).filter((v):v is string=>Boolean(v)))],minLevel:Math.min(...e.variants.map(v=>v.level)),maxLevel:Math.max(...e.variants.map(v=>v.level)),minHp:Math.min(...e.variants.map(v=>v.hp)),maxHp:Math.max(...e.variants.map(v=>v.hp)),drops:[...new Set(e.variants.map(v=>v.item))],rareDrops:[...new Set(e.variants.filter(v=>rareDropChance(v)>0).map(rareDropKind))],minChance:Math.min(...e.variants.map(rareDropChance)),maxChance:Math.max(...e.variants.map(rareDropChance))}));
 }

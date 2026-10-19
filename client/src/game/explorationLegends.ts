@@ -1,4 +1,4 @@
-import type {CombatState} from './explorationCombat';
+import {combatLevel,type CombatState} from './explorationCombat';
 export type LegendId='lyra'|'kael';
 export type LegendGender='menina'|'menino';
 export type LegendWeapon='dagger'|'sword'|'bow';
@@ -24,6 +24,13 @@ export function readLegendProgress(value:unknown):LegendProgress{
  const weapons=[...new Set(Array.isArray(r.weapons)?r.weapons.filter((v):v is LegendWeapon=>v==='dagger'||v==='sword'||v==='bow'):[])];
  return {unlocked,active:unlocked.includes(r.active as LegendId)?r.active as LegendId:null,weapons,weapon:weapons.includes(r.weapon as LegendWeapon)?r.weapon as LegendWeapon:null};
 }
+export const LEGEND_UNLOCK_LEVEL=6;
+export const LEGEND_UNLOCK_RECIPE={fibra:180,ambar:60,cristal:6,seiva:8} as const;
+export function legendUnlockRequirements(game:CombatState){
+ const materials=(Object.keys(LEGEND_UNLOCK_RECIPE) as (keyof typeof LEGEND_UNLOCK_RECIPE)[]).map(item=>({item,required:LEGEND_UNLOCK_RECIPE[item],owned:item==='fibra'||item==='ambar'?game.stock[item]+game.bag[item]:game.rareStock[item]+game.rareBag[item]}));
+ const level=combatLevel(game.xp),firstRoom=game.completedRooms.includes(0);
+ return {level,firstRoom,materials,ready:!game.completed&&firstRoom&&level>=LEGEND_UNLOCK_LEVEL&&materials.every(m=>m.owned>=m.required)};
+}
 export function eligibleLegend(gender:LegendGender){return gender==='menina'?'lyra':'kael';}
 export function legendWeapon(game:Pick<CombatState,'legends'>){const l=game.legends;return l?.active&&l.weapon&&l.weapons.includes(l.weapon)?LEGEND_WEAPONS[l.weapon]:null;}
 export function legendName(game:Pick<CombatState,'legends'>){return LEGENDS.find(l=>l.id===game.legends?.active)?.name;}
@@ -33,8 +40,13 @@ export function changeLegend(game:CombatState,gender:LegendGender,action:LegendA
  if(game.completed)return game;
  const l=readLegendProgress(game.legends),eligible=eligibleLegend(gender);
  if(action.type==='unlock'){
-  if(action.id!==eligible||!game.completedRooms.includes(0)||l.unlocked.includes(action.id))return game;
+  if(action.id!==eligible||!legendUnlockRequirements(game).ready||l.unlocked.includes(action.id))return game;
+  const next={...game,stock:{...game.stock},bag:{...game.bag},rareStock:{...game.rareStock},rareBag:{...game.rareBag}};
+  for(const key of ['fibra','ambar'] as const){const take=Math.min(next.bag[key],LEGEND_UNLOCK_RECIPE[key]);next.bag[key]-=take;next.stock[key]-=LEGEND_UNLOCK_RECIPE[key]-take;}
+  for(const key of ['cristal','seiva'] as const){const take=Math.min(next.rareBag[key],LEGEND_UNLOCK_RECIPE[key]);next.rareBag[key]-=take;next.rareStock[key]-=LEGEND_UNLOCK_RECIPE[key]-take;}
+  if(next.rareEquipped&&next.rareStock[next.rareEquipped]+next.rareBag[next.rareEquipped]===0)next.rareEquipped=null;
   l.unlocked.push(action.id);
+  return {...next,legends:l,campaignVersion:4,revision:game.revision+1,message:'Lendário despertado! Materiais consumidos. Selecione Jogar para explorar.'};
  }else if(action.type==='select'){
   if(action.id!==null&&(action.id!==eligible||!l.unlocked.includes(action.id)))return game;
   if(l.active===action.id)return game;l.active=action.id;
@@ -51,7 +63,7 @@ export function changeLegend(game:CombatState,gender:LegendGender,action:LegendA
   l.weapons.push(action.weapon);l.weapon=action.weapon;
   return {...next,legends:l,campaignVersion:4,revision:game.revision+1,message:`${recipe.name}: fabricação concluída e arma equipada.`};
  }
- return {...game,legends:l,campaignVersion:4,revision:game.revision+1,message:action.type==='unlock'?'Lendário desbloqueado! Selecione para explorar.':l.active?`${legendName({legends:l})} está ${l.active==='lyra'?'pronta':'pronto'} para explorar.`:'Seu gato voltou à exploração.'};
+ return {...game,legends:l,campaignVersion:4,revision:game.revision+1,message:l.active?`${legendName({legends:l})} está ${l.active==='lyra'?'pronta':'pronto'} para explorar.`:'Seu gato voltou à exploração.'};
 }
 /** Rows S,SW,W,NW,N,NE,E,SE. A stopped body stays on an idle frame. */
 export function legendAnimation(dx:number,dy:number,walking:boolean,walkPhase:number,time:number,strikeUntil:number,reduced=false){

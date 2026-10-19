@@ -182,7 +182,7 @@
 .combat-lens-equipment{left:92%}
 
 /* Mobile combat HUD: readable powers and three player-selected consumables. */
-.combat-pilot .exploration-joystick{width:clamp(120px,33.8vw,136px);height:clamp(120px,33.8vw,136px);min-width:120px;min-height:120px}
+.combat-pilot .combat-controls .exploration-joystick{width:clamp(120px,33.8vw,136px);height:clamp(120px,33.8vw,136px);min-width:120px;min-height:120px}
 .combat-pilot .combat-actions .combat-action-power{width:68px;height:74px;right:0;bottom:92px;padding:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;overflow:hidden}
 .combat-pilot .combat-action-power .exp-power-symbol{width:30px;height:30px;flex-shrink:0}
 .combat-pilot .combat-action-power span{max-width:60px;font-size:9px;line-height:1.1;white-space:normal;word-break:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -191,5 +191,7 @@
 .combat-quick-settings label{display:flex;align-items:center;gap:8px;margin:14px 0;flex-wrap:wrap}
 .combat-quick-settings select{background:#20382b;color:#fff;border:1px solid #c6b77d;border-radius:8px;padding:10px;max-width:100%}
 .combat-inventory-tabs{overflow-x:auto;flex-wrap:nowrap}
-@media(orientation:landscape) and (max-height:450px){.combat-pilot .exploration-joystick{width:110px;height:110px;min-width:110px;min-height:110px}.combat-pilot .combat-item-tray{left:50%}.combat-pilot .combat-actions .combat-action-power{height:68px;bottom:88px}}
+@media(orientation:landscape) and (max-height:450px){.combat-pilot .combat-controls .exploration-joystick{width:110px;height:110px;min-width:110px;min-height:110px}.combat-pilot .combat-item-tray{left:50%}.combat-pilot .combat-actions .combat-action-power{height:68px;bottom:88px}}
 @media(orientation:portrait) and (max-width:350px){.combat-pilot .combat-item-tray{left:50%;bottom:156px}}
+
+.exp-legend-unlock{width:100%;text-align:left}.exp-legend-unlock ul{list-style:none;padding:0;display:grid;gap:8px}.exp-legend-unlock li{display:flex;align-items:center;gap:8px;color:#eed6b2}.exp-legend-unlock li strong{margin-left:auto;white-space:nowrap}.exp-legend-unlock li.is-ready{color:#c7edba}

@@ -40,7 +40,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const [audioMix]=useState(loadExplorationAudio);
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
-  useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed);},[audioMix,soundOn,panel,overview,assetStatus,game.completed]);
+  useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed,chapterNumber(game.roomIndex));},[audioMix,soundOn,panel,overview,assetStatus,game.completed,game.roomIndex]);
   const [noticeVisible,setNoticeVisible]=useState(true);
   useEffect(()=>{setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),4500);return ()=>clearTimeout(timer);},[game.message,game.roomIndex]);
   const [inventoryTab,setInventoryTab]=useState<'all'|'legends'>('all');
@@ -118,7 +118,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         const urgent = pending.current.attack || pending.current.power || pending.current.interact;
         const before = current.current;
         current.current = stepCombat(before, { dx, dy, ...pending.current }, dt);
-        audio.current?.configure(mixRef.current,soundRef.current);
+        audio.current?.configure(mixRef.current,soundRef.current,chapterNumber(current.current.roomIndex));audio.current?.tick();
         if (soundRef.current) {
           if(current.current.enemies.some((e,i)=>(e.windupUntil??0)>(before.enemies[i]?.windupUntil??0)||e.attackAt>(before.enemies[i]?.attackAt??0)))audio.current?.cue(current.current.enemies.some(e=>(e.windupUntil??0)>current.current.time));
           if (current.current.strikeUntil !== before.strikeUntil && current.current.strikeUntil > current.current.time) audio.current?.action(pending.current.power?'power':'paw');
@@ -178,7 +178,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
   const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
-  return <section style={dockStyle} className="combat-pilot combat-pilot--lens-dock" aria-label="Campanha de Exploração">
+  return <section onPointerDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} onKeyDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} style={dockStyle} className="combat-pilot combat-pilot--lens-dock" aria-label="Campanha de Exploração">
     <header className="combat-top"><div><small>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {game.roomIndex+1}/{EXPLORATION_ROOMS.length} · {room.title.toUpperCase()}</small><h1>{legendName(game)??profile?.name??'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
@@ -190,7 +190,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
       <div className="combat-vitals"><label>HP <strong>{Math.ceil(game.hp)}/{combatMaxHp(game.xp)}</strong><progress value={game.hp} max={combatMaxHp(game.xp)} aria-label="Vida do pet" /></label><label>Energia <strong>{Math.floor(game.energy)}/100</strong><progress value={game.energy} max={100} aria-label="Energia de combate" /></label></div>
       <ExplorationMinimap state={game}>
         <nav className="combat-lens-dock" aria-label="Atalhos da Exploração">
-          <button className="combat-lens-slot combat-lens-sound" onClick={onToggleSound} aria-label={soundOn?'Desligar som':'Ligar som'} aria-pressed={soundOn} title={soundOn?'Desligar som':'Ligar som'}>{soundOn?<Volume2/>:<VolumeX/>}</button>
+          <button className="combat-lens-slot combat-lens-sound" onClick={()=>{if(!soundOn)audio.current?.unlock();onToggleSound();}} aria-label={soundOn?'Desligar som':'Ligar som'} aria-pressed={soundOn} title={soundOn?'Desligar som':'Ligar som'}>{soundOn?<Volume2/>:<VolumeX/>}</button>
           <button className="combat-lens-slot combat-lens-pause" ref={pauseButton} onClick={()=>dockAction('pause')} aria-label={panel||overview?'Continuar exploração':'Pausar exploração'} aria-pressed={Boolean(panel)||overview} title={panel||overview?'Continuar':'Pausar'}>{panel||overview?<Play/>:<Pause/>}</button>
           <button className="combat-lens-slot combat-lens-inventory" onClick={()=>{setInventoryTab('all');dockAction('inventory');}} aria-label={panel==='inventory'?'Fechar mochila':'Abrir mochila'} aria-expanded={panel==='inventory'} aria-controls="combat-panel" title={panel==='inventory'?'Fechar mochila':'Abrir mochila'}>{panel==='inventory'?<X/>:<Backpack/>}</button>
           <button className="combat-lens-slot combat-lens-equipment" onClick={()=>{setInventoryTab('legends');openPanel('inventory');}} aria-label="Equipar itens do Lendário" title="Equipamentos do Lendário"><PowerSymbol power="roots"/></button><button className="combat-lens-slot combat-lens-size" onClick={()=>setLensExpanded(value=>!value)} aria-label={lensExpanded?'Reduzir tamanho da lupa':'Ampliar tamanho da lupa'} aria-pressed={lensExpanded} title={lensExpanded?'Reduzir lupa':'Ampliar lupa'}>{lensExpanded?<Minus/>:<Plus/>}</button>
