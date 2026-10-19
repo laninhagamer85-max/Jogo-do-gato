@@ -3,49 +3,47 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.21.3_for_user_test",
+  "status": "published_1.23.0_for_user_test",
   "active_run": "2026-10-19",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "f243bc9aee14f66ad84ec0bcc52df43c71139ad3",
-    "source_site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a",
+    "source_site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "fb7a595a1f45ae4c128b2f682d7c843821cdd858",
+    "code_commit": "e581fd930ddd94c0a8b7e49b4dcef38909d85deb",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "published",
-    "published_source_site_commit": "1a6aef7c6bb52b56fd2cc3f00aa6dda573a999bb"
+    "code_commit_status": "saved_to_collaboration_branch"
   },
   "current_improvement": {
-    "id": "bounded-minimap-discovery",
-    "base_product_version": "1.21.2",
-    "implementation_status": "published_1.21.3",
-    "acceptance_status": "user_phone_test_pending"
+    "id": "exploration-awakening-variants-ambience",
+    "base_product_version": "1.21.3",
+    "implementation_status": "published_1.23.0",
+    "acceptance_status": "cloud_browser_checked_awaiting_physical_phone_feedback"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.21.3",
-    "last_observed_version": 103,
+    "product_version": "1.23.0",
+    "last_observed_version": 106,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0a3dd08c4dcc81918bc42af1fa0570ea",
-    "deployment_id": "appgdep_6ad60648edac8191b520431cc3fc4d29",
-    "site_commit": "1a6aef7c6bb52b56fd2cc3f00aa6dda573a999bb",
-    "published_at": "2026-10-19T12:00:51.716020+00:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9542a72bf4dc8191ba7d496e14a07ed8",
+    "deployment_id": "appgdep_6ad61eb6ba108191b1c45b13ad18ee92",
+    "site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
     "attempted_in_this_cycle": true
   },
   "verification": {
-    "typescript": "passed_this_cycle",
-    "offline_tests": "537/537 in53 files, full offline suite except Firebase staging integration; five new discovery tests",
-    "build": "passed_this_cycle_existing_chunk_warning",
+    "typescript": "passed",
+    "offline_tests": "552/552 in56 files; Firebase Admin staging integration excluded (no credential)",
+    "build": "passed_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "not_run_this_cycle_control_browser_unavailable",
+    "browser": "published106 targeted HUD, settings, recipes for both genders and earned level-up checked; no physical phone/FPS or subjective audio acceptance",
     "viewports": {
+      "390x844": "targeted_check_passed_Lyra_recipe_and_mobile_HUD",
+      "844x390": "targeted_check_passed_Kael_recipe_and_level_up",
       "375x667": "not_tested_this_cycle",
       "375x812": "not_tested_this_cycle",
-      "390x844": "not_tested_this_cycle",
-      "844x390": "not_tested_this_cycle",
       "1366x768": "not_tested_this_cycle"
     },
     "real_online_phases_completed_in_cycle": 0,
@@ -54,20 +52,20 @@
     "packaged_grass": "all_three_hashes_match_manifest",
     "previous_browser_record": "Published87: pre-entry settings modal verified at390x844, active room21 at844x390 has no settings gear. Runtime clock advanced, but cloud input/animation remained slow; no reliable FPS claim or physical phone acceptance."
   },
-  "blockers": [
-    "Supported browser/runtime measurements not performed; user explicitly requested publication for testing after disclosure."
-  ],
+  "blockers": [],
   "next_actions": [
-    "User: confirm1.21.3 and test Exploration walking, minimap discovery and fog in portrait/landscape.",
-    "Measure runtime FPS with supported browser before claiming stutter resolved."
+    "User tests speaker loudness and biome ambience on phone.",
+    "User assesses stronger NPC time-to-defeat and the Legendary recipe cost.",
+    "Continue Adventure visual simplification only when requested."
   ],
   "rollback": {
-    "product_version": "1.21.2",
-    "site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a",
     "production_changed": true,
-    "instructions": "Revert only this optimization after checking latest collaborators; preserve saves."
+    "product_version": "1.22.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2aa32dfef9208191a4ed2d46f2b9fbe1",
+    "site_commit": "e2ef17c141b12db9cdc8c8e899a4bfccba3bb9c9",
+    "instructions": "Redeploy predecessor only if no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-19.md",
+  "latest_report": "docs/evolution/runs/2026-10-19-legend-recipe-ambience.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -641,7 +639,7 @@
   },
   "previous_report": "docs/evolution/runs/2026-10-19-powers-autumn.md",
   "minimap_discovery_optimization": {
-    "status": "published_for_user_test_no_fps_claim",
+    "status": "source_only_not_published",
     "before_distance_tests": 720,
     "after_maximum_distance_tests": 49,
     "equivalence_position_cases": 1440,
@@ -649,10 +647,5 @@
     "real_fps": "not_measured",
     "stutter_cause": "not_confirmed",
     "real_player_data_accessed": false
-  },
-  "user_requested_publish": {
-    "date": "2026-10-19",
-    "text": "Públique",
-    "scope": "minimap discovery optimization 1.21.3, runtime/FPS user review pending"
   }
 }
