@@ -3,22 +3,23 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "published_powers_autumn_for_user_test",
-  "active_run": "2026-10-19-powers-autumn",
+  "status": "implemented_awaiting_performance_and_browser_validation",
+  "active_run": "2026-10-19",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
-    "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
+    "base_commit": "f243bc9aee14f66ad84ec0bcc52df43c71139ad3",
     "source_site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "531223f9432c08abc7baaabddfef5693f711979c",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "published"
+    "code_commit_status": "pending_followup_commit_not_published"
   },
   "current_improvement": {
-    "id": "powers-autumn",
-    "product_version": "1.21.2",
-    "implementation_status": "published"
+    "id": "bounded-minimap-discovery",
+    "base_product_version": "1.21.2",
+    "implementation_status": "implemented_and_offline_verified",
+    "acceptance_status": "awaiting_supported_browser_and_runtime_measurements"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -28,15 +29,16 @@
     "status": "succeeded",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_6c8fdcf5cdb0819182bd1907a7a2f967",
     "deployment_id": "appgdep_6ad5c689f1c8819198bf0c7fea58d9b3",
-    "site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a"
+    "site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a",
+    "attempted_in_this_cycle": false
   },
   "verification": {
-    "typescript": "passed",
-    "offline_tests": "490 game tests plus focused6 cache/performance tests passed",
-    "build": "passed29.27s; existing chunk-size warning",
+    "typescript": "passed_this_cycle",
+    "offline_tests": "537/537 in53 files, full offline suite except Firebase staging integration; five new discovery tests",
+    "build": "passed_this_cycle_existing_chunk_warning",
     "entry_selection": "passed_101_input_states_not_playthroughs",
     "published_parity": "passed_fake_storage_only",
-    "browser": "Published87: pre-entry settings modal verified at390x844, active room21 at844x390 has no settings gear. Runtime clock advanced, but cloud input/animation remained slow; no reliable FPS claim or physical phone acceptance.",
+    "browser": "not_run_this_cycle_control_browser_unavailable",
     "viewports": {
       "375x667": "not_tested_this_cycle",
       "375x812": "not_tested_this_cycle",
@@ -48,12 +50,15 @@
     "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
     "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
     "packaged_grass": "all_three_hashes_match_manifest",
-    "previous_browser_record": "Aventura and Exploracao checked in same-origin iframe viewports; orientation growth bug found in 1.14.5, fixed and rechecked in 1.14.6"
+    "previous_browser_record": "Published87: pre-entry settings modal verified at390x844, active room21 at844x390 has no settings gear. Runtime clock advanced, but cloud input/animation remained slow; no reliable FPS claim or physical phone acceptance."
   },
-  "blockers": [],
+  "blockers": [
+    "Required supported browser not available; runtime performance and visual/interaction regression checks remain pending."
+  ],
   "next_actions": [
-    "Physical phone acceptance of initial Legendary movement/weapon alignment",
-    "Continue investigating pre-existing Exploration runtime slowness separately"
+    "Reconcile current Site/GitHub and profile Exploration while moving in an isolated game.",
+    "Compare minimap discovery/fog and movement across five viewports; measure FPS rather than infer it from fewer calculations.",
+    "Validate Legendary motion and longer Chapter3 fights without changing approved HP; publish only after relevant checks."
   ],
   "rollback": {
     "production_changed": true,
@@ -62,7 +67,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-19-powers-autumn.md",
+  "latest_report": "docs/evolution/runs/2026-10-19.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -633,5 +638,16 @@
     "hp_scope": "Chapter3allNPCs/master10x;otherchaptersunchanged",
     "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
     "art": "2originalPNGatlases;noPNGpixelediting"
+  },
+  "previous_report": "docs/evolution/runs/2026-10-19-powers-autumn.md",
+  "minimap_discovery_optimization": {
+    "status": "source_only_not_published",
+    "before_distance_tests": 720,
+    "after_maximum_distance_tests": 49,
+    "equivalence_position_cases": 1440,
+    "new_tests": 5,
+    "real_fps": "not_measured",
+    "stutter_cause": "not_confirmed",
+    "real_player_data_accessed": false
   }
 }

@@ -4,7 +4,14 @@ export const MINIMAP_WIDTH=EXPLORATION_WORLD.width, MINIMAP_HEIGHT=EXPLORATION_W
 type Point={x:number;y:number};
 export function revealMinimap(previous:readonly number[],player:Point){
  const visible=new Set(previous);
- for(let y=0;y<MINIMAP_HEIGHT;y++)for(let x=0;x<MINIMAP_WIDTH;x++)
+ // Broad phase: only cells near the reveal circle can become visible. Keep the
+ // exact distance test below, and round outwards to retain boundary precision.
+ const cx=player.x-EXPLORATION_WORLD.left-.5,cy=player.y-EXPLORATION_WORLD.top-.5;
+ const left=Math.max(0,Math.floor(cx-MINIMAP_REVEAL_RADIUS));
+ const right=Math.min(MINIMAP_WIDTH-1,Math.ceil(cx+MINIMAP_REVEAL_RADIUS));
+ const top=Math.max(0,Math.floor(cy-MINIMAP_REVEAL_RADIUS));
+ const bottom=Math.min(MINIMAP_HEIGHT-1,Math.ceil(cy+MINIMAP_REVEAL_RADIUS));
+ for(let y=top;y<=bottom;y++)for(let x=left;x<=right;x++)
   if(Math.hypot(x+EXPLORATION_WORLD.left+.5-player.x,y+EXPLORATION_WORLD.top+.5-player.y)<=MINIMAP_REVEAL_RADIUS)visible.add(y*MINIMAP_WIDTH+x);
  return visible.size===previous.length?previous as number[]:[...visible].sort((a,b)=>a-b);
 }
