@@ -571,8 +571,8 @@
     "checks": "TypeScript passed;484/39 game suite plus48 focused followup tests passed;1.17.1 build19.20s passed;1.17.2 build recorded below"
   },
   "exploration_performance": {
-    "product_version": "1.17.4",
-    "status": "validated_pending_publication",
+    "product_version": "1.17.5",
+    "status": "publishing_color_cache_followup",
     "settings": "Chapter screen before room entry; active room has only pause/inventory/map",
     "changes": [
       "bounded64-entry seeded enemy cache",
@@ -585,6 +585,7 @@
     "checks": "TypeScript and490 tests in40 game files passed",
     "benchmark": "2000 enemy+garden lookups: room1 2.63→2.19ms, room11 963.4→3.22ms, room30 175.65→1.89ms; isolated NodeCPU measurement, not FPS",
     "browser": "Prior live1.17.2 loaded; no game exception observed, extension metadata error excluded. Post-publication verification pending.",
-    "rollback": "live1.17.2/Sites84,8f048e6359bc3e49f81f8b70fe6beaee937cf1ef; saved1.17.3/Sites85 was never deployed"
+    "rollback": "live1.17.2/Sites84,8f048e6359bc3e49f81f8b70fe6beaee937cf1ef; saved1.17.3/Sites85 was never deployed",
+    "color_cache": "12MP bounded native palette cache removes per-draw autumn filters; original resolution retained"
   }
 }

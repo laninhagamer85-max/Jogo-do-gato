@@ -21,3 +21,9 @@ Research2026-10-18: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/
 Rollback: live1.17.2/Sites84 appgprj_6ac40994d8d881919d46203a60801e46~appgver_f02816c17d18819186e3f27109f94708, source8f048e6359bc3e49f81f8b70fe6beaee937cf1ef. New chapter saves campaignVersion3 retain their forward-version safety gate.
 
 Production build passed26.28s; existing chunk-size warning.
+
+## Post-publication runtime followup1.17.5
+
+1.17.4 published Sites86 source0614efe6dbf7490ef4b8761a6980c86003e63f18 deployment appgdep_6ad56b4c59148191892f73ae483d121b. Cloud confirmed settings before entry, no gear in active room. Autumn room remained slow; renderer still applied Canvas sepia/saturation filters to terrain, foliage and NPC atlas draws. Followup bakes original-dimension palette variants once into native canvas sources, reuses across room/lens by sourceURL+palette+dimensions, bounds cache to12MP, and leaves source files untouched. No PNG encoding or asynchronous reload. Water remains native blue. Terrain/props/native crop geometry unchanged. Actual phone improvement still requires acceptance.
+
+490 game tests passed after the color-cache integration; focused color-cache tests verify one preparation per URL/filter, dimensions, source isolation and budget guards.

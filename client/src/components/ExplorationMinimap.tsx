@@ -1,3 +1,4 @@
+import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from '@/game/explorationColorCache';
 import {drawBiomeWater} from '@/game/biomeCompositionView';
 import {campaignRoom,campaignGardens,campaignWaterBlocks} from '@/game/explorationCampaign';
 import {drawCampaignBridge,drawCampaignKey,drawRiverProp,drawCampaignShore} from '@/game/explorationCampaignArt';
@@ -17,28 +18,30 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  const draw=()=>{
   const el=canvas.current,ctx=el?.getContext('2d'),images=art.current;
   if(!el||!ctx||!images)return;
+  const source=images;
   const size=el.width,s=latest.current,v=lensProjection(size,s.player),t=v.scale,room=campaignRoom(s.roomIndex),river=room.biome==='river';
+  const ground=room.biome==='autumn'?explorationColorVariant(images.ground,AUTUMN_GROUND_FILTER)!:images.ground,props=room.biome==='autumn'?explorationColorVariant(images.props,AUTUMN_PROP_FILTER)!:images.props,gardenArt=room.biome==='autumn'?explorationColorVariant(images.garden,AUTUMN_PROP_FILTER)!:images.garden;
   const point=(p:{x:number;y:number})=>({x:v.left+p.x*t,y:v.top+p.y*t});
   const ready=(im:HTMLImageElement)=>im.complete&&im.naturalWidth>0;
   ctx.clearRect(0,0,size,size);ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();
   // Dark textured terrain occupies undiscovered parts too, without a rectangular map inset.
-  ctx.save();if(room.biome==='autumn')ctx.filter='sepia(.5) saturate(1.1) hue-rotate(338deg)';
-  if(ready(images.ground))drawExplorationGround(ctx,size,size,images.ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
+  ctx.save();
+  if(ready(ground))drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   else {ctx.fillStyle='#345331';ctx.fillRect(0,0,size,size);}
   ctx.restore();
   ctx.fillStyle='rgba(8,24,19,.91)';ctx.fillRect(0,0,size,size);
   ctx.save();ctx.beginPath();
   for(const i of s.exploredCells){const p=point(discoveredWorldPoint(i));ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
-  ctx.clip();ctx.save();if(room.biome==='autumn')ctx.filter='sepia(.5) saturate(1.1) hue-rotate(338deg)';
-  if(ready(images.ground))drawExplorationGround(ctx,size,size,images.ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
+  ctx.clip();ctx.save();
+  if(ready(ground))drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
-  drawCampaignShore(ctx,room,v.left,v.top,t,images.props,images.garden,images.riverProps);
+  drawCampaignShore(ctx,room,v.left,v.top,t,props,gardenArt,images.riverProps);
   const visible=(p:{x:number;y:number})=>{const q=point(p);return q.x>-t*2&&q.y>-t*2&&q.x<size+t*2&&q.y<size+t*2;};
-  if(ready(images.garden))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
-   if(visible(garden)){const q=point(garden);river?drawRiverProp(ctx,images.riverProps,3+garden.index%2,q.x,q.y,t,{width:garden.width,height:garden.height}):drawGardenPatch(ctx,images.garden,garden,q.x,q.y,t,0,true);}
+  if(ready(gardenArt))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
+   if(visible(garden)){const q=point(garden);river?drawRiverProp(ctx,images.riverProps,3+garden.index%2,q.x,q.y,t,{width:garden.width,height:garden.height}):drawGardenPatch(ctx,gardenArt,garden,q.x,q.y,t,0,true);}
   }
-  if(ready(images.props))for(const prop of [...room.scenery,...ROOM_EDGE_SOLIDS].sort((a,b)=>a.y-b.y)){
-   if(visible(prop)){const q=point(prop);river?drawRiverProp(ctx,images.riverProps,prop.index,q.x,q.y,t,prop):drawWoodlandProp(ctx,images.props,prop.index,q.x,q.y,t,prop,true);}
+  if(ready(props))for(const prop of [...room.scenery,...ROOM_EDGE_SOLIDS].sort((a,b)=>a.y-b.y)){
+   if(visible(prop)){const q=point(prop);river?drawRiverProp(ctx,images.riverProps,prop.index,q.x,q.y,t,prop):drawWoodlandProp(ctx,props,prop.index,q.x,q.y,t,prop,true);}
   }
   const sprite=(im:HTMLImageElement,p:{x:number;y:number},width:number)=>{
    if(!ready(im)||!visible(p))return;const q=point(p),w=t*width,h=w*im.naturalHeight/im.naturalWidth;ctx.drawImage(im,q.x-w/2,q.y-h,w,h);
