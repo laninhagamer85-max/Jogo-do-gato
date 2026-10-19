@@ -11,9 +11,9 @@
     "base_commit": "f243bc9aee14f66ad84ec0bcc52df43c71139ad3",
     "source_site_commit": "cb25690396ede399bc776cb99beab4b42b4cc28a",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "531223f9432c08abc7baaabddfef5693f711979c",
+    "code_commit": "4ab9e12a21efb63d7ae98aa78e7982cdd2ba21e1",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "pending_followup_commit_not_published"
+    "code_commit_status": "saved_not_published"
   },
   "current_improvement": {
     "id": "bounded-minimap-discovery",
