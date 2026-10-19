@@ -18,3 +18,8 @@ Research2026-10-19: MDN globalCompositeOperation https://developer.mozilla.org/e
 
 ## Equipment reference followup1.18.3
 User requested equipment composition inspired by reference: original legendary character central, illustrated weapon slots around body, selected item's description/recipe/action below; landscape places detail alongside. Reuses actual sword/dagger/bow ownership and crafting, no invented armor functionality. Removed scroll-driven selection debounce: programmatic scroll was selecting the first card and overriding initial Kael. Arrows/taps explicitly select; swiping browses cards without changing equipment or active hero. Production publication and browser acceptance pending.
+
+
+1.18.3 published successfully Sites92, source e2606f9e82e6bcc38357c25df10b6fad0a37963e, deploy appgdep_6ad5b38cc8708191906e8ff0ca4f622f; GitHub1f53e0db5585d380cd502792f5511c2400f5436d. Browser isolated male/Kael persisted8of8, unlock worked, selected sword detail visible.
+
+User steering1.18.4: active (or eligible starter before selection) pinned left; other seven heroes slide right. Future heroes retain real names/titles, with black blurred silhouettes of their own portraits. Expandable item library below equipment panel. Same underlying game ownership/crafting. TypeScript and9focusedtests passed.

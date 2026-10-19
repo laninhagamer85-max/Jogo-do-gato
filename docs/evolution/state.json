@@ -16,10 +16,9 @@
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "exploration-legends",
-    "product_version": "1.18.1",
-    "implementation_status": "published",
-    "acceptance_status": "cloud_fixture_checked_physical_phone_pending"
+    "id": "legend-equipment",
+    "product_version": "1.18.4",
+    "implementation_status": "validated_pending_publication"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -612,9 +611,9 @@
     "browser": "Isolated390x844/844x390:bothstarters unlock/select,Kael scene+sword,returncat,craft costs,8directionmatrix;final8rosterclipPathsvisible;noaccountwrites"
   },
   "legend_motion": {
-    "product_version": "1.18.2",
+    "product_version": "1.18.4",
     "status": "validated_pending_publication",
-    "scope": "whole-pose cutouts,illustrated equipped items,mystery slider",
+    "scope": "whole-pose cutouts, illustrated weapons, pinned active hero, named blurred silhouettes, expandable equipment",
     "checks": "TypeScript;501game tests passed",
     "save": "unchanged;campaignVersion4",
     "phone": "user screenshots inspected;new phone test pending"

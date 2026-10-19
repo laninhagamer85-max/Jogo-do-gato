@@ -24,8 +24,8 @@ it('prepares body and illustrated weapon once and reuses native images, without 
  expect(drawExplorationLegend(ctx,s,100,150,80,false)).toBe(true);expect(prepared).toBe(2);expect(paths).toBe(2);expect(draws).toHaveLength(2);
  expect(drawExplorationLegend(ctx,s,100,150,80,false)).toBe(true);expect(prepared).toBe(2);expect(paths).toBe(2);expect(draws).toHaveLength(4);
 });
-it('keeps all six future identities out of visible and accessible carousel markup',()=>{
+it('shows future names and information while concealing their portrait art',()=>{
  vi.stubGlobal('React',React);const html=renderToStaticMarkup(React.createElement(ExplorationLegends,{game:createCombatState(),gender:'menino',onAction:()=>{}}));
- for(const name of ['Soren','Ayla','Drake','Orion','Ember','Rowan'])expect(html).not.toContain(name);
- expect(html.match(/Lendário misterioso \d/g)).toHaveLength(6);expect(html).toContain('Carrossel de Lendários');expect(html).toContain('weapons-v1.png');
+ for(const name of ['Soren','Ayla','Drake','Orion','Ember','Rowan'])expect(html).toContain(name);
+ expect(html.match(/class="exp-legend-hidden-portrait"/g)).toHaveLength(6);expect(html).toContain('Carrossel de Lendários');expect(html).toContain('weapons-v1.png');
 });
