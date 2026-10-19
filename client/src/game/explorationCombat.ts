@@ -1,3 +1,4 @@
+import {readLegendProgress,legendWeapon,type LegendProgress} from './explorationLegends';
 import {hazardPhase} from './explorationHazards';
 import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
 import {EXPLORATION_WORLD,insideExploration} from './explorationWorld';
@@ -26,7 +27,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3|4;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -45,7 +46,7 @@ const number = (v: unknown, fallback: number, min = 0, max = 1e9) => typeof v ==
 const distance = (a: CombatPoint, b: CombatPoint) => Math.hypot(a.x - b.x, a.y - b.y);
 export const combatLevel = (xp: number) => Math.min(20, 1 + Math.floor(Math.sqrt(Math.max(0, xp) / 40)));
 export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
-export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0);
+export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'|'legends'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0)+(legendWeapon(s as CombatState)?.bonus??0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
   return {roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
@@ -81,7 +82,7 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value: unknown): CombatRead {
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>3) return { supported: false, version };
+  if (version > 4 || Number(raw.campaignVersion??1)>4) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=Math.floor(number(raw.roomIndex,0,0,unlocked));
@@ -89,6 +90,7 @@ export function readCombatState(value: unknown): CombatRead {
   const definitions=campaignEnemies(index,s.encounterSeed);
   for(const group of ['rareStock','rareBag'] as const)for(const item of Object.keys(RARE_ITEMS) as RareItem[])s[group][item]=Math.floor(number(object(raw[group])[item],0,0,9999));
   for(const [key,value] of Object.entries(object(raw.roomAttempts)))if(completedRooms.includes(Number(key))&&String(Number(key))===key&&typeof value==='string'&&value.length<100000)s.roomAttempts[key]=value;
+  if(raw.legends){s.legends=readLegendProgress(raw.legends);s.campaignVersion=4;}
   s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
   if (!Object.keys(raw).length) return { supported: true, state: s };
   s.roomPerformance=raw.roomPerformance&&typeof raw.roomPerformance==='object'?{damage:number(object(raw.roomPerformance).damage,0),defeats:Math.floor(number(object(raw.roomPerformance).defeats,0))}:null;
@@ -186,10 +188,13 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
     const power = Boolean(input.power); if (power) s.energy -= 25;
     if(power&&s.activeCard==='tide'){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
     s.attackAt = s.time + (power ? 1000 : 500); s.strikeUntil = s.time + 320;
-    for (const enemy of s.enemies) {
+    let arrowSpent=false;const targets=!power&&s.legends?.active&&s.legends.weapon==='bow'?[...s.enemies].sort((a,b)=>distance(s.player,a)-distance(s.player,b)):s.enemies;
+    for (const enemy of targets) {
+      if(arrowSpent)break;
       const def = definitions.find(e => e.id === enemy.id)!; const range = distance(s.player, enemy);
       const dot = range ? ((enemy.x - s.player.x) * s.facing.x + (enemy.y - s.player.y) * s.facing.y) / range : 1;
-      if (enemy.hp <= 0 || range > (power ? 1.7 : 1.25) || (!power && dot < .25) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
+      if (enemy.hp <= 0 || range > (power ? 1.7 : legendWeapon(s)?.range??1.25) || (!power && dot < (s.legends?.active&&s.legends.weapon==='bow'?.94:.25)) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
+      if(!power&&s.legends?.active&&s.legends.weapon==='bow')arrowSpent=true;
       const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6*(s.activeCard==='amber'?1.25:1) : 1) - def.defense)));
       enemy.hp -= damage; if(power&&s.activeCard==='roots')enemy.slowUntil=s.time+2000; feedback(s, enemy, `−${damage} HP`, 'damage');
       if (enemy.hp === 0) {
@@ -307,7 +312,7 @@ export function replayCompletedCombat(current: CombatState): CombatState {
   next.xp = current.xp;
   next.hp = combatMaxHp(current.xp);
   next.energy = current.energy;
-  next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
+  next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=4;next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
   next.enemies=campaignEnemies(next.roomIndex,next.encounterSeed).map(e=>({id:e.id,x:e.x,y:e.y,hp:e.hp,generation:0,attackAt:current.time+1500,respawnAt:0}));
   next.bag = { ...current.bag };
   next.equipmentOwned = current.equipmentOwned;
@@ -327,7 +332,7 @@ export function advanceCombatRoom(current:CombatState):CombatState{
  if(!current.completed||current.roomIndex>=EXPLORATION_ROOMS.length-1)return current;
  const next=createCombatState(current.roomIndex+1,(Math.imul(current.seed,1664525)+1013904223)>>>0);
  next.revision=current.revision+1;next.time=current.time;next.xp=current.xp;next.hp=Math.min(current.hp,combatMaxHp(current.xp));next.energy=current.energy;
- next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
+ next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=4;next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
  next.completedRooms=[...new Set([...current.completedRooms,current.roomIndex])];next.claimedRooms=[...new Set([...current.claimedRooms,current.roomIndex])];next.completionRewardClaimed=next.claimedRooms.includes(next.roomIndex);
  next.deaths=current.deaths;next.seed=current.seed;next.invulnerableUntil=next.time+2500;next.attackAt=next.time;
  next.enemies=next.enemies.map(e=>({...e,attackAt:next.time+1500}));return next;

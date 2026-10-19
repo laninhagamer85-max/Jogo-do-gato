@@ -1,3 +1,4 @@
+import {drawExplorationLegend} from './explorationLegendView';
 import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from './explorationColorCache';
 import {hazardPhase} from './explorationHazards';
 import {explorationMobFrame} from './explorationMobArt';
@@ -127,7 +128,9 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
       const px=p.x+state.facing.x*attack.lean*t, py=p.y+state.facing.y*attack.lean*t;
-      if (atlas.complete && atlas.naturalWidth && (state.walking || attack.active)) {
+      if(drawExplorationLegend(ctx,state,px,py,t,reducedMotion)){
+        // The active Legendary owns its body and weapon rendering.
+      } else if (atlas.complete && atlas.naturalWidth && (state.walking || attack.active)) {
         ctx.save(); ctx.translate(px, py); if (direction.mirror) ctx.scale(-1, 1);
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);

@@ -1,11 +1,13 @@
+import ExplorationLegends from './ExplorationLegends';
+import type {LegendAction,LegendGender} from '@/game/explorationLegends';
 import {RARE_ITEMS,type RareItem} from '@/game/explorationCampaign';
 import { useState } from 'react';
 import { LockKeyhole, ShieldCheck } from 'lucide-react';
 import ExplorationItemIcon from './ExplorationItemIcon';
 import { combatAttack, combatMaxHp, COMBAT_ITEMS, type CombatItem, COMBAT_CARDS,type CombatCard,type CombatState } from '@/game/explorationCombat';
 type Selection = CombatItem | RareItem | CombatCard | 'broche';
-type Filter = 'all' | 'materials' | 'supplies' | 'equipment';
-export default function CombatInventory({game,onUse,onEquip,onRare,onCard}:{game:CombatState;onUse:(item:'erva'|'fruta')=>void;onEquip:()=>void;onRare?:(item:RareItem)=>void;onCard?:(card:CombatCard)=>void}){
+type Filter = 'legends' | 'all' | 'materials' | 'supplies' | 'equipment';
+export default function CombatInventory({game,onUse,onEquip,onRare,onCard,gender='menino',onLegend}:{gender?:LegendGender;onLegend?:(action:LegendAction)=>void;game:CombatState;onUse:(item:'erva'|'fruta')=>void;onEquip:()=>void;onRare?:(item:RareItem)=>void;onCard?:(card:CombatCard)=>void}){
   const [selected,setSelected]=useState<Selection>('erva');
   const [filter,setFilter]=useState<Filter>('all');
   const items:Selection[]=filter==='equipment'?['broche','cristal','escama','roots','tide','amber']:filter==='materials'?['fibra','ambar']:filter==='supplies'?['erva','fruta','seiva','perola']:['fibra','ambar','seiva','cristal','perola','escama','erva','fruta','broche','roots','tide','amber'];
@@ -18,7 +20,8 @@ export default function CombatInventory({game,onUse,onEquip,onRare,onCard}:{game
   const canUse=consumable&&quantity>0&&!game.completed&&(selected==='erva'?game.hp<combatMaxHp(game.xp):game.energy<100);
   function selectFilter(value:Filter){setFilter(value);setSelected(value==='equipment'?'broche':value==='materials'?'fibra':'erva');}
   return <div className="combat-backpack">
-    <nav className="combat-inventory-tabs" aria-label="Categorias da mochila">{([['all','Tudo'],['materials','Materiais'],['supplies','Cuidados'],['equipment','Equipar']] as const).map(([value,label])=><button key={value} aria-pressed={filter===value} onClick={()=>selectFilter(value)}>{label}</button>)}</nav>
+    <nav className="combat-inventory-tabs" aria-label="Categorias da mochila">{([['all','Tudo'],['materials','Materiais'],['supplies','Cuidados'],['equipment','Equipar'],['legends','Lendários']] as const).map(([value,label])=><button key={value} aria-pressed={filter===value} onClick={()=>selectFilter(value)}>{label}</button>)}</nav>
+    {filter==='legends'?<ExplorationLegends game={game} gender={gender} onAction={a=>onLegend?.(a)}/>:<>
     <div className="combat-slot-grid" aria-label="Itens da mochila">{items.map(item=>{
       const count=countItem(item);
       return <button className={`combat-inventory-slot ${selected===item?'is-selected':''} ${count===0?'is-empty-item':''}`} key={item} aria-pressed={selected===item} aria-label={`${item==='broche'?'Broche da Clareira':card(item)?COMBAT_CARDS[item].name:rare(item)?RARE_ITEMS[item]:COMBAT_ITEMS[item]}, ${count}${item==='broche'&&game.equipmentOn?', equipado':''}`} onClick={()=>setSelected(item)}><ExplorationItemIcon item={item} size={44}/><small>{count}</small>{item==='broche'&&(game.equipmentOn?<ShieldCheck className="combat-equipped-mark" size={15}/>:!game.equipmentOwned?<LockKeyhole className="combat-equipped-mark" size={13}/>:null)}</button>;
@@ -28,6 +31,6 @@ export default function CombatInventory({game,onUse,onEquip,onRare,onCard}:{game
       {selected!=='broche'&&!card(selected)&&<small>{rare(selected)?game.rareStock[selected]:game.stock[selected]} guardado(s) · {rare(selected)?game.rareBag[selected]:game.bag[selected]} na sala</small>}
       {card(selected)?<button className="combat-item-primary" disabled={!quantity} onClick={()=>onCard?.(selected)}>{game.activeCard===selected?'Retirar carta':'Equipar carta'}</button>:rare(selected)?<button className="combat-item-primary" disabled={!quantity||((selected==='seiva'||selected==='perola')&&game.hp>=combatMaxHp(game.xp))} onClick={()=>onRare?.(selected)}>{selected==='seiva'||selected==='perola'?'Usar para curar':game.rareEquipped===selected?'Retirar equipamento':'Equipar'}</button>:consumable?<button className="combat-item-primary" disabled={!canUse} onClick={()=>onUse(selected as 'erva'|'fruta')}>Usar {selected==='erva'?'erva':'fruta'}</button>:selected==='broche'?<button className="combat-item-primary" disabled={!game.equipmentOwned} onClick={onEquip}>{game.equipmentOwned?game.equipmentOn?'Retirar broche':'Equipar broche':'Ainda não conquistado'}</button>:null}
     </section>
-    <footer><span>Ataque <strong>{combatAttack(game)}</strong></span><small>Exploração pausada · cenário preservado</small></footer>
+    </>}<footer><span>Ataque <strong>{combatAttack(game)}</strong></span><small>Exploração pausada · cenário preservado</small></footer>
   </div>;
 }
