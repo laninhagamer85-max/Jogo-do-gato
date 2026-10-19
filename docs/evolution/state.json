@@ -3,33 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "published_runtime_acceptance_pending",
+  "status": "published_settings_checked",
   "active_run": "2026-10-18-exploration-settings",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "27fbcf0400867877a3ed695372041ee5a8ce3031",
-    "source_site_commit": "f8b2556784ad37ada9035d53d5e79b8b7007073d",
+    "source_site_commit": "10e7cc3c7fdfb888634e79465e92907805ff594f",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "096f7eea4ecf8070455492cfa9504b087f6b9301",
+    "code_commit": "686e4f09eebed9bf060d43775dbf3512a17cab56",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "published"
   },
   "current_improvement": {
-    "id": "exploration-performance",
-    "product_version": "1.17.5",
+    "id": "exploration-settings",
+    "product_version": "1.17.6",
     "implementation_status": "published",
-    "acceptance_status": "cloud_runtime_still_slow_physical_phone_pending"
+    "acceptance_status": "cloud_tabs_checked_physical_phone_pending"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.17.5",
-    "last_observed_version": 87,
+    "product_version": "1.17.6",
+    "last_observed_version": 88,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_39303f183ec48191ac5d36cad7011a95",
-    "deployment_id": "appgdep_6ad56cb6a7288191ba9ff4d8ed29b4b5",
-    "site_commit": "f8b2556784ad37ada9035d53d5e79b8b7007073d"
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_46feca1d710481919b74b3a09b0c30d1",
+    "deployment_id": "appgdep_6ad57b16a16c81918b9c4f82fab630a0",
+    "site_commit": "10e7cc3c7fdfb888634e79465e92907805ff594f"
   },
   "verification": {
     "typescript": "passed",
@@ -590,14 +590,14 @@
   },
   "settings_review": {
     "product_version": "1.17.6",
-    "status": "validated_pending_publication",
-    "checks": "TypeScript;16 focused tests passed",
+    "status": "published",
+    "checks": "TypeScript;16 focused tests;build17.79s passed",
     "changes": [
       "scoped high-contrast button colors",
       "portraits for all12NPCs",
       "forest portrait crop boundaries",
       "accurate value ranges and no-rare notice"
     ],
-    "browser": "all4tabs inspected live before changes; after pending"
+    "browser": "All4tabs checked844x390/390x844;12portraits;NPC slider responds;room30 manual preview;portrait no horizontal overflow"
   }
 }

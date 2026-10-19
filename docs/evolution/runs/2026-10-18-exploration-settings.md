@@ -9,3 +9,9 @@ Scope colors inside settings explicitly: light cream panel/dark copy; all button
 TypeScript passed;16 existing focused tests in3files passed. Production build and post-publication portrait/landscape verification pending. No physical phone test and no claim that prior runtime slowness is solved.
 
 Research2026-10-18: MDN SVG overflow https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/overflow ; W3C contrast https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html . Use clipped sprite viewport and explicit high-contrast control palette. No new art/dependencies.
+
+## Publication and browser check
+
+Published1.17.6 / Sites88, source10e7cc3c7fdfb888634e79465e92907805ff594f, version appgprj_6ac40994d8d881919d46203a60801e46~appgver_46feca1d710481919b74b3a09b0c30d1, deployment appgdep_6ad57b16a16c81918b9c4f82fab630a0 succeeded. GitHub implementation686e4f09eebed9bf060d43775dbf3512a17cab56. Build17.79s and finalTypeScript passed.
+
+Live isolated844x390 and390x844: all four tabs inspected; Besouro and Cogumelo details expanded; all12portraitSVGs present; visible Besouro/Lagarta portraits confirmed. NPC audio slider55→56 responded. Room30 manual selected and locked preview/reward shown. Portrait guide clientWidth337=scrollWidth337, long content scrolls vertically. Button computed foreground rgb255,249,233 on rgb41,75,57; selected tab rgb61,98,72 with gold boundary. Screenshot meupet-1176-bestiario.jpg. Browser console captured extension metadata errors only. No physical phone test, no combat performance claim.
