@@ -1,0 +1,14 @@
+import {it,expect,vi} from 'vitest';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {campaignEnemies,campaignGardens,campaignRoom,CAMPAIGN_ENEMY_CACHE_LIMIT} from './explorationCampaign';
+import {regionBounds,pondComposition} from './biomeComposition';
+import {shouldRunExplorationFrame,shouldDrawExplorationFrame} from './explorationFramePolicy';
+import {createCombatState,combatSnapshot} from './explorationCombat';
+import ExplorationCombatPilot from '../components/ExplorationCombatPilot';
+import ExplorationSettings from '../components/ExplorationSettings';
+vi.stubGlobal('React',React);
+it('reuses stable encounter and foliage data without mixing rooms, seeds or mutable battle HP',()=>{const a=campaignEnemies(10,42),b=campaignEnemies(10,43);expect(campaignEnemies(10,42)).toBe(a);expect(b).not.toEqual(a);expect(campaignGardens(campaignRoom(10))).toBe(campaignGardens(campaignRoom(10)));const game=createCombatState(10,42);game.enemies[0].hp=0;expect(a[0].hp).toBeGreaterThan(0);const before=JSON.stringify(a);for(let i=0;i<CAMPAIGN_ENEMY_CACHE_LIMIT+5;i++)campaignEnemies(29,100+i);expect(JSON.stringify(campaignEnemies(10,42))).toBe(before);});
+it('reuses polygon bounds and keeps different shorelines separate',()=>{const a=pondComposition('a',{x:2,y:2}).regions[0].polygon,b=pondComposition('b',{x:12,y:12}).regions[0].polygon;expect(regionBounds(a)).toBe(regionBounds(a));expect(regionBounds(a).left).not.toBe(regionBounds(b).left);});
+it('bounds repeated draws at60/120Hz and redraws a paused viewport only when its view changes',()=>{for(const hz of [60,120]){let last=0,n=0;for(let now=1;now<1000;now+=1000/hz){if(shouldRunExplorationFrame(last,now)){last=now;n++;}}expect(n).toBeGreaterThanOrEqual(29);expect(n).toBeLessThanOrEqual(31);}expect(shouldDrawExplorationFrame(false,'same','same')).toBe(false);expect(shouldDrawExplorationFrame(false,'resized','same')).toBe(true);expect(shouldDrawExplorationFrame(true,'same','same')).toBe(true);});
+it('settings and guides render before entry and are absent from the active room',()=>{const game=createCombatState(),html=renderToStaticMarkup(React.createElement(ExplorationCombatPilot,{progress:combatSnapshot(game),profile:null,onSave:()=>{},onBack:()=>{},soundOn:false,onToggleSound:()=>{}}));expect(html).not.toContain('Configurações da exploração');expect(html).not.toContain('exp-pause-tabs');expect(html).not.toContain('Sala do manual');const settings=renderToStaticMarkup(React.createElement(ExplorationSettings,{game,soundOn:false,onToggleSound:()=>{},onClose:()=>{}}));expect(settings).toContain('Ajuste antes de entrar na sala');expect(settings).toContain('Sons dos NPCs');expect(settings).toContain('Bestiário');expect(settings).not.toContain('<canvas');});

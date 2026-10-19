@@ -1,5 +1,5 @@
-import {ExplorationAudio,loadExplorationAudio,saveExplorationAudio,type ExplorationAudioMix} from '@/game/explorationAudio';
-import {ExplorationTutorial,ExplorationBestiary,ExplorationRoomManual} from './ExplorationFieldGuide';
+import {shouldRunExplorationFrame,shouldDrawExplorationFrame} from '@/game/explorationFramePolicy';
+import {ExplorationAudio,loadExplorationAudio} from '@/game/explorationAudio';
 import {campaignRoom,EXPLORATION_ROOMS,chapterName,chapterNumber,roomInChapter} from '@/game/explorationCampaign';
 import {lensDockAction,lensDockLayout,toggleWorldCameraZoom,type ExplorationPanel} from '@/game/explorationLens';
 import ExplorationMinimap from './ExplorationMinimap';
@@ -8,7 +8,7 @@ import ExplorationJoystick from "./ExplorationJoystick";
 import { unlockPlatformAudio } from "@/game/platformerAudio";
 import ExplorationItemIcon from "./ExplorationItemIcon";
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Backpack, Map, Pause, Play, Shield, Sparkles, Plus, Minus, ZoomIn, ZoomOut, Volume2, VolumeX, PawPrint, Settings2, X } from 'lucide-react';
+import { Backpack, Map, Pause, Play, Shield, Sparkles, Plus, Minus, ZoomIn, ZoomOut, Volume2, VolumeX, PawPrint, X } from 'lucide-react';
 import { GAME_ASSETS } from '@/game/assets';
 import type { PetProfile } from '@/game/PetGame';
 import { ForestControls } from '@/game/forestControls';
@@ -32,12 +32,10 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const canvas = useRef<HTMLCanvasElement>(null), dialog = useRef<HTMLDialogElement>(null), pauseButton = useRef<HTMLButtonElement>(null);
   const [assetStatus, setAssetStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom, setZoom] = useState(1);
-  const [pauseTab,setPauseTab]=useState<'pause'|'settings'|'guide'|'bestiary'|'rooms'>('pause');
-  const [audioMix,setAudioMix]=useState(loadExplorationAudio);
+  const [audioMix]=useState(loadExplorationAudio);
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
   useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed);},[audioMix,soundOn,panel,overview,assetStatus,game.completed]);
-  function updateAudio(key:keyof ExplorationAudioMix,value:number){const mix={...mixRef.current,[key]:value};mixRef.current=mix;setAudioMix(mix);saveExplorationAudio(mix);audio.current?.configure(mix,false);}
   const [lensExpanded,setLensExpanded]=useState(false);
   const [viewport,setViewport]=useState(()=>({width:typeof window==='undefined'?390:window.innerWidth,height:typeof window==='undefined'?844:window.innerHeight}));
   const zoomRef = useRef(zoom), lastSaved = useRef('');
@@ -92,11 +90,12 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     Object.values(itemArt).forEach(image=>{image.onload=checkAssets;image.onerror=()=>{assetsReady=false;setAssetStatus('error');};});
     for(const image of [riverMobs,riverProps,riverPortal,water]){image.onload=checkAssets;image.onerror=pet.onerror;}
     checkAssets();
-    let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0;
+    let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0,paintKey='',draws=0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const resize = () => { const r = el.getBoundingClientRect(); w = Math.max(1, r.width); h = Math.max(1, r.height); const dpr = combatCanvasScale(w,h,window.devicePixelRatio || 1); el.width = Math.round(w * dpr); el.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
     const observer = new ResizeObserver(resize); observer.observe(el); resize();
     const loop = (now: number) => {
+      if(!shouldRunExplorationFrame(last,now)){frame=window.requestAnimationFrame(loop);return;}
       const dt = last ? Math.min(50, now - last) : 0; last = now;
       if (assetsReady && !panelRef.current && !overviewRef.current && !document.hidden && !current.current.completed) {
         const held = controls.current.snapshot(); let dx = Number(held.right) - Number(held.left) || stick.current.x, dy = Number(held.down) - Number(held.up) || stick.current.y;
@@ -127,7 +126,12 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         const before=current.current;if(!replayMode)current.current=tickCombatPortal(before,dt);
         if(current.current!==before){if(current.current.roomIndex!==before.roomIndex){clear();persist();}setGame(current.current);}
       }
+      const key=`${current.current.revision}:${w}:${h}:${zoomRef.current}:${overviewRef.current}:${assetsReady}:${reduced.matches}`;
+      if(assetsReady&&shouldDrawExplorationFrame(!panelRef.current&&!overviewRef.current,key,paintKey)){
       drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water);
+      paintKey=key;draws++;
+      }
+      if(window.location.pathname==='/qa-exploration-lab'&&now-ui<40){el.dataset.runningDraws=String(draws);el.dataset.gameTime=String(Math.round(current.current.time));}
       frame = window.requestAnimationFrame(loop);
     };
     frame = window.requestAnimationFrame(loop);
@@ -160,12 +164,12 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const fibers = game.roomIndex===0?game.stock.fibra+game.bag.fibra:game.roomCollectedFibers;
   const canUse = (item: 'erva' | 'fruta') => !game.completed && game.stock[item] + game.bag[item] > 0 && (item === 'erva' ? game.hp < combatMaxHp(game.xp) : game.energy < 100);
   const useItem = (item: 'erva' | 'fruta') => { if (!panelRef.current && !overviewRef.current) change(consumeCombatItem(current.current, item)); };
-  const modalTitle = panel==='pause'&&pauseTab!=='pause'?({settings:'Configurações',guide:'Como jogar',bestiary:'Bestiário',rooms:'Manual das salas'} as const)[pauseTab]:panel === 'inventory' ? 'Mochila da Exploração' : panel === 'exit' ? 'Voltar aos capítulos?' : 'Exploração pausada';
+  const modalTitle=panel==='inventory'?'Mochila da Exploração':panel==='exit'?'Voltar aos capítulos?':'Exploração pausada';
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
   const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
   return <section style={dockStyle} className="combat-pilot combat-pilot--lens-dock" aria-label="Campanha de Exploração">
-    <header className="combat-top"><div><small>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {game.roomIndex+1}/{EXPLORATION_ROOMS.length} · {room.title.toUpperCase()}</small><h1>{profile?.name ?? 'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span><button className="combat-settings-trigger" aria-label="Configurações da exploração" onClick={()=>{setPauseTab('settings');openPanel('pause');}}><Settings2 size={21}/></button></div></header>
+    <header className="combat-top"><div><small>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {game.roomIndex+1}/{EXPLORATION_ROOMS.length} · {room.title.toUpperCase()}</small><h1>{profile?.name ?? 'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
       <canvas ref={canvas} aria-label="Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila." onPointerUp={event => {
@@ -201,10 +205,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     </div>
     <dialog id="combat-panel" ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
       <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel && <button onClick={() => openPanel(null)} aria-label={panel==='inventory'?'Fechar mochila e retomar':'Fechar painel e retomar'}><X size={20}/></button>}</header>
-      {panel === 'inventory' ? <CombatInventory game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} onRare={item=>change(useRareCombatItem(current.current,item))} onCard={card=>change(equipCombatCard(current.current,card))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <>
-       <nav className="exp-pause-tabs" aria-label="Informações da exploração">{([['pause','Pausa'],['settings','Áudio'],['guide','Como jogar'],['bestiary','Bestiário'],['rooms','Salas']] as const).map(([key,label])=><button key={key} aria-pressed={pauseTab===key} onClick={()=>setPauseTab(key)}>{label}</button>)}</nav>
-       {pauseTab==='pause'?<><p>{room.hint}</p><p>A exploração está pausada. Consulte o guia, os NPCs e o mapa completo das salas.</p></>:pauseTab==='settings'?<div className="exp-audio-settings"><button onClick={onToggleSound}>{soundOn?'Silenciar todos os sons':'Ativar sons'}</button>{([['npcs','Sons dos NPCs'],['ambience','Ambiente'],['effects','Efeitos de ações']] as const).map(([key,label])=><label key={key}><span>{label} <output>{Math.round(audioMix[key]*100)}%</output></span><input type="range" aria-label={label} min="0" max="100" value={Math.round(audioMix[key]*100)} onChange={e=>updateAudio(key,Number(e.target.value)/100)}/></label>)}<p>Preferências salvas neste navegador. Os sons pausam junto com a sala e só começam após uma interação no jogo.</p></div>:pauseTab==='guide'?<ExplorationTutorial/>:pauseTab==='bestiary'?<ExplorationBestiary/>:<ExplorationRoomManual game={game}/>}
-      </>}
+      {panel === 'inventory' ? <CombatInventory game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} onRare={item=>change(useRareCombatItem(current.current,item))} onCard={card=>change(equipCombatCard(current.current,card))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>{room.hint}</p><p>As configurações e os guias ficam na tela de capítulos. Salve e volte ao mapa para consultá-los.</p></>}
 
       {panel !== 'inventory' && <div className="combat-dialog-actions"><button onClick={() => openPanel(null)}><Play size={16} />{panel === 'exit' ? 'Continuar aqui' : 'Retomar'}</button>{panel === 'exit' ? <button onClick={leave}>Salvar e voltar</button> : <button onClick={() => openPanel('exit')}>Voltar aos capítulos</button>}</div>}
     </dialog>

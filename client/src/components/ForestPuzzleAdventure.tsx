@@ -1,3 +1,4 @@
+import ExplorationSettings from './ExplorationSettings';
 import ExplorationCampaignMap from './ExplorationCampaignMap';
 import {startExplorationReplay,saveExplorationReplay} from '@/game/explorationSelection';
 import {chapterName,roomInChapter} from '@/game/explorationCampaign';
@@ -8,7 +9,7 @@ import ExplorationCombatPilot from "./ExplorationCombatPilot";
 import { forestTapPath, forestRouteInput } from "@/game/forestTapNavigation";
 import { petWalkAtlas, drawWalkFrame } from "@/game/petWalkAtlas";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, CircleHelp, Compass, DoorOpen, Home, KeyRound, Pause, Play, RotateCcw, Trees, Volume2, VolumeX } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, CircleHelp, Compass, DoorOpen, Home, KeyRound, Pause, Play, RotateCcw, Trees, Settings2, Volume2, VolumeX } from "lucide-react";
 import { GAME_ASSETS } from "@/game/assets";
 import { playPlatformSfx } from "@/game/platformerAudio";
 import {
@@ -423,6 +424,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   };
+  const [showExplorationSettings,setShowExplorationSettings]=useState(false);
   const [combatEntry,setCombatEntry]=useState<{progress:Record<string,unknown>;replay:boolean}|null>(null);
   const campaignRef=useRef(combatProgress);campaignRef.current=combatProgress;
   const enterCampaign=()=>{setCombatEntry({progress:campaignRef.current,replay:false});};
@@ -447,11 +449,13 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     <header className="forest-adventure-topbar">
       <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>Meu Pet Virtual</strong><small>EXPLORAÇÃO</small></div></div>
       <div className="forest-adventure-top-actions">
+        {!game&&<button type="button" aria-label="Configurações da exploração" onClick={()=>setShowExplorationSettings(true)}><Settings2 size={18}/></button>}
         <button type="button" onClick={onToggleSound} aria-label={soundOn ? "Silenciar efeitos" : "Ativar efeitos"} aria-pressed={soundOn} title={soundOn ? "Silenciar efeitos" : "Ativar efeitos"}>{soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}</button>
         {!game && <><button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
         <button type="button" onClick={onGoToHouse}><Home size={16} /> Minha Casa</button></>}
       </div>
     </header>
+    {showExplorationSettings&&combatCampaign.supported&&<ExplorationSettings game={combatCampaign.state} soundOn={soundOn} onToggleSound={onToggleSound} onClose={()=>setShowExplorationSettings(false)}/>}
     {!game ? <main className="forest-adventure-map forest-adventure-map--trail">
       <section className="forest-adventure-intro"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> UMA NOVA TRILHA</span><h1>Explore com seu pet</h1></div>
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>

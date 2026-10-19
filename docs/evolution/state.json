@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-18",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_pending_publication",
-  "active_run": "2026-10-18-exploration-chapter3",
+  "status": "validated_pending_publication",
+  "active_run": "2026-10-18-exploration-performance",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -62,7 +62,7 @@
     "site_commit": "81784cf2e0b6920a40c5c770bc5e9680cf675f01",
     "instructions": "Redeploy predecessor only if needed and no later collaborator deployment exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-18-exploration-chapter3.md",
+  "latest_report": "docs/evolution/runs/2026-10-18-exploration-performance.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -569,5 +569,22 @@
     "rollback": "1.16.0 / Sites80 source6269e4bd01946e77aa311fbfe14359a79ea6d82e",
     "browser": "Sites81:390x844/844x390 settings native modal, NPC slider, bestiary master800HP/drop/card, room30 manual locked preview, room21 power75energy inspected. Found focal heading mislabeled prior chapter in landscape and test-page header overflow; corrected before final delivery.",
     "checks": "TypeScript passed;484/39 game suite plus48 focused followup tests passed;1.17.1 build19.20s passed;1.17.2 build recorded below"
+  },
+  "exploration_performance": {
+    "product_version": "1.17.4",
+    "status": "validated_pending_publication",
+    "settings": "Chapter screen before room entry; active room has only pause/inventory/map",
+    "changes": [
+      "bounded64-entry seeded enemy cache",
+      "room foliage WeakMap",
+      "immutable shoreline bounds WeakMap",
+      "30Hz maximum active draw scheduling with elapsed-time movement",
+      "paused view redraw only on key/viewport changes",
+      "skip unchanged audio gain automation"
+    ],
+    "checks": "TypeScript and490 tests in40 game files passed",
+    "benchmark": "2000 enemy+garden lookups: room1 2.63→2.19ms, room11 963.4→3.22ms, room30 175.65→1.89ms; isolated NodeCPU measurement, not FPS",
+    "browser": "Prior live1.17.2 loaded; no game exception observed, extension metadata error excluded. Post-publication verification pending.",
+    "rollback": "live1.17.2/Sites84,8f048e6359bc3e49f81f8b70fe6beaee937cf1ef; saved1.17.3/Sites85 was never deployed"
   }
 }

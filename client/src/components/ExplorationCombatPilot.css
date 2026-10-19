@@ -129,3 +129,4 @@
 .exp-lab{height:100dvh;display:flex;flex-direction:column;overflow:hidden}.exp-lab>header{flex:none}.exp-lab>div{flex:1;min-height:0!important;height:auto!important}.exp-lab .combat-pilot{height:100%;min-height:0}.exp-lab .trail-map{height:100%;min-height:0}.exp-lab .trail-map-frame{flex:1;height:auto;min-height:180px}.exp-lab .trail-map-guide{flex:none}
 
 .exp-lab{display:grid;grid-template-rows:auto minmax(0,1fr)}.exp-lab>div{overflow:hidden!important}.exp-lab .combat-pilot{height:100%;min-height:0}
+.exploration-settings{position:fixed;inset:12px;margin:auto;width:min(92vw,640px);height:max-content;max-height:calc(100dvh - 24px);padding:18px}.exploration-settings button{font:inherit;min-height:44px;min-width:44px;padding:8px 12px;border-radius:12px;border:1px solid #bacda0;cursor:pointer}.exploration-settings .combat-dialog-heading>button{display:grid;place-items:center;border-radius:50%}

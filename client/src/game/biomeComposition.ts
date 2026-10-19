@@ -37,9 +37,11 @@ export const PILOT_BIOME:BiomeComposition={id:'clearing-layered-v1',props:pond.p
   ...pond.regions,
 ]};
 
+const boundsCache=new WeakMap<readonly GroundPoint[],{left:number;top:number;right:number;bottom:number}>();
 export function regionBounds(polygon:readonly GroundPoint[]){
+  const cached=boundsCache.get(polygon);if(cached)return cached;
   const xs=polygon.map(p=>p.x),ys=polygon.map(p=>p.y);
-  return {left:Math.min(...xs),top:Math.min(...ys),right:Math.max(...xs),bottom:Math.max(...ys)};
+  const value={left:Math.min(...xs),top:Math.min(...ys),right:Math.max(...xs),bottom:Math.max(...ys)};boundsCache.set(polygon,value);return value;
 }
 export function insideRegion(p:GroundPoint,polygon:readonly GroundPoint[]):boolean{
   let inside=false;

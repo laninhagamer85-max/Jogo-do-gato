@@ -77,7 +77,7 @@ export function campaignWaterBlocks(p:CombatPoint,radius:number,room:CampaignRoo
  return room.composition?.regions.some(r=>r.material==='water'&&touchesRegion(p,radius,r.polygon))??false;
 }
 /** New room plant groups stay out of solid footprints and special interactions. */
-export function campaignGardens(room:CampaignRoom){
+function buildCampaignGardens(room:CampaignRoom){
  if(!room.index)return [...ROOM_GARDENS,...SCATTERED_GARDENS];
  const shift=(room.index*1.137)%3.8;
  return [...ROOM_GARDENS,...SCATTERED_GARDENS].map((g,i)=>({...g,x:g.x+Math.sin(i*2.1+room.index)*shift,y:g.y+Math.cos(i*1.7+room.index)*shift*.6})).filter(g=>!campaignWaterBlocks(g,.4,room)&&!room.walls.some(w=>Math.abs(g.x-w.x-.5)<.9&&Math.abs(g.y-w.y-.5)<.9)&&[room.camp,room.marker,room.exit,...room.switches,...room.nodes,...(room.key?[room.key]:[])].every(q=>Math.hypot(g.x-q.x,g.y-q.y)>.9));
@@ -86,7 +86,7 @@ export function campaignGardens(room:CampaignRoom){
 export type RareItem='seiva'|'cristal'|'perola'|'escama';
 export const RARE_ITEMS:Record<RareItem,string>={seiva:'Seiva luminosa',cristal:'Cristal do bosque',perola:'Pérola de cura',escama:'Escama das marés'};
 /** Optional woodland encounters: stable for the saved encounter seed, not rerolled by reload. */
-export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{
+function buildCampaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{
  const room=campaignRoom(index);if(!index)return room.enemies;
  let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
  const level=index>=20?11+Math.floor((index-20)/2):index>=10?5+Math.floor((index-10)/2):Math.min(5,2+Math.floor(index/3));
@@ -104,3 +104,10 @@ export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnem
 }
 export function rareDropChance(enemy:CampaignEnemy){return enemy.art?Math.min(.55,.04+enemy.level*.055+(enemy.rarity==='rare'?.15:0)):0;}
 export function rareDropKind(enemy:CampaignEnemy):RareItem{return enemy.art==='river-mobs'?(enemy.spriteRow===1?'perola':'escama'):enemy.spriteRow===2?'cristal':'seiva';}
+
+// Authored room geometry and seeded definitions are immutable during a run.
+const gardenCache=new WeakMap<CampaignRoom,ReturnType<typeof buildCampaignGardens>>();
+export function campaignGardens(room:CampaignRoom){let value=gardenCache.get(room);if(!value){value=buildCampaignGardens(room);gardenCache.set(room,value);}return value;}
+const enemyCache=new Map<string,CampaignEnemy[]>();
+export const CAMPAIGN_ENEMY_CACHE_LIMIT=64;
+export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed);if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
