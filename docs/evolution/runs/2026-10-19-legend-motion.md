@@ -23,3 +23,8 @@ User requested equipment composition inspired by reference: original legendary c
 1.18.3 published successfully Sites92, source e2606f9e82e6bcc38357c25df10b6fad0a37963e, deploy appgdep_6ad5b38cc8708191906e8ff0ca4f622f; GitHub1f53e0db5585d380cd502792f5511c2400f5436d. Browser isolated male/Kael persisted8of8, unlock worked, selected sword detail visible.
 
 User steering1.18.4: active (or eligible starter before selection) pinned left; other seven heroes slide right. Future heroes retain real names/titles, with black blurred silhouettes of their own portraits. Expandable item library below equipment panel. Same underlying game ownership/crafting. TypeScript and9focusedtests passed.
+
+
+## Two-card loadout and unlocked powers1.19.0
+User added two rare-card slots and unlocked power selection. Added optional secondaryCard/activePower, retaining legacy activeCard and save version4; older single-card saves migrate to one occupied slot. Server-independent immutable equip commands reject unowned cards/powers and prevent duplicate cards. Both card effects apply to Q; identical selected power effect uses OR (no duplicate healing/bonus). Existing boss cards unlock thematic power options: roots extends power range2.2 and slow, tide heals15, amber25% damage; all25energy and existing1000mscooldown. Initial burst retained. Portal/replay/snapshot paths preserve loadout. New boss reward fills vacant card slot rather than replacing a chosen full loadout. Added3tests for ownership, two simultaneous effects/nonstacking, save migration and portal/replay continuity. All504game tests44files passed.
+Pinned94 CSS correction saved but not deployed; included in final1.19.0 instead. Last live1.18.4/Sites93.

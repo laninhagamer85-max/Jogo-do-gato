@@ -1,2 +1,2 @@
 /** Product version; the internal Sites version counter is separate. */
-export const GAME_RELEASE = '1.18.4';
+export const GAME_RELEASE = '1.19.0';

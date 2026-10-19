@@ -27,7 +27,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3|4;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3|4;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -113,6 +113,8 @@ export function readCombatState(value: unknown): CombatRead {
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
   s.cards=Array.isArray(raw.cards)?[...new Set(raw.cards.filter((c):c is CombatCard=>c==='roots'||c==='tide'||c==='amber'))]:[];
   s.activeCard=s.cards.includes(raw.activeCard as CombatCard)?raw.activeCard as CombatCard:null;
+  s.secondaryCard=s.cards.includes(raw.secondaryCard as CombatCard)&&raw.secondaryCard!==s.activeCard?raw.secondaryCard as CombatCard:null;
+  s.activePower=raw.activePower==='roots'||raw.activePower==='tide'||raw.activePower==='amber'?s.cards.includes(raw.activePower)?raw.activePower:'burst':'burst';
   s.rareEquipped=raw.rareEquipped==='cristal'||raw.rareEquipped==='escama'?raw.rareEquipped:null;
   if(s.rareEquipped&&s.rareStock[s.rareEquipped]+s.rareBag[s.rareEquipped]<1)s.rareEquipped=null;
   s.portalElapsed=number(raw.portalElapsed,0,0,2000);
@@ -186,19 +188,19 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) s.energy -= 25;
-    if(power&&s.activeCard==='tide'){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
+    if(power&&(hasCombatCard(s,'tide')||s.activePower==='tide')){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
     s.attackAt = s.time + (power ? 1000 : 500); s.strikeUntil = s.time + 320;
     let arrowSpent=false;const targets=!power&&s.legends?.active&&s.legends.weapon==='bow'?[...s.enemies].sort((a,b)=>distance(s.player,a)-distance(s.player,b)):s.enemies;
     for (const enemy of targets) {
       if(arrowSpent)break;
       const def = definitions.find(e => e.id === enemy.id)!; const range = distance(s.player, enemy);
       const dot = range ? ((enemy.x - s.player.x) * s.facing.x + (enemy.y - s.player.y) * s.facing.y) / range : 1;
-      if (enemy.hp <= 0 || range > (power ? 1.7 : legendWeapon(s)?.range??1.25) || (!power && dot < (s.legends?.active&&s.legends.weapon==='bow'?.94:.25)) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
+      if (enemy.hp <= 0 || range > (power ? (s.activePower==='roots'?2.2:1.7) : legendWeapon(s)?.range??1.25) || (!power && dot < (s.legends?.active&&s.legends.weapon==='bow'?.94:.25)) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
       if(!power&&s.legends?.active&&s.legends.weapon==='bow')arrowSpent=true;
-      const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6*(s.activeCard==='amber'?1.25:1) : 1) - def.defense)));
-      enemy.hp -= damage; if(power&&s.activeCard==='roots')enemy.slowUntil=s.time+2000; feedback(s, enemy, `−${damage} HP`, 'damage');
+      const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6*((hasCombatCard(s,'amber')||s.activePower==='amber')?1.25:1) : 1) - def.defense)));
+      enemy.hp -= damage; if(power&&(hasCombatCard(s,'roots')||s.activePower==='roots'))enemy.slowUntil=s.time+2000; feedback(s, enemy, `−${damage} HP`, 'damage');
       if (enemy.hp === 0) {
-        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; if(!s.defeatedEnemyIds.includes(enemy.id))s.defeatedEnemyIds.push(enemy.id); if(def.boss){const card:CombatCard=bossCardForRoom(s.roomIndex);if(!s.cards.includes(card)){s.cards.push(card);s.activeCard=card;feedback(s,s.player,`Carta rara: ${COMBAT_CARDS[card].name}`,'info');}s.rareBag[rareDropKind(def)]++;} enemy.respawnAt = s.time + insectRespawnMs(def);
+        const oldMax = combatMaxHp(s.xp), oldLevel = combatLevel(s.xp); s.xp += def.xp; s.defeated++; if(!s.defeatedEnemyIds.includes(enemy.id))s.defeatedEnemyIds.push(enemy.id); if(def.boss){const card:CombatCard=bossCardForRoom(s.roomIndex);if(!s.cards.includes(card)){s.cards.push(card);if(!s.activeCard)s.activeCard=card;else if(!s.secondaryCard)s.secondaryCard=card;feedback(s,s.player,`Carta rara: ${COMBAT_CARDS[card].name}`,'info');}s.rareBag[rareDropKind(def)]++;} enemy.respawnAt = s.time + insectRespawnMs(def);
         feedback(s, s.player, `+${def.xp} XP`, 'xp');
         const increase = combatMaxHp(s.xp) - oldMax; s.hp += increase;
         if (combatLevel(s.xp) > oldLevel) { feedback(s, s.player, `Nível ${combatLevel(s.xp)}`, 'info'); if (increase) feedback(s, s.player, `+${increase} HP`, 'heal'); }
@@ -312,7 +314,7 @@ export function replayCompletedCombat(current: CombatState): CombatState {
   next.xp = current.xp;
   next.hp = combatMaxHp(current.xp);
   next.energy = current.energy;
-  next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=4;next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
+  next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=4;next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.secondaryCard=current.secondaryCard;next.activePower=current.activePower;next.rareEquipped=current.rareEquipped;next.stock = { ...current.stock };next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.encounterSeed=current.encounterSeed;
   next.enemies=campaignEnemies(next.roomIndex,next.encounterSeed).map(e=>({id:e.id,x:e.x,y:e.y,hp:e.hp,generation:0,attackAt:current.time+1500,respawnAt:0}));
   next.bag = { ...current.bag };
   next.equipmentOwned = current.equipmentOwned;
@@ -332,7 +334,7 @@ export function advanceCombatRoom(current:CombatState):CombatState{
  if(!current.completed||current.roomIndex>=EXPLORATION_ROOMS.length-1)return current;
  const next=createCombatState(current.roomIndex+1,(Math.imul(current.seed,1664525)+1013904223)>>>0);
  next.revision=current.revision+1;next.time=current.time;next.xp=current.xp;next.hp=Math.min(current.hp,combatMaxHp(current.xp));next.energy=current.energy;
- next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=4;next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
+ next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=4;next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.secondaryCard=current.secondaryCard;next.activePower=current.activePower;next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
  next.completedRooms=[...new Set([...current.completedRooms,current.roomIndex])];next.claimedRooms=[...new Set([...current.claimedRooms,current.roomIndex])];next.completionRewardClaimed=next.claimedRooms.includes(next.roomIndex);
  next.deaths=current.deaths;next.seed=current.seed;next.invulnerableUntil=next.time+2500;next.attackAt=next.time;
  next.enemies=next.enemies.map(e=>({...e,attackAt:next.time+1500}));return next;
@@ -341,7 +343,16 @@ export function advanceCombatRoom(current:CombatState):CombatState{
 export type CombatCard='roots'|'tide'|'amber';
 export const bossCardForRoom=(index:number):CombatCard=>index>=20?'amber':index>=10?'tide':'roots';
 export const COMBAT_CARDS:Record<CombatCard,{name:string;description:string}>={amber:{name:'Coração do Âmbar',description:'Carta rara do Mestre do Âmbar. Equipada, o poder causa 25% mais dano; continua custando 25 de energia.'},roots:{name:'Coração dos Troncos',description:'Carta rara do Mestre dos Troncos. Equipada, seu poder desacelera adversários por 2 segundos.'},tide:{name:'Coração das Marés',description:'Carta rara do Mestre das Marés. Equipada, cada uso do poder recupera até 15 HP.'}};
-export function equipCombatCard(current:CombatState,card:CombatCard){return current.cards.includes(card)?{...current,activeCard:current.activeCard===card?null:card,revision:current.revision+1}:current;}
+export type CombatPower='burst'|CombatCard;
+export const COMBAT_POWERS:Record<CombatPower,{name:string;description:string}>={burst:{name:'Explosão de energia',description:'Golpe em área. Custa 25 de energia.'},roots:{name:'Raízes vivas',description:'Alcance de 2,2 passos e lentidão por 2 segundos. Liberado com a carta dos Troncos.'},tide:{name:'Pulso das marés',description:'Golpe em área e recupera até 15 HP. Liberado com a carta das Marés.'},amber:{name:'Chama do âmbar',description:'Golpe em área com 25% mais dano. Liberado com a carta do Âmbar.'}};
+export const hasCombatCard=(s:CombatState,card:CombatCard)=>s.cards.includes(card)&&(s.activeCard===card||s.secondaryCard===card);
+export function equipCombatPower(current:CombatState,power:CombatPower):CombatState{return power==='burst'||current.cards.includes(power)?{...current,activePower:power,revision:current.revision+1}:current;}
+export function equipCombatCard(current:CombatState,card:CombatCard,slot:0|1=0):CombatState{
+ if(!current.cards.includes(card))return current;
+ const key=slot===0?'activeCard':'secondaryCard',other=slot===0?'secondaryCard':'activeCard';
+ const remove=current[key]===card;
+ return {...current,[key]:remove?null:card,[other]:!remove&&current[other]===card?null:current[other],revision:current.revision+1};
+}
 export function useRareCombatItem(current:CombatState,item:RareItem):CombatState{
  if(current.completed||current.rareStock[item]+current.rareBag[item]<1)return current;
  const s=clone(current);

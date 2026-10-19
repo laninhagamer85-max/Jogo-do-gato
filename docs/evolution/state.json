@@ -17,7 +17,7 @@
   },
   "current_improvement": {
     "id": "legend-equipment",
-    "product_version": "1.18.4",
+    "product_version": "1.19.0",
     "implementation_status": "validated_pending_publication"
   },
   "publication": {
@@ -611,10 +611,10 @@
     "browser": "Isolated390x844/844x390:bothstarters unlock/select,Kael scene+sword,returncat,craft costs,8directionmatrix;final8rosterclipPathsvisible;noaccountwrites"
   },
   "legend_motion": {
-    "product_version": "1.18.4",
+    "product_version": "1.19.0",
     "status": "validated_pending_publication",
-    "scope": "whole-pose cutouts, illustrated weapons, pinned active hero, named blurred silhouettes, expandable equipment",
-    "checks": "TypeScript;501game tests passed",
+    "scope": "equipment layout, active pinned, named blurred silhouettes, two rare cards, unlocked power selection",
+    "checks": "TypeScript;504game tests44files",
     "save": "unchanged;campaignVersion4",
     "phone": "user screenshots inspected;new phone test pending"
   }
