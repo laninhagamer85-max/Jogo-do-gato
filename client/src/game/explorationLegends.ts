@@ -49,9 +49,9 @@ export function changeLegend(game:CombatState,gender:LegendGender,action:LegendA
   for(const key of ['fibra','ambar'] as const){const take=Math.min(next.bag[key],recipe[key]);next.bag[key]-=take;next.stock[key]-=recipe[key]-take;}
   if(recipe.rare){if(next.rareBag[recipe.rare]>0)next.rareBag[recipe.rare]--;else next.rareStock[recipe.rare]--;}
   l.weapons.push(action.weapon);l.weapon=action.weapon;
-  return {...next,legends:l,campaignVersion:4,revision:game.revision+1,message:`${recipe.name} fabricado e equipado.`};
+  return {...next,legends:l,campaignVersion:4,revision:game.revision+1,message:`${recipe.name}: fabricação concluída e arma equipada.`};
  }
- return {...game,legends:l,campaignVersion:4,revision:game.revision+1,message:action.type==='unlock'?'Lendário desbloqueado! Selecione para explorar.':l.active?`${legendName({legends:l})} está pronto para explorar.`:'Seu gato voltou à exploração.'};
+ return {...game,legends:l,campaignVersion:4,revision:game.revision+1,message:action.type==='unlock'?'Lendário desbloqueado! Selecione para explorar.':l.active?`${legendName({legends:l})} está ${l.active==='lyra'?'pronta':'pronto'} para explorar.`:'Seu gato voltou à exploração.'};
 }
 /** Rows S,SW,W,NW,N,NE,E,SE. A stopped body stays on an idle frame. */
 export function legendAnimation(dx:number,dy:number,walking:boolean,walkPhase:number,time:number,strikeUntil:number,reduced=false){
