@@ -150,3 +150,19 @@
 .exp-legend-slider{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:6px;align-items:center;margin:12px 0 0}.exp-legend-slider>button{display:grid;place-items:center;width:44px;height:48px;padding:0!important}.exp-legend-roster.exp-legend-carousel{position:relative;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;gap:10px;padding:5px;margin:0;scrollbar-width:thin}.exp-legend-carousel>button{scroll-snap-align:center;flex:0 0 64%;min-width:0;max-width:180px}.exp-legend-carousel>button>svg{height:108px}.exp-legend-mystery{position:relative;display:grid;place-items:center;width:100%;height:108px;border-radius:16px;background:radial-gradient(ellipse,#10221b,#263c2d);color:#6d7865;overflow:hidden}.exp-legend-mystery>svg:first-child{filter:blur(4px);opacity:.55}.exp-legend-mystery>svg:last-child{position:absolute;left:calc(50% - 12px);top:50px;color:#e0cc91}.exp-legend-slide-count{font-size:12px;text-align:center;margin:6px 0 12px}.exp-weapon-portrait{display:block;width:29px;height:52px;overflow:hidden}.exp-legend-weapons article{grid-template-columns:34px minmax(0,1fr);align-items:center}.exp-legend-hero .exp-legend-mystery{height:160px}
 @media(min-width:600px){.exp-legend-carousel>button{flex-basis:29%}}@media(max-height:500px) and (orientation:landscape){.exp-legend-carousel>button>svg,.exp-legend-carousel>button .exp-legend-mystery{height:80px}.exp-legend-mystery>svg:last-child{top:35px}}
 .exp-legend-roster.exp-legend-carousel::before,.exp-legend-roster.exp-legend-carousel::after{content:'';flex:0 0 max(0px,calc(50% - 90px))}.exp-legend-roster.exp-legend-carousel>button{flex:0 0 min(180px,100%);max-width:180px}
+
+/* Legendary equipment: character first, selectable illustrated slots. */
+.exp-legend-equipment{display:block!important;padding:12px;border:1px solid #b38b4f;border-radius:20px;background:radial-gradient(ellipse at 50% 35%,#fbefce,#d4b780);color:#352814}
+.exp-legend-stage{position:relative;min-height:270px;display:grid;place-items:center}
+.exp-legend-equipment .exp-legend-hero{width:min(100%,280px);padding:10px 66px;box-sizing:border-box;text-align:center;z-index:1;pointer-events:none}
+.exp-legend-equipment .exp-legend-hero>svg{height:210px;width:100%;max-height:none;filter:drop-shadow(0 8px 7px #49301155)}
+.exp-legend-equipment .exp-legend-hero strong,.exp-legend-equipment .exp-legend-hero small{display:block}
+.exp-legend-slots{position:absolute;inset:12px 0;display:grid;grid-template-columns:62px 1fr 62px;grid-template-rows:1fr 1fr;gap:12px;align-items:center}
+.exp-legend-slots button{width:62px;min-height:86px;border:2px solid #9b7845;border-radius:12px;background:#fff5dc;color:#382b18;display:flex;align-items:center;flex-direction:column;position:relative;z-index:2;padding:5px}
+.exp-legend-slots button:nth-child(2){grid-column:3}.exp-legend-slots button:nth-child(3){grid-row:2;grid-column:1}
+.exp-legend-slots button[aria-pressed=true]{border-color:#f4c547;box-shadow:0 0 0 2px #765117,0 0 14px #ffe58e}
+.exp-legend-slots small{font-size:10px;line-height:1.15}.exp-legend-slots .exp-weapon-portrait{height:49px;width:30px}
+.exp-legend-equipment .exp-legend-weapons{display:block;margin-top:8px}.exp-legend-equipment .exp-legend-weapons article[hidden]{display:none!important}
+.exp-legend-equipment .exp-legend-weapons article{background:#fff8e9;color:#382b18;border:1px solid #aa8752;border-radius:12px;padding:12px}
+.exp-legend-equipment .exp-legend-weapons article p{color:#4b3b27}
+@media(orientation:landscape) and (max-height:520px){.exp-legend-equipment{display:grid!important;grid-template-columns:minmax(235px,1fr) minmax(180px,1fr);gap:12px;align-items:center}.exp-legend-stage{min-height:240px}.exp-legend-equipment .exp-legend-hero>svg{height:180px}}
