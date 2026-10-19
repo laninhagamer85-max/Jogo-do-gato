@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-19",
   "timezone": "America/Sao_Paulo",
-  "status": "implemented_awaiting_performance_and_browser_validation",
+  "status": "preparing_1.21.3_for_explicit_user_test",
   "active_run": "2026-10-19",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -649,5 +649,10 @@
     "real_fps": "not_measured",
     "stutter_cause": "not_confirmed",
     "real_player_data_accessed": false
+  },
+  "user_requested_publish": {
+    "date": "2026-10-19",
+    "text": "Públique",
+    "scope": "minimap discovery optimization 1.21.3, runtime/FPS user review pending"
   }
 }
