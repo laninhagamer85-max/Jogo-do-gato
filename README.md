@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão publicada **1.24.1** (Sites109): correção visual da sala31 do Capítulo4. Escadaria de pedra, platô gramado com rochas pintadas e margens naturais dos lagos. Consulte `docs/evolution/state.json` e o relatório atual para a confirmação final da publicação.
+Versão publicada **1.25.0** (Sites110): composição aprovada da sala31, Jardim das Nascentes, com lago natural, escadaria diagonal e pátio contínuo. Estado de publicação em `docs/evolution/state.json`.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

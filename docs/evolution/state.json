@@ -3,25 +3,58 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.24.1_for_user_test",
+  "status": "published_1.25.0_for_user_test",
   "active_run": "2026-10-20",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "3b2c7604002bb3bfb6566bbdcc3d0886fc452cc9",
-    "source_site_commit": "cdc6ef1998973f65d7d288bddfd4868f94e694bb",
+    "source_site_commit": "9b122752d3519ca038d2af284acb20c8f65edd60",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
+    "implementation_base_github_commit": "5bbc794d8578d2e5cb61880701efc3938ef0c96b",
     "code_commit_status": "current_source_and_assets_synced_to_collaboration_branch",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be"
   },
   "current_improvement": {
-    "id": "chapter4-stone-stairs-shores",
-    "base_product_version": "1.24.0",
-    "implementation_status": "published_1.24.1",
+    "id": "chapter4-approved-concept",
+    "base_product_version": "1.24.1",
+    "implementation_status": "published_1.25.0",
     "acceptance_status": "pending_user_test"
   },
   "publication": {
+    "id": "appgdep_6ad7c0f503048191b94cd2338320a8b7",
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_512cfd25663c81918e8d6d7f7d8731a1",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-20T19:29:15.605327+00:00",
+    "product_version": "1.25.0",
+    "last_observed_version": 110,
+    "site_commit": "9b122752d3519ca038d2af284acb20c8f65edd60"
+  },
+  "verification": {
+    "typescript": "passed",
+    "offline_tests": "559/559 in57files; FirebaseAdmin staging excluded",
+    "build": "passed21.20s; existing large chunk warning",
+    "browser": "Isolated844x390/390x844 approved composition, full map, stairs and upper courtyard; no real account writes",
+    "physical_phone": "not_tested",
+    "fps": "not_measured",
+    "real_online_phases_completed_in_cycle": 0
+  },
+  "blockers": [],
+  "next_actions": [
+    "David tests room31 on phone; approve before room variants/NPCs",
+    "Future branch paths are reserved; additional scenery not loaded yet"
+  ],
+  "rollback": {
+    "production_changed": true,
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
     "product_version": "1.24.1",
@@ -31,27 +64,6 @@
     "deployment_id": "appgdep_6ad7ac0573bc81918bcb6ec7a83aed97",
     "site_commit": "cdc6ef1998973f65d7d288bddfd4868f94e694bb",
     "attempted_in_this_cycle": true
-  },
-  "verification": {
-    "typescript": "passed",
-    "offline_tests": "558/558 in57files;FirebaseAdmin staging excluded without credential",
-    "build": "passed19.52s;existing >500kB chunk warning",
-    "browser": "Isolated844x390 walked stone stairs to upper terrace;390x844 walked by lake;full map inspected in both orientations. QA fixture solves challenge through game engine. Not a full browser completion.",
-    "physical_phone": "not_tested",
-    "fps": "not_measured",
-    "real_online_phases_completed_in_cycle": 0
-  },
-  "blockers": [],
-  "next_actions": [
-    "David reviews room31 stone stairs, terrace and lake margins on his phone.",
-    "Only after approval create further Chapter4 room variants and NPCs."
-  ],
-  "rollback": {
-    "production_changed": true,
-    "product_version": "1.24.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_07d8463dbdac81918bf19495353dcf7b",
-    "site_commit": "fba08c2c682628e5f5c1ccd7a5d0e511f975399b",
-    "instructions": "Redeploy only if no newer collaborator publication exists; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-20-chapter4-stone-corrections.md",
   "source_reconciliation": {
@@ -660,5 +672,12 @@
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "status": "published_for_user_test"
+  },
+  "current_report": "docs/evolution/runs/2026-10-20-chapter4-approved-concept.md",
+  "approved_concept": {
+    "product_version": "1.25.0",
+    "native_art": "1672x941",
+    "save": "campaignVersion6; once-only legacy layout migration",
+    "expansion": "connections reserved only; no new rooms or NPCs"
   }
 }

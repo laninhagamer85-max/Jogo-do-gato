@@ -1,3 +1,4 @@
+import {NASCENTES_STAIR_BASE} from '@/game/explorationChapter4';
 import LegendAnimationLab from '@/components/LegendAnimationLab';
 import ExplorationSettings from '@/components/ExplorationSettings';
 import {useState} from 'react';
@@ -10,7 +11,7 @@ type LabMode='standard'|'legend'|'levelup'|'stairs';
 function prepareStairs(initial:CombatState){
  let s=initial;
  const walk=(target:{x:number;y:number})=>{const route=pilotRoute(s.player,target,s.gateOpen,30);if(!route.length)throw Error('Percurso da sala31 indisponível');for(const p of route){let n=0;while(Math.hypot(p.x-s.player.x,p.y-s.player.y)>.04&&n++<100){const d=Math.hypot(p.x-s.player.x,p.y-s.player.y),v=Math.min(1,d/.15);s=stepCombat(s,{dx:(p.x-s.player.x)/d*v,dy:(p.y-s.player.y)/d*v},50);}if(n>=100)throw Error('Percurso da sala31 bloqueado');}};
- const room=EXPLORATION_ROOMS[30];for(const node of room.nodes.filter(n=>n.item==='fibra'))walk(node);for(const plate of room.switches){walk(plate);s=stepCombat(s,{interact:true},0);}if(!s.gateOpen)throw Error('Desafio da sala31 não liberou acesso');walk({x:5.5,y:5.5});return s;
+ const room=EXPLORATION_ROOMS[30];for(const node of room.nodes.filter(n=>n.item==='fibra'))walk(node);for(const plate of room.switches){walk(plate);s=stepCombat(s,{interact:true},0);}if(!s.gateOpen)throw Error('Desafio da sala31 não liberou acesso');walk(NASCENTES_STAIR_BASE);return s;
 }
 
 function fixture(index:number,mode:LabMode='standard'){const s=createCombatState(index,42);s.completedRooms=Array.from({length:index},(_,i)=>i);s.claimedRooms=[...s.completedRooms];s.xp=12000;s.hp=combatMaxHp(s.xp);s.stock.erva=8;s.stock.fruta=8;s.stock.fibra=100;s.stock.ambar=100;s.rareStock.cristal=3;s.rareStock.seiva=3;s.cards=['roots','tide'];s.activeCard='tide';s.equipmentOwned=true;s.equipmentOn=true;if(mode==='legend'){s.xp=1000;s.hp=combatMaxHp(s.xp);s.stock.fibra=180;s.stock.ambar=60;s.rareStock.cristal=6;s.rareStock.seiva=8;}if(mode==='levelup'&&s.enemies.length){s.xp=39;s.hp=combatMaxHp(s.xp);s.enemies[0]={...s.enemies[0],hp:1,x:s.player.x+.9,y:s.player.y};s.facing={x:1,y:0};}return mode==='stairs'&&index===30?prepareStairs(s):s;}

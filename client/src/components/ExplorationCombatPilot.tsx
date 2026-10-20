@@ -1,3 +1,4 @@
+import {nascentesView} from '@/game/explorationChapter4View';
 import {NASCENTES_ASSETS} from '@/game/explorationChapter4';
 import {normalizeQuickItems,setCombatQuickItem,quickItemCount,canUseQuickItem,useCombatQuickItem,type CombatQuickItem} from '@/game/explorationCombat';
 import {RARE_ITEMS} from '@/game/explorationCampaign';
@@ -86,7 +87,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const rareArt = new Image();rareArt.src='/forest-adventure/forest-rare-items-v1.webp';
     const bridge = new Image();bridge.src=current.current.roomIndex===30?NASCENTES_ASSETS.stairs:'/forest-adventure/chapter1-bridge-v1.webp';
     const keyArt = new Image();keyArt.src='/forest-adventure/chapter1-key-v1.webp';
-    const portal = new Image(); portal.src = '/forest-adventure/woodland-portal-v2.webp';
+    const portal = new Image(); portal.src = current.current.roomIndex===30?NASCENTES_ASSETS.portal:'/forest-adventure/woodland-portal-v2.webp';
     const shelter = new Image(); shelter.src = current.current.roomIndex===30?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset;
     const stone=new Image();stone.src=current.current.roomIndex===30?NASCENTES_ASSETS.stone:'/forest-adventure/ground-proposals-20261016/option-3.webp';
     const cliff=new Image();cliff.src=current.current.roomIndex===30?NASCENTES_ASSETS.cliff:'/forest-adventure/ground-proposals-20261016/option-3.webp';
@@ -187,7 +188,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
       <canvas ref={canvas} aria-label="Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila." onPointerUp={event => {
         if (panelRef.current || overviewRef.current || current.current.completed) return;
-        const r = event.currentTarget.getBoundingClientRect(), v = combatView(r.width, r.height, current.current.player, zoom, false);
+        const r = event.currentTarget.getBoundingClientRect(), v = current.current.roomIndex===30?nascentesView(r.width,r.height,current.current.player,zoom,false):combatView(r.width, r.height, current.current.player, zoom, false);
         route.current = pilotRoute(current.current.player, { x: (event.clientX - r.left - v.left) / v.tile, y: (event.clientY - r.top - v.top) / v.tile }, current.current.gateOpen,current.current.roomIndex);
       }} />
       <div className="combat-vitals"><label>HP <strong>{Math.ceil(game.hp)}/{combatMaxHp(game.xp)}</strong><progress value={game.hp} max={combatMaxHp(game.xp)} aria-label="Vida do pet" /></label><label>Energia <strong>{Math.floor(game.energy)}/100</strong><progress value={game.energy} max={100} aria-label="Energia de combate" /></label></div>

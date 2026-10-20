@@ -1,0 +1,62 @@
+{
+  "dimensions": [
+    2172,
+    724
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "cells": [
+    {
+      "column": 0,
+      "cell_x": 0,
+      "cell_width": 543,
+      "bbox_alpha32_cell": [
+        74,
+        166,
+        440,
+        547
+      ]
+    },
+    {
+      "column": 1,
+      "cell_x": 543,
+      "cell_width": 543,
+      "bbox_alpha32_cell": [
+        111,
+        182,
+        438,
+        531
+      ]
+    },
+    {
+      "column": 2,
+      "cell_x": 1086,
+      "cell_width": 543,
+      "bbox_alpha32_cell": [
+        98,
+        190,
+        430,
+        515
+      ]
+    },
+    {
+      "column": 3,
+      "cell_x": 1629,
+      "cell_width": 543,
+      "bbox_alpha32_cell": [
+        66,
+        192,
+        434,
+        536
+      ]
+    }
+  ],
+  "png_sha256": "d9fc703ef3384d40d189840d31d4c9dd118f407e645d1d3cebf6a41ea0b44559",
+  "webp_sha256": "e91641b0b56ecfd3375b6322c075ba29128146836de3c3cd423844f339b5aa7f",
+  "webp_bytes": 195424,
+  "creation": "Built-in image_gen original four-object game atlas. Revision2 edited for transparent gutters. Reference concept used for style only.",
+  "encoding": "Same-size WebP quality92, alpha preserved."
+}

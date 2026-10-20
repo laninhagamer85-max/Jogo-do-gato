@@ -1,0 +1,42 @@
+{
+  "source": "/workspace/scratch/75b2b54f627b/generated_images/exec-d5b70cb9-c8bb-45d0-8d1a-7ae3082e8762.png",
+  "generation": "Built-in image_gen precise-object-edit; original approved concept authoring retained",
+  "edits": [
+    "Remove baked kitten near lower-left shelter",
+    "Remove cyan vortex only; preserve portal stone arch"
+  ],
+  "resolution_requested": [
+    3840,
+    2160
+  ],
+  "resolution_actual": [
+    1672,
+    941
+  ],
+  "second_attempt": "Explicit super-resolution edit also returned1672x941; discarded due no size gain and texture reinterpretation",
+  "encoding": "Same-size WebPquality92; no resizing or pixel editing",
+  "validation": "Visually close same layout; not pixel-identical. Mean absolute source/edit RGB differences10.19/10.30/8.08 on0–255; includes removed objects and texture changes. No material camera/framing shift observed.",
+  "assets": [
+    {
+      "file": "approved-room31-empty-v1.png",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 3077748,
+      "sha256": "4bc405efd7e9aed8320064412637054ad7cfdaf124e9912d558e3fa895edd517",
+      "mode": "RGB"
+    },
+    {
+      "file": "approved-room31-empty-v1.webp",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "bytes": 577416,
+      "sha256": "a39babb40ce0983077991cab2d4df86be6573e8f8c043844e070a73f5877287e",
+      "mode": "RGB"
+    }
+  ],
+  "prompt": "Use case: precise-object-edit. Input image is the EDIT TARGET and approved final composition. Preserve this image EXACTLY: same camera, framing, placement, scale, all terrain silhouettes, every tree, both natural ponds and their shorelines, waterfall, cat shelter, all paths, staircase, continuous rock escarpment, courtyard, and portal stone arch. Make ONLY TWO tiny local edits: (1) remove the tiny black-and-white kitten near lower-left shelter, filling only its footprint with matching grassy earth; (2) remove the bright cyan/blue magical vortex INSIDE the portal arch at upper-right, leaving a neutral empty open arch with natural landscape visible behind it, while preserving every stone of the portal arch. No other changes. Do not simplify, recompose, move anything, change colors, add items or alter water. Render at very high detail 3840x2160 in identical landscape16:9 composition. This clean background will be registered to existing collision and animation layers, so spatial fidelity matters more than creative reinterpretation. No text, UI, borders, watermarks, extra animals, new architecture or extra effects. Background remains opaque, not transparent."
+}

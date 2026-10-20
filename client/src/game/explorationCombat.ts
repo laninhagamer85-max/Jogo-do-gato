@@ -1,4 +1,4 @@
-import {nascentesBlocked,nascentesTraverse} from './explorationChapter4';
+import {nascentesBlocked,nascentesTraverse,NASCENTES_SCENE} from './explorationChapter4';
 import {readLegendProgress,legendWeapon,type LegendProgress} from './explorationLegends';
 import {hazardPhase} from './explorationHazards';
 import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
@@ -28,7 +28,7 @@ export type CombatLoot = CombatPoint & { id: string; item: CombatItem; quantity:
 export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type CombatState = {
-  levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;campaignVersion:2|3|4|5;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:2;campaignVersion:2|3|4|5|6;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -50,7 +50,7 @@ export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'|'legends'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0)+(legendWeapon(s as CombatState)?.bonus??0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
-  return {npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=30?5:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {nascentesSceneVersion:room.index===30?2:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=30?6:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -61,7 +61,8 @@ export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101
 }
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22,roomIndex=0): boolean {
   const room=campaignRoom(roomIndex);
-  if ((room.index===30&&nascentesBlocked(p,radius,gateOpen))||campaignWaterBlocks(p,radius,room)||!insideExploration(p,radius) || hitsEdgeScenery(p,radius)) return false;
+  if(room.index===30)return !nascentesBlocked(p,radius,gateOpen)&&!campaignWaterBlocks(p,radius,room);
+  if(campaignWaterBlocks(p,radius,room)||!insideExploration(p,radius)||hitsEdgeScenery(p,radius))return false;
   const walls = gateOpen||!room.gateBlock ? room.walls : [...room.walls,room.gateBlock];
   const f=PILOT_SHELTER.footprint;
   if(p.x+radius>f.x && p.x-radius<f.x+f.width && p.y+radius>f.y && p.y-radius<f.y+f.height)return false;
@@ -83,7 +84,7 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value: unknown): CombatRead {
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>5) return { supported: false, version };
+  if (version > 4 || Number(raw.campaignVersion??1)>6) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=Math.floor(number(raw.roomIndex,0,0,unlocked));
@@ -108,8 +109,8 @@ export function readCombatState(value: unknown): CombatRead {
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   s.roomCollectedFibers=Math.floor(number(raw.roomCollectedFibers,index===0?s.stock.fibra+s.bag.fibra:0,0,9999));
   const point = object(raw.player); const p = { x: number(point.x, room.camp.x, PILOT_SIZE.left, PILOT_SIZE.left+PILOT_SIZE.width), y: number(point.y, room.camp.y, PILOT_SIZE.top, PILOT_SIZE.top+PILOT_SIZE.height) };
-  s.player = nearestPilotPoint(p, s.gateOpen,s.roomIndex);
-  s.exploredCells = readMinimap(raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
+  s.player = nearestPilotPoint(room.index===30&&raw.nascentesSceneVersion!==2?room.camp:p, s.gateOpen,s.roomIndex);
+  s.exploredCells = readMinimap(room.index===30&&raw.nascentesSceneVersion!==2?[]:raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
   s.cards=Array.isArray(raw.cards)?[...new Set(raw.cards.filter((c):c is CombatCard=>c==='roots'||c==='tide'||c==='amber'))]:[];
@@ -293,6 +294,7 @@ export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:bool
 }
 /** Breadth-first touch route around the same geometry used by movement. */
 export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen: boolean,roomIndex=0): CombatPoint[] {
+  if(roomIndex===30)return nascentesRoute(from,destination,gateOpen); 
   const start = { x: Math.floor(from.x), y: Math.floor(from.y) }, end = { x: Math.floor(destination.x), y: Math.floor(destination.y) };
   if (!pilotWalkable({ x: end.x + .5, y: end.y + .5 }, gateOpen,.22,roomIndex)) return [];
   const key = (p: CombatPoint) => `${p.x},${p.y}`, queue = [start], previous = new Map<string, CombatPoint | null>([[key(start), null]]);
@@ -386,3 +388,18 @@ export function setCombatQuickItem(s:CombatState,slot:number,item:CombatQuickIte
 export function quickItemCount(s:CombatState,item:CombatQuickItem){return item==='erva'||item==='fruta'?s.stock[item]+s.bag[item]:s.rareStock[item]+s.rareBag[item];}
 export function canUseQuickItem(s:CombatState,item:CombatQuickItem){return !s.completed&&quickItemCount(s,item)>0&&(item==='fruta'?s.energy<100:s.hp<combatMaxHp(s.xp));}
 export function useCombatQuickItem(s:CombatState,item:CombatQuickItem){return item==='erva'||item==='fruta'?consumeCombatItem(s,item):useRareCombatItem(s,item);}
+
+/** Half-unit route graph follows the diagonal stair and the actual painted courtyard. */
+function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean):CombatPoint[]{
+ if(!pilotWalkable(to,open,.22,30))return [];
+ if(clearPilotWalkLine(from,to,open,.22,30))return [to];
+ const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},queue=[start],previous=new Map<string,CombatPoint|null>([[key(start),null]]);
+ for(let i=0;i<queue.length;i++){
+  const p=queue[i],actual=i===0?from:{x:p.x/2,y:p.y/2};
+  if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,30)){
+   const route:CombatPoint[]=[to];let current:CombatPoint|null=p;while(current&&key(current)!==key(start)){route.unshift({x:current.x/2,y:current.y/2});current=previous.get(key(current))??null;}return route;
+  }
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const n={x:p.x+dx,y:p.y+dy};if(n.x<NASCENTES_SCENE.left*2||n.x>(NASCENTES_SCENE.left+NASCENTES_SCENE.width)*2||n.y<NASCENTES_SCENE.top*2||n.y>(NASCENTES_SCENE.top+NASCENTES_SCENE.height)*2)continue;if(!previous.has(key(n))&&clearPilotWalkLine(actual,{x:n.x/2,y:n.y/2},open,.22,30)){previous.set(key(n),p);queue.push(n);}}
+ }
+ return [];
+}
