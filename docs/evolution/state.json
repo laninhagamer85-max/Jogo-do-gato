@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-15",
+  "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
   "status": "published_for_user_review",
   "active_run": null,
@@ -21,13 +21,12 @@
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.9.16",
-    "last_observed_version": 35,
+    "product_version": "1.23.1",
+    "last_observed_version": 107,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_254490ddee608191a866f77e44f0bb76",
-    "deployment_id": "appgdep_6ad11f4948608191b60a53e95d2bb038",
-    "site_commit": "5c802bc84578f650694f556831662a8114318cee",
-    "published_at": "2026-10-15T18:45:52.719784+00:00",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa8a74e5e481918b24b08c03a7c765",
+    "deployment_id": "appgdep_6ad7518583608191aa41c017042b6e57",
+    "site_commit": "bd4aa0ebfb48a6facafec6f06ff0da4689b61337",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -58,7 +57,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
     "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-15-modular-ground.md",
+  "latest_report": "docs/evolution/runs/2026-10-20.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -222,5 +221,28 @@
     "checks": "TypeScript/build/537 offline tests in53 files passed; staging integration excluded",
     "measured_fps": null,
     "report": "docs/evolution/runs/2026-10-19.md"
+  },
+  "latest_cycle_coordination": {
+    "date": "2026-10-20",
+    "branch": "review/grass-option3-20261016",
+    "code_commit": "44cad147a831fc2b4fd83db197bc431df6ce2e0d",
+    "report_commit": "87d57556ed726e5bf753a4a98122dbdf2e1744d3",
+    "scope": "1.23.1 short-landscape action/lens separation",
+    "verification": {
+      "typescript": "passed",
+      "offline_tests": "552/552 in 56 files; Firebase Admin staging integration excluded (no staging credential)",
+      "build": "passed; existing >500kB chunk warning",
+      "browser": "Isolated QA room21. Power consumes energy, camera toggles independently; measured action/lens separation at five iframe sizes. Not a playthrough or physical touch test.",
+      "viewports": {
+        "375x667": "action/lens rects and screenshot checked",
+        "375x812": "rectangles and visual inspection passed",
+        "390x844": "rectangles and visual inspection passed",
+        "844x390": "before overlap reproduced; after normal/expanded lens no intersections; power and zoom clicked",
+        "1366x768": "rectangles and visual inspection passed"
+      },
+      "real_online_phases_completed_in_cycle": 0,
+      "physical_phone": "not_tested",
+      "fps": "not_measured"
+    }
   }
 }
