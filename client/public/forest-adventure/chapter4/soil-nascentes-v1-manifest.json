@@ -1,0 +1,16 @@
+{
+  "file": "soil-nascentes-v1.webp",
+  "size": [
+    1254,
+    1254
+  ],
+  "mode": "RGB",
+  "sha256": "a8bf3752b020732f41b25a29cc1383f7fe239da258c6e42d3061293469b0bc4e",
+  "source": "Original built-in imagegen, no third-party asset",
+  "source_png": "/workspace/scratch/75b2b54f627b/generated_images/exec-46ebb170-18e0-4aee-9883-402dad60db44.png",
+  "purpose": "Independent subtle worn-earth material for clipped paths, not scenery",
+  "lighting": "flat diffuse nondirectional",
+  "world_repeat_recommended": 5,
+  "limitations": "Tileability requested visually; exact opposing-edge pixel equality not guaranteed. Use feathered patch blend or seam-aware pattern composer.",
+  "prompt": "Square seamless-ish subtle warm sandy limestone-dust earth material. Tiny fine grains, muted beige ochre/palegray, lowcontrast matte painted casual RPG, overheadorthographic, uniformscale, no plants/rocks/paths/largefeatures/border/vignette/text/outline/green edges; transitions added in game."
+}

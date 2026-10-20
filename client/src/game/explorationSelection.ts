@@ -1,6 +1,6 @@
 import {readLegendProgress} from './explorationLegends';
 import {EXPLORATION_ROOMS,campaignRoom} from './explorationCampaign';
-import {createCombatState,readCombatState,combatSnapshot,combatMaxHp,type CombatState} from './explorationCombat';
+import {travelCombatPortal,createCombatState,readCombatState,combatSnapshot,combatMaxHp,type CombatState} from './explorationCombat';
 export function explorationRoomStatus(s:CombatState,index:number):'completed'|'current'|'locked'{
  if(s.completedRooms.includes(index))return 'completed';
  return index===(s.completed?s.roomIndex+1:s.roomIndex)?'current':'locked';
@@ -8,6 +8,7 @@ export function explorationRoomStatus(s:CombatState,index:number):'completed'|'c
 /** A replay is a separate attempt. Its room-local state never replaces the campaign checkpoint. */
 export function startExplorationReplay(campaign:CombatState,index:number):CombatState|null{
  if(index<0||index>=EXPLORATION_ROOMS.length||!campaign.completedRooms.includes(index))return null;
+ if(index>=30)return index===campaign.roomIndex?{...campaign,completed:false,portalTarget:undefined}:travelCombatPortal(campaign,index);
  let attempt:CombatState|null=null;
  try{const raw=JSON.parse(campaign.roomAttempts[index]??'null');if(raw&&typeof raw==='object'){const read=readCombatState({...raw,roomAttempts:{}});if(read.supported&&read.state.roomIndex===index&&!read.state.completed)attempt=read.state;}}catch{/* An invalid attempt starts afresh, never changes campaign progress. */}
  const s=attempt??createCombatState(index,campaign.encounterSeed+index+1);

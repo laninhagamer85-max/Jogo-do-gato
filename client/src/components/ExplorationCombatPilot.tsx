@@ -85,24 +85,25 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const riverPortal=new Image();riverPortal.src='/forest-adventure/river-portal-v1.webp';
     const water=new Image();water.src='/forest-adventure/painted-water-v1.webp';
     const rareArt = new Image();rareArt.src='/forest-adventure/forest-rare-items-v1.webp';
-    const bridge = new Image();bridge.src=current.current.roomIndex===30?NASCENTES_ASSETS.stairs:'/forest-adventure/chapter1-bridge-v1.webp';
+    const bridge = new Image();bridge.src=current.current.roomIndex>=30?NASCENTES_ASSETS.trees:'/forest-adventure/chapter1-bridge-v1.webp';
     const keyArt = new Image();keyArt.src='/forest-adventure/chapter1-key-v1.webp';
-    const portal = new Image(); portal.src = current.current.roomIndex===30?NASCENTES_ASSETS.portal:'/forest-adventure/woodland-portal-v2.webp';
-    const shelter = new Image(); shelter.src = current.current.roomIndex===30?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset;
-    const stone=new Image();stone.src=current.current.roomIndex===30?NASCENTES_ASSETS.stone:'/forest-adventure/ground-proposals-20261016/option-3.webp';
-    const cliff=new Image();cliff.src=current.current.roomIndex===30?NASCENTES_ASSETS.cliff:'/forest-adventure/ground-proposals-20261016/option-3.webp';
+    const portal = new Image(); portal.src = current.current.roomIndex>=30?NASCENTES_ASSETS.portal:'/forest-adventure/woodland-portal-v2.webp';
+    const shelter = new Image(); shelter.src = current.current.roomIndex>=30?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset;
+    const stone=new Image();stone.src=current.current.roomIndex>=30?NASCENTES_ASSETS.stone:'/forest-adventure/ground-proposals-20261016/option-3.webp';
+    const soil=new Image();soil.src=current.current.roomIndex>=30?NASCENTES_ASSETS.soil:'/forest-adventure/ground-proposals-20261016/option-3.webp';
+    const cliff=new Image();cliff.src=current.current.roomIndex>=30?(current.current.roomIndex===31?NASCENTES_ASSETS.grassPlateau:NASCENTES_ASSETS.cliff):'/forest-adventure/ground-proposals-20261016/option-3.webp';
     const enemies = new Image(); enemies.src = '/forest-adventure/enemies-illustrated-v1.png';
     const pet = new Image(); pet.src = GAME_ASSETS.characters[char]; const atlas = new Image(); const url = petWalkAtlas(char); if (url) atlas.src = url;
     const itemArt=Object.fromEntries([...Object.keys(COMBAT_ITEMS),'perola','escama'].map(id=>{const image=new Image();image.src='/forest-adventure/items/'+id+'.svg';return [id,image];})) as Record<CombatItem,HTMLImageElement> & Record<'perola'|'escama',HTMLImageElement>;
-    const bg = new Image(); bg.src = current.current.roomIndex===30?NASCENTES_ASSETS.grass:'/forest-adventure/ground-proposals-20261016/option-3.webp';
+    const bg = new Image(); bg.src = current.current.roomIndex>=30?NASCENTES_ASSETS.grass:'/forest-adventure/ground-proposals-20261016/option-3.webp';
     let assetsReady = false;
-    const checkAssets = () => { if (stone.naturalWidth && cliff.naturalWidth && autumnMobs.naturalWidth && powerArt.naturalWidth && pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && garden.naturalWidth && shelter.naturalWidth && portal.naturalWidth && bridge.naturalWidth && keyArt.naturalWidth && mobs.naturalWidth && rareArt.naturalWidth && riverMobs.naturalWidth && riverProps.naturalWidth && riverPortal.naturalWidth && water.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
+    const checkAssets = () => { if (soil.naturalWidth && stone.naturalWidth && cliff.naturalWidth && autumnMobs.naturalWidth && powerArt.naturalWidth && pet.naturalWidth && atlas.naturalWidth && enemies.naturalWidth && props.naturalWidth && garden.naturalWidth && shelter.naturalWidth && portal.naturalWidth && bridge.naturalWidth && keyArt.naturalWidth && mobs.naturalWidth && rareArt.naturalWidth && riverMobs.naturalWidth && riverProps.naturalWidth && riverPortal.naturalWidth && water.naturalWidth && bg.naturalWidth && Object.values(itemArt).every(image=>image.naturalWidth)) { assetsReady = true; setAssetStatus('ready'); } };
     pet.onload = checkAssets; atlas.onload = checkAssets; enemies.onload = checkAssets; props.onload = checkAssets; garden.onload = checkAssets; bg.onload = checkAssets;
     shelter.onload=checkAssets; portal.onload=checkAssets;bridge.onload=checkAssets;keyArt.onload=checkAssets;mobs.onload=checkAssets;rareArt.onload=checkAssets;
     pet.onerror = atlas.onerror = enemies.onerror = props.onerror = garden.onerror = bg.onerror = () => { assetsReady = false; setAssetStatus('error'); };
     shelter.onerror=pet.onerror; portal.onerror=pet.onerror;bridge.onerror=pet.onerror;keyArt.onerror=pet.onerror;mobs.onerror=pet.onerror;rareArt.onerror=pet.onerror;
     Object.values(itemArt).forEach(image=>{image.onload=checkAssets;image.onerror=()=>{assetsReady=false;setAssetStatus('error');};});
-    for(const image of [stone,cliff,autumnMobs,powerArt,riverMobs,riverProps,riverPortal,water]){image.onload=checkAssets;image.onerror=pet.onerror;}
+    for(const image of [soil,stone,cliff,autumnMobs,powerArt,riverMobs,riverProps,riverPortal,water]){image.onload=checkAssets;image.onerror=pet.onerror;}
     checkAssets();
     let w = 1, h = 1, last = 0, ui = 0, savedAt = 0, frame = 0,paintKey='',draws=0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -130,19 +131,19 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
           if (current.current.loot.length < before.loot.length || current.current.collectedNodes.length > before.collectedNodes.length) audio.current?.action('pickup');
         }
         pending.current = { attack: false, power: false, interact: false };
-        if (current.current.deaths !== before.deaths || current.current.completed) clear();
+        if (current.current.roomIndex!==before.roomIndex || current.current.deaths !== before.deaths || current.current.completed) clear();
         const changedEvent = urgent || current.current.xp !== before.xp || current.current.collectedNodes.length !== before.collectedNodes.length || current.current.loot.length !== before.loot.length || current.current.feedback.length !== before.feedback.length || current.current.hp !== before.hp || current.current.completed;
         if (changedEvent || now - savedAt > 1000) { persist(); savedAt = now; }
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
       }
       if(assetsReady&&current.current.completed&&!document.hidden&&!panelRef.current&&!overviewRef.current){
-        if(replayMode){replayElapsed.current+=dt;if(replayElapsed.current>=850){clear();persist();backRef.current();return;}}
-        const before=current.current;if(!replayMode)current.current=tickCombatPortal(before,dt);
+        if(replayMode&&current.current.roomIndex<30){replayElapsed.current+=dt;if(replayElapsed.current>=850){clear();persist();backRef.current();return;}}
+        const before=current.current;if(!replayMode||current.current.roomIndex>=30)current.current=tickCombatPortal(before,dt);
         if(current.current!==before){if(current.current.roomIndex!==before.roomIndex){clear();persist();}setGame(current.current);}
       }
       const key=`${current.current.revision}:${w}:${h}:${zoomRef.current}:${overviewRef.current}:${assetsReady}:${reduced.matches}`;
       if(assetsReady&&shouldDrawExplorationFrame(!panelRef.current&&!overviewRef.current,key,paintKey)){
-      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water,autumnMobs,powerArt,stone,cliff);
+      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water,autumnMobs,powerArt,stone,cliff,soil);
       paintKey=key;draws++;
       }
       if(window.location.pathname==='/qa-exploration-lab'&&now-ui<40){el.dataset.runningDraws=String(draws);el.dataset.gameTime=String(Math.round(current.current.time));}
@@ -150,7 +151,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     };
     frame = window.requestAnimationFrame(loop);
     return () => { window.cancelAnimationFrame(frame); observer.disconnect(); clear(); };
-  }, [char, initial.supported,game.roomIndex===30]);
+  }, [char, initial.supported,game.roomIndex]);
 
   useEffect(() => {
     if (!initial.supported) return;
@@ -182,13 +183,13 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
   const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
-  return <section onPointerDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} onKeyDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} style={dockStyle} className={`combat-pilot combat-pilot--lens-dock ${overview&&game.roomIndex===30?'is-chapter4-overview':''}`} aria-label="Campanha de Exploração">
+  return <section onPointerDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} onKeyDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} style={dockStyle} className={`combat-pilot combat-pilot--lens-dock ${overview&&game.roomIndex>=30?'is-chapter4-overview':''}`} aria-label="Campanha de Exploração">
     <header className="combat-top"><div><small>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {game.roomIndex+1}/{EXPLORATION_ROOMS.length} · {room.title.toUpperCase()}</small><h1>{legendName(game)??profile?.name??'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
       <canvas ref={canvas} aria-label="Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila." onPointerUp={event => {
         if (panelRef.current || overviewRef.current || current.current.completed) return;
-        const r = event.currentTarget.getBoundingClientRect(), v = current.current.roomIndex===30?nascentesView(r.width,r.height,current.current.player,zoom,false):combatView(r.width, r.height, current.current.player, zoom, false);
+        const r = event.currentTarget.getBoundingClientRect(), v = current.current.roomIndex>=30?nascentesView(r.width,r.height,current.current.player,zoom,false):combatView(r.width, r.height, current.current.player, zoom, false);
         route.current = pilotRoute(current.current.player, { x: (event.clientX - r.left - v.left) / v.tile, y: (event.clientY - r.top - v.top) / v.tile }, current.current.gateOpen,current.current.roomIndex);
       }} />
       <div className="combat-vitals"><label>HP <strong>{Math.ceil(game.hp)}/{combatMaxHp(game.xp)}</strong><progress value={game.hp} max={combatMaxHp(game.xp)} aria-label="Vida do pet" /></label><label>Energia <strong>{Math.floor(game.energy)}/100</strong><progress value={game.energy} max={100} aria-label="Energia de combate" /></label></div>
@@ -202,7 +203,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
           <button type="button" className="combat-lens-slot combat-lens-camera" disabled={overview} onClick={()=>{route.current=[];setZoom(toggleWorldCameraZoom);}} aria-label={zoom>1?'Afastar câmera para 1×':'Aproximar câmera para 2×'} aria-pressed={zoom>1} title={zoom>1?'Câmera: voltar para 1×':'Câmera: aproximar para 2×'}>{zoom>1?<ZoomOut/>:<ZoomIn/>}</button>
         </nav>
       </ExplorationMinimap>
-      <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(room.fibers, fibers)}/{room.fibers} fibras</span>{room.encounters>0&&<span>{Math.min(room.encounters,game.roomIndex===0?game.defeated:game.defeatedEnemyIds.length)}/{room.encounters} encontros</span>}<span>{game.gateOpen ? "Siga ao portal" : room.index===30?"Libere a passagem":"Ative o marco"}</span>{room.switches.length>0&&<span>Placas {game.switchStep}/{room.switches.length}</span>}{room.key&&<span>{game.hasRoomKey?'Chave ✓':'Busque a chave'}</span>}{room.bridge&&<span>{game.bridgeCrossed?'Ponte ✓':'Atravesse a ponte'}</span>}{room.bossId&&<span>{game.defeatedEnemyIds.includes(room.bossId)?'Mestre ✓':'Vença o mestre'}</span>}{room.useConsumable&&<span>{game.consumablesUsed?'Recuperação ✓':'Use fruta/erva'}</span>}</div>
+      <div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(room.fibers, fibers)}/{room.fibers} fibras</span>{room.encounters>0&&<span>{Math.min(room.encounters,game.roomIndex===0?game.defeated:game.defeatedEnemyIds.length)}/{room.encounters} encontros</span>}<span>{game.gateOpen ? "Siga ao portal" : room.index>=30?"Libere a passagem":"Ative o marco"}</span>{room.switches.length>0&&<span>Placas {game.switchStep}/{room.switches.length}</span>}{room.key&&<span>{game.hasRoomKey?'Chave ✓':'Busque a chave'}</span>}{room.bridge&&<span>{game.bridgeCrossed?'Ponte ✓':'Atravesse a ponte'}</span>}{room.bossId&&<span>{game.defeatedEnemyIds.includes(room.bossId)?'Mestre ✓':'Vença o mestre'}</span>}{room.useConsumable&&<span>{game.consumablesUsed?'Recuperação ✓':'Use fruta/erva'}</span>}</div>
       {(overview||noticeVisible)&&<div className="combat-goal" role="status">{overview ? 'Inspeção pausada · Voltar ao pet retoma' : game.message}</div>}
       {!game.completed&&room.bossId&&game.defeatedEnemyIds.includes(room.bossId)&&<aside className="combat-card-note" role="status"><strong>Carta rara conquistada</strong><p>{COMBAT_CARDS[bossCardForRoom(game.roomIndex)].description}</p><small>Já equipada · disponível na mochila</small></aside>}
       {!game.completed && <div className="combat-item-tray" aria-label="Itens e uso rápido">
@@ -215,7 +216,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
 
         <div className="combat-actions">{(['attack', 'power', 'interact'] as const).map((kind, index) => <button className={`combat-action-${kind}`} key={kind} disabled={Boolean(panel) || overview || (kind === 'power' && game.energy < 25)} aria-label={[game.legends?.active?'Ataque do Lendário, E ou espaço':'Patada, E ou espaço', `Usar ${COMBAT_POWERS[game.activePower??'burst'].name}, Q, custa 25 de energia`, 'Interagir com marco, F'][index]} onPointerDown={e => { e.preventDefault(); action(kind); }} onClick={e => { if (e.detail === 0) action(kind); }}>{index === 0 ? <PawPrint /> : index === 1 ? <PowerSymbol power={game.activePower??'burst'}/> : <Shield />}<span>{['Atacar', COMBAT_POWERS[game.activePower??'burst'].name, 'Marco'][index]}</span></button>)}</div>
       </div>}
-      {game.completed && <div className={`combat-teleport ${game.roomIndex===EXPLORATION_ROOMS.length-1?'combat-teleport-final':''}`} role="status" aria-live="polite"><div className="combat-teleport-light"/><h2>{replayMode?'Sala repetida! Voltando ao mapa…':game.roomIndex===EXPLORATION_ROOMS.length-1?(game.roomIndex===30?'Sala piloto concluída!':'Biomas concluídos!'):'Atravessando o portal…'}</h2><p>{replayMode?'Seu ponto de avanço na campanha foi preservado.':game.roomIndex<EXPLORATION_ROOMS.length-1?`${chapterName(game.roomIndex+1)} · Sala ${game.roomIndex+2}/${EXPLORATION_ROOMS.length}`:'Progresso salvo. As próximas salas serão criadas após a aprovação deste cenário.'}</p>{room.bossId&&game.activeCard&&<p><strong>Carta rara: {COMBAT_CARDS[game.activeCard].name}</strong><br/>{COMBAT_CARDS[game.activeCard].description}</p>}{!replayMode&&game.roomIndex===EXPLORATION_ROOMS.length-1&&<button onClick={leave}>Salvar e sair</button>}</div>}
+      {game.completed && <div className={`combat-teleport ${game.roomIndex===EXPLORATION_ROOMS.length-1?'combat-teleport-final':''}`} role="status" aria-live="polite"><div className="combat-teleport-light"/><h2>{game.portalTarget!==undefined?'Atravessando o portal…':replayMode?'Sala repetida! Voltando ao mapa…':game.roomIndex===EXPLORATION_ROOMS.length-1?(game.roomIndex>=30?'Sala piloto concluída!':'Biomas concluídos!'):'Atravessando o portal…'}</h2><p>{game.portalTarget!==undefined?`Destino: ${chapterName(game.portalTarget)} · Sala ${game.portalTarget+1}`:replayMode?'Seu ponto de avanço na campanha foi preservado.':game.roomIndex<EXPLORATION_ROOMS.length-1?`${chapterName(game.roomIndex+1)} · Sala ${game.roomIndex+2}/${EXPLORATION_ROOMS.length}`:'Progresso salvo. As próximas salas serão criadas após a aprovação deste cenário.'}</p>{room.bossId&&game.activeCard&&<p><strong>Carta rara: {COMBAT_CARDS[game.activeCard].name}</strong><br/>{COMBAT_CARDS[game.activeCard].description}</p>}{!replayMode&&game.portalTarget===undefined&&game.roomIndex===EXPLORATION_ROOMS.length-1&&<button onClick={leave}>Salvar e sair</button>}</div>}
     </div>
     <dialog id="combat-panel" ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
       <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel && <button onClick={() => openPanel(null)} aria-label={panel==='inventory'?'Fechar mochila e retomar':'Fechar painel e retomar'}><X size={20}/></button>}</header>

@@ -3,25 +3,58 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.25.0_for_user_test",
+  "status": "published_1.26.0_for_user_test",
   "active_run": "2026-10-20",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "3b2c7604002bb3bfb6566bbdcc3d0886fc452cc9",
-    "source_site_commit": "9b122752d3519ca038d2af284acb20c8f65edd60",
+    "source_site_commit": "eafc76b5d8bf85981139b498f64d81b2e648f07c",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "implementation_base_github_commit": "5bbc794d8578d2e5cb61880701efc3938ef0c96b",
-    "code_commit_status": "current_source_and_assets_synced_to_collaboration_branch",
+    "implementation_base_github_commit": "b6171d14b0ce77adfa3d9abebce3fac49b44d99b",
+    "code_commit_status": "1.26.0 source and assets synchronized to collaboration branch",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be"
   },
   "current_improvement": {
-    "id": "chapter4-approved-concept",
-    "base_product_version": "1.24.1",
-    "implementation_status": "published_1.25.0",
+    "id": "open-world-modular-pilot",
+    "base_product_version": "1.25.0",
+    "implementation_status": "published_1.26.0",
     "acceptance_status": "pending_user_test"
   },
   "publication": {
+    "id": "appgdep_6ad7fe74cdb4819193056cf666d8a3db",
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2f4d75100ab08191b0f87107e56f7330",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-20T23:51:37.722651+00:00",
+    "product_version": "1.26.0",
+    "last_observed_version": 111,
+    "site_commit": "eafc76b5d8bf85981139b498f64d81b2e648f07c"
+  },
+  "verification": {
+    "typescript": "passed",
+    "offline_tests": "563/563 passed; FirebaseAdmin staging excluded",
+    "build": "passed19.52s; existing large chunk warning",
+    "browser": "Isolated31->32->31 actual portal clicks; stairs/patio390x844/844x390; three more viewport DOM checks without horizontal overflow",
+    "physical_phone": "not_tested",
+    "fps": "not_measured",
+    "real_online_phases_completed_in_cycle": 0
+  },
+  "blockers": [],
+  "next_actions": [
+    "David tests connected rooms31/32 and open terrain on phone",
+    "Expand authored content and branch portals after validating this sector; previous chapters unchanged"
+  ],
+  "rollback": {
+    "production_changed": true,
     "id": "appgdep_6ad7c0f503048191b94cd2338320a8b7",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
@@ -38,32 +71,6 @@
     "product_version": "1.25.0",
     "last_observed_version": 110,
     "site_commit": "9b122752d3519ca038d2af284acb20c8f65edd60"
-  },
-  "verification": {
-    "typescript": "passed",
-    "offline_tests": "559/559 in57files; FirebaseAdmin staging excluded",
-    "build": "passed21.20s; existing large chunk warning",
-    "browser": "Isolated844x390/390x844 approved composition, full map, stairs and upper courtyard; no real account writes",
-    "physical_phone": "not_tested",
-    "fps": "not_measured",
-    "real_online_phases_completed_in_cycle": 0
-  },
-  "blockers": [],
-  "next_actions": [
-    "David tests room31 on phone; approve before room variants/NPCs",
-    "Future branch paths are reserved; additional scenery not loaded yet"
-  ],
-  "rollback": {
-    "production_changed": true,
-    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.24.1",
-    "last_observed_version": 109,
-    "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_66bb2113e34c8191913cae71b4c5c338",
-    "deployment_id": "appgdep_6ad7ac0573bc81918bcb6ec7a83aed97",
-    "site_commit": "cdc6ef1998973f65d7d288bddfd4868f94e694bb",
-    "attempted_in_this_cycle": true
   },
   "latest_report": "docs/evolution/runs/2026-10-20-chapter4-stone-corrections.md",
   "source_reconciliation": {
@@ -673,11 +680,21 @@
     "fps": "not_measured",
     "status": "published_for_user_test"
   },
-  "current_report": "docs/evolution/runs/2026-10-20-chapter4-approved-concept.md",
+  "current_report": "docs/evolution/runs/2026-10-20-open-world-pilot.md",
   "approved_concept": {
     "product_version": "1.25.0",
     "native_art": "1672x941",
     "save": "campaignVersion6; once-only legacy layout migration",
     "expansion": "connections reserved only; no new rooms or NPCs"
+  },
+  "open_world_pilot": {
+    "product_version": "1.26.0",
+    "rooms": [
+      31,
+      32
+    ],
+    "NPCs": 0,
+    "scope": "authored connected sector; continuous ground/forest beyond; not infinite generated missions or network streaming",
+    "save": "campaignVersion7; per-room local memory; no resource reset on visits"
   }
 }

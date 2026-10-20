@@ -1,4 +1,5 @@
-import {drawNascentesTerrain,drawNascentesItem,nascentesView} from './explorationChapter4View';
+import {nascentesTrees} from './explorationChapter4';
+import {drawNascentesTerrain,drawNascentesItem,nascentesView,drawNascentesTree} from './explorationChapter4View';
 import {drawExplorationLegend} from './explorationLegendView';
 import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from './explorationColorCache';
 import {hazardPhase} from './explorationHazards';
@@ -30,17 +31,17 @@ export function combatView(width: number, height: number, player: CombatPoint, z
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement,chapter4Soil?:HTMLImageElement) {
   const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
-  const v = room.index===30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview), t = v.tile;
+  const v = room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   ctx.save();
-  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas,state.time,reducedMotion,portalAtlas);
+  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas,state.time,reducedMotion,portalAtlas,waterTexture,shelterAtlas,room.index,false,chapter4Soil);
   else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
-  if(room.index!==30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
-  if(room.index!==30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
+  if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
+  if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   ctx.restore();
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
@@ -50,34 +51,34 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);if(autumn)ctx.restore();
   };
   ctx.save();
-  if(room.index!==30&&gardenAtlas)for(const patch of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
+  if(room.index<30&&gardenAtlas)for(const patch of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
     const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
     if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)river?drawRiverProp(ctx,riverProps,3+patch.index%2,p.x,p.y,t,{width:patch.width??1.2,height:1}):drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
   }
   ctx.restore();
-  if(room.index!==30){drawForestSun(ctx,v.left,v.top,t);drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);}
-  const scenery=room.index===30?[]:[...ROOM_EDGE_SOLIDS,...room.scenery];
+  if(room.index<30){drawForestSun(ctx,v.left,v.top,t);drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);}
+  const scenery=room.index>=30?[]:[...ROOM_EDGE_SOLIDS,...room.scenery];
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
 
-  if(room.index!==30){
+  if(room.index<30){
   const camp = point(room.camp); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(room.marker);
   if(river)drawRiverProp(ctx,riverProps,5,marker.x,marker.y+t*.15,t*.8);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
-  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':room.index===30?'Platô superior':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
+  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':room.index>=30?'Platô superior':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
   const exit = point(room.exit);
   drawPortalEnergy(ctx,exit.x,exit.y,t,state.time,state.gateOpen,reducedMotion);
 
   }
   if(room.key&&!state.hasRoomKey)drawCampaignKey(ctx,keyAtlas,room.key,v.left,v.top,t,state.time,reducedMotion);
   for(const [i,plate] of room.switches.entries()){
-    const p=point(plate);if(room.index===30)drawNascentesItem(ctx,chapter4Stone,3,p.x,p.y,t,.58);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,p.x,p.y+t*.15,t*.65,undefined,true);
+    const p=point(plate);if(room.index>=30)drawNascentesItem(ctx,chapter4Stone,3,p.x,p.y,t,.58);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,p.x,p.y+t*.15,t*.65,undefined,true);
     ctx.fillStyle=i<state.switchStep?'#caf1a0':'#fff2bd';ctx.font=`600 ${Math.max(12,t*.2)}px sans-serif`;ctx.textAlign='center';ctx.fillText(i<state.switchStep?'✓':String(i+1),p.x,p.y-t*.35);
   }
   for (const n of room.nodes) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
-    if(room.index===30){const p=point(n);drawNascentesItem(ctx,chapter4Stone,n.item==='fibra'?0:n.item==='ambar'?1:2,p.x,p.y-cue.hover,t,.45);}else drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2,itemArt?.[n.item]);
+    if(room.index>=30){const p=point(n);drawNascentesItem(ctx,chapter4Stone,n.item==='fibra'?0:n.item==='ambar'?1:2,p.x,p.y-cue.hover,t,.45);}else drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2,itemArt?.[n.item]);
   }
   for (const loot of state.loot) {
     const p=point(loot),fall=combatLootLift(state.time,loot.bornAt,loot.landedAt,reducedMotion),cue=combatPickupCue(state.time,loot.landedAt,reducedMotion);
@@ -91,14 +92,15 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   for(const h of room.hazards??[]){const p=point(h),phase=hazardPhase(h,state.time);ctx.save();ctx.fillStyle=phase==='active'?'#cb754788':phase==='warning'?'#e3bb4f55':'#76593644';ctx.strokeStyle=phase==='active'?'#ffdc96':'#d6b577';ctx.lineWidth=Math.max(1,t*.025);ctx.setLineDash(phase==='warning'?[t*.12,t*.09]:[]);ctx.beginPath();ctx.arc(p.x,p.y,t*h.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);if(phase==='active'){if(h.kind==='steam'){for(let i=0;i<3;i++){ctx.strokeStyle='#f4ead9aa';ctx.beginPath();ctx.moveTo(p.x+(i-1)*t*.2,p.y);ctx.quadraticCurveTo(p.x+(i-1)*t*.2-t*.14,p.y-t*.35,p.x+(i-1)*t*.2,p.y-t*.65);ctx.stroke();}}else{ctx.fillStyle='#987848';for(let i=0;i<5;i++){const x=p.x+(i-2)*t*.2;ctx.beginPath();ctx.moveTo(x-t*.1,p.y);ctx.lineTo(x,p.y-t*.3);ctx.lineTo(x+t*.1,p.y);ctx.fill();}}}ctx.fillStyle='#fff0be';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(h.kind==='steam'?'Vapor':'Espinhos',p.x,p.y+t*.6);ctx.restore();}
   const fx=state.powerFx;
   if(fx&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
-  const entities = [...scenery.map(prop=>({type:'prop' as const,p:prop})), ...(room.index===30?[]:[{type:'shelter' as const,p:PILOT_SHELTER},{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...(room.index>=30?[]:[{type:'shelter' as const,p:PILOT_SHELTER},{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
+    if(entity.type==='nascentes-tree'){drawNascentesTree(ctx,bridgeAtlas,entity.p,p.x,p.y,t);continue;}
     if(entity.type==='prop'){drawProp(entity.p);continue;}
     if(entity.type==='portal'){ctx.save();drawPortalArch(ctx,river?riverPortal:portalAtlas,p.x,p.y,t);ctx.restore();continue;}
     if(entity.type==='shelter'){
       if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
-        if(room.index===30){const h=t*1.55,w=h*1034/1103;ctx.drawImage(shelterAtlas,119,66,1034,1103,p.x-w/2,p.y-h,w,h);continue;}
+        if(room.index>=30){const h=t*1.55,w=h*1034/1103;ctx.drawImage(shelterAtlas,119,66,1034,1103,p.x-w/2,p.y-h,w,h);continue;}
         const scale=Math.min(t*PILOT_SHELTER.width/shelterAtlas.naturalWidth,t*PILOT_SHELTER.height/shelterAtlas.naturalHeight),w=shelterAtlas.naturalWidth*scale,h=shelterAtlas.naturalHeight*scale;
         ctx.drawImage(shelterAtlas,p.x-w/2,p.y-h,w,h);
       }continue;

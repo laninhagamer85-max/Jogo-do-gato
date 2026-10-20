@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão publicada **1.25.0** (Sites110): composição aprovada da sala31, Jardim das Nascentes, com lago natural, escadaria diagonal e pátio contínuo. Estado de publicação em `docs/evolution/state.json`.
+Versão publicada **1.26.0** (Sites111): piloto de áreas conectadas31/32, composição modular, elevações independentes e portais de ida e volta. Confirmação de publicação em `docs/evolution/state.json`.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

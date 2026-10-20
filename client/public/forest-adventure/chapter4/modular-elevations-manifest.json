@@ -1,0 +1,24 @@
+[
+  {
+    "file": "plateau-courtyard-user-v1.webp",
+    "source": "Ilha rochosa com pátio arborizado(1).png",
+    "origin": "user supplied artwork; format conversion only",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "alpha_preserved": true,
+    "sha256": "f7da2d83ea06700d61c36517a0e5249ade38542d6aa07fd16d72331fc0887094"
+  },
+  {
+    "file": "plateau-grass-user-v1.webp",
+    "source": "Ilha isométrica de terreno rochoso (1)(1).png",
+    "origin": "user supplied artwork; format conversion only",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "alpha_preserved": true,
+    "sha256": "10a87d52c89dacede7e62d72809ba986120a6a0d0716d70f4bf2c7a481febe8e"
+  }
+]

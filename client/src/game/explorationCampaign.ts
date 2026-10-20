@@ -1,4 +1,4 @@
-import {CHAPTER4_ROOM,NASCENTES_GARDENS} from './explorationChapter4';
+import {CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM,NASCENTES_GARDENS} from './explorationChapter4';
 import {AUTUMN_ROOMS,autumnEnemy} from './explorationChapter3';
 import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hitsEdgeScenery} from './explorationRoom';
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
@@ -66,7 +66,7 @@ for(const r of [...riverRooms,...AUTUMN_ROOMS]){
  const fit=<T extends CombatPoint>(p:T):T=>{if(valid(p))return p;const candidates=Array.from({length:720},(_,i)=>({x:-7.5+i%30,y:-6.5+Math.floor(i/30)})).filter(q=>valid(q));candidates.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return {...p,...candidates[0]};};
  r.marker=fit(r.marker);r.exit=fit(r.exit);r.nodes=r.nodes.map(fit);r.switches=r.switches.map(fit);if(r.key)r.key=fit(r.key);r.enemies=r.enemies.map(fit);
 }
-export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS,CHAPTER4_ROOM];
+export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS,CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM];
 export const campaignRoom=(index=0)=>EXPLORATION_ROOMS[Math.max(0,Math.min(EXPLORATION_ROOMS.length-1,Math.floor(index)||0))];
 export const chapterName=(index:number)=>index>=30?'Jardim das Nascentes':index>=20?'Bosque do Âmbar':index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
 export const roomInChapter=(index:number)=>index%10+1;

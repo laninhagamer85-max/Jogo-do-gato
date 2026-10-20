@@ -428,7 +428,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
   const [combatEntry,setCombatEntry]=useState<{progress:Record<string,unknown>;replay:boolean}|null>(null);
   const campaignRef=useRef(combatProgress);campaignRef.current=combatProgress;
   const enterCampaign=()=>{setCombatEntry({progress:campaignRef.current,replay:false});};
-  const enterReplay=(index:number)=>{const parsed=readCombatState(campaignRef.current);if(!parsed.supported)return;const attempt=startExplorationReplay(parsed.state,index);if(attempt)setCombatEntry({progress:combatSnapshot(attempt),replay:true});};
+  const enterReplay=(index:number)=>{const parsed=readCombatState(campaignRef.current);if(!parsed.supported)return;const attempt=startExplorationReplay(parsed.state,index);if(attempt)setCombatEntry({progress:combatSnapshot(attempt),replay:index<30});};
   const saveCombatEntry=(value:Record<string,unknown>)=>{let save=value;if(combatEntry?.replay){const base=readCombatState(campaignRef.current);if(!base.supported)return;save=combatSnapshot(saveExplorationReplay(base.state,value));}campaignRef.current=save;onSaveCombatProgress(save);};
   const combatCampaign=readCombatState(combatProgress);
   const combatRoomNumber=combatCampaign.supported?combatCampaign.state.roomIndex+1:1;

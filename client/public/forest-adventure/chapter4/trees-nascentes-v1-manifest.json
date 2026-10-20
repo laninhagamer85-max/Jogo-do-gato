@@ -1,0 +1,79 @@
+{
+  "file": "trees-nascentes-v1.webp",
+  "size": [
+    1774,
+    887
+  ],
+  "source_png": "/workspace/scratch/75b2b54f627b/generated_images/exec-205aa5fd-54dd-461a-82a5-3b89ec78f222.png",
+  "source": "Original built-in imagegen with user elevation as style reference, then targeted atlas correction",
+  "sha256": "31b91641e34cdafb0a71f4b28aaffc108654f32248018fc78556888d22eac169",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "alpha_preserved": true,
+  "frames": [
+    {
+      "id": "slender",
+      "rect": [
+        66,
+        62,
+        328,
+        752
+      ],
+      "anchor": [
+        164,
+        743
+      ]
+    },
+    {
+      "id": "broad",
+      "rect": [
+        459,
+        129,
+        446,
+        685
+      ],
+      "anchor": [
+        229,
+        676
+      ]
+    },
+    {
+      "id": "asymmetric",
+      "rect": [
+        953,
+        133,
+        376,
+        681
+      ],
+      "anchor": [
+        178,
+        672
+      ]
+    },
+    {
+      "id": "young",
+      "rect": [
+        1428,
+        426,
+        289,
+        386
+      ],
+      "anchor": [
+        146,
+        377
+      ]
+    }
+  ],
+  "layout_note": "Four horizontal sprites; model did not obey exact equal-quarter bounds. Use explicit nonoverlapping rectangles/anchors above, NOT width/4. Original canvas retained without image editing; clean alpha margins around every full tree.",
+  "lighting": "soft upper-left; no mirror transforms",
+  "suggested_world_heights": [
+    3.8,
+    3.45,
+    3.43,
+    1.9
+  ],
+  "collision": "Use trunk roots only, radius0.22–0.32world; sort canopy foreground by root y.",
+  "prompt": "Four independent full conifers matching softly painted bright lime/olive foliage, warm trunks, casual RPG, transparent RGBA horizontal atlas. Exactly4trees with visible full trunks/root flare, full intactcanopies, samebaseline, generous alpha gutters, upperleftlight, noground/disks/scenery/text. Correction: separate silhouette in eachquarter; remove third companion; preservepaintedstyle."
+}
