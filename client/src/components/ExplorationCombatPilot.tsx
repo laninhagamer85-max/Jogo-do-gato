@@ -84,7 +84,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const riverPortal=new Image();riverPortal.src='/forest-adventure/river-portal-v1.webp';
     const water=new Image();water.src='/forest-adventure/painted-water-v1.webp';
     const rareArt = new Image();rareArt.src='/forest-adventure/forest-rare-items-v1.webp';
-    const bridge = new Image();bridge.src='/forest-adventure/chapter1-bridge-v1.webp';
+    const bridge = new Image();bridge.src=current.current.roomIndex===30?NASCENTES_ASSETS.stairs:'/forest-adventure/chapter1-bridge-v1.webp';
     const keyArt = new Image();keyArt.src='/forest-adventure/chapter1-key-v1.webp';
     const portal = new Image(); portal.src = '/forest-adventure/woodland-portal-v2.webp';
     const shelter = new Image(); shelter.src = current.current.roomIndex===30?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset;

@@ -1,0 +1,67 @@
+{
+  "creation": "Original built-in image_gen assets regenerated after scratch maintenance; not byte-identical to previous generation. Same-size WebP quality88 encoding preserving alpha.",
+  "assets": [
+    {
+      "name": "stairs-nascentes-v3",
+      "png": "/workspace/scratch/75b2b54f627b/ch4-fix-assets/stairs-nascentes-v3.png",
+      "webp": "/workspace/scratch/75b2b54f627b/ch4-fix-assets/stairs-nascentes-v3.webp",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox_32": [
+        13,
+        24,
+        1763,
+        857
+      ],
+      "alpha_bbox_128": [
+        15,
+        25,
+        1762,
+        855
+      ],
+      "png_bytes": 2368307,
+      "webp_bytes": 443296,
+      "sha256_png": "edec1c5078f1e67da2d6e240c7ccacbc9c9776d3efc3e6686eaefb376cd26ad6"
+    },
+    {
+      "name": "bank-nascentes-v2",
+      "png": "/workspace/scratch/75b2b54f627b/ch4-fix-assets/bank-nascentes-v2.png",
+      "webp": "/workspace/scratch/75b2b54f627b/ch4-fix-assets/bank-nascentes-v2.webp",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox_32": [
+        15,
+        20,
+        2153,
+        682
+      ],
+      "alpha_bbox_128": [
+        16,
+        23,
+        2152,
+        681
+      ],
+      "png_bytes": 2153107,
+      "webp_bytes": 429898,
+      "sha256_png": "ed192ab13bdaae024d89d7d2625746b66a9eaa8c8d51bcad107a0c8c24c0f3f1"
+    }
+  ],
+  "prompts": {
+    "stairs-nascentes-v3": "Original isolated painted RPG stone staircase. Seven pale warm limestone treads, left low to right high, walking axis horizontal. Camera70–75degrees high topdown, broad vertical treads, visible silhouette1.8:1 to2:1 for4×2.2worldunit corridor. Irregular stone, moss edges, upperleft light, transparent alpha, no wood/rails/characters/text/background.",
+    "bank-nascentes-v2": "Original modular rocky bank2D painted RPG. Wide3:1 isolated limestone grouping, rounded irregular rocks, shaded front faces, grassy mossy top lip, ferns, high3/4topdown, upperleft soft light, transparent alpha, no stairs/water/text/characters/background."
+  }
+}

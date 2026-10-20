@@ -1,5 +1,5 @@
 import {NASCENTES_ASSETS} from '@/game/explorationChapter4';
-import {drawNascentesTerrain} from '@/game/explorationChapter4View';
+import {drawNascentesTerrain,drawNascentesShore} from '@/game/explorationChapter4View';
 import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from '@/game/explorationColorCache';
 import {drawBiomeWater} from '@/game/biomeCompositionView';
 import {campaignRoom,campaignGardens,campaignWaterBlocks} from '@/game/explorationCampaign';
@@ -28,16 +28,16 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   ctx.clearRect(0,0,size,size);ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();
   // Dark textured terrain occupies undiscovered parts too, without a rectangular map inset.
   ctx.save();
-  if(ready(ground)){if(room.index===30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
+  if(ready(ground)){if(room.index===30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
   else {ctx.fillStyle='#345331';ctx.fillRect(0,0,size,size);}
   ctx.restore();
   ctx.fillStyle='rgba(8,24,19,.91)';ctx.fillRect(0,0,size,size);
   ctx.save();ctx.beginPath();
   for(const i of s.exploredCells){const p=point(discoveredWorldPoint(i));ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
   ctx.clip();ctx.save();
-  if(ready(ground)){if(room.index===30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
+  if(ready(ground)){if(room.index===30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
   if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
-  drawCampaignShore(ctx,room,v.left,v.top,t,props,gardenArt,images.riverProps);
+  if(room.index===30)drawNascentesShore(ctx,v.left,v.top,t,images.cliff,props,gardenArt);else drawCampaignShore(ctx,room,v.left,v.top,t,props,gardenArt,images.riverProps);
   const visible=(p:{x:number;y:number})=>{const q=point(p);return q.x>-t*2&&q.y>-t*2&&q.x<size+t*2&&q.y<size+t*2;};
   if(ready(gardenArt))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
    if(visible(garden)){const q=point(garden);river?drawRiverProp(ctx,images.riverProps,3+garden.index%2,q.x,q.y,t,{width:garden.width,height:garden.height}):drawGardenPatch(ctx,gardenArt,garden,q.x,q.y,t,0,true);}
@@ -73,7 +73,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   let active=true;
   const make=(src:string)=>{const image=new Image();image.onload=()=>{if(active)draw();};image.src=src;return image;};
   const spring=latest.current.roomIndex===30;
-  art.current={stone:make(spring?NASCENTES_ASSETS.stone:'/forest-adventure/ground-proposals-20261016/option-3.webp'),cliff:make(spring?NASCENTES_ASSETS.cliff:'/forest-adventure/ground-proposals-20261016/option-3.webp'),ground:make(spring?NASCENTES_ASSETS.grass:'/forest-adventure/ground-proposals-20261016/option-3.webp'),props:make('/forest-adventure/woodland-props-v2.png'),garden:make(FOREST_NATURE.garden.asset),shelter:make(spring?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset),portal:make('/forest-adventure/woodland-portal-v2.webp'),bridge:make('/forest-adventure/chapter1-bridge-v1.webp'),key:make('/forest-adventure/chapter1-key-v1.webp'),riverProps:make('/forest-adventure/river-props-v1.webp'),riverPortal:make('/forest-adventure/river-portal-v1.webp'),water:make('/forest-adventure/painted-water-v1.webp')};
+  art.current={stone:make(spring?NASCENTES_ASSETS.stone:'/forest-adventure/ground-proposals-20261016/option-3.webp'),cliff:make(spring?NASCENTES_ASSETS.cliff:'/forest-adventure/ground-proposals-20261016/option-3.webp'),ground:make(spring?NASCENTES_ASSETS.grass:'/forest-adventure/ground-proposals-20261016/option-3.webp'),props:make('/forest-adventure/woodland-props-v2.png'),garden:make(FOREST_NATURE.garden.asset),shelter:make(spring?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset),portal:make('/forest-adventure/woodland-portal-v2.webp'),bridge:make(spring?NASCENTES_ASSETS.stairs:'/forest-adventure/chapter1-bridge-v1.webp'),key:make('/forest-adventure/chapter1-key-v1.webp'),riverProps:make('/forest-adventure/river-props-v1.webp'),riverPortal:make('/forest-adventure/river-portal-v1.webp'),water:make('/forest-adventure/painted-water-v1.webp')};
   draw();return ()=>{active=false;};
  },[state.roomIndex===30]);
  useEffect(draw,[state]);

@@ -3,57 +3,57 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.24.0_for_user_test",
+  "status": "published_1.24.1_for_user_test",
   "active_run": "2026-10-20",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
-    "base_commit": "87d57556ed726e5bf753a4a98122dbdf2e1744d3",
-    "source_site_commit": "fba08c2c682628e5f5c1ccd7a5d0e511f975399b",
+    "base_commit": "3b2c7604002bb3bfb6566bbdcc3d0886fc452cc9",
+    "source_site_commit": "cdc6ef1998973f65d7d288bddfd4868f94e694bb",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
-    "code_commit_status": "saved_to_collaboration_branch"
+    "code_commit_status": "current_source_and_assets_synced_to_collaboration_branch",
+    "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be"
   },
   "current_improvement": {
-    "id": "chapter4-first-room",
-    "base_product_version": "1.23.1",
-    "implementation_status": "published_1.24.0",
+    "id": "chapter4-stone-stairs-shores",
+    "base_product_version": "1.24.0",
+    "implementation_status": "published_1.24.1",
     "acceptance_status": "pending_user_test"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.24.0",
-    "last_observed_version": 108,
+    "product_version": "1.24.1",
+    "last_observed_version": 109,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_07d8463dbdac81918bf19495353dcf7b",
-    "deployment_id": "appgdep_6ad77e5d9fd08191b70918fb214568ed",
-    "site_commit": "fba08c2c682628e5f5c1ccd7a5d0e511f975399b",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_66bb2113e34c8191913cae71b4c5c338",
+    "deployment_id": "appgdep_6ad7ac0573bc81918bcb6ec7a83aed97",
+    "site_commit": "cdc6ef1998973f65d7d288bddfd4868f94e694bb",
     "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "558/558, 57 files; Firebase Admin staging excluded without credential",
-    "build": "passed 18.73s; pre-existing >500kB chunk warning",
-    "browser": "Isolated room31 screenshots and overview/return checked at844x390 and390x844;375x667 and375x812 visual checks. Not a browser completion or physical phone test.",
+    "offline_tests": "558/558 in57files;FirebaseAdmin staging excluded without credential",
+    "build": "passed19.52s;existing >500kB chunk warning",
+    "browser": "Isolated844x390 walked stone stairs to upper terrace;390x844 walked by lake;full map inspected in both orientations. QA fixture solves challenge through game engine. Not a full browser completion.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "real_online_phases_completed_in_cycle": 0
   },
   "blockers": [],
   "next_actions": [
-    "David tests room31 via Exploration pilot link.",
-    "After approval, vary subsequent rooms and create Chapter4 NPCs."
+    "David reviews room31 stone stairs, terrace and lake margins on his phone.",
+    "Only after approval create further Chapter4 room variants and NPCs."
   ],
   "rollback": {
     "production_changed": true,
-    "product_version": "1.23.1",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa8a74e5e481918b24b08c03a7c765",
-    "site_commit": "bd4aa0ebfb48a6facafec6f06ff0da4689b61337",
+    "product_version": "1.24.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_07d8463dbdac81918bf19495353dcf7b",
+    "site_commit": "fba08c2c682628e5f5c1ccd7a5d0e511f975399b",
     "instructions": "Redeploy only if no newer collaborator publication exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-20-chapter4-pilot.md",
+  "latest_report": "docs/evolution/runs/2026-10-20-chapter4-stone-corrections.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -650,5 +650,15 @@
     "checks": "TypeScript and 558 tests passed; browser isolated portrait and landscape",
     "scope": "No rooms32–40 or new NPCs before approval",
     "physical_phone": "not_tested"
+  },
+  "stone_corrections": {
+    "product_version": "1.24.1",
+    "room": 31,
+    "scope": "visual correction only; no new NPCs or rooms",
+    "assets": "original alpha stone staircase v3 and grassy rock bank v2",
+    "verification": "TypeScript;558offline tests;isolated844x390/390x844 walking stairs and lake shore/map inspection",
+    "physical_phone": "not_tested",
+    "fps": "not_measured",
+    "status": "published_for_user_test"
   }
 }

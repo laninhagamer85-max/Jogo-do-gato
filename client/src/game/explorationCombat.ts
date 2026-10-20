@@ -267,7 +267,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
       }else s.message=`Ainda falta um objetivo. ${room.hint}`;
     }
   }
-  if(room.index===30&&s.switchStep>=room.switches.length&&s.roomCollectedFibers>=room.fibers&&!s.gateOpen){s.gateOpen=true;s.message='Passagem liberada! Suba pela rampa de pedra até o portal no platô.';}
+  if(room.index===30&&s.switchStep>=room.switches.length&&s.roomCollectedFibers>=room.fibers&&!s.gateOpen){s.gateOpen=true;s.message='Passagem liberada! Suba pela escadaria de pedra até o portal no platô.';}
   if (s.gateOpen && distance(s.player, room.exit) < .7) {
     for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) { s.stock[item] += s.bag[item]; s.bag[item] = 0; }
     for(const item of Object.keys(RARE_ITEMS) as RareItem[]){s.rareStock[item]+=s.rareBag[item];s.rareBag[item]=0;}

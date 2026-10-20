@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão publicada **1.24.0** (Sites108): primeira sala do Capítulo 4, Jardim das Nascentes (sala 31), publicada para teste. Inclui solo e abrigo próprios, relevo com acesso pela rampa e desafio sem NPCs. Consulte `docs/evolution/state.json` e o relatório indicado por `latest_report` para os identificadores finais da publicação.
+Versão publicada **1.24.1** (Sites109): correção visual da sala31 do Capítulo4. Escadaria de pedra, platô gramado com rochas pintadas e margens naturais dos lagos. Consulte `docs/evolution/state.json` e o relatório atual para a confirmação final da publicação.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

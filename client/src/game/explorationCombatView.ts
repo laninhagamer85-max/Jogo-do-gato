@@ -1,4 +1,4 @@
-import {drawNascentesTerrain,nascentesOverview} from './explorationChapter4View';
+import {drawNascentesTerrain,drawNascentesShore,nascentesOverview} from './explorationChapter4View';
 import {drawExplorationLegend} from './explorationLegendView';
 import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from './explorationColorCache';
 import {hazardPhase} from './explorationHazards';
@@ -37,10 +37,10 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   ctx.save();
-  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff);
+  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas);
   else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
-  drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
+  if(room.index===30)drawNascentesShore(ctx,v.left,v.top,t,chapter4Cliff,propsAtlas,gardenAtlas);else drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   ctx.restore();
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
