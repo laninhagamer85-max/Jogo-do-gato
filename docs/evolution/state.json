@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-19",
+  "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.23.0_for_user_test",
-  "active_run": "2026-10-19",
+  "status": "validated_1.23.1_pending_publication",
+  "active_run": "2026-10-20",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -16,10 +16,10 @@
     "code_commit_status": "saved_to_collaboration_branch"
   },
   "current_improvement": {
-    "id": "exploration-awakening-variants-ambience",
-    "base_product_version": "1.21.3",
-    "implementation_status": "published_1.23.0",
-    "acceptance_status": "cloud_browser_checked_awaiting_physical_phone_feedback"
+    "id": "landscape-power-lens-separation",
+    "base_product_version": "1.23.0",
+    "implementation_status": "validated_pending_publication",
+    "acceptance_status": "isolated_cloud_browser_targeted_checks"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -30,42 +30,37 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9542a72bf4dc8191ba7d496e14a07ed8",
     "deployment_id": "appgdep_6ad61eb6ba108191b1c45b13ad18ee92",
     "site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
-    "attempted_in_this_cycle": true
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "552/552 in56 files; Firebase Admin staging integration excluded (no credential)",
-    "build": "passed_existing_chunk_warning",
-    "entry_selection": "passed_101_input_states_not_playthroughs",
-    "published_parity": "passed_fake_storage_only",
-    "browser": "published106 targeted HUD, settings, recipes for both genders and earned level-up checked; no physical phone/FPS or subjective audio acceptance",
+    "offline_tests": "552/552 in 56 files; Firebase Admin staging integration excluded (no staging credential)",
+    "build": "passed; existing >500kB chunk warning",
+    "browser": "Isolated QA room21. Power consumes energy, camera toggles independently; measured action/lens separation at five iframe sizes. Not a playthrough or physical touch test.",
     "viewports": {
-      "390x844": "targeted_check_passed_Lyra_recipe_and_mobile_HUD",
-      "844x390": "targeted_check_passed_Kael_recipe_and_level_up",
-      "375x667": "not_tested_this_cycle",
-      "375x812": "not_tested_this_cycle",
-      "1366x768": "not_tested_this_cycle"
+      "375x667": "action/lens rects and screenshot checked",
+      "375x812": "action/lens rectangles checked",
+      "390x844": "action/lens rectangles checked",
+      "844x390": "before overlap reproduced; after normal/expanded lens no intersections; power and zoom clicked",
+      "1366x768": "action/lens rectangles checked"
     },
     "real_online_phases_completed_in_cycle": 0,
-    "firebase_integration": "failed_missing_staging_credential_getFirebaseAdminAuth_null",
-    "composition_coverage": "80 simulated Canvas/mathematical combinations, not browser viewports",
-    "packaged_grass": "all_three_hashes_match_manifest",
-    "previous_browser_record": "Published87: pre-entry settings modal verified at390x844, active room21 at844x390 has no settings gear. Runtime clock advanced, but cloud input/animation remained slow; no reliable FPS claim or physical phone acceptance."
+    "physical_phone": "not_tested",
+    "fps": "not_measured"
   },
   "blockers": [],
   "next_actions": [
-    "User tests speaker loudness and biome ambience on phone.",
-    "User assesses stronger NPC time-to-defeat and the Legendary recipe cost.",
-    "Continue Adventure visual simplification only when requested."
+    "David tests horizontal power/zoom separation on a physical phone.",
+    "Continue phone audio and combat-balance acceptance for 1.23.0 features."
   ],
   "rollback": {
-    "production_changed": true,
-    "product_version": "1.22.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_2aa32dfef9208191a4ed2d46f2b9fbe1",
-    "site_commit": "e2ef17c141b12db9cdc8c8e899a4bfccba3bb9c9",
-    "instructions": "Redeploy predecessor only if no later collaborator deployment exists; preserve saves."
+    "production_changed": false,
+    "product_version": "1.23.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9542a72bf4dc8191ba7d496e14a07ed8",
+    "site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
+    "instructions": "Redeploy only if no newer collaborator publication exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-19-legend-recipe-ambience.md",
+  "latest_report": "docs/evolution/runs/2026-10-20.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -637,7 +632,7 @@
     "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
     "art": "2originalPNGatlases;noPNGpixelediting"
   },
-  "previous_report": "docs/evolution/runs/2026-10-19-powers-autumn.md",
+  "previous_report": "docs/evolution/runs/2026-10-19-legend-recipe-ambience.md",
   "minimap_discovery_optimization": {
     "status": "source_only_not_published",
     "before_distance_tests": 720,

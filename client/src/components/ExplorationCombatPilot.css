@@ -191,7 +191,7 @@
 .combat-quick-settings label{display:flex;align-items:center;gap:8px;margin:14px 0;flex-wrap:wrap}
 .combat-quick-settings select{background:#20382b;color:#fff;border:1px solid #c6b77d;border-radius:8px;padding:10px;max-width:100%}
 .combat-inventory-tabs{overflow-x:auto;flex-wrap:nowrap}
-@media(orientation:landscape) and (max-height:450px){.combat-pilot .combat-controls .exploration-joystick{width:110px;height:110px;min-width:110px;min-height:110px}.combat-pilot .combat-item-tray{left:50%}.combat-pilot .combat-actions .combat-action-power{height:68px;bottom:88px}}
+@media(orientation:landscape) and (max-height:450px){.combat-pilot .combat-controls .exploration-joystick{width:110px;height:110px;min-width:110px;min-height:110px}.combat-pilot .combat-item-tray{left:50%}.combat-pilot .combat-actions .combat-action-power{height:68px;bottom:0;right:88px}.combat-pilot .combat-actions .combat-action-interact{bottom:8px;right:calc(var(--lens-size) + 36px)}}
 @media(orientation:portrait) and (max-width:350px){.combat-pilot .combat-item-tray{left:50%;bottom:156px}}
 
 .exp-legend-unlock{width:100%;text-align:left}.exp-legend-unlock ul{list-style:none;padding:0;display:grid;gap:8px}.exp-legend-unlock li{display:flex;align-items:center;gap:8px;color:#eed6b2}.exp-legend-unlock li strong{margin-left:auto;white-space:nowrap}.exp-legend-unlock li.is-ready{color:#c7edba}

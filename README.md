@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão publicada verificada em 19/10/2026: **1.21.3** (Sites 103), com descoberta local do minimapa otimizada. Publicada por pedido explícito de David para testar no aparelho. TypeScript/build e testes offline aprovados; melhora de FPS ainda não medida. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report`.
+Versão pública verificada em 20/10/2026: **1.23.0** (Sites 106). Revisão **1.23.1** validada na prévia isolada para separar poder e lupa no horizontal, aguardando publicação. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status final.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 
