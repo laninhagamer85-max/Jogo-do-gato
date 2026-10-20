@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública verificada em 20/10/2026: **1.23.0** (Sites 106). Revisão **1.23.1** validada na prévia isolada para separar poder e lupa no horizontal, aguardando publicação. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status final.
+Versão pública verificada em 20/10/2026: **1.23.1** (Sites 107). Poder e lupa separados no horizontal; prévia isolada conferida em cinco tamanhos. Teste físico no telefone pendente. O contador interno do Sites é separado da versão exibida no jogo. Consulte `docs/evolution/state.json` e o relatório apontado por `latest_report` para o status final.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

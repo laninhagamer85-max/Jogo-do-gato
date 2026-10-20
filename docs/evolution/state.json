@@ -3,34 +3,34 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.23.1_pending_publication",
+  "status": "published_1.23.1_for_user_test",
   "active_run": "2026-10-20",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
-    "base_commit": "f243bc9aee14f66ad84ec0bcc52df43c71139ad3",
-    "source_site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
+    "base_commit": "5bba238d9521db442d2682d71a5f1336969ea410",
+    "source_site_commit": "bd4aa0ebfb48a6facafec6f06ff0da4689b61337",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "code_commit": "e581fd930ddd94c0a8b7e49b4dcef38909d85deb",
+    "code_commit": "44cad147a831fc2b4fd83db197bc431df6ce2e0d",
     "implementation_base_github_commit": "522d8b183d8bbcc9a759bfa04efac8d040b269b0",
     "code_commit_status": "saved_to_collaboration_branch"
   },
   "current_improvement": {
     "id": "landscape-power-lens-separation",
     "base_product_version": "1.23.0",
-    "implementation_status": "validated_pending_publication",
+    "implementation_status": "published_1.23.1",
     "acceptance_status": "isolated_cloud_browser_targeted_checks"
   },
   "publication": {
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.23.0",
-    "last_observed_version": 106,
+    "product_version": "1.23.1",
+    "last_observed_version": 107,
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9542a72bf4dc8191ba7d496e14a07ed8",
-    "deployment_id": "appgdep_6ad61eb6ba108191b1c45b13ad18ee92",
-    "site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
-    "attempted_in_this_cycle": false
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa8a74e5e481918b24b08c03a7c765",
+    "deployment_id": "appgdep_6ad7518583608191aa41c017042b6e57",
+    "site_commit": "bd4aa0ebfb48a6facafec6f06ff0da4689b61337",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -39,10 +39,10 @@
     "browser": "Isolated QA room21. Power consumes energy, camera toggles independently; measured action/lens separation at five iframe sizes. Not a playthrough or physical touch test.",
     "viewports": {
       "375x667": "action/lens rects and screenshot checked",
-      "375x812": "action/lens rectangles checked",
-      "390x844": "action/lens rectangles checked",
+      "375x812": "rectangles and visual inspection passed",
+      "390x844": "rectangles and visual inspection passed",
       "844x390": "before overlap reproduced; after normal/expanded lens no intersections; power and zoom clicked",
-      "1366x768": "action/lens rectangles checked"
+      "1366x768": "rectangles and visual inspection passed"
     },
     "real_online_phases_completed_in_cycle": 0,
     "physical_phone": "not_tested",
@@ -54,7 +54,7 @@
     "Continue phone audio and combat-balance acceptance for 1.23.0 features."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.23.0",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9542a72bf4dc8191ba7d496e14a07ed8",
     "site_commit": "4050e420d7cc3ff3d1f8139bcbb0c0daea0aed1f",
