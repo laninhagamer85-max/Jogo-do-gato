@@ -46,7 +46,7 @@ export function changeLegend(game:CombatState,gender:LegendGender,action:LegendA
   for(const key of ['cristal','seiva'] as const){const take=Math.min(next.rareBag[key],LEGEND_UNLOCK_RECIPE[key]);next.rareBag[key]-=take;next.rareStock[key]-=LEGEND_UNLOCK_RECIPE[key]-take;}
   if(next.rareEquipped&&next.rareStock[next.rareEquipped]+next.rareBag[next.rareEquipped]===0)next.rareEquipped=null;
   l.unlocked.push(action.id);
-  return {...next,legends:l,campaignVersion:4,revision:game.revision+1,message:'Lendário despertado! Materiais consumidos. Selecione Jogar para explorar.'};
+  return {...next,legends:l,campaignVersion:Math.max(4,game.campaignVersion) as CombatState['campaignVersion'],revision:game.revision+1,message:'Lendário despertado! Materiais consumidos. Selecione Jogar para explorar.'};
  }else if(action.type==='select'){
   if(action.id!==null&&(action.id!==eligible||!l.unlocked.includes(action.id)))return game;
   if(l.active===action.id)return game;l.active=action.id;
@@ -61,9 +61,9 @@ export function changeLegend(game:CombatState,gender:LegendGender,action:LegendA
   for(const key of ['fibra','ambar'] as const){const take=Math.min(next.bag[key],recipe[key]);next.bag[key]-=take;next.stock[key]-=recipe[key]-take;}
   if(recipe.rare){if(next.rareBag[recipe.rare]>0)next.rareBag[recipe.rare]--;else next.rareStock[recipe.rare]--;}
   l.weapons.push(action.weapon);l.weapon=action.weapon;
-  return {...next,legends:l,campaignVersion:4,revision:game.revision+1,message:`${recipe.name}: fabricação concluída e arma equipada.`};
+  return {...next,legends:l,campaignVersion:Math.max(4,game.campaignVersion) as CombatState['campaignVersion'],revision:game.revision+1,message:`${recipe.name}: fabricação concluída e arma equipada.`};
  }
- return {...game,legends:l,campaignVersion:4,revision:game.revision+1,message:l.active?`${legendName({legends:l})} está ${l.active==='lyra'?'pronta':'pronto'} para explorar.`:'Seu gato voltou à exploração.'};
+ return {...game,legends:l,campaignVersion:Math.max(4,game.campaignVersion) as CombatState['campaignVersion'],revision:game.revision+1,message:l.active?`${legendName({legends:l})} está ${l.active==='lyra'?'pronta':'pronto'} para explorar.`:'Seu gato voltou à exploração.'};
 }
 /** Rows S,SW,W,NW,N,NE,E,SE. A stopped body stays on an idle frame. */
 export function legendAnimation(dx:number,dy:number,walking:boolean,walkPhase:number,time:number,strikeUntil:number,reduced=false){

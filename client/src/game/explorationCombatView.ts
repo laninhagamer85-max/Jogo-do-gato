@@ -1,3 +1,4 @@
+import {drawNascentesTerrain,nascentesOverview} from './explorationChapter4View';
 import {drawExplorationLegend} from './explorationLegendView';
 import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from './explorationColorCache';
 import {hazardPhase} from './explorationHazards';
@@ -29,14 +30,15 @@ export function combatView(width: number, height: number, player: CombatPoint, z
     top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement) {
   const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
-  const v = combatView(width, height, state.player, zoom, overview), t = v.tile;
+  const v = room.index===30&&overview?nascentesOverview(width,height):combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   ctx.save();
-  drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
+  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff);
+  else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
@@ -57,12 +59,13 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);
   const scenery=[...ROOM_EDGE_SOLIDS,...room.scenery];
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
+  if(room.index===30&&!state.gateOpen)drawProp({x:6.3,y:6.1,index:0,width:1.5,height:1.2});
   const camp = point(room.camp); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(room.marker);
   if(river)drawRiverProp(ctx,riverProps,5,marker.x,marker.y+t*.15,t*.8);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
-  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
+  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':room.index===30?'Platô superior':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
   const exit = point(room.exit);
   drawPortalEnergy(ctx,exit.x,exit.y,t,state.time,state.gateOpen,reducedMotion);
 
@@ -94,6 +97,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     if(entity.type==='portal'){ctx.save();drawPortalArch(ctx,river?riverPortal:portalAtlas,p.x,p.y,t);ctx.restore();continue;}
     if(entity.type==='shelter'){
       if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
+        if(room.index===30){const h=t*1.55,w=h*1034/1103;ctx.drawImage(shelterAtlas,119,66,1034,1103,p.x-w/2,p.y-h,w,h);continue;}
         const scale=Math.min(t*PILOT_SHELTER.width/shelterAtlas.naturalWidth,t*PILOT_SHELTER.height/shelterAtlas.naturalHeight),w=shelterAtlas.naturalWidth*scale,h=shelterAtlas.naturalHeight*scale;
         ctx.drawImage(shelterAtlas,p.x-w/2,p.y-h,w,h);
       }continue;

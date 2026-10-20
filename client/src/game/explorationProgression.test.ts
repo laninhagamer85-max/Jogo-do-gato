@@ -4,9 +4,9 @@ import {createCombatState,stepCombat,combatSnapshot,readCombatState,tickCombatPo
 import {minimapDiscovered} from './explorationMinimap';
 const fixture=(index:number)=>{const s=createCombatState(index,42);s.completedRooms=Array.from({length:index},(_,i)=>i);return s;};
 const read=(s:CombatState)=>{const r=readCombatState(combatSnapshot(s));if(!r.supported)throw Error();return r.state;};
-it('automatically teleports through29 consecutive portals, preserving all permanent progression',()=>{
+it('automatically teleports through30 consecutive portals, preserving all permanent progression',()=>{
  let s=createCombatState();s.xp=1200;s.stock.erva=7;s.rareStock.cristal=2;s.rareEquipped='cristal';s.cards=['roots'];s.activeCard='roots';
- for(let index=0;index<29;index++){
+ for(let index=0;index<30;index++){
   s.completed=true;s.completedRooms.push(index);s.claimedRooms.push(index);s=read(s);
   const before=s;for(let i=0;i<16;i++)s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index);
   s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index+1);expect(s.xp).toBe(1200);expect(s.stock.erva).toBe(7);expect(s.rareEquipped).toBe('cristal');expect(s.activeCard).toBe('roots');expect(s.revision).toBeGreaterThan(before.revision);expect(s.completed).toBe(false);expect(s.player).toEqual(campaignRoom(index+1).camp);expect(read(s).roomIndex).toBe(index+1);

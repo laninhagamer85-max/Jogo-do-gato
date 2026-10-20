@@ -13,6 +13,7 @@ export const CHAPTER_AMBIENCE=[
  {name:'Clareira dos Troncos',description:'Folhas, brisa leve e cantos de pássaros.',filter:1700,q:.35,gust:.13,notes:[1568,2093,1760],interval:4.6},
  {name:'Riacho dos Cristais',description:'Água corrente, pequenas bolhas e chamados das margens.',filter:2400,q:.55,gust:.21,notes:[740,520,880],interval:3.4},
  {name:'Bosque do Âmbar',description:'Vento nas folhas secas e ressonâncias suaves do bosque.',filter:650,q:.45,gust:.075,notes:[196,246.94,293.66],interval:5.2},
+ {name:'Jardim das Nascentes',description:'Água de nascente e brisa entre pedras e folhas.',filter:1900,q:.4,gust:.15,notes:[880,1174.66,987.77],interval:4.2},
 ] as const;
 export class ExplorationAudio{
  private ctx:AudioContext|null=null;
@@ -22,7 +23,7 @@ export class ExplorationAudio{
  private sources:AudioScheduledSourceNode[]=[];
  private bedNodes:AudioNode[]=[];private chapter=1;private nextAmbient=0;private ambientPhrase=0;
  private mix={...DEFAULT_EXPLORATION_AUDIO};private enabled=false;private nextCue=0;
- configure(mix:ExplorationAudioMix,enabled:boolean,chapter=1){const nextChapter=Math.max(1,Math.min(3,Math.floor(chapter)||1));if(nextChapter!==this.chapter){this.chapter=nextChapter;if(this.ctx)this.startAmbience();}if(enabled===this.enabled&&mix.npcs===this.mix.npcs&&mix.ambience===this.mix.ambience&&mix.effects===this.mix.effects)return;this.mix=normalizeExplorationAudio(mix);this.enabled=enabled;this.apply();}
+ configure(mix:ExplorationAudioMix,enabled:boolean,chapter=1){const nextChapter=Math.max(1,Math.min(4,Math.floor(chapter)||1));if(nextChapter!==this.chapter){this.chapter=nextChapter;if(this.ctx)this.startAmbience();}if(enabled===this.enabled&&mix.npcs===this.mix.npcs&&mix.ambience===this.mix.ambience&&mix.effects===this.mix.effects)return;this.mix=normalizeExplorationAudio(mix);this.enabled=enabled;this.apply();}
  private apply(){if(!this.ctx)return;const now=this.ctx.currentTime;this.ambient?.gain.setTargetAtTime(this.enabled?this.mix.ambience*AMBIENCE_MASTER_GAIN:0,now,.08);this.effects?.gain.setTargetAtTime(this.enabled?this.mix.effects:0,now,.05);this.voices?.gain.setTargetAtTime(this.enabled?this.mix.npcs:0,now,.05);}
  unlock(){if(typeof window==='undefined'||!window.AudioContext)return;if(!this.ctx){this.ctx=new window.AudioContext();this.ambient=this.ctx.createGain();this.voices=this.ctx.createGain();this.effects=this.ctx.createGain();this.effects.gain.value=0;this.effects.connect(this.ctx.destination);this.ambient.gain.value=0;this.voices.gain.value=0;this.ambient.connect(this.ctx.destination);this.voices.connect(this.ctx.destination);this.startAmbience();this.apply();}if(this.ctx.state==='suspended')void this.ctx.resume().catch(()=>{});}
 

@@ -1,0 +1,76 @@
+{
+  "biome": "Jardim das Nascentes",
+  "creation": "Built-in image_gen, original generated game art; input references inspected for visual direction, not copied or included in publication.",
+  "encoding": "Original PNG plus same-size WebP quality88 encoding, alpha preserved.",
+  "integration_notes": "Tiles are generated tiling candidates; use feathered joins/renderer blending and validate repetition in game, not claimed mathematically seamless. Shelter should use alpha bounding box for footprint alignment.",
+  "assets": [
+    {
+      "name": "grass-nascentes-v1",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "webp_bytes": 427768,
+      "sha256_png": "ab49f9bccb4a482dd44878bc0764ede9b0feba3d3f8bc0262464a00850bcfb48",
+      "edge_delta_lr_mean": 11.71,
+      "edge_delta_tb_mean": 12.38
+    },
+    {
+      "name": "shelter-nascentes-v1",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "webp_bytes": 182252,
+      "sha256_png": "e527c4e9ac327c3d2db0cf2c488ed9e3ba3d7cc6199aec54e01bf28921c9681b",
+      "edge_delta_lr_mean": 0.0,
+      "edge_delta_tb_mean": 0.0,
+      "alpha_bbox": [
+        0,
+        19,
+        1249,
+        1254
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_alpha32_bbox": [
+        119,
+        66,
+        1153,
+        1169
+      ],
+      "suggested_anchor_normalized": [
+        0.52,
+        0.93
+      ]
+    },
+    {
+      "name": "cliff-nascentes-v1",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGB",
+      "webp_bytes": 187310,
+      "sha256_png": "7da1cec043446b0534676ce573cd6446e3d03d83fa2c06abe98929971c58ae87",
+      "edge_delta_lr_mean": 7.44,
+      "edge_delta_tb_mean": 33.2
+    },
+    {
+      "name": "stone-nascentes-v1",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "webp_bytes": 310988,
+      "sha256_png": "cc222040c32a49b874a2244c774c3917f0ce5327dc5d3e34e45fc549d0fdfe30",
+      "edge_delta_lr_mean": 7.92,
+      "edge_delta_tb_mean": 9.85
+    }
+  ]
+}

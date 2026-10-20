@@ -8,7 +8,7 @@ it('uses different biome beds, bounded phrases, master volume, and disposes ever
  try{
   const audio=new ExplorationAudio();audio.configure(DEFAULT_EXPLORATION_AUDIO,true,1);audio.unlock();expect(gains[0].gain.setTargetAtTime).toHaveBeenLastCalledWith(DEFAULT_EXPLORATION_AUDIO.ambience*AMBIENCE_MASTER_GAIN,0,.08);expect(DEFAULT_EXPLORATION_AUDIO.ambience).toBeGreaterThan(.18);
   audio.tick();expect(oscillators).toHaveLength(1);context.currentTime=1;audio.tick();expect(oscillators).toHaveLength(2);audio.tick();expect(oscillators).toHaveLength(2);
-  audio.configure(DEFAULT_EXPLORATION_AUDIO,true,2);audio.configure(DEFAULT_EXPLORATION_AUDIO,true,3);expect(filters.map(f=>f.frequency.value)).toEqual(CHAPTER_AMBIENCE.map(p=>p.filter));expect(sources.slice(0,2).every(s=>s.stop.mock.calls.length===1&&s.disconnect.mock.calls.length===1)).toBe(true);
+  audio.configure(DEFAULT_EXPLORATION_AUDIO,true,2);audio.configure(DEFAULT_EXPLORATION_AUDIO,true,3);audio.configure(DEFAULT_EXPLORATION_AUDIO,true,4);expect(filters.map(f=>f.frequency.value)).toEqual(CHAPTER_AMBIENCE.map(p=>p.filter));expect(sources.slice(0,2).every(s=>s.stop.mock.calls.length===1&&s.disconnect.mock.calls.length===1)).toBe(true);
   audio.configure(DEFAULT_EXPLORATION_AUDIO,false,3);audio.tick();expect(gains[0].gain.setTargetAtTime).toHaveBeenLastCalledWith(0,1,.08);
   audio.dispose();expect(sources.every(s=>s.stop.mock.calls.length===1&&s.disconnect.mock.calls.length===1)).toBe(true);expect(context.close).toHaveBeenCalledOnce();
  }finally{vi.unstubAllGlobals();}

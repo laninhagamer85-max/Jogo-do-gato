@@ -195,3 +195,5 @@
 @media(orientation:portrait) and (max-width:350px){.combat-pilot .combat-item-tray{left:50%;bottom:156px}}
 
 .exp-legend-unlock{width:100%;text-align:left}.exp-legend-unlock ul{list-style:none;padding:0;display:grid;gap:8px}.exp-legend-unlock li{display:flex;align-items:center;gap:8px;color:#eed6b2}.exp-legend-unlock li strong{margin-left:auto;white-space:nowrap}.exp-legend-unlock li.is-ready{color:#c7edba}
+
+.combat-pilot.is-chapter4-overview .combat-top,.combat-pilot.is-chapter4-overview .combat-vitals,.combat-pilot.is-chapter4-overview .combat-objective,.combat-pilot.is-chapter4-overview .combat-controls,.combat-pilot.is-chapter4-overview .combat-item-tray,.combat-pilot.is-chapter4-overview .combat-goal{visibility:hidden;pointer-events:none}

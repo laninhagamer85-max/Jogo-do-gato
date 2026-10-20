@@ -461,6 +461,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
+      <a className="forest-chapter4-preview" href="/qa-exploration-lab?chapter4=1">Testar primeira sala do Capítulo 4 <small>Prévia isolada · sem alterar seu progresso</small></a>
       {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay} petImage={petImage} petName={petName}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
       <p className="trail-page-description">Explore biomas, supere desafios e encontre itens raros. Cada portal abre o próximo trecho da sua jornada.</p>
     </main> : <main className="forest-adventure-game">

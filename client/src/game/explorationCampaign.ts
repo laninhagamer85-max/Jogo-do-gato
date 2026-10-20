@@ -1,3 +1,4 @@
+import {CHAPTER4_ROOM,NASCENTES_GARDENS} from './explorationChapter4';
 import {AUTUMN_ROOMS,autumnEnemy} from './explorationChapter3';
 import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hitsEdgeScenery} from './explorationRoom';
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
@@ -7,7 +8,7 @@ export type CampaignEnemy=CombatPoint&{id:string;name:string;level:number;rarity
 export type CampaignNode=CombatPoint&{id:string;item:CombatItem;quantity:number};
 export type CampaignProp=CombatPoint&{index:number;width:number;height:number};
 export type CampaignHazard=CombatPoint&{id:string;kind:'bramble'|'steam';radius:number;period:number;activeMs:number;offset:number};
-export type CampaignRoom={biome:'forest'|'river'|'autumn';hazards?:CampaignHazard[];bossId?:string;index:number;title:string;hint:string;camp:CombatPoint;marker:CombatPoint;exit:CombatPoint;walls:CombatPoint[];scenery:CampaignProp[];nodes:CampaignNode[];enemies:CampaignEnemy[];fibers:number;encounters:number;switches:CombatPoint[];key?:CombatPoint;useConsumable?:boolean;bridge?:{x:number;y:number;width:number;height:number};composition?:BiomeComposition;gateBlock?:CombatPoint};
+export type CampaignRoom={biome:'forest'|'river'|'autumn'|'nascentes';hazards?:CampaignHazard[];bossId?:string;index:number;title:string;hint:string;camp:CombatPoint;marker:CombatPoint;exit:CombatPoint;walls:CombatPoint[];scenery:CampaignProp[];nodes:CampaignNode[];enemies:CampaignEnemy[];fibers:number;encounters:number;switches:CombatPoint[];key?:CombatPoint;useConsumable?:boolean;bridge?:{x:number;y:number;width:number;height:number};composition?:BiomeComposition;gateBlock?:CombatPoint};
 const camp={x:1.5,y:1.5};
 const node=(id:string,x:number,y:number,item:CombatItem='fibra',quantity=3):CampaignNode=>({id,x,y,item,quantity});
 const enemy=(id:string,x:number,y:number,level:number,kind:'beetle'|'caterpillar'='beetle'):CampaignEnemy=>({id,x,y,level,name:kind==='beetle'?'Besouro':'Lagarta',rarity:kind==='beetle'?'common':'uncommon',hp:(kind==='beetle'?40:58)+(level-1)*9,attack:(kind==='beetle'?9:12)+(level-1)*2,defense:kind==='beetle'?1:3,xp:20+level*8,item:kind==='beetle'?'fibra':'ambar',quantity:kind==='beetle'?3:2});
@@ -65,9 +66,9 @@ for(const r of [...riverRooms,...AUTUMN_ROOMS]){
  const fit=<T extends CombatPoint>(p:T):T=>{if(valid(p))return p;const candidates=Array.from({length:720},(_,i)=>({x:-7.5+i%30,y:-6.5+Math.floor(i/30)})).filter(q=>valid(q));candidates.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));return {...p,...candidates[0]};};
  r.marker=fit(r.marker);r.exit=fit(r.exit);r.nodes=r.nodes.map(fit);r.switches=r.switches.map(fit);if(r.key)r.key=fit(r.key);r.enemies=r.enemies.map(fit);
 }
-export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS];
+export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS,CHAPTER4_ROOM];
 export const campaignRoom=(index=0)=>EXPLORATION_ROOMS[Math.max(0,Math.min(EXPLORATION_ROOMS.length-1,Math.floor(index)||0))];
-export const chapterName=(index:number)=>index>=20?'Bosque do Âmbar':index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
+export const chapterName=(index:number)=>index>=30?'Jardim das Nascentes':index>=20?'Bosque do Âmbar':index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
 export const roomInChapter=(index:number)=>index%10+1;
 export const chapterNumber=(index:number)=>Math.floor(index/10)+1;
 
@@ -78,6 +79,7 @@ export function campaignWaterBlocks(p:CombatPoint,radius:number,room:CampaignRoo
 }
 /** New room plant groups stay out of solid footprints and special interactions. */
 function buildCampaignGardens(room:CampaignRoom){
+ if(room.biome==='nascentes')return NASCENTES_GARDENS;
  if(!room.index)return [...ROOM_GARDENS,...SCATTERED_GARDENS];
  const shift=(room.index*1.137)%3.8;
  return [...ROOM_GARDENS,...SCATTERED_GARDENS].map((g,i)=>({...g,x:g.x+Math.sin(i*2.1+room.index)*shift,y:g.y+Math.cos(i*1.7+room.index)*shift*.6})).filter(g=>!campaignWaterBlocks(g,.4,room)&&!room.walls.some(w=>Math.abs(g.x-w.x-.5)<.9&&Math.abs(g.y-w.y-.5)<.9)&&[room.camp,room.marker,room.exit,...room.switches,...room.nodes,...(room.key?[room.key]:[])].every(q=>Math.hypot(g.x-q.x,g.y-q.y)>.9));
@@ -87,7 +89,7 @@ export type RareItem='seiva'|'cristal'|'perola'|'escama';
 export const RARE_ITEMS:Record<RareItem,string>={seiva:'Seiva luminosa',cristal:'Cristal do bosque',perola:'Pérola de cura',escama:'Escama das marés'};
 /** Optional woodland encounters: stable for the saved encounter seed, not rerolled by reload. */
 function buildCampaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{
- const room=campaignRoom(index);if(!index)return room.enemies;
+ const room=campaignRoom(index);if(!index||room.biome==='nascentes')return room.enemies;
  let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
  const level=index>=20?11+Math.floor((index-20)/2):index>=10?5+Math.floor((index-10)/2):Math.min(5,2+Math.floor(index/3));
  const spots=[...Array.from({length:48},(_,i)=>({x:-3.5+(i%8)*3,y:-2.5+Math.floor(i/8)*3})),{x:4.5,y:9.5},{x:11.5,y:10.5},{x:15.5,y:4.5},{x:7.5,y:1.5},{x:-2.5,y:6.5},{x:3.5,y:-1.5},{x:9.5,y:11.5},{x:17.5,y:6.5},{x:1.5,y:6.5}]
