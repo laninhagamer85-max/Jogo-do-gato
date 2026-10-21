@@ -1,0 +1,60 @@
+{
+  "testedGameplayCommit": "c65876826dd54d53586781278f30b60f29875c8a",
+  "newQACommit": "4df546807c789f2475ca0381ca97df4cb97095e5",
+  "runtimeDiffFromGameplayCommit": "",
+  "runtimeSHA256": {
+    "client/src/game/PlatformerEngine.ts": "58df116631ad4e879410a2139cdfafe8c08a2c4ef7d86b32ded0b25a38edb89c",
+    "client/src/game/platformerLevels.ts": "929e25fa030530010c20ab860f827c3a3db23789352a60e19fd1b27ec67172d8",
+    "client/src/game/PetGame.ts": "b91f5b12ed9c993c78f1fd10a017ffd7b151ff3781e41325b6a11a383e377b91",
+    "client/src/components/PlatformAdventure.tsx": "fce116eaa08fc68ea461f91d42785af5eb13fa83e8bf44b90dfadec208889ae1"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "canvasWidth": 368,
+    "canvasHeight": 403.109375
+  },
+  "method": "agent-guided UI keyboard with position-based stopping; no human or online player; no autoplay, teleport, invulnerability grant or direct victory call",
+  "newCompletedAttempts": 1,
+  "heartLosses": 0,
+  "defeats": 0,
+  "remainingHearts": 3,
+  "motorSeconds": 33.505300000000425,
+  "wallToPortalSeconds": 623.9965,
+  "coinsCollected": 13,
+  "worldItemsCollected": 2,
+  "stars": 2,
+  "coinsBeforeObservedInVideo": 350,
+  "coinsAfter": 545,
+  "rewardCoins": 195,
+  "towerInventory": 1,
+  "sardinhaInventoryAfter": 3,
+  "progressAfter": {
+    "unlockedStage": 2,
+    "completedStages": [
+      1
+    ],
+    "starsByStage": {
+      "1": 2
+    }
+  },
+  "touchStage2Label": "Fase 2: Atravesse a ponte saltitante",
+  "phase2GameplayCompleted": false,
+  "phase2TouchPreservesRewardState": true,
+  "checkpoint": true,
+  "invulnerabilityMax": 0,
+  "groundedSamples": 800,
+  "maxFootSupportDeltaPx": 0.0,
+  "unmatchedSupports": 0,
+  "pageErrors": [],
+  "storage": {
+    "local": [],
+    "session": []
+  },
+  "networkMethods": [
+    "GET"
+  ],
+  "externalRequests": [],
+  "traceSampling": "Original victory export retained; canonical final export omits only repeated paused and terminal samples; 1622 samples including all active movement samples",
+  "initialJSONStateCaveat": "original initial read raced React mount and remains null; initial wallet/progress verified in video/screenshot; fixed helper smoke tested with full initial state"
+}

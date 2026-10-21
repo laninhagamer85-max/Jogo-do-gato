@@ -1,0 +1,38 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "won": false,
+      "failed": true,
+      "hearts": 0,
+      "damageDeaths": 3,
+      "elapsed": 15.609800000000153,
+      "wallSeconds": 15.445207971999935,
+      "coins": 5,
+      "progress": 28.8
+    },
+    {
+      "attempt": 2,
+      "won": false,
+      "failed": true,
+      "hearts": 0,
+      "damageDeaths": 3,
+      "elapsed": 15.643536000000159,
+      "wallSeconds": 15.455700770000021,
+      "coins": 4,
+      "progress": 28.8
+    },
+    {
+      "attempt": 3,
+      "won": false,
+      "failed": false,
+      "hearts": 0,
+      "damageDeaths": 3,
+      "elapsed": 15.595270000000125,
+      "wallSeconds": 15.495760626999981,
+      "coins": 5,
+      "progress": 28.1
+    }
+  ],
+  "errors": []
+}

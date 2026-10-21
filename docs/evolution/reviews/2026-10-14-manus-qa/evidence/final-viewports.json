@@ -1,0 +1,1026 @@
+{
+  "tested_at": "2026-10-14T12:08:39Z",
+  "method": "automated UI measurements, no gameplay completion",
+  "results": [
+    {
+      "size": "375x667",
+      "entry": {
+        "viewport": [
+          375,
+          667
+        ],
+        "play": {
+          "x": 27,
+          "y": 326,
+          "width": 306,
+          "height": 52,
+          "top": 326,
+          "right": 333,
+          "bottom": 378,
+          "left": 27,
+          "scrollHeight": 50,
+          "scrollTop": 0
+        },
+        "cat": {
+          "x": 27,
+          "y": 204,
+          "width": 104,
+          "height": 108,
+          "top": 204,
+          "right": 131,
+          "bottom": 312,
+          "left": 27,
+          "scrollHeight": 108,
+          "scrollTop": 0
+        },
+        "progress": {
+          "x": 143,
+          "y": 286.75,
+          "width": 190,
+          "height": 18.1875,
+          "top": 286.75,
+          "right": 333,
+          "bottom": 304.9375,
+          "left": 143,
+          "scrollHeight": 18,
+          "scrollTop": 0
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 667,
+          "top": 0,
+          "right": 375,
+          "bottom": 667,
+          "left": 0,
+          "scrollHeight": 1324,
+          "scrollTop": 0
+        },
+        "bodyScrollWidth": 375,
+        "images": [
+          "http://localhost:5173/manus-storage/tower_4bea036d.webp",
+          "http://localhost:5173/manus-storage/bed_f5ace2df.webp",
+          "http://localhost:5173/manus-storage/plant_15cddfd3.webp",
+          "http://localhost:5173/manus-storage/lamp_199575ec.webp",
+          "http://localhost:5173/manus-storage/casa-tapete-nuvem_b42e26b5.webp",
+          "http://localhost:5173/manus-storage/casa-cesto-novelo_316d3675.webp",
+          "http://localhost:5173/manus-storage/casa-quadro-peixes_5b19afb3.webp",
+          "http://localhost:5173/manus-storage/casa-mesa-petiscos_f22bd764.webp",
+          "http://localhost:5173/manus-storage/casa-relogio-patinhas_c6f8878c.webp",
+          "http://localhost:5173/manus-storage/casa-arranhador-peixe_ee038cb7.webp",
+          "http://localhost:5173/manus-storage/mascot-01-mimo_31fcb547.webp"
+        ]
+      },
+      "game": {
+        "canvas": {
+          "x": 11,
+          "y": 236.875,
+          "width": 353,
+          "height": 338,
+          "top": 236.875,
+          "right": 364,
+          "bottom": 574.875,
+          "left": 11
+        },
+        "left": {
+          "x": 22,
+          "y": 499.875,
+          "width": 64,
+          "height": 64,
+          "top": 499.875,
+          "right": 86,
+          "bottom": 563.875,
+          "left": 22
+        },
+        "right": {
+          "x": 94,
+          "y": 499.875,
+          "width": 64,
+          "height": 64,
+          "top": 499.875,
+          "right": 158,
+          "bottom": 563.875,
+          "left": 94
+        },
+        "jump": {
+          "x": 277,
+          "y": 487.875,
+          "width": 76,
+          "height": 76,
+          "top": 487.875,
+          "right": 353,
+          "bottom": 563.875,
+          "left": 277
+        },
+        "pause": {
+          "x": 314,
+          "y": 173.875,
+          "width": 44,
+          "height": 44,
+          "top": 173.875,
+          "right": 358,
+          "bottom": 217.875,
+          "left": 314
+        },
+        "scrollWidth": 375,
+        "viewport": [
+          375,
+          667
+        ],
+        "stage": "Fase 1: Siga as patinhas douradas"
+      },
+      "pause": {
+        "viewport": [
+          375,
+          667
+        ],
+        "overlay": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 667,
+          "top": 0,
+          "right": 375,
+          "bottom": 667,
+          "left": 0
+        },
+        "card": {
+          "x": 26.29736328125,
+          "y": 137.81378173828125,
+          "width": 322.4052734375,
+          "height": 391.37384033203125,
+          "top": 137.81378173828125,
+          "right": 348.70263671875,
+          "bottom": 529.1876220703125,
+          "left": 26.29736328125
+        },
+        "continueButton": {
+          "x": 47.29730224609375,
+          "y": 406.1879577636719,
+          "width": 280.4053955078125,
+          "height": 47.999847412109375,
+          "top": 406.1879577636719,
+          "right": 327.70269775390625,
+          "bottom": 454.18780517578125,
+          "left": 47.29730224609375
+        }
+      }
+    },
+    {
+      "size": "375x812",
+      "entry": {
+        "viewport": [
+          375,
+          812
+        ],
+        "play": {
+          "x": 27,
+          "y": 326,
+          "width": 306,
+          "height": 52,
+          "top": 326,
+          "right": 333,
+          "bottom": 378,
+          "left": 27,
+          "scrollHeight": 50,
+          "scrollTop": 0
+        },
+        "cat": {
+          "x": 27,
+          "y": 204,
+          "width": 104,
+          "height": 108,
+          "top": 204,
+          "right": 131,
+          "bottom": 312,
+          "left": 27,
+          "scrollHeight": 108,
+          "scrollTop": 0
+        },
+        "progress": {
+          "x": 143,
+          "y": 286.75,
+          "width": 190,
+          "height": 18.1875,
+          "top": 286.75,
+          "right": 333,
+          "bottom": 304.9375,
+          "left": 143,
+          "scrollHeight": 18,
+          "scrollTop": 0
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 812,
+          "top": 0,
+          "right": 375,
+          "bottom": 812,
+          "left": 0,
+          "scrollHeight": 1324,
+          "scrollTop": 0
+        },
+        "bodyScrollWidth": 375,
+        "images": [
+          "http://localhost:5173/manus-storage/tower_4bea036d.webp",
+          "http://localhost:5173/manus-storage/bed_f5ace2df.webp",
+          "http://localhost:5173/manus-storage/plant_15cddfd3.webp",
+          "http://localhost:5173/manus-storage/lamp_199575ec.webp",
+          "http://localhost:5173/manus-storage/casa-tapete-nuvem_b42e26b5.webp",
+          "http://localhost:5173/manus-storage/casa-cesto-novelo_316d3675.webp",
+          "http://localhost:5173/manus-storage/casa-quadro-peixes_5b19afb3.webp",
+          "http://localhost:5173/manus-storage/casa-mesa-petiscos_f22bd764.webp",
+          "http://localhost:5173/manus-storage/casa-relogio-patinhas_c6f8878c.webp",
+          "http://localhost:5173/manus-storage/casa-arranhador-peixe_ee038cb7.webp",
+          "http://localhost:5173/manus-storage/mascot-01-mimo_31fcb547.webp"
+        ]
+      },
+      "game": {
+        "canvas": {
+          "x": 11,
+          "y": 236.875,
+          "width": 353,
+          "height": 387.75,
+          "top": 236.875,
+          "right": 364,
+          "bottom": 624.625,
+          "left": 11
+        },
+        "left": {
+          "x": 22,
+          "y": 549.625,
+          "width": 64,
+          "height": 64,
+          "top": 549.625,
+          "right": 86,
+          "bottom": 613.625,
+          "left": 22
+        },
+        "right": {
+          "x": 94,
+          "y": 549.625,
+          "width": 64,
+          "height": 64,
+          "top": 549.625,
+          "right": 158,
+          "bottom": 613.625,
+          "left": 94
+        },
+        "jump": {
+          "x": 277,
+          "y": 537.625,
+          "width": 76,
+          "height": 76,
+          "top": 537.625,
+          "right": 353,
+          "bottom": 613.625,
+          "left": 277
+        },
+        "pause": {
+          "x": 314,
+          "y": 173.875,
+          "width": 44,
+          "height": 44,
+          "top": 173.875,
+          "right": 358,
+          "bottom": 217.875,
+          "left": 314
+        },
+        "scrollWidth": 375,
+        "viewport": [
+          375,
+          812
+        ],
+        "stage": "Fase 1: Siga as patinhas douradas"
+      },
+      "pause": {
+        "viewport": [
+          375,
+          812
+        ],
+        "overlay": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 812,
+          "top": 0,
+          "right": 375,
+          "bottom": 812,
+          "left": 0
+        },
+        "card": {
+          "x": 26.31097412109375,
+          "y": 210.34930419921875,
+          "width": 322.3780517578125,
+          "height": 391.34075927734375,
+          "top": 210.34930419921875,
+          "right": 348.68902587890625,
+          "bottom": 601.6900634765625,
+          "left": 26.31097412109375
+        },
+        "continueButton": {
+          "x": 47.30913543701172,
+          "y": 478.7008361816406,
+          "width": 280.3817138671875,
+          "height": 47.995819091796875,
+          "top": 478.7008361816406,
+          "right": 327.6908493041992,
+          "bottom": 526.6966552734375,
+          "left": 47.30913543701172
+        }
+      }
+    },
+    {
+      "size": "390x844",
+      "entry": {
+        "viewport": [
+          390,
+          844
+        ],
+        "play": {
+          "x": 27,
+          "y": 326,
+          "width": 321,
+          "height": 52,
+          "top": 326,
+          "right": 348,
+          "bottom": 378,
+          "left": 27,
+          "scrollHeight": 50,
+          "scrollTop": 0
+        },
+        "cat": {
+          "x": 27,
+          "y": 204,
+          "width": 104,
+          "height": 108,
+          "top": 204,
+          "right": 131,
+          "bottom": 312,
+          "left": 27,
+          "scrollHeight": 108,
+          "scrollTop": 0
+        },
+        "progress": {
+          "x": 143,
+          "y": 286.75,
+          "width": 205,
+          "height": 18.1875,
+          "top": 286.75,
+          "right": 348,
+          "bottom": 304.9375,
+          "left": 143,
+          "scrollHeight": 18,
+          "scrollTop": 0
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 844,
+          "top": 0,
+          "right": 390,
+          "bottom": 844,
+          "left": 0,
+          "scrollHeight": 1324,
+          "scrollTop": 0
+        },
+        "bodyScrollWidth": 390,
+        "images": [
+          "http://localhost:5173/manus-storage/tower_4bea036d.webp",
+          "http://localhost:5173/manus-storage/bed_f5ace2df.webp",
+          "http://localhost:5173/manus-storage/plant_15cddfd3.webp",
+          "http://localhost:5173/manus-storage/lamp_199575ec.webp",
+          "http://localhost:5173/manus-storage/casa-tapete-nuvem_b42e26b5.webp",
+          "http://localhost:5173/manus-storage/casa-cesto-novelo_316d3675.webp",
+          "http://localhost:5173/manus-storage/casa-quadro-peixes_5b19afb3.webp",
+          "http://localhost:5173/manus-storage/casa-mesa-petiscos_f22bd764.webp",
+          "http://localhost:5173/manus-storage/casa-relogio-patinhas_c6f8878c.webp",
+          "http://localhost:5173/manus-storage/casa-arranhador-peixe_ee038cb7.webp",
+          "http://localhost:5173/manus-storage/mascot-01-mimo_31fcb547.webp"
+        ]
+      },
+      "game": {
+        "canvas": {
+          "x": 11,
+          "y": 236.875,
+          "width": 368,
+          "height": 403.109375,
+          "top": 236.875,
+          "right": 379,
+          "bottom": 639.984375,
+          "left": 11
+        },
+        "left": {
+          "x": 22,
+          "y": 564.984375,
+          "width": 64,
+          "height": 64,
+          "top": 564.984375,
+          "right": 86,
+          "bottom": 628.984375,
+          "left": 22
+        },
+        "right": {
+          "x": 94,
+          "y": 564.984375,
+          "width": 64,
+          "height": 64,
+          "top": 564.984375,
+          "right": 158,
+          "bottom": 628.984375,
+          "left": 94
+        },
+        "jump": {
+          "x": 292,
+          "y": 552.984375,
+          "width": 76,
+          "height": 76,
+          "top": 552.984375,
+          "right": 368,
+          "bottom": 628.984375,
+          "left": 292
+        },
+        "pause": {
+          "x": 329,
+          "y": 173.875,
+          "width": 44,
+          "height": 44,
+          "top": 173.875,
+          "right": 373,
+          "bottom": 217.875,
+          "left": 329
+        },
+        "scrollWidth": 390,
+        "viewport": [
+          390,
+          844
+        ],
+        "stage": "Fase 1: Siga as patinhas douradas"
+      },
+      "pause": {
+        "viewport": [
+          390,
+          844
+        ],
+        "overlay": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 844,
+          "top": 0,
+          "right": 390,
+          "bottom": 844,
+          "left": 0
+        },
+        "card": {
+          "x": 26.7384033203125,
+          "y": 252.41567993164062,
+          "width": 336.507568359375,
+          "height": 339.1794128417969,
+          "top": 252.41567993164062,
+          "right": 363.2459716796875,
+          "bottom": 591.5950927734375,
+          "left": 26.7384033203125
+        },
+        "continueButton": {
+          "x": 47.73789978027344,
+          "y": 468.5980224609375,
+          "width": 294.50860595703125,
+          "height": 47.99884033203125,
+          "top": 468.5980224609375,
+          "right": 342.2465057373047,
+          "bottom": 516.5968627929688,
+          "left": 47.73789978027344
+        }
+      }
+    },
+    {
+      "size": "844x390",
+      "entry": {
+        "viewport": [
+          844,
+          390
+        ],
+        "play": {
+          "x": 25,
+          "y": 188.421875,
+          "width": 272.0625,
+          "height": 52,
+          "top": 188.421875,
+          "right": 297.0625,
+          "bottom": 240.421875,
+          "left": 25,
+          "scrollHeight": 50,
+          "scrollTop": 0
+        },
+        "cat": {
+          "x": 25,
+          "y": 93.203125,
+          "width": 72,
+          "height": 80,
+          "top": 93.203125,
+          "right": 97,
+          "bottom": 173.203125,
+          "left": 25,
+          "scrollHeight": 80,
+          "scrollTop": 0
+        },
+        "progress": {
+          "x": 107,
+          "y": 160.234375,
+          "width": 190.0625,
+          "height": 18.1875,
+          "top": 160.234375,
+          "right": 297.0625,
+          "bottom": 178.421875,
+          "left": 107,
+          "scrollHeight": 18,
+          "scrollTop": 0
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 844,
+          "height": 390,
+          "top": 0,
+          "right": 844,
+          "bottom": 390,
+          "left": 0,
+          "scrollHeight": 855,
+          "scrollTop": 0
+        },
+        "bodyScrollWidth": 844,
+        "images": [
+          "http://localhost:5173/manus-storage/tower_4bea036d.webp",
+          "http://localhost:5173/manus-storage/bed_f5ace2df.webp",
+          "http://localhost:5173/manus-storage/plant_15cddfd3.webp",
+          "http://localhost:5173/manus-storage/lamp_199575ec.webp",
+          "http://localhost:5173/manus-storage/casa-tapete-nuvem_b42e26b5.webp",
+          "http://localhost:5173/manus-storage/casa-cesto-novelo_316d3675.webp",
+          "http://localhost:5173/manus-storage/casa-quadro-peixes_5b19afb3.webp",
+          "http://localhost:5173/manus-storage/casa-mesa-petiscos_f22bd764.webp",
+          "http://localhost:5173/manus-storage/casa-relogio-patinhas_c6f8878c.webp",
+          "http://localhost:5173/manus-storage/casa-arranhador-peixe_ee038cb7.webp",
+          "http://localhost:5173/manus-storage/mascot-01-mimo_31fcb547.webp"
+        ]
+      },
+      "game": {
+        "canvas": {
+          "x": 9,
+          "y": 138,
+          "width": 826,
+          "height": 247,
+          "top": 138,
+          "right": 835,
+          "bottom": 385,
+          "left": 9
+        },
+        "left": {
+          "x": 21,
+          "y": 313,
+          "width": 64,
+          "height": 64,
+          "top": 313,
+          "right": 85,
+          "bottom": 377,
+          "left": 21
+        },
+        "right": {
+          "x": 92,
+          "y": 313,
+          "width": 64,
+          "height": 64,
+          "top": 313,
+          "right": 156,
+          "bottom": 377,
+          "left": 92
+        },
+        "jump": {
+          "x": 747,
+          "y": 301,
+          "width": 76,
+          "height": 76,
+          "top": 301,
+          "right": 823,
+          "bottom": 377,
+          "left": 747
+        },
+        "pause": {
+          "x": 785,
+          "y": 77,
+          "width": 44,
+          "height": 44,
+          "top": 77,
+          "right": 829,
+          "bottom": 121,
+          "left": 785
+        },
+        "scrollWidth": 844,
+        "viewport": [
+          844,
+          390
+        ],
+        "stage": "Fase 1: Siga as patinhas douradas"
+      },
+      "pause": {
+        "viewport": [
+          844,
+          390
+        ],
+        "overlay": {
+          "x": 0,
+          "y": 0,
+          "width": 844,
+          "height": 390,
+          "top": 0,
+          "right": 844,
+          "bottom": 390,
+          "left": 0
+        },
+        "card": {
+          "x": 237.00057983398438,
+          "y": 25.407470703125,
+          "width": 369.9988098144531,
+          "height": 339.18646240234375,
+          "top": 25.407470703125,
+          "right": 606.9993896484375,
+          "bottom": 364.59393310546875,
+          "left": 237.00057983398438
+        },
+        "continueButton": {
+          "x": 258.0005187988281,
+          "y": 241.59429931640625,
+          "width": 327.9989929199219,
+          "height": 47.999847412109375,
+          "top": 241.59429931640625,
+          "right": 585.99951171875,
+          "bottom": 289.5941467285156,
+          "left": 258.0005187988281
+        }
+      }
+    },
+    {
+      "size": "1366x768",
+      "entry": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "play": {
+          "x": 51,
+          "y": 235,
+          "width": 351.875,
+          "height": 52,
+          "top": 235,
+          "right": 402.875,
+          "bottom": 287,
+          "left": 51,
+          "scrollHeight": 50,
+          "scrollTop": 0
+        },
+        "cat": {
+          "x": 51,
+          "y": 113,
+          "width": 104,
+          "height": 108,
+          "top": 113,
+          "right": 155,
+          "bottom": 221,
+          "left": 51,
+          "scrollHeight": 108,
+          "scrollTop": 0
+        },
+        "progress": {
+          "x": 169,
+          "y": 195.75,
+          "width": 233.875,
+          "height": 18.1875,
+          "top": 195.75,
+          "right": 402.875,
+          "bottom": 213.9375,
+          "left": 169,
+          "scrollHeight": 18,
+          "scrollTop": 0
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 768,
+          "top": 0,
+          "right": 1366,
+          "bottom": 768,
+          "left": 0,
+          "scrollHeight": 768,
+          "scrollTop": 0
+        },
+        "bodyScrollWidth": 1366,
+        "images": [
+          "http://localhost:5173/manus-storage/casa-tapete-nuvem_b42e26b5.webp",
+          "http://localhost:5173/manus-storage/casa-cesto-novelo_316d3675.webp",
+          "http://localhost:5173/manus-storage/casa-quadro-peixes_5b19afb3.webp",
+          "http://localhost:5173/manus-storage/casa-mesa-petiscos_f22bd764.webp",
+          "http://localhost:5173/manus-storage/casa-relogio-patinhas_c6f8878c.webp",
+          "http://localhost:5173/manus-storage/casa-arranhador-peixe_ee038cb7.webp",
+          "http://localhost:5173/manus-storage/mascot-01-mimo_31fcb547.webp"
+        ]
+      },
+      "game": {
+        "canvas": {
+          "x": 38,
+          "y": 167,
+          "width": 1290,
+          "height": 548,
+          "top": 167,
+          "right": 1328,
+          "bottom": 715,
+          "left": 38
+        },
+        "left": {
+          "x": 50,
+          "y": 649,
+          "width": 58,
+          "height": 58,
+          "top": 649,
+          "right": 108,
+          "bottom": 707,
+          "left": 50
+        },
+        "right": {
+          "x": 115,
+          "y": 649,
+          "width": 58,
+          "height": 58,
+          "top": 649,
+          "right": 173,
+          "bottom": 707,
+          "left": 115
+        },
+        "jump": {
+          "x": 1250,
+          "y": 641,
+          "width": 66,
+          "height": 66,
+          "top": 641,
+          "right": 1316,
+          "bottom": 707,
+          "left": 1250
+        },
+        "pause": {
+          "x": 1287,
+          "y": 112,
+          "width": 31,
+          "height": 31,
+          "top": 112,
+          "right": 1318,
+          "bottom": 143,
+          "left": 1287
+        },
+        "scrollWidth": 1366,
+        "viewport": [
+          1366,
+          768
+        ],
+        "stage": "Fase 1: Siga as patinhas douradas"
+      },
+      "pause": {
+        "viewport": [
+          1366,
+          768
+        ],
+        "overlay": {
+          "x": 38,
+          "y": 167,
+          "width": 1290,
+          "height": 548,
+          "top": 167,
+          "right": 1328,
+          "bottom": 715,
+          "left": 38
+        },
+        "card": {
+          "x": 498.0160827636719,
+          "y": 292.626220703125,
+          "width": 369.9678039550781,
+          "height": 296.78668212890625,
+          "top": 292.626220703125,
+          "right": 867.98388671875,
+          "bottom": 589.4129028320312,
+          "left": 498.0160827636719
+        },
+        "continueButton": {
+          "x": 521.0140380859375,
+          "y": 480.4223937988281,
+          "width": 323.97186279296875,
+          "height": 41.996307373046875,
+          "top": 480.4223937988281,
+          "right": 844.9859008789062,
+          "bottom": 522.418701171875,
+          "left": 521.0140380859375
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "url": "http://localhost:5173/qa-review.html",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/qa-adventure.html",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@vite/client",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/qa-review.html?html-proxy&index=0.js",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@react-refresh",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@vite/client",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/qa-adventure.html?html-proxy&index=0.js",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@react-refresh",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.pnpm/vite@7.3.6_@types+node@24.7.0_jiti@2.7.0_lightningcss@1.32.0_tsx@4.20.6/node_modules/vite/dist/client/env.mjs",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.pnpm/vite@7.3.6_@types+node@24.7.0_jiti@2.7.0_lightningcss@1.32.0_tsx@4.20.6/node_modules/vite/dist/client/env.mjs",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/qa/adventure.tsx?t=1791979362606",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=217eb01b",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/react.js?v=217eb01b",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/react-dom_client.js?v=a4627ee3",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/PlatformAdventure.tsx?t=1791979362606",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/PetGame.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/index.css?t=1791979362606",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/AdventureMobile.css",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/chunk-EHXARJTX.js?v=3e465700",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/chunk-PX6F3LHL.js?v=3e465700",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/PetSymbol.tsx",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/lucide-react.js?v=5458a846",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/assets.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/AudioVolumeControls.tsx",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/PlatformerEngine.ts?t=1791979158354",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/platformerAudio.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/platformerLevels.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/PlatformAdventure.css",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/AdventureEntry.css",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/adventureEntry.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/decorations.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/@fs/home/ubuntu/qa-pet-20261014/repo/node_modules/.vite/deps/chunk-VKF7RDHS.js?v=3e465700",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/petIconAtlas.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/components/PublishedParity.css",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/decorationAssets.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/pilotTerrain.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/drawPetSymbol.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/src/game/levels.ts",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/ui/pet-icons-atlas-v1.png",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/boy-prata_33684c26.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/platform-grass_c043c1f0.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/grass-earth-side-tile_30281d00.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/goal-portal_e4d6bfa1.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/nivel-01-lar_5a7be3d2.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/menino-prata-run_7ef210ee.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/tower_4bea036d.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/bed_f5ace2df.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/plant_15cddfd3.webp",
+      "method": "GET"
+    },
+    {
+      "url": "http://localhost:5173/manus-storage/lamp_199575ec.webp",
+      "method": "GET"
+    }
+  ]
+}
