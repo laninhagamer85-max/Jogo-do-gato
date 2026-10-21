@@ -12,17 +12,20 @@
     "source_site_commit": "26d1509387d5ce1f70cb70588190ff252de8c938",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.30.0 published; GitHub synchronization in progress",
+    "code_commit_status": "1.30.0 published; GitHub 0c9ce6e8a1903ea68ef02f9927af8b26ead7915d verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7"
+    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
+    "published_code_github_commit": "0c9ce6e8a1903ea68ef02f9927af8b26ead7915d",
+    "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "biome-layout-compact-stairs",
     "base_product_version": "1.29.1",
     "implementation_status": "published",
     "acceptance_status": "609_tests_and_browser_portrait_landscape",
-    "report": "docs/evolution/runs/2026-10-21-biome-layout-stairs.md"
+    "report": "docs/evolution/runs/2026-10-21-biome-layout-stairs.md",
+    "runtime_validation": "Published login shows1.30.0; live isolated room31 completed12/12 fibers and3/3 plates; compact stair rendered correctly."
   },
   "publication": {
     "id": "appgdep_6ad8ade94f908191bdc0319335cd41f1",

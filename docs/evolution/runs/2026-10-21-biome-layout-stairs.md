@@ -19,3 +19,5 @@ Pesquisa de apoio: https://docs.mapeditor.org/en/stable/manual/objects/ ; https:
 
 ## Publicação
 Publicado: produto1.30.0 / Site116; deploy appgdep_6ad8ade94f908191bdc0319335cd41f1 succeeded. Source26d1509387d5ce1f70cb70588190ff252de8c938. URL https://meupet.aquimeusite.chatgpt.site . Rollback: Site115 /1.29.1.
+
+GitHub implementação verificada:0c9ce6e8a1903ea68ef02f9927af8b26ead7915d, branch review/grass-option3-20261016. Conferência pós-publicação: login mostra1.30.0 e a sala31 isolada carrega os novos degraus após concluir12/12 fibras e3/3 placas.
