@@ -1,6 +1,6 @@
 # 1.35.0 — Trilhas conectadas, ferramentas e baús do castelo
 
-Estado: validado, aguardando empacotamento/publicação. Base oficial1.34.0, Site123; fonte1c2b57d0bb061b05cc67311b4fef2d36144c65fc. Rollback: pacote123.
+Estado: publicado. Base oficial1.34.0, Site123; fonte1c2b57d0bb061b05cc67311b4fef2d36144c65fc. Rollback: pacote123.
 
 - Cinco baús mudados do trono para as quatro pontas e o centro do tapete da Sala do Tesouro. Abertura somente por golpe normal válido e próximo, nunca pelo toque/interaçãoF, poder ou ataque em cooldown. Armadilhas mantêm troca obrigatória da posição verdadeira antes do teletransporte.
 - Após a descoberta única por personagem, os cinco baús mudam para Guarda, Biblioteca, Arsenal, Masmorra e Torre Norte. Um por sala, protegido pela armadura designada. Somente fibra, âmbar comum, erva, fruta, madeira ou pedra; nunca rareStock, armas, cartas ou nova recompensa real. Renovação30min persistida por personagem. Recompensas antigas já conquistadas preservadas.
@@ -10,3 +10,5 @@ Estado: validado, aguardando empacotamento/publicação. Base oficial1.34.0, Sit
 - Estudo das vilas documentado separadamente em design/2026-10-21-vilas-vivas.md; nenhuma vila adicionada nesta versão.
 
 Verificação:706 testes em70 arquivos aprovados, incluindo caminhos das32 salas,19 ambientes e5 baús espalhados; typecheck aprovado. Navegador com fixtures isoladas, sem alterar contas: golpe entrega recompensa especial, tapete com5 baús; madeira/pedra4/5 com ferramentas em mão; trilhas curvas e de pedra. Vertical390×844 e horizontal844×390. Evidências anexadas: meupet-1341-tesouro.jpg, meupet-1350-picareta.jpg, meupet-1350-bau-comum.jpg, meupet-1350-riacho.jpg. Baú comum foi liberado após vencer o guardião e concedeu3madeira na fixture. Biomas Floresta/Riacho/Outono/Nascentes inspecionados nesta sessão. Não é medição em aparelho físico.
+
+Publicação confirmada: produto1.35.0, Site124, deployment appgdep_6ad946c5c8ec8191b0039e65b729e254 succeeded. URL https://meupet.aquimeusite.chatgpt.site. Fonte9f2dde27629e87efe7afe44d9455c133096de5ed, GitHub7b43744e3afb3d1dbd4a8ac8f0e24b42f86512ad. Build19.90s e typecheck aprovados. Regressão adicional de troca de personagem/colisão aprovada. Vilas e duelos são estudo documentado, ainda não presentes na jogabilidade.
