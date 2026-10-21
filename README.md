@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública confirmada em21/10/2026: **1.29.0** (Sites114), com castelo, relevo e portais entre áreas. Revisão **1.29.1** validada para corrigir pequenos deslocamentos por toque nos capítulos1–3; publicação pendente. Confirmação final em `docs/evolution/state.json` e `docs/evolution/runs/2026-10-21.md`.
+Versão pública confirmada em21/10/2026: **1.29.1** (Sites115), com correção dos pequenos deslocamentos por toque nos capítulos1–3. Castelo, relevo e portais da1.29.0 preservados. TypeScript,603testes e build aprovados; cliques reais em cinco viewports isolados. Teste em aparelho físico pendente. Confirmação final em `docs/evolution/state.json` e `docs/evolution/runs/2026-10-21.md`.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

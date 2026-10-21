@@ -3,31 +3,32 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.29.1_pending_publication",
+  "status": "published_1.29.1_for_user_test",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
-    "base_commit": "3b2c7604002bb3bfb6566bbdcc3d0886fc452cc9",
-    "source_site_commit": "ba9ea5dc02953074c32324cea402076bdc5d5c9a",
+    "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
+    "source_site_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "b6171d14b0ce77adfa3d9abebce3fac49b44d99b",
-    "code_commit_status": "1.29.0 published; GitHub 182175e626923a0b8cbffa7bfad94f2a9f120b68",
+    "code_commit_status": "saved_to_collaboration_branch",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
-    "review_source_commit": "ba9ea5dc02953074c32324cea402076bdc5d5c9a"
+    "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
+    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7"
   },
   "current_improvement": {
     "id": "precise-outdoor-tap-navigation",
     "base_product_version": "1.29.0",
-    "implementation_status": "validated_pending_publication",
+    "implementation_status": "published_1.29.1",
     "acceptance_status": "isolated_browser_five_viewports",
     "report": "docs/evolution/runs/2026-10-21.md"
   },
   "publication": {
-    "id": "appgdep_6ad8879f9b508191b709462cea068603",
+    "id": "appgdep_6ad8a6510da08191bb7e6d7b901f3d82",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_5e15e33441d881918589c2db8d5119f2",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa02be9e588191895e83268bc8b029",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -36,10 +37,11 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-21T09:36:53.789725+00:00",
-    "version_number": 114,
-    "product_version": "1.29.0",
-    "attempted_in_this_cycle": false
+    "updated_at": "2026-10-21T11:47:39.896060+00:00",
+    "version_number": 115,
+    "product_version": "1.29.1",
+    "site_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
+    "attempted_in_this_cycle": true
   },
   "verification": {
     "typescript": "passed",
@@ -63,7 +65,7 @@
     "Validate 1.29.0 castle/elevation before expanding more rooms."
   ],
   "rollback": {
-    "production_changed": false,
+    "production_changed": true,
     "product_version": "1.29.0",
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_5e15e33441d881918589c2db8d5119f2",
     "site_commit": "ba9ea5dc02953074c32324cea402076bdc5d5c9a",
@@ -677,7 +679,7 @@
     "fps": "not_measured",
     "status": "published_for_user_test"
   },
-  "current_report": "docs/evolution/runs/2026-10-20-open-world-pilot.md",
+  "current_report": "docs/evolution/runs/2026-10-21.md",
   "approved_concept": {
     "product_version": "1.25.0",
     "native_art": "1672x941",
