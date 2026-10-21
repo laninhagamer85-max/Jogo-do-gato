@@ -1,6 +1,6 @@
 import ExplorationSettings from './ExplorationSettings';
 import ExplorationCampaignMap from './ExplorationCampaignMap';
-import {startExplorationReplay,saveExplorationReplay} from '@/game/explorationSelection';
+import {startExplorationTestRoom,startExplorationReplay,saveExplorationReplay} from '@/game/explorationSelection';
 import {chapterName,roomInChapter} from '@/game/explorationCampaign';
 import {combatSnapshot,readCombatState} from '@/game/explorationCombat';
 import ExplorationJoystick from "./ExplorationJoystick";
@@ -428,6 +428,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
   const [combatEntry,setCombatEntry]=useState<{progress:Record<string,unknown>;replay:boolean}|null>(null);
   const campaignRef=useRef(combatProgress);campaignRef.current=combatProgress;
   const enterCampaign=()=>{setCombatEntry({progress:campaignRef.current,replay:false});};
+  const enterTest=(index:30|31)=>{const parsed=readCombatState(campaignRef.current);if(parsed.supported)setCombatEntry({progress:combatSnapshot(startExplorationTestRoom(parsed.state,index)),replay:false});};
   const enterReplay=(index:number)=>{const parsed=readCombatState(campaignRef.current);if(!parsed.supported)return;const attempt=startExplorationReplay(parsed.state,index);if(attempt)setCombatEntry({progress:combatSnapshot(attempt),replay:index<30});};
   const saveCombatEntry=(value:Record<string,unknown>)=>{let save=value;if(combatEntry?.replay){const base=readCombatState(campaignRef.current);if(!base.supported)return;save=combatSnapshot(saveExplorationReplay(base.state,value));}campaignRef.current=save;onSaveCombatProgress(save);};
   const combatCampaign=readCombatState(combatProgress);
@@ -461,7 +462,7 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
         <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
-      <a className="forest-chapter4-preview" href="/qa-exploration-lab?chapter4=1">Testar primeira sala do Capítulo 4 <small>Prévia isolada · sem alterar seu progresso</small></a>
+      <div className="forest-chapter4-preview"><strong>Área de testes aberta a todos</strong><button onClick={()=>enterTest(30)}>Jogar sala 31</button><button onClick={()=>enterTest(31)}>Jogar sala 32 e entrar no castelo</button><small>As conquistas dos capítulos anteriores são preservadas.</small></div>
       {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay} petImage={petImage} petName={petName}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
       <p className="trail-page-description">Explore biomas, supere desafios e encontre itens raros. Cada portal abre o próximo trecho da sua jornada.</p>
     </main> : <main className="forest-adventure-game">

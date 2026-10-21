@@ -8,13 +8,13 @@ export const nascentesElevation=(index=30)=>index===31?{left:-16,top:-14,size:21
 export const elevationPoint=(u:number,v:number,index=30)=>{const e=nascentesElevation(index);return{x:e.left+u*e.size,y:e.top+v*e.size};};
 export const nascentesPoint=(u:number,v:number)=>({x:NASCENTES_SCENE.left+u*NASCENTES_SCENE.width,y:NASCENTES_SCENE.top+v*NASCENTES_SCENE.height});
 const floorUV=[[.075,.555],[.195,.475],[.335,.410],[.430,.330],[.535,.325],[.650,.375],[.785,.390],[.885,.460],[.945,.555],[.920,.605],[.825,.655],[.720,.725],[.620,.775],[.520,.805],[.415,.755],[.320,.710],[.250,.665],[.165,.650],[.090,.610]];
-export const castleStairBase={x:14.5,y:-7.405},castleStairTop={x:15.15,y:-8.25};
+export const castleStairBase={x:14.2,y:-6.95},castleStairTop={x:14.65,y:-7.8},castleGatePoint={x:15.15,y:-8.25};
 export function stairPlacementPoint(x:number,y:number,a:GroundPoint,b:GroundPoint){const [lx,ly]=stairArt.anchors_pixel.lowerFoot,[ux,uy]=stairArt.anchors_pixel.upperFoot,sx=ux-lx,sy=uy-ly,wx=b.x-a.x,wy=b.y-a.y,den=sx*sx+sy*sy,c=(wx*sx+wy*sy)/den,d=(wy*sx-wx*sy)/den;return{x:a.x+c*(x-lx)-d*(y-ly),y:a.y+d*(x-lx)+c*(y-ly)};}
 export function stairSourcePoint(x:number,y:number,index=30){return stairPlacementPoint(x,y,elevationPoint(.32,.845,index),elevationPoint(.34,.715,index));}
 export const castleStairPoint=(x:number,y:number)=>stairPlacementPoint(x,y,castleStairBase,castleStairTop);
 // The rendered sprite and collision use the same uniformly transformed walking polygon.
 const castleStairFloor=stairArt.walkablePolygon_pixel.map(([x,y])=>castleStairPoint(x,y));
-const castleLanding=(p:GroundPoint)=>p.x>14.65&&p.x<15.75&&p.y>-8.8&&p.y<-7.8;
+const castleLanding=(p:GroundPoint)=>p.x>14.35&&p.x<15.75&&p.y>-8.8&&p.y<-7.55;
 const stairProgress=(p:GroundPoint,a:GroundPoint,b:GroundPoint)=>Math.max(0,Math.min(1,((p.x-a.x)*(b.x-a.x)+(p.y-a.y)*(b.y-a.y))/((b.x-a.x)**2+(b.y-a.y)**2)));
 
 

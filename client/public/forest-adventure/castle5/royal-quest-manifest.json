@@ -1,0 +1,83 @@
+{
+  "source": "Original builtin image_gen, 2026-10-21",
+  "source_png": "generated_images/exec-e9b625df-f3fc-47c3-9d33-b817e7d1d4bd.png",
+  "conversion": "RGBA WebP94, source dimensions unchanged, explicit full-silhouette rectangles instead of grid cutting",
+  "dimensions": [
+    1448,
+    1086
+  ],
+  "rects": {
+    "knight": [
+      94,
+      3,
+      195,
+      372
+    ],
+    "statue": [
+      451,
+      3,
+      193,
+      372
+    ],
+    "chest": [
+      744,
+      78,
+      330,
+      282
+    ],
+    "chestOpen": [
+      1110,
+      17,
+      338,
+      343
+    ],
+    "sword": [
+      20,
+      380,
+      324,
+      350
+    ],
+    "pickaxe": [
+      415,
+      380,
+      310,
+      334
+    ],
+    "axe": [
+      762,
+      380,
+      320,
+      332
+    ],
+    "card": [
+      1134,
+      380,
+      280,
+      332
+    ],
+    "power": [
+      0,
+      704,
+      391,
+      382
+    ],
+    "equipmentCard": [
+      414,
+      729,
+      295,
+      357
+    ],
+    "potion": [
+      787,
+      736,
+      272,
+      346
+    ],
+    "gems": [
+      1097,
+      774,
+      351,
+      298
+    ]
+  }
+}

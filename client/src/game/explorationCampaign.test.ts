@@ -34,7 +34,7 @@ describe('ten authored chapter-one rooms',()=>{
   const parsed=read(s);expect(parsed.roomIndex).toBe(room.index);expect(parsed.completed).toBe(true);
   const next=advanceCombatRoom(parsed);if(room.index===EXPLORATION_ROOMS.length-1){expect(next).toBe(parsed);return;}
   expect(next.roomIndex).toBe(room.index+1);expect(next.stock).toEqual(parsed.stock);expect(next.hp).toBe(parsed.hp);expect(next.xp).toBe(parsed.xp);expect(next.deaths).toBe(parsed.deaths);expect(next.revision).toBeGreaterThan(parsed.revision);expect(next.exploredCells).not.toBe(parsed.exploredCells);
-  expect(next.collectedNodes).toEqual([]);expect(next.roomCollectedFibers).toBe(0);expect(next.gateOpen).toBe(false);expect(read(next).roomIndex).toBe(next.roomIndex);
+  expect(next.collectedNodes).toEqual([]);expect(next.roomCollectedFibers).toBe(0);expect(next.gateOpen).toBe(next.roomIndex>=30);expect(read(next).roomIndex).toBe(next.roomIndex);
  });
  it('migrates the completed pilot without resetting XP or awarding/duplicating items',()=>{
   const raw={...combatSnapshot(createCombatState()),xp:890,hp:140,stock:{fibra:22,ambar:9,erva:1,fruta:2},completed:true};

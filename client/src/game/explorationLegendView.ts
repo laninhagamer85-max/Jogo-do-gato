@@ -1,3 +1,5 @@
+import {royalActive,castleDown} from './explorationCastleQuest';
+import {drawRoyalHeld} from './explorationRoyalView';
 import {harvestingActive} from './explorationWorkshop';
 import {drawHarvestTool} from './explorationWorkshopView';
 import {tierSprite} from './explorationEquipmentTiers';
@@ -27,7 +29,7 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
  const harvesting=harvestingActive(state),weapon=harvesting?null:state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
  const a=Math.atan2(state.facing.y,state.facing.x),sway=state.walking&&!reduced?Math.sin(state.walkPhase*Math.PI*2)*.065:0;
- function drawItem(){if(!weapon)return;const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tier?tierSprite(weapon,tier):null,tierImage=tierArt?imageFor('equipment-tiers',tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
+ function drawItem(){if(!weapon||castleDown(state))return;if(weapon==='sword'&&royalActive(state,'sword')){drawRoyalHeld(ctx,state,'sword',hx,hy,tile);return;}const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tier?tierSprite(weapon,tier):null,tierImage=tierArt?imageFor('equipment-tiers',tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
   ctx.save();ctx.translate(hx,hy);
   const swing=anim.attacking?-.85+1.5*(.5-.5*Math.cos(phase*Math.PI)):.65+sway;
   ctx.rotate(a+(weapon==='bow'?sway:Math.PI/2+swing));

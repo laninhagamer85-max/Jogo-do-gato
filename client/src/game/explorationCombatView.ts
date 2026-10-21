@@ -1,3 +1,5 @@
+import {royalActive} from './explorationCastleQuest';
+import {drawRoyalHeld,drawRoyalPower} from './explorationRoyalView';
 import {drawExplorationTrails} from './explorationTrails';
 import {woodlandResource} from './explorationWoodlandResources';
 import {baseLayout,baseVisible,baseView,insideSafeBase,BASE_BUILDINGS} from './explorationBase';
@@ -101,7 +103,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   }
   for(const h of room.hazards??[]){const p=point(h),phase=hazardPhase(h,state.time);ctx.save();const warning=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,t*h.radius);warning.addColorStop(0,phase==='active'?'#d89b5b55':phase==='warning'?'#e8c87844':'#00000000');warning.addColorStop(1,'#00000000');ctx.fillStyle=warning;ctx.fillRect(p.x-t*h.radius,p.y-t*h.radius,t*h.radius*2,t*h.radius*2);ctx.globalAlpha=phase==='active'?1:phase==='warning'?.75:.4;drawPaintedItem(ctx,itemArt?.fibra,h.kind==='steam'?'steam':'spikes',p.x,p.y-t*.18,t*h.radius*2.2);ctx.globalAlpha=1;ctx.fillStyle='#fff0be';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(h.kind==='steam'?'Vapor':'Espinhos',p.x,p.y+t*.6);ctx.restore();}
   const fx=state.powerFx;
-  if(fx&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
+  if(fx&&!royalActive(state,'power')&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
+  drawRoyalPower(ctx,state,point,t);
   drawBaseProtection(ctx,state,point,t);
   const entities = [...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
@@ -166,7 +169,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         ctx.save(); ctx.translate(px, py); if (direction.mirror) ctx.scale(-1, 1);
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);
-      if(!legendDrawn)drawHarvestTool(ctx,state,px,py,t);
+      if(!legendDrawn){drawHarvestTool(ctx,state,px,py,t);if(!harvestingActive(state)&&royalActive(state,'sword'))drawRoyalHeld(ctx,state,'sword',px+t*.25,py-t*.35,t);}
       if (attack.active && !harvestingActive(state) && !(state.powerFx&&state.time-state.powerFx.startedAt<320) && !(state.legends?.active&&state.legends.weapon==='bow')) {
         // A short swipe in front of the body, never a synthetic limb over the face.
         ctx.save();ctx.translate(px+state.facing.x*t*.35,py+state.facing.y*t*.28-t*.03);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));

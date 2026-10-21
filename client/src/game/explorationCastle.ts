@@ -1,4 +1,5 @@
-import {castleStairTop} from './explorationChapter4';
+import {castleObjectBlocks} from './explorationCastleObjects';
+import {castleGatePoint} from './explorationChapter4';
 import roomData from './explorationCastleRooms.json';
 export type CastlePoint={x:number;y:number};
 export type CastleRoomId='vestibulo'|'guarda'|'biblioteca'|'trono'|'arsenal'|'refeitorio'|'aposentos'|'tesouro'|'jardim'|'cozinha'|'galeria'|'conselho'|'capela'|'masmorra'|'adega'|'torre-magia'|'torre-norte'|'torre-leste'|'torre-sul';
@@ -8,13 +9,13 @@ export const CASTLE_SIZE=16;
 export const CASTLE_ROOMS=roomData.rooms as CastleRoom[];
 export const CASTLE_LINKS=roomData.links as {a:CastleRoomId;portA:string;b:CastleRoomId;portB:string}[];
 export type CastleProgress={layoutVersion?:2;active:boolean;room:CastleRoomId;player:CastlePoint;visited:CastleRoomId[];cooldown:number;transitionUntil?:number};
-export const CASTLE_GATE={...castleStairTop};
+export const CASTLE_GATE={...castleGatePoint};
 export const castleRoom=(id:CastleRoomId)=>CASTLE_ROOMS.find(r=>r.id===id)!;
 const uv=(p:CastlePoint)=>({x:p.x/CASTLE_SIZE,y:p.y/CASTLE_SIZE});
 function inside(p:CastlePoint,poly:number[][]){let yes=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const [x,y]=poly[i],[a,b]=poly[j];if((y>p.y)!==(b>p.y)&&p.x<(a-x)*(p.y-y)/(b-y)+x)yes=!yes;}return yes;}
 /** Source-image UV geometry; collision and routing share exactly the same floor and obstacles. */
 function segmentDistance(p:CastlePoint,a:number[],b:number[]){const dx=b[0]-a[0],dy=b[1]-a[1],u=Math.max(0,Math.min(1,((p.x-a[0])*dx+(p.y-a[1])*dy)/(dx*dx+dy*dy||1)));return Math.hypot(p.x-a[0]-u*dx,p.y-a[1]-u*dy);}
-export function castleWalkable(p:CastlePoint,id:CastleRoomId,radius=.14){if(!Number.isFinite(p.x)||!Number.isFinite(p.y))return false;const room=castleRoom(id);if(!room)return false;const u=uv(p),r=radius/CASTLE_SIZE;if(room.obstacles.some(poly=>inside(u,poly)||poly.some((a,i)=>segmentDistance(u,a,poly[(i+1)%poly.length])<r)))return false;return Array.from({length:9},(_,i)=>i?{x:u.x+Math.cos((i-1)*Math.PI/4)*r,y:u.y+Math.sin((i-1)*Math.PI/4)*r}:u).every(q=>room.floor.some(poly=>inside(q,poly)));}
+export function castleWalkable(p:CastlePoint,id:CastleRoomId,radius=.14){if(!Number.isFinite(p.x)||!Number.isFinite(p.y))return false;const room=castleRoom(id);if(!room||castleObjectBlocks(p,id,radius))return false;const u=uv(p),r=radius/CASTLE_SIZE;if(room.obstacles.some(poly=>inside(u,poly)||poly.some((a,i)=>segmentDistance(u,a,poly[(i+1)%poly.length])<r)))return false;return Array.from({length:9},(_,i)=>i?{x:u.x+Math.cos((i-1)*Math.PI/4)*r,y:u.y+Math.sin((i-1)*Math.PI/4)*r}:u).every(q=>room.floor.some(poly=>inside(q,poly)));}
 function portPoint(room:CastleRoom,id:string){const p=room.ports.find(p=>p.id===id);if(!p)throw Error(`Missing ${room.id}/${id}`);return{x:p.x*CASTLE_SIZE,y:p.y*CASTLE_SIZE};}
 export function castleDoors(id:CastleRoomId){const room=castleRoom(id);return CASTLE_LINKS.filter(l=>l.a===id||l.b===id).map(l=>{const forward=l.a===id;return{...portPoint(room,forward?l.portA:l.portB),id:forward?l.portA:l.portB,target:forward?l.b:l.a,targetPort:forward?l.portB:l.portA};});}
 export const castleExit=()=>({...portPoint(castleRoom('vestibulo'),roomData.exitPort),id:roomData.exitPort,target:'exterior' as const,targetPort:''});
