@@ -14,3 +14,5 @@ Validação: TypeScript;672 testes em68 arquivos passaram, depois cobertura de t
 Evidências: ../evidence/meupet-1333-trilhas-coleta.jpg e ../evidence/meupet-1333-mapa-trilhas.jpg.
 
 Rollback1.33.2 Site121, versãoappgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94; deploymentappgdep_6ad92bd8a2e48191b9c510e6e0f2d325. Fontebase22a460f8232ad01f5eefb01bc22829fb958cc5b0. Fonte recuperada pelo helper oficial antes de editar após manutenção do workspace.
+
+Refino visual final: largura central reduzida0,72→0,42 unidade, transparência e bordas suaves; curvas arredondadas até0,16unidade. Conferido bioma de riacho no desktop e844x390, sem alterar o grafo de navegação. Evidência final ../evidence/meupet-1333-trilhas-final.jpg.
