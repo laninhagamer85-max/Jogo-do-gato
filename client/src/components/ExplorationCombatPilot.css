@@ -213,3 +213,10 @@
 .combat-pilot--lens-dock .combat-status-stack .combat-goal{max-height:58px;overflow:auto}
 @media(max-height:500px) and (orientation:landscape){.combat-status-stack{width:190px;gap:4px}.combat-status-stack .combat-top small{font-size:9px}.combat-pilot--lens-dock .combat-status-stack .combat-goal{max-height:40px;font-size:10px}.combat-status-stack .combat-vitals label{height:20px}}
 .combat-inventory-slot .exploration-painted-item{max-width:85%;max-height:85%}.combat-inventory-slot.is-empty-item>.exploration-painted-item{opacity:.55}
+/* Eight separate circular controls; zoom always stays on the left rim. */
+.combat-lens-sound{left:85.355%;top:85.355%}
+.combat-lens-zoom-in{left:14.645%;top:14.645%}
+.combat-lens-zoom-out{left:0;top:50%}
+.exploration-workshop{color:#fff1d0}.exploration-workshop nav{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.exploration-workshop button{color:#fff5d8;background:#35534a;border:1px solid #a3b785;border-radius:12px;padding:10px;min-height:44px}.exploration-workshop button:disabled{opacity:.55}.workshop-recipes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.workshop-recipes article{background:#1c302b;border:1px solid #64735a;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}.exploration-workshop progress{display:block;width:100%;accent-color:#e8c47a}
+
+.combat-pilot--lens-dock .combat-minimap{right:max(24px,env(safe-area-inset-right))}

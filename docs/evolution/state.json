@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.31.0",
+  "status": "validated_1.32.0_packaging",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,13 +20,12 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "castle-hud-painted-items",
-    "base_product_version": "1.30.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-21-castle-hud-painted-items.md",
-    "acceptance_status": "615_cases_validated_after_targeted_fix_typecheck_browser_portrait_landscape",
-    "crafting_expansion": "Research, design and original assets ready; gameplay not enabled",
-    "next_expansion": "Per-character levels1–100, axe/pickaxe harvesting5 units,12h resource renewal, unique facilities,30s crafting and probabilistic upgrades: planned; assets prepared; not active."
+    "id": "workshop-equipment-castle-camera",
+    "base_product_version": "1.31.0",
+    "implementation_status": "validated_packaging",
+    "report": "docs/evolution/runs/2026-10-21-workshop-equipment-castle-camera.md",
+    "acceptance_status": "622_regression_tests_passed_plus_camera_art_checks; Firebase staging credential absent",
+    "next_expansion": "Separate inventories and XP per Legendary; home upgrades; authored resource placement in chapter4/castle remain future work."
   },
   "publication": {
     "id": "appgdep_6ad8d6c6dd7481919c2b09ecd4d078fc",
@@ -39,10 +38,10 @@
     "source_commit": "2dc1163952548d7ce1b81c0011d94a834c39f4d3"
   },
   "verification": {
-    "typescript": "passed",
-    "offline_tests": "603/603 in61 files; Firebase Admin staging integration excluded (no staging credential)",
+    "typescript": "passed; final check before package",
+    "offline_tests": "622 passed across64 files; Firebase integration1 fails because staging credential is absent; additional camera/art4 passed",
     "build": "passed17.34s; existing >500kB chunk warning",
-    "browser": "Real pointer clicks in isolated room21 at five iframe sizes: 0.2-unit diagonal targets within same cell reached within0.06; pause/resume after resize. Not device playthrough.",
+    "browser": "Isolated real browser: crafting30s, metal sword claim and gold recipe, outdoor gate traversal into castle, viewport fill portrait390x844/landscape844x390, collecting tree5→4; isolated fixture not an account playthrough.",
     "viewports": {
       "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
       "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",

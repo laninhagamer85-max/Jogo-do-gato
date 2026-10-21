@@ -1,3 +1,4 @@
+import {tierWeaponStats} from './explorationEquipmentTiers';
 import {combatLevel,type CombatState} from './explorationCombat';
 export type LegendId='lyra'|'kael';
 export type LegendGender='menina'|'menino';
@@ -32,7 +33,7 @@ export function legendUnlockRequirements(game:CombatState){
  return {level,firstRoom,materials,ready:!game.completed&&firstRoom&&level>=LEGEND_UNLOCK_LEVEL&&materials.every(m=>m.owned>=m.required)};
 }
 export function eligibleLegend(gender:LegendGender){return gender==='menina'?'lyra':'kael';}
-export function legendWeapon(game:Pick<CombatState,'legends'>){const l=game.legends;return l?.active&&l.weapon&&l.weapons.includes(l.weapon)?LEGEND_WEAPONS[l.weapon]:null;}
+export function legendWeapon(game:Pick<CombatState,'legends'|'workshop'>){const l=game.legends;if(!l?.active||!l.weapon||!l.weapons.includes(l.weapon))return null;const base=LEGEND_WEAPONS[l.weapon];return {...base,...tierWeaponStats(base,game.workshop?.equipmentTiers[l.weapon]??null)};}
 export function legendName(game:Pick<CombatState,'legends'>){return LEGENDS.find(l=>l.id===game.legends?.active)?.name;}
 export type LegendAction={type:'unlock';id:LegendId}|{type:'select';id:LegendId|null}|{type:'craft';weapon:LegendWeapon}|{type:'equip';weapon:LegendWeapon|null};
 /** Inventory commands are immutable and atomic; no resource or ownership changes on a failed command. */

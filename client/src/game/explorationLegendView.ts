@@ -1,3 +1,4 @@
+import {tierSprite} from './explorationEquipmentTiers';
 import weapons from './explorationWeaponArt.json';
 import {legendPose,legendHand} from './explorationLegendPose';
 import {legendAnimation,type LegendId} from './explorationLegends';
@@ -24,12 +25,12 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
  const weapon=state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
  const a=Math.atan2(state.facing.y,state.facing.x),sway=state.walking&&!reduced?Math.sin(state.walkPhase*Math.PI*2)*.065:0;
- function drawItem(){if(!weapon)return;const meta=weapons[weapon],item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
+ function drawItem(){if(!weapon)return;const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tier?tierSprite(weapon,tier):null,tierImage=tierArt?imageFor('equipment-tiers',tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
   ctx.save();ctx.translate(hx,hy);
   const swing=anim.attacking?-.85+1.5*(.5-.5*Math.cos(phase*Math.PI)):.65+sway;
   ctx.rotate(a+(weapon==='bow'?sway:Math.PI/2+swing));
   const height=tile*(weapon==='sword'?.88:weapon==='dagger'?.5:.92),width=height*meta.width/meta.height;
-  ctx.drawImage(item,-meta.grip[0]*width,-meta.grip[1]*height,width,height);ctx.restore();
+  if(tierArt&&tierImage?.complete&&tierImage.naturalWidth){const cw=tierImage.naturalWidth/5,ch=tierImage.naturalHeight/3,sz=height*1.25;ctx.drawImage(tierImage,tierArt.column*cw,tierArt.row*ch,cw,ch,-sz*.85,-sz*.85,sz,sz);}else ctx.drawImage(item,-meta.grip[0]*width,-meta.grip[1]*height,width,height);ctx.restore();
   if(weapon==='bow'){
    const arrowMeta=weapons.arrow,arrow=cutout('weapon:arrow',images.get('weapons'),arrowMeta);if(!arrow)return;
    const flight=anim.attacking?Math.max(0,(phase-.36)/.64):0;

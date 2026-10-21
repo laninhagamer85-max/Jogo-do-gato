@@ -21,10 +21,10 @@ export function lensDockAction(panel:ExplorationPanel,overview:boolean,action:'p
 export function lensDockLayout(width:number,height:number,expanded:boolean){
  const landscape=height<=500&&width>height;
  const diameter=landscape?(expanded?158:124):Math.max(expanded?160:136,Math.min(expanded?214:168,width*(expanded?.5:.39)));
- const top=landscape?32:46,right=12,button=44;
+ const top=landscape?32:46,right=24,button=44;
  return {diameter,top,right,button,bottom:top+diameter+button/2,hudWidth:Math.max(100,width-diameter-right-24),landscape};
 }
-export const LENS_DOCK_SLOTS={sound:[.14645,.14645],pause:[.5,0],inventory:[.85355,.14645],size:[.14645,.85355],camera:[.85355,.85355],map:[.5,1]} as const;
+export const LENS_DOCK_SLOTS={zoomIn:[.14645,.14645],zoomOut:[0,.5],sound:[.85355,.85355],pause:[.5,0],inventory:[.85355,.14645],equip:[1,.5],size:[.14645,.85355],map:[.5,1]} as const;
 
 /** One camera slot: magnify the world, then restore its normal framing. */
 export function toggleWorldCameraZoom(zoom:number){return zoom>.8?.65:1.15;}

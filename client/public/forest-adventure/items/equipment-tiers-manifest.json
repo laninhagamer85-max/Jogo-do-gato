@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "source": "Built-in imagegen",
+  "sourceImage": "exec-2d6913f8-7840-43ac-968f-724fecfdfba0.png",
+  "size": [
+    1619,
+    971
+  ],
+  "columns": [
+    "axe",
+    "pickaxe",
+    "sword",
+    "dagger",
+    "bow"
+  ],
+  "rows": [
+    "metal",
+    "gold",
+    "diamond"
+  ],
+  "conversion": "RGBA WebP quality92 method0; no image edits",
+  "prompt": "Use case: stylized-concept. Production game sprite atlas for Meu Pet Virtual, painted cozy fantasy RPG with soft dimensional hand painted textures, NOT vector. Transparent background. Exact regular grid of FIVE columns and THREE rows with equal square cells, no dividers, no words, no numbers. One complete isolated item centered per cell, generous 15% transparent padding, nothing crossing cells. Columns in order: axe, pickaxe, sword, dagger, bow. Rows in order: metal/steel tier (brushed silver steel, brown leather), gold tier (warm gold metal and dark leather), diamond tier (faceted icy blue diamond blades and accents, silver fittings). Each row retains same recognizable silhouettes and diagonal pose as previous row, bow curved organic wooden body with upgraded metal or crystal details and visible natural taut string. Weapons graceful and child friendly, no blood. Axe and pickaxe wood handles. Sword and dagger point to upper left with grip bottom right; tools heads upper left, grip bottom right. Bow diagonal. Distinct useful silhouettes at small inventory size, detailed painted highlights. No badges, UI, frames, drop shadows outside each object, scenery, checkerboard or text. Landscape atlas aspect 5:3."
+}
