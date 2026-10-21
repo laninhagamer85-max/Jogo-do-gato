@@ -30,3 +30,13 @@ Inventários e XP continuam compartilhados no perfil de Exploração; separaçã
 
 ## Rollback
 Produto anterior1.31.0, native117. Site source base763ff01eae3f4f5bd9b6da6f52ca8955ebd78316; GitHub basec27ecfaaace09ebd41dffd57f29c7f5fa04bc057 no ramo review/grass-option3-20261016. Preservar domínio, contas e saves. IDs finais serão registrados após publicar.
+
+## Publicação concluída
+Produto1.32.0, versão nativa118. Status succeeded.
+- Versão: appgprj_6ac40994d8d881919d46203a60801e46~appgver_654cf0d969348191825f07d1a372fbac
+- Deploy: appgdep_6ad8e00deefc81918d9a6c0d0bfe58c8
+- Fonte publicada: c50a9b76701335439c9c9d61c0934bb9e160f76d
+- GitHub confirmado:6a2db1ab1c24c0fa915b21c97b65d065128c8dfc
+- https://meupet.aquimeusite.chatgpt.site
+- Typecheck final e build passaram.11 testes direcionados finais passaram após alterações de apresentação. Teste visual adicional: árvore5→0, toco e indicação de renovação12h.
+- Evidência visual: docs/evolution/evidence/meupet-132-coleta-teste.jpg.
