@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   CASTLE_ROOMS,
   castleDoors,
+  castleRoute,
   castleWalkable,
   enterCastle,
   readCastle,
@@ -84,4 +85,50 @@ it("enters through the exterior gate and pauses the exterior simulation", () => 
   const entered = stepCombat(s, {}, 0);
   expect(entered.castle?.active).toBe(true);
   expect(stepCombat(entered, { dx: 1 }, 50)).toBe(entered);
+});
+
+it("touch routes reach every edge portal despite grid rounding", () => {
+  for (const r of CASTLE_ROOMS)
+    for (const door of castleDoors(r.id))
+      expect(
+        castleRoute({ x: 5, y: 6 }, door, r.id).length,
+        `${r.id} to ${door.target}`
+      ).toBeGreaterThan(0);
+});
+it("walks touch routes through every doorway and the exterior exit", () => {
+  for (const r of CASTLE_ROOMS) {
+    for (const door of [
+      ...castleDoors(r.id),
+      ...(r.id === "vestibulo" ? [{ x: 5, y: 7.2, target: "exterior" }] : []),
+    ]) {
+      let state = {
+        ...enterCastle(),
+        room: r.id,
+        player: { x: 5, y: 6 },
+        cooldown: 0,
+      };
+      for (const p of castleRoute(state.player, door, r.id)) {
+        let steps = 0;
+        while (
+          state.active &&
+          state.room === r.id &&
+          Math.hypot(state.player.x - p.x, state.player.y - p.y) > 0.04 &&
+          steps++ < 500
+        ) {
+          const d = Math.hypot(state.player.x - p.x, state.player.y - p.y),
+            gain = Math.min(1, d / 0.175);
+          state = stepCastle(
+            state,
+            ((p.x - state.player.x) / d) * gain,
+            ((p.y - state.player.y) / d) * gain,
+            50
+          );
+        }
+        expect(steps, `${r.id} to ${door.target}`).toBeLessThan(500);
+        if (state.room !== r.id || !state.active) break;
+      }
+      if (door.target === "exterior") expect(state.active).toBe(false);
+      else expect(state.room).toBe(door.target);
+    }
+  }
 });

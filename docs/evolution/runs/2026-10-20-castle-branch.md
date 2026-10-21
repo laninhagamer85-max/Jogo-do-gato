@@ -26,3 +26,13 @@ Navegador real em fixture isolada (sem escrita em conta): observado portal exter
 PENDENTE antes de publicar: inspecionar visualmente escadaria/pé superior/inferior das duas plataformas; retorno jogado do castelo ao exterior; navegar visualmente os outros quatro cômodos; conferir controles e recorte em375×667 e844×390; capturar prova visual final. Os testes automatizados cobrem portas/chegadas/colisões/saves, mas não substituem essa inspeção.
 
 A publicação permanece1.26.0. Preservar este checkpoint e retomar QA quando o navegador responder. Não publicar só por terminar build.
+
+## Retomada de publicação —21/10/2026
+
+Ambiente recuperado do source ab2461479129c6366794bba8c1f858c2d9a66b4b após limpeza automática. Dependências restauradas pelo helper oficial, sem alterar versões.
+
+Corrigida quantização dos destinos de toque nas portas laterais: coordenadas de borda agora são aproximadas para uma célula caminhável antes do trecho final. Adicionadas áreas de toque transparentes/acessíveis sobre os próprios portais; o personagem caminha, sem teletransporte por botão. Testes percorrem todas as ligações e saída através dos movimentos reais do motor.
+
+575 testes offline e typecheck passaram. QA em fixture isolada: entrada exterior32 → Vestíbulo → retorno ao exterior32, com HP/XP preservados; sala31 com escada independente e deslocamento nos degraus em844×390; sala32 com pátio/árvores e mapa completo/marcador em375×667. Sem teste físico em aparelho nem autenticação staging nesta rodada.
+
+Estado: validação de publicação em andamento; IDs finais serão registrados após o deployment.

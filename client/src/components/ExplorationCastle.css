@@ -181,3 +181,20 @@
     font-size: 10px;
   }
 }
+
+.castle-play .castle-door-target {
+  position: absolute;
+  width: 48px;
+  height: 58px;
+  min-height: 48px;
+  transform: translate(-50%, -100%);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  z-index: 1;
+}
+.castle-play .castle-door-target:focus-visible {
+  outline: 2px solid #fff4c0;
+  background: #fff3;
+}

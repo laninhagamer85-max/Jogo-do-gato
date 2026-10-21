@@ -105,7 +105,8 @@ export function readCastle(raw: unknown): CastleProgress | undefined {
         ? { ...r.player }
         : { x: 5, y: 6 },
     visited: CASTLE_ROOMS.filter(
-      q => (Array.isArray(r.visited)&&r.visited.includes(q.id)) || q.id === room
+      q =>
+        (Array.isArray(r.visited) && r.visited.includes(q.id)) || q.id === room
     ).map(q => q.id),
     cooldown: 600,
   };
@@ -176,7 +177,7 @@ export function castleRoute(
 ): CastlePoint[] {
   if (!castleWalkable(to, id)) return [];
   const key = (p: CastlePoint) =>
-      `${Math.round(p.x * 2)},${Math.round(p.y * 2)}`,
+      `${Math.max(2, Math.min(18, Math.round(p.x * 2)))},${Math.max(2, Math.min(14, Math.round(p.y * 2)))}`,
     start = key(from),
     goal = key(to),
     queue = [start],

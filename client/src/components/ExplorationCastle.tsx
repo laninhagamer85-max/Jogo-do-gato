@@ -320,6 +320,33 @@ export default function ExplorationCastle({
         }}
         aria-label="Sala fechada do castelo. Use o direcional ou as setas para atravessar os portais."
       />
+      {!map &&
+        !paused &&
+        [
+          ...castleDoors(room),
+          ...(room === "vestibulo"
+            ? [{ x: 5, y: 7.2, target: "exterior" }]
+            : []),
+        ].map(q => (
+          <button
+            key={q.target}
+            className="castle-door-target"
+            style={{
+              left: view.current.left + q.x * view.current.tile,
+              top: view.current.top + q.y * view.current.tile,
+            }}
+            aria-label={`Caminhar ao portal: ${q.target === "exterior" ? "Exterior do castelo" : castleRoom(q.target as typeof room).name}`}
+            onClick={() => {
+              keys.current.clear();
+              input.current = { x: 0, y: 0 };
+              route.current = castleRoute(
+                current.current.player,
+                q,
+                current.current.room
+              );
+            }}
+          />
+        ))}
       <p className="castle-hint">
         Portais livres · Caminhe até uma passagem para mudar de cômodo
       </p>
