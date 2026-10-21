@@ -1,4 +1,4 @@
-import {newCastleQuest,readCastleQuest,castleQuestTick,openRoyalChest,nearestRoyalChest,castleDown,royalActive,clearRoyalSlot,CASTLE_TEST_ACCESS,type CastleQuest} from './explorationCastleQuest';
+import {newCastleQuest,readCastleQuest,castleQuestTick,openRoyalChest,nearestRoyalChest,castleDown,royalActive,royalDispersed,clearRoyalSlot,CASTLE_TEST_ACCESS,type CastleQuest} from './explorationCastleQuest';
 import {baseLayout,baseBlocks,insideSafeBase} from './explorationBase';
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
@@ -105,7 +105,7 @@ export function readCombatState(value: unknown): CombatRead {
   for(const [key,value] of Object.entries(object(raw.roomAttempts)))if(completedRooms.includes(Number(key))&&String(Number(key))===key&&typeof value==='string'&&value.length<100000)s.roomAttempts[key]=value;
   if(raw.legends){s.legends=readLegendProgress(raw.legends);s.campaignVersion=Math.max(4,s.campaignVersion) as CombatState['campaignVersion'];}
   s.workshop=readWorkshop(raw.workshop);s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
-  s.castleQuest=readCastleQuest(raw.castleQuest);s.castle=readCastle(raw.castle);if(s.castle&&index!==31)s.castle={...s.castle,active:false};
+  s.castleQuest=readCastleQuest(raw.castleQuest);s.castle=readCastle(raw.castle,royalDispersed(s));if(s.castle&&index!==31)s.castle={...s.castle,active:false};
   s.portalCooldownUntil=number(raw.portalCooldownUntil,0,0,1e9);
   if(Number.isInteger(raw.portalTarget)&&connectedPortal(index,raw.portalTarget as number))s.portalTarget=raw.portalTarget as number;
   s.openWorldCells=Array.isArray(raw.openWorldCells)?[...new Set(raw.openWorldCells.filter((v):v is string=>typeof v==='string'&&/^-?\d{1,6},-?\d{1,6}$/.test(v)))].slice(-12000):[];
@@ -211,13 +211,13 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   if(current.castle?.active&&castleDown(current)){const down=clone(current);down.time+=Math.min(50,elapsedMs);return castleQuestTick(down,current.castle.room,Date.now(),combatMaxHp(down.xp));}
   if(current.castle?.active){
    const s=clone(current),dt=Math.min(50,elapsedMs),old=current.castle,p=old.player,dx=clamp(input.dx||0,-1,1),dy=clamp(input.dy||0,-1,1),length=Math.hypot(dx,dy);
-   s.time+=dt;s.revision++;s.campaignVersion=12;s.castle=stepCastle(old,dx,dy,dt);s.energy=Math.min(100,s.energy+dt*.004);s.feedback=s.feedback.filter(f=>f.until>s.time);
+   s.time+=dt;s.revision++;s.campaignVersion=12;s.castle=stepCastle(old,dx,dy,dt,royalDispersed(s));s.energy=Math.min(100,s.energy+dt*.004);s.feedback=s.feedback.filter(f=>f.until>s.time);
    const d=distance(p,s.castle.player);s.walking=s.castle.room===old.room&&d>.00001;s.walkPhase=s.walking?(s.walkPhase+d/.72)%1:0;if(length)s.facing={x:dx/length,y:dy/length};
    let royalDamage=0;
    if((input.attack||input.power)&&s.time>=s.attackAt&&(!input.power||s.energy>=25)){if(input.power){s.energy-=25;s.powerFx={power:s.activePower??'burst',...s.castle.player,startedAt:s.time,until:s.time+800};}s.attackAt=s.time+(input.power?1000:500);s.strikeUntil=s.time+320;royalDamage=Math.round(combatAttack(s)*(input.power?(royalActive(s,'power')?3.2:1.6):1));}
    if(s.castle.room!==old.room){s.message=`${castleRoom(s.castle.room).name} · Portas livres para explorar.`;s.powerFx=undefined;s.strikeUntil=0;}
    if(!s.castle.active){s.player={x:castleStairBase.x,y:castleStairBase.y+.7};s.portalCooldownUntil=s.time+2000;s.message='Você voltou à Encosta das Fontes. O castelo continua acessível.';s.powerFx=undefined;s.strikeUntil=0;}
-   let next=castleQuestTick(s,old.room,Date.now(),combatMaxHp(s.xp),royalDamage,Boolean(input.power));if(input.interact&&!castleDown(next)){const chest=nearestRoyalChest(next);if(chest)next=openRoyalChest(next,chest.id);}return next;
+   let next=castleQuestTick(s,old.room,Date.now(),combatMaxHp(s.xp),royalDamage,Boolean(input.power));if(input.attack&&!input.power&&royalDamage>0&&next.castle?.active&&next.castle.room===old.room&&!castleDown(next)){const chest=nearestRoyalChest(next);if(chest)next=openRoyalChest(next,chest.id);}return next;
   }
   const s = clone(current),room=campaignRoom(s.roomIndex),definitions=campaignEnemies(s.roomIndex,s.encounterSeed), dt = Math.min(50, elapsedMs); s.time += dt; s.revision++;
   if(s.completedRooms.includes(s.roomIndex)||CASTLE_TEST_ACCESS&&s.roomIndex>=30)s.gateOpen=true;

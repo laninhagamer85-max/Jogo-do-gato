@@ -43,6 +43,6 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
   }
  }
  // Rear-facing equipment sits behind the body instead of cutting through the torso.
- const behind=state.facing.y<-.3;if(behind)drawItem();
- ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();if(harvesting)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});return true;
+ const behind=state.facing.y<-.3;if(behind)drawItem();if(harvesting&&behind)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});
+ ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();if(harvesting&&!behind)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});return true;
 }

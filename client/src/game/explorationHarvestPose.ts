@@ -1,0 +1,2 @@
+/** One continuous stroke, measured from the harvesting clock rather than attack cooldown. */
+export function harvestPose(elapsed:number,duration=620){const phase=Math.max(0,Math.min(1,elapsed/duration)),ease=(t:number)=>t*t*(3-2*t);let swing:number;if(phase<.32)swing=.2-1.05*ease(phase/.32);else if(phase<.56)swing=-.85+1.08*ease((phase-.32)/.24);else swing=.23-.03*ease((phase-.56)/.44);return{phase,swing,reach:Math.sin(phase*Math.PI)*.12,impact:phase>=.49&&phase<.64};}

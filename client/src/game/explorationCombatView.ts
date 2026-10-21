@@ -51,7 +51,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
-  drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil);
+  drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil,state.encounterSeed);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   ctx.restore();
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number;worldTree?:boolean;variant?:number})=>{
@@ -162,6 +162,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
       const px=p.x+state.facing.x*attack.lean*t, py=p.y+state.facing.y*attack.lean*t;
+      if(!state.legends?.active&&harvestingActive(state)&&state.facing.y<-.3)drawHarvestTool(ctx,state,px,py,t);
       const legendDrawn=drawExplorationLegend(ctx,state,px,py,t,reducedMotion);
       if(legendDrawn){
         // The active Legendary owns its body and weapon rendering.
@@ -169,7 +170,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         ctx.save(); ctx.translate(px, py); if (direction.mirror) ctx.scale(-1, 1);
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);
-      if(!legendDrawn){drawHarvestTool(ctx,state,px,py,t);if(!harvestingActive(state)&&royalActive(state,'sword'))drawRoyalHeld(ctx,state,'sword',px+t*.25,py-t*.35,t);}
+      if(!legendDrawn){if(state.facing.y>=-.3)drawHarvestTool(ctx,state,px,py,t);if(!harvestingActive(state)&&royalActive(state,'sword'))drawRoyalHeld(ctx,state,'sword',px+t*.25,py-t*.35,t);}
       if (attack.active && !harvestingActive(state) && !(state.powerFx&&state.time-state.powerFx.startedAt<320) && !(state.legends?.active&&state.legends.weapon==='bow')) {
         // A short swipe in front of the body, never a synthetic limb over the face.
         ctx.save();ctx.translate(px+state.facing.x*t*.35,py+state.facing.y*t*.28-t*.03);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));
