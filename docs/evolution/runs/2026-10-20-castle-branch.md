@@ -1,6 +1,6 @@
 # 1.27.0 — Castelo e correções de elevação
 
-Estado: implementado, aguardando conclusão de validação visual; NÃO PUBLICADO.
+Estado atual: PUBLICADO1.27.0 / Sites112 em21/10/2026. Histórico abaixo preserva o checkpoint anterior.
 Base publicada: 1.26.0 / Sites111, source eafc76b5d8bf85981139b498f64d81b2e648f07c. Checkout base aac3ac7ba6f9bac1b1b2f6f3b677d4c8494f6bd8. GitHub lease 5793a8853714445b917ad277aa2fd3306bda1225.
 
 ## Escopo
@@ -36,3 +36,9 @@ Corrigida quantização dos destinos de toque nas portas laterais: coordenadas d
 575 testes offline e typecheck passaram. QA em fixture isolada: entrada exterior32 → Vestíbulo → retorno ao exterior32, com HP/XP preservados; sala31 com escada independente e deslocamento nos degraus em844×390; sala32 com pátio/árvores e mapa completo/marcador em375×667. Sem teste físico em aparelho nem autenticação staging nesta rodada.
 
 Estado: validação de publicação em andamento; IDs finais serão registrados após o deployment.
+
+## Publicação concluída
+
+Versão1.27.0 / Sites112. Source16dc524efcae3bc886e452a7354e91902baa33e3. GitHubdfdad39435ede4103f5911fbc7045ed4918779a9. Saved version appgprj_6ac40994d8d881919d46203a60801e46~appgver_4cd838fccb408191b0bdd7fbdf4e2143. Deployment appgdep_6ad8416cb930819191fb3b86d18d1eff: succeeded. URL https://meupet.aquimeusite.chatgpt.site.575 testes, typecheck e build passaram; integraçao FirebaseAdmin staging não executada por ausência de credencial. Browser QA foi isolado, não em conta real/aparelho físico. Não alegar percurso visual pelos seis cômodos: entrada/retorno foram jogados, portas de todos os cômodos foram percorridas na simulação de movimento.
+
+Rollback: versão1.26.0 / appgprj_6ac40994d8d881919d46203a60801e46~appgver_2f4d75100ab08191b0f87107e56f7330. Próximo passo: teste do usuário, especialmente composição interna e plataforma/árvores. Nenhum NPC/desafio interno adicionado nesta primeira validação.
