@@ -3,43 +3,44 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.33.0_pending_package",
+  "status": "published_1.33.0",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "c50a9b76701335439c9c9d61c0934bb9e160f76d",
+    "source_site_commit": "f32125fb39928b5abab307571da5911fb11455b1",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
     "code_commit_status": "1.32.0 published, GitHub implementation verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
-    "published_code_github_commit": "6a2db1ab1c24c0fa915b21c97b65d065128c8dfc",
+    "published_code_github_commit": "8815496f65874ba06f96e5cd0f7bcee0866f05a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "safe-base-drag-crafting",
     "base_product_version": "1.32.0",
-    "implementation_status": "validated_pending_package",
-    "report": "docs/evolution/runs/2026-10-21-safe-base-drag-crafting.md"
+    "implementation_status": "published",
+    "report": "docs/evolution/runs/2026-10-21-safe-base-drag-crafting.md",
+    "acceptance_status": "658 tests passed; typecheck/build passed; real isolated portrait/landscape browser QA"
   },
   "publication": {
-    "id": "appgdep_6ad8e00deefc81918d9a6c0d0bfe58c8",
+    "id": "appgdep_6ad92190166481919514793d84b1904a",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_654cf0d969348191825f07d1a372fbac",
-    "version_number": 118,
-    "product_version": "1.32.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f219914182ec81919c3a88009b4eb5ea",
+    "version_number": 119,
+    "product_version": "1.33.0",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "c50a9b76701335439c9c9d61c0934bb9e160f76d"
+    "source_commit": "f32125fb39928b5abab307571da5911fb11455b1"
   },
   "verification": {
-    "typescript": "passed in final package",
-    "offline_tests": "622 passed across64 files; Firebase integration1 fails because staging credential is absent; additional camera/art4 passed",
-    "build": "passed; Vite1m41s; existing chunk-size warning only",
-    "browser": "Isolated real browser:30s metal sword craft/claim and gold recipe; exterior stair traversal into castle; viewport fill portrait390x844/landscape844x390; tree5→0, stump and12h renewal label. Not a physical-device or full campaign playthrough.",
+    "typescript": "passed",
+    "offline_tests": "658 passed in65 files; Firebase staging integration excluded",
+    "build": "passed20.09s; existing chunk size warning",
+    "browser": "Isolated844x390 and390x844: structure and ingredient pointer drag; chest wood/weapon storage;30s charcoal craft/claim",
     "viewports": {
       "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
       "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",
@@ -53,8 +54,8 @@
   },
   "blockers": [],
   "next_actions": [
-    "David tests precise tap movement near objects on a physical phone.",
-    "Validate 1.29.0 castle/elevation before expanding more rooms."
+    "David tests base placement, storage and fabrication on physical phone.",
+    "Separate per-Legend XP/inventories and home visual evolution remain future work."
   ],
   "rollback": {
     "product_version": "1.32.0",
@@ -62,7 +63,7 @@
     "site_commit": "c50a9b76701335439c9c9d61c0934bb9e160f76d",
     "instructions": "Redeploy only if no newer publication exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-21.md",
+  "latest_report": "docs/evolution/runs/2026-10-21-safe-base-drag-crafting.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -687,23 +688,15 @@
     "scope": "authored connected sector; continuous ground/forest beyond; not infinite generated missions or network streaming",
     "save": "campaignVersion7; per-room local memory; no resource reset on visits"
   },
-  "next_action": "Validate 1.29.0 castle/elevation before expanding more rooms.",
+  "next_action": "David tests base placement, storage and fabrication on physical phone.",
   "previous_publication": {
-    "id": "appgdep_6ad8ade94f908191bdc0319335cd41f1",
+    "id": "appgdep_6ad8e00deefc81918d9a6c0d0bfe58c8",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_cbf78a575940819183030f64b3cfa1cc",
-    "type": "publish",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_654cf0d969348191825f07d1a372fbac",
+    "version_number": 118,
+    "product_version": "1.32.0",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "has_mcp": false,
-    "screenshot_asset_pointer": null,
-    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
-    "failure_message": null,
-    "env_set_revision": 0,
-    "updated_at": "2026-10-21T12:20:18.284806+00:00",
-    "product_version": "1.30.0",
-    "version_number": 116,
-    "source_commit": "26d1509387d5ce1f70cb70588190ff252de8c938"
+    "source_commit": "c50a9b76701335439c9c9d61c0934bb9e160f76d"
   }
 }
