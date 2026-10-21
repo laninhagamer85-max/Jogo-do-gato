@@ -16,3 +16,5 @@ Evidências: ../evidence/meupet-1333-trilhas-coleta.jpg e ../evidence/meupet-133
 Rollback1.33.2 Site121, versãoappgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94; deploymentappgdep_6ad92bd8a2e48191b9c510e6e0f2d325. Fontebase22a460f8232ad01f5eefb01bc22829fb958cc5b0. Fonte recuperada pelo helper oficial antes de editar após manutenção do workspace.
 
 Refino visual final: largura central reduzida0,72→0,42 unidade, transparência e bordas suaves; curvas arredondadas até0,16unidade. Conferido bioma de riacho no desktop e844x390, sem alterar o grafo de navegação. Evidência final ../evidence/meupet-1333-trilhas-final.jpg.
+
+Publicado1.33.3 Site122 com sucesso. Fonte57f3bf3f7ce90ad25a059350447353fd2295d481; GitHub1567e9acb5db0850ad95a75e89fc6cfdd1031c5b; versãoappgprj_6ac40994d8d881919d46203a60801e46~appgver_38a0006d12e081919937d7356bd20769; deploymentappgdep_6ad9389c125c8191aa4de59096d2f2f3. Build18.57s. URL https://meupet.aquimeusite.chatgpt.site

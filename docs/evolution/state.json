@@ -3,34 +3,34 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.33.3_pending_package",
+  "status": "published_1.33.3",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1",
+    "source_site_commit": "57f3bf3f7ce90ad25a059350447353fd2295d481",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
     "code_commit_status": "1.32.0 published, GitHub implementation verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
-    "published_code_github_commit": "44ee1324f362d885eb9853bf56fa1c945ebb159c",
+    "published_code_github_commit": "1567e9acb5db0850ad95a75e89fc6cfdd1031c5b",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "woodland-trails-renewal",
     "base_product_version": "1.33.2",
-    "implementation_status": "validated_pending_package",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-21-woodland-trails-renewal.md",
     "acceptance_status": "672 tests passed; expanded32room trail checks passed; browser five viewports"
   },
   "publication": {
-    "id": "appgdep_6ad92bd8a2e48191b9c510e6e0f2d325",
+    "id": "appgdep_6ad9389c125c8191aa4de59096d2f2f3",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_38a0006d12e081919937d7356bd20769",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,16 +39,16 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-21T21:17:32.942479+00:00",
-    "product_version": "1.33.2",
-    "version_number": 121,
-    "source_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1"
+    "updated_at": "2026-10-21T22:12:01.828622+00:00",
+    "product_version": "1.33.3",
+    "version_number": 122,
+    "source_commit": "57f3bf3f7ce90ad25a059350447353fd2295d481"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "663 passed across66 files; Firebase staging excluded",
-    "build": "passed18.97s; existing chunk size warning",
-    "browser": "Isolated844x390/390x844 construction progress, chest30s claim and potions; wood5→4 rooms31/32 withKael",
+    "offline_tests": "672 tests passed across68 files; expanded32room trail checks passed; Firebase staging excluded",
+    "build": "passed18.57s; existing chunk size warning",
+    "browser": "Isolated five viewport sizes; common biome tree5→0 and stump30min; trail overview/lens and river desktop/landscape",
     "viewports": {
       "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
       "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",
@@ -71,7 +71,7 @@
     "site_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1",
     "instructions": "Redeploy only if no newer publication exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-21-world-construction-harvest.md",
+  "latest_report": "docs/evolution/runs/2026-10-21-woodland-trails-renewal.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -698,13 +698,21 @@
   },
   "next_action": "David tests chapter4 gathering and construction on physical phone.",
   "previous_publication": {
-    "id": "appgdep_6ad9297c4a948191852ad499324e82f8",
+    "id": "appgdep_6ad92bd8a2e48191b9c510e6e0f2d325",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b72f323a008881918c7935e37a97aa63",
-    "version_number": 120,
-    "product_version": "1.33.1",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94",
+    "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "797dc935e829c5342235341b6295e84fcd299bf2"
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-21T21:17:32.942479+00:00",
+    "product_version": "1.33.2",
+    "version_number": 121,
+    "source_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1"
   }
 }
