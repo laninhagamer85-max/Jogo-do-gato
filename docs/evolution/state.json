@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-20",
+  "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "published_for_user_review",
-  "active_run": null,
+  "status": "published_1.29.1_for_user_test",
+  "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
@@ -19,14 +19,22 @@
     "acceptance_status": "offline_verified_pending_user_visual_review"
   },
   "publication": {
+    "id": "appgdep_6ad8a6510da08191bb7e6d7b901f3d82",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "url": "https://meupet.aquimeusite.chatgpt.site",
-    "product_version": "1.23.1",
-    "last_observed_version": 107,
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa02be9e588191895e83268bc8b029",
+    "type": "publish",
     "status": "succeeded",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa8a74e5e481918b24b08c03a7c765",
-    "deployment_id": "appgdep_6ad7518583608191aa41c017042b6e57",
-    "site_commit": "bd4aa0ebfb48a6facafec6f06ff0da4689b61337",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-21T11:47:39.896060+00:00",
+    "version_number": 115,
+    "product_version": "1.29.1",
+    "site_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "attempted_in_this_cycle": true
   },
   "verification": {
@@ -47,9 +55,8 @@
   },
   "blockers": [],
   "next_actions": [
-    "David: conferir tamanho da grama, nitidez, ausência de quadrículas visíveis e estabilidade ao caminhar/rotacionar/usar zoom.",
-    "Aceitar o piloto; então construir dez salas reais do capítulo 1 conforme plano já registrado.",
-    "Reutilizar terrainTexture.ts com novas texturas e sementes por bioma, sem usar ilustração de mapa inteiro como piso."
+    "David tests precise tap movement near objects on a physical phone.",
+    "Validate 1.29.0 castle/elevation before expanding more rooms."
   ],
   "rollback": {
     "production_changed": true,
@@ -57,7 +64,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
     "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-20.md",
+  "latest_report": "docs/evolution/runs/2026-10-21.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -223,26 +230,26 @@
     "report": "docs/evolution/runs/2026-10-19.md"
   },
   "latest_cycle_coordination": {
-    "date": "2026-10-20",
+    "date": "2026-10-21",
     "branch": "review/grass-option3-20261016",
-    "code_commit": "44cad147a831fc2b4fd83db197bc431df6ce2e0d",
-    "report_commit": "87d57556ed726e5bf753a4a98122dbdf2e1744d3",
-    "scope": "1.23.1 short-landscape action/lens separation",
+    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
+    "report_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
+    "scope": "1.29.1 precise short taps; castle/elevation preserved",
     "verification": {
       "typescript": "passed",
-      "offline_tests": "552/552 in 56 files; Firebase Admin staging integration excluded (no staging credential)",
-      "build": "passed; existing >500kB chunk warning",
-      "browser": "Isolated QA room21. Power consumes energy, camera toggles independently; measured action/lens separation at five iframe sizes. Not a playthrough or physical touch test.",
+      "offline_tests": "603/603 in61 files; Firebase Admin staging integration excluded (no staging credential)",
+      "build": "passed17.34s; existing >500kB chunk warning",
+      "browser": "Real pointer clicks in isolated room21 at five iframe sizes: 0.2-unit diagonal targets within same cell reached within0.06; pause/resume after resize. Not device playthrough.",
       "viewports": {
-        "375x667": "action/lens rects and screenshot checked",
-        "375x812": "rectangles and visual inspection passed",
-        "390x844": "rectangles and visual inspection passed",
-        "844x390": "before overlap reproduced; after normal/expanded lens no intersections; power and zoom clicked",
-        "1366x768": "rectangles and visual inspection passed"
+        "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
+        "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",
+        "390x844": "pointer move 1.7,1.7 ->1.5233,1.5233",
+        "844x390": "pointer move 1.5,1.5 ->1.7,1.7",
+        "1366x768": "pointer move 1.5233,1.5233 ->1.7,1.7"
       },
-      "real_online_phases_completed_in_cycle": 0,
       "physical_phone": "not_tested",
-      "fps": "not_measured"
+      "fps": "not_measured",
+      "real_online_phases_completed_in_cycle": 0
     }
   }
 }
