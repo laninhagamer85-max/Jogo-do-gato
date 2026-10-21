@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.29.0_for_user_test",
+  "status": "validated_1.29.1_pending_publication",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -17,11 +17,11 @@
     "review_source_commit": "ba9ea5dc02953074c32324cea402076bdc5d5c9a"
   },
   "current_improvement": {
-    "id": "castle-footprints-portals-and-open-world-campaign",
-    "base_product_version": "1.28.0",
-    "implementation_status": "published_1.29.0",
-    "acceptance_status": "pending_user_test",
-    "report": "docs/evolution/runs/2026-10-21-open-world-castle-refinement.md"
+    "id": "precise-outdoor-tap-navigation",
+    "base_product_version": "1.29.0",
+    "implementation_status": "validated_pending_publication",
+    "acceptance_status": "isolated_browser_five_viewports",
+    "report": "docs/evolution/runs/2026-10-21.md"
   },
   "publication": {
     "id": "appgdep_6ad8879f9b508191b709462cea068603",
@@ -38,42 +38,38 @@
     "env_set_revision": 0,
     "updated_at": "2026-10-21T09:36:53.789725+00:00",
     "version_number": 114,
-    "product_version": "1.29.0"
+    "product_version": "1.29.0",
+    "attempted_in_this_cycle": false
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "563/563 passed; FirebaseAdmin staging excluded",
-    "build": "passed19.52s; existing large chunk warning",
-    "browser": "Isolated31->32->31 actual portal clicks; stairs/patio390x844/844x390; three more viewport DOM checks without horizontal overflow",
+    "offline_tests": "603/603 in61 files; Firebase Admin staging integration excluded (no staging credential)",
+    "build": "passed17.34s; existing >500kB chunk warning",
+    "browser": "Real pointer clicks in isolated room21 at five iframe sizes: 0.2-unit diagonal targets within same cell reached within0.06; pause/resume after resize. Not device playthrough.",
+    "viewports": {
+      "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
+      "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",
+      "390x844": "pointer move 1.7,1.7 ->1.5233,1.5233",
+      "844x390": "pointer move 1.5,1.5 ->1.7,1.7",
+      "1366x768": "pointer move 1.5233,1.5233 ->1.7,1.7"
+    },
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "real_online_phases_completed_in_cycle": 0
   },
   "blockers": [],
   "next_actions": [
-    "David tests connected rooms31/32 and open terrain on phone",
-    "Expand authored content and branch portals after validating this sector; previous chapters unchanged"
+    "David tests precise tap movement near objects on a physical phone.",
+    "Validate 1.29.0 castle/elevation before expanding more rooms."
   ],
   "rollback": {
-    "production_changed": true,
-    "id": "appgdep_6ad7c0f503048191b94cd2338320a8b7",
-    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_512cfd25663c81918e8d6d7f7d8731a1",
-    "type": "publish",
-    "status": "succeeded",
-    "url": "https://meupet.aquimeusite.chatgpt.site",
-    "has_mcp": false,
-    "screenshot_asset_pointer": null,
-    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
-    "failure_message": null,
-    "env_set_revision": 0,
-    "updated_at": "2026-10-20T19:29:15.605327+00:00",
-    "product_version": "1.25.0",
-    "last_observed_version": 110,
-    "site_commit": "9b122752d3519ca038d2af284acb20c8f65edd60"
+    "production_changed": false,
+    "product_version": "1.29.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_5e15e33441d881918589c2db8d5119f2",
+    "site_commit": "ba9ea5dc02953074c32324cea402076bdc5d5c9a",
+    "instructions": "Redeploy only if no newer collaborator publication exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-20-chapter4-stone-corrections.md",
+  "latest_report": "docs/evolution/runs/2026-10-21.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -645,7 +641,7 @@
     "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
     "art": "2originalPNGatlases;noPNGpixelediting"
   },
-  "previous_report": "docs/evolution/runs/2026-10-19-legend-recipe-ambience.md",
+  "previous_report": "docs/evolution/runs/2026-10-21-open-world-castle-refinement.md",
   "minimap_discovery_optimization": {
     "status": "source_only_not_published",
     "before_distance_tests": 720,
@@ -698,5 +694,5 @@
     "scope": "authored connected sector; continuous ground/forest beyond; not infinite generated missions or network streaming",
     "save": "campaignVersion7; per-room local memory; no resource reset on visits"
   },
-  "next_action": "Collect user feedback for castle rooms and elevation; no new content expansion before this pilot is approved."
+  "next_action": "Validate 1.29.0 castle/elevation before expanding more rooms."
 }

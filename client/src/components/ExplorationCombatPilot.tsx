@@ -148,7 +148,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
       drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water,autumnMobs,powerArt,stone,cliff,soil);
       paintKey=key;draws++;
       }
-      if(window.location.pathname==='/qa-exploration-lab'&&now-ui<40){el.dataset.runningDraws=String(draws);el.dataset.gameTime=String(Math.round(current.current.time));}
+      if(window.location.pathname==='/qa-exploration-lab'&&now-ui<40){const position=current.current.castle?.active?current.current.castle.player:current.current.player;el.dataset.runningDraws=String(draws);el.dataset.gameTime=String(Math.round(current.current.time));el.dataset.playerX=String(position.x);el.dataset.playerY=String(position.y);}
       frame = window.requestAnimationFrame(loop);
     };
     frame = window.requestAnimationFrame(loop);

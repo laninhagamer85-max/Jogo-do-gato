@@ -325,15 +325,18 @@ export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:bool
 }
 /** Breadth-first touch route around the same geometry used by movement. */
 export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen: boolean,roomIndex=0): CombatPoint[] {
+  if(![from.x,from.y,destination.x,destination.y].every(Number.isFinite))return [];
   if(roomIndex>=30)return nascentesRoute(from,destination,gateOpen,roomIndex); 
   if(Math.hypot(destination.x-from.x,destination.y-from.y)>80)return [];
+  // Short taps within one navigation cell still check the full support radius.
+  if(Math.floor(from.x)===Math.floor(destination.x)&&Math.floor(from.y)===Math.floor(destination.y)&&clearPilotWalkLine(from,destination,gateOpen,.22,roomIndex))return [{...destination}];
 
   const minX=Math.min(from.x,destination.x)-10,maxX=Math.max(from.x,destination.x)+10,minY=Math.min(from.y,destination.y)-10,maxY=Math.max(from.y,destination.y)+10;
   const start = { x: Math.floor(from.x), y: Math.floor(from.y) }, end = { x: Math.floor(destination.x), y: Math.floor(destination.y) };
   if (!pilotWalkable({ x: end.x + .5, y: end.y + .5 }, gateOpen,.22,roomIndex)) return [];
   const key = (p: CombatPoint) => `${p.x},${p.y}`, queue = [start], previous = new Map<string, CombatPoint | null>([[key(start), null]]);
   for (let index = 0; index < queue.length; index++) {
-    const p = queue[index]; if (key(p) === key(end)) { const route: CombatPoint[] = []; let current: CombatPoint | null = p; while (current && key(current) !== key(start)) { route.unshift({ x: current.x + .5, y: current.y + .5 }); current = previous.get(key(current)) ?? null; } return route; }
+    const p = queue[index]; if (key(p) === key(end)) { const route: CombatPoint[] = []; let current: CombatPoint | null = p; while (current && key(current) !== key(start)) { route.unshift({ x: current.x + .5, y: current.y + .5 }); current = previous.get(key(current)) ?? null; } const last=route[route.length-1]??from;if(!clearPilotWalkLine(last,destination,gateOpen,.22,roomIndex))return [];if(distance(last,destination)>.001)route.push({...destination});return route; }
     for (const d of [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }]) {
       const n = { x: p.x + d.x, y: p.y + d.y };
       if(n.x<minX||n.x>maxX||n.y<minY||n.y>maxY)continue;
