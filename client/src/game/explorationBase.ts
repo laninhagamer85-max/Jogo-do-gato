@@ -16,8 +16,8 @@ export function baseLayout(s:Pick<CombatState,'workshop'|'roomIndex'>){return s.
 export function baseBuilt(s:Pick<CombatState,'workshop'>,k:BaseBuilding){return k==='home'||Boolean(s.workshop?.facilities[k==='workshop'?'bench':k==='potions'?'healing':'chest']);}
 export function safeBaseRadius(s:Pick<CombatState,'workshop'>){return 4.2+Math.max(0,...Object.values(s.workshop?.facilities??{}))*.2;}
 export function insideSafeBase(s:CombatState,p=s.player){return !s.castle?.active&&Math.hypot(p.x-baseLayout(s).home.x,p.y-baseLayout(s).home.y)<safeBaseRadius(s);}
-export function baseBlocks(p:CombatPoint,radius:number,index:number,w:CombatState['workshop']){const fake={roomIndex:index,workshop:w},b=baseLayout(fake);return BASE_BUILDINGS.some(k=>{if(k!=='home'&&!baseBuilt(fake,k))return false;const q=b[k],rx=k==='home'?.5:.6,ry=k==='home'?.22:.3;return Math.abs(p.x-q.x)<rx+radius&&Math.abs(p.y-(q.y-.18))<ry+radius;});}
-export function buildingAt(s:CombatState,p:CombatPoint){return [...BASE_BUILDINGS].reverse().find(k=>{const q=baseLayout(s)[k];return baseBuilt(s,k)&&Math.abs(q.x-p.x)<.85&&p.y>q.y-1.55&&p.y<q.y+.2;});}
+export function baseBlocks(p:CombatPoint,radius:number,index:number,w:CombatState['workshop']){const fake={roomIndex:index,workshop:w},b=baseLayout(fake);return BASE_BUILDINGS.some(k=>{if(k!=='home'&&!baseVisible(fake,k))return false;const q=b[k],rx=k==='home'?.5:.6,ry=k==='home'?.22:.3;return Math.abs(p.x-q.x)<rx+radius&&Math.abs(p.y-(q.y-.18))<ry+radius;});}
+export function buildingAt(s:CombatState,p:CombatPoint){return [...BASE_BUILDINGS].reverse().find(k=>{const q=baseLayout(s)[k];return baseVisible(s,k)&&Math.abs(q.x-p.x)<.85&&p.y>q.y-1.55&&p.y<q.y+.2;});}
 /** A proposed placement is checked entirely before committing. House moves the whole base. */
 export function placeBaseBuilding(s:CombatState,k:BaseBuilding,target:CombatPoint,ground:(p:CombatPoint,r:number)=>boolean):CombatState{
  if(s.castle?.active||!s.workshop||!BASE_BUILDINGS.includes(k)||!Number.isFinite(target.x)||!Number.isFinite(target.y)||Math.abs(target.x)>999||Math.abs(target.y)>999)return s;
@@ -29,3 +29,8 @@ export function placeBaseBuilding(s:CombatState,k:BaseBuilding,target:CombatPoin
  return {...s,revision:s.revision+1,workshop:{...s.workshop,layouts:{...s.workshop.layouts,[s.roomIndex]:next}},message:`${BASE_NAMES[k]} posicionada. Organização salva nesta sala.`};
 }
 export function baseView(w:number,h:number,s:Pick<CombatState,'workshop'|'roomIndex'>){const c=baseLayout(s).home,tile=Math.min(w/11,h/10);return{tile,left:w/2-c.x*tile,top:h*.49-c.y*tile};}
+
+/** Pending construction shares the final world footprint, without granting its service early. */
+export function pendingBaseBuilding(s:Pick<CombatState,'workshop'>):Exclude<BaseBuilding,'home'>|undefined{const id=s.workshop?.job?.recipe?.replace(/^upgrade-/,'');return id==='chest'?'chest':id==='bench'||id==='refinery'?'workshop':id==='healing'?'potions':undefined;}
+export function baseVisible(s:Pick<CombatState,'workshop'>,k:BaseBuilding){return baseBuilt(s,k)||pendingBaseBuilding(s)===k;}
+export function constructionProgress(s:Pick<CombatState,'workshop'>,now=Date.now()){const kind=pendingBaseBuilding(s),j=s.workshop?.job;if(!kind||!j)return;const progress=Math.max(0,Math.min(1,(now-j.startedAt)/(j.finishAt-j.startedAt)));return {kind,progress,seconds:Math.max(0,Math.ceil((j.finishAt-now)/1000)),ready:now>=j.finishAt};}

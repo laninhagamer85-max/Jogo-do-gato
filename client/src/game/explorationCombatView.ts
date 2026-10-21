@@ -1,5 +1,5 @@
-import {baseLayout,baseBuilt,baseView,insideSafeBase,BASE_BUILDINGS} from './explorationBase';
-import {resourceNodes} from './explorationWorkshop';
+import {baseLayout,baseVisible,baseView,insideSafeBase,BASE_BUILDINGS} from './explorationBase';
+import {resourceNodes,harvestingActive} from './explorationWorkshop';
 import {drawResource,drawHarvestTool,drawBaseBuilding,drawBaseProtection} from './explorationWorkshopView';
 import {drawPaintedItem,type PaintedItem} from './explorationPaintedItems';
 import {drawBiomeShelter,drawBiomeTree} from './explorationBiomeArt';
@@ -100,7 +100,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   const fx=state.powerFx;
   if(fx&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
   drawBaseProtection(ctx,state,point,t);
-  const entities = [...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseBuilt(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing);continue;}
@@ -156,14 +156,15 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       const direction = homeWalkDirection(state.facing.x, -state.facing.y);
       const attack=combatAttackPose(state.time,state.strikeUntil,reducedMotion);
       const px=p.x+state.facing.x*attack.lean*t, py=p.y+state.facing.y*attack.lean*t;
-      if(drawExplorationLegend(ctx,state,px,py,t,reducedMotion)){
+      const legendDrawn=drawExplorationLegend(ctx,state,px,py,t,reducedMotion);
+      if(legendDrawn){
         // The active Legendary owns its body and weapon rendering.
       } else if (atlas.complete && atlas.naturalWidth && (state.walking || attack.active)) {
         ctx.save(); ctx.translate(px, py); if (direction.mirror) ctx.scale(-1, 1);
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);
-      drawHarvestTool(ctx,state,px,py,t);
-      if (attack.active && !(state.powerFx&&state.time-state.powerFx.startedAt<320) && !(state.legends?.active&&state.legends.weapon==='bow')) {
+      if(!legendDrawn)drawHarvestTool(ctx,state,px,py,t);
+      if (attack.active && !harvestingActive(state) && !(state.powerFx&&state.time-state.powerFx.startedAt<320) && !(state.legends?.active&&state.legends.weapon==='bow')) {
         // A short swipe in front of the body, never a synthetic limb over the face.
         ctx.save();ctx.translate(px+state.facing.x*t*.35,py+state.facing.y*t*.28-t*.03);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));
         ctx.globalAlpha=.55*Math.max(0,attack.reach);ctx.strokeStyle='#ecdfb2';ctx.lineWidth=Math.max(1,t*.018);ctx.lineCap='round';

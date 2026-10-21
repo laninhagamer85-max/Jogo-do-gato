@@ -1,3 +1,5 @@
+import {harvestingActive} from './explorationWorkshop';
+import {drawHarvestTool} from './explorationWorkshopView';
 import {tierSprite} from './explorationEquipmentTiers';
 import weapons from './explorationWeaponArt.json';
 import {legendPose,legendHand} from './explorationLegendPose';
@@ -23,7 +25,7 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  const pose=legendPose(id,anim.row,anim.frame),rect=pose.rect,sprite=cutout(pose.key,images.get(id),rect);if(!sprite)return false;
  const dh=tile*1.12,dw=dh*rect.width/rect.height,hand=legendHand(id,pose.sourceRow,pose.sourceFrame);
  const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
- const weapon=state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
+ const harvesting=harvestingActive(state),weapon=harvesting?null:state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
  const a=Math.atan2(state.facing.y,state.facing.x),sway=state.walking&&!reduced?Math.sin(state.walkPhase*Math.PI*2)*.065:0;
  function drawItem(){if(!weapon)return;const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tier?tierSprite(weapon,tier):null,tierImage=tierArt?imageFor('equipment-tiers',tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
   ctx.save();ctx.translate(hx,hy);
@@ -40,5 +42,5 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  }
  // Rear-facing equipment sits behind the body instead of cutting through the torso.
  const behind=state.facing.y<-.3;if(behind)drawItem();
- ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();return true;
+ ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();if(harvesting)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});return true;
 }
