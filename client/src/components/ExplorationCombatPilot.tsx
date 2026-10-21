@@ -119,7 +119,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         if (dx || dy) route.current = [];
         else if (route.current.length) {
           const position=current.current.castle?.active?current.current.castle.player:current.current.player,target=route.current[0],distance=Math.hypot(target.x-position.x,target.y-position.y);
-          if (distance < .06) route.current.shift();
+          if (distance < (current.current.castle?.active?.015:.06)) route.current.shift();
           else { const scale = Math.min(1, distance / Math.max(.001, dt * .003)); dx = (target.x - position.x) / distance * scale; dy = (target.y - position.y) / distance * scale; }
         }
         const urgent = pending.current.attack || pending.current.power || pending.current.interact;

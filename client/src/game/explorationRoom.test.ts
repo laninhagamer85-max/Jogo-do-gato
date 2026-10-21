@@ -63,5 +63,5 @@ it('crosses all four old room boundaries and preserves positions in expanded sav
   const parsed=readCombatState(save);if(!parsed.supported)throw Error();
   expect(parsed.state.player).toEqual(p);expect(parsed.state.xp).toBe(94);expect(parsed.state.stock.ambar).toBe(9);
  }
- expect(pilotWalkable({x:-6,y:-5},true)).toBe(false);
+ expect(pilotWalkable({x:-6,y:-5},true)).toBe(true);
 });

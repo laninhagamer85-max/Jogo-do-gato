@@ -1,3 +1,5 @@
+import {explorationGroves} from './explorationOpenWorld';
+import {returnPortal} from './explorationChapter4';
 import {drawCastleWorld} from './explorationCastleView';
 import {drawOverviewLocation} from './explorationOverviewLocation';
 import {nascentesTrees} from './explorationChapter4';
@@ -23,14 +25,9 @@ export function combatCanvasScale(width:number,height:number,pixelRatio:number){
   return Math.max(.5,Math.min(3,Math.max(1,pixelRatio||1),Math.sqrt(6_000_000/(Math.max(1,width)*Math.max(1,height)))));
 }
 export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false) {
-  const desiredTile = overview ? Math.min(width / PILOT_SIZE.width, Math.max(1, height - 100) / PILOT_SIZE.height) : Math.max(52, width / 11, height / 9) * zoom;
-  const tile=Math.max(desiredTile,width/GROUND_WORLD.width,height/GROUND_WORLD.height);
-  const bw = tile * PILOT_SIZE.width, bh = tile * PILOT_SIZE.height;
-  const left = overview ? (width - bw) / 2 - PILOT_SIZE.left*tile : width / 2 - player.x * tile;
-  const top = overview ? (height - bh) / 2 - PILOT_SIZE.top*tile : height * .46 - player.y * tile;
-  return {tile,
-    left:Math.max(width-(GROUND_WORLD.left+GROUND_WORLD.width)*tile,Math.min(-GROUND_WORLD.left*tile,left)),
-    top:Math.max(height-(GROUND_WORLD.top+GROUND_WORLD.height)*tile,Math.min(-GROUND_WORLD.top*tile,top))};
+  if(overview){const l=Math.min(-8,player.x-3),r=Math.max(22,player.x+3),u=Math.min(-7,player.y-3),b=Math.max(17,player.y+3),portrait=height>width,top=portrait?180:12,availableW=width-(portrait?12:165),availableH=Math.max(100,height-top-12),tile=Math.min(availableW/(r-l),availableH/(b-u));return{tile,left:availableW/2-(l+r)/2*tile,top:top+availableH/2-(u+b)/2*tile};}
+  const tile=Math.max(52,width/11,height/9)*zoom;
+  return {tile,left:width/2-player.x*tile,top:height*.46-player.y*tile};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
   pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement,chapter4Soil?:HTMLImageElement) {
@@ -60,7 +57,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   }
   ctx.restore();
   if(room.index<30){drawForestSun(ctx,v.left,v.top,t);drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);}
-  const scenery=room.index>=30?[]:[...ROOM_EDGE_SOLIDS,...room.scenery];
+  const scenery=room.index>=30?[]:[...ROOM_EDGE_SOLIDS,...room.scenery,...explorationGroves({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index)];
+  if(room.index>0&&room.index<30&&state.completedRooms.includes(room.index-1)){const q=point(returnPortal(room.index));drawPortalEnergy(ctx,q.x,q.y,t,state.time,true,reducedMotion);drawPortalArch(ctx,river?riverPortal:portalAtlas,q.x,q.y,t);ctx.save();ctx.font="600 12px sans-serif";ctx.fillStyle="#fff1ce";ctx.textAlign="center";ctx.fillText(`Sala ${room.index} · voltar`,q.x,q.y+t*.4);ctx.restore();}
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
 
   if(room.index<30){

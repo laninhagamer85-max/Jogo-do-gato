@@ -1,3 +1,4 @@
+import {explorationGroves} from '@/game/explorationOpenWorld';
 import {drawCastleLens,onCastleArtChange} from '@/game/explorationCastleView';
 import {NASCENTES_ASSETS,returnPortal} from '@/game/explorationChapter4';
 import {drawNascentesTerrain} from '@/game/explorationChapter4View';
@@ -35,7 +36,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   ctx.restore();
   ctx.fillStyle='rgba(8,24,19,.91)';ctx.fillRect(0,0,size,size);
   ctx.save();ctx.beginPath();
-  for(const cell of room.index>=30?(s.openWorldCells??[]).map(k=>{const [x,y]=k.split(',').map(Number);return{x:x+.5,y:y+.5}}):s.exploredCells.map(discoveredWorldPoint)){const p=point(cell);ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
+  for(const cell of (s.openWorldCells?.length??0)>0?(s.openWorldCells??[]).map(k=>{const [x,y]=k.split(',').map(Number);return{x:x+.5,y:y+.5}}):s.exploredCells.map(discoveredWorldPoint)){const p=point(cell);ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
   ctx.clip();ctx.save();
   if(ready(ground)){if(room.index>=30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props,0,true,images.portal,images.water,images.shelter,room.index,true,images.soil);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
@@ -44,7 +45,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   if(room.index<30&&ready(gardenArt))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
    if(visible(garden)){const q=point(garden);river?drawRiverProp(ctx,images.riverProps,3+garden.index%2,q.x,q.y,t,{width:garden.width,height:garden.height}):drawGardenPatch(ctx,gardenArt,garden,q.x,q.y,t,0,true);}
   }
-  if(room.index<30&&ready(props))for(const prop of [...room.scenery,...ROOM_EDGE_SOLIDS].sort((a,b)=>a.y-b.y)){
+  if(room.index<30&&ready(props))for(const prop of [...room.scenery,...ROOM_EDGE_SOLIDS,...explorationGroves({left:-v.left/t,top:-v.top/t,width:size/t,height:size/t},room.index)].sort((a,b)=>a.y-b.y)){
    if(visible(prop)){const q=point(prop);river?drawRiverProp(ctx,images.riverProps,prop.index,q.x,q.y,t,prop):drawWoodlandProp(ctx,props,prop.index,q.x,q.y,t,prop,true);}
   }
   const sprite=(im:HTMLImageElement,p:{x:number;y:number},width:number)=>{
@@ -56,11 +57,11 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   const dot=(p:{x:number;y:number},color:string,r=3.5)=>{
    const q=point(p);ctx.shadowColor='#182619';ctx.shadowBlur=3;ctx.fillStyle=color;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
   };
-  const discovered=(p:{x:number;y:number})=>room.index>=30?(s.openWorldCells??[]).includes(`${Math.floor(p.x)},${Math.floor(p.y)}`):minimapDiscovered(s.exploredCells,p);
+  const discovered=(p:{x:number;y:number})=>(s.openWorldCells?.length??0)>0?(s.openWorldCells??[]).includes(`${Math.floor(p.x)},${Math.floor(p.y)}`):minimapDiscovered(s.exploredCells,p);
   for(const [i,plate] of room.switches.entries())if(discovered(plate))dot(plate,i<s.switchStep?'#c4ef9c':'#f2d09a');
   if(discovered(room.camp))dot(room.camp,'#a3e8dd',4.5);
   if(discovered(room.marker))dot(room.marker,s.gateOpen?'#c0e99e':'#ffeab0',4.5);
-  if(room.index>=30&&discovered(returnPortal(room.index)))dot(returnPortal(room.index),'#a6e7ec',4.5);
+  if(room.index>0&&s.completedRooms.includes(room.index-1)&&discovered(returnPortal(room.index)))dot(returnPortal(room.index),'#a6e7ec',4.5);
   if(discovered(room.exit))dot(room.exit,s.gateOpen?'#fff3b4':'#a5b790',4.5);
   for(const n of room.nodes)if(!s.collectedNodes.includes(n.id)&&discovered(n))dot(n,'#e3f1a9');
   for(const e of s.enemies)if(minimapNearby(s.player,e)&&discovered(e))dot(e,'#ffc175',4.5);

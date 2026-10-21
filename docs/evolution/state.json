@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.28.0_for_user_test",
+  "status": "validated_1.29.0_packaging",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -17,11 +17,11 @@
     "review_source_commit": "16dc524efcae3bc886e452a7354e91902baa33e3"
   },
   "current_improvement": {
-    "id": "castle-19-playable-rooms",
-    "base_product_version": "1.27.0",
-    "implementation_status": "published_1.28.0",
+    "id": "castle-footprints-portals-and-open-world-campaign",
+    "base_product_version": "1.28.0",
+    "implementation_status": "validated_packaging",
     "acceptance_status": "pending_user_test",
-    "report": "docs/evolution/runs/2026-10-21-castle-rooms.md"
+    "report": "docs/evolution/runs/2026-10-21-open-world-castle-refinement.md"
   },
   "publication": {
     "id": "appgdep_6ad87cf81c64819193c39262178200af",

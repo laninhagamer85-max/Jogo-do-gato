@@ -1,4 +1,5 @@
 import {it,expect} from 'vitest';
+import {returnPortal} from './explorationChapter4';
 import {EXPLORATION_ROOMS,campaignEnemies,campaignRoom,campaignWaterBlocks} from './explorationCampaign';
 import {createCombatState,stepCombat,combatSnapshot,readCombatState,tickCombatPortal,useRareCombatItem,equipCombatCard,combatAttack,combatMaxHp,pilotRoute,pilotWalkable,clearPilotLine,type CombatState} from './explorationCombat';
 import {minimapDiscovered} from './explorationMinimap';
@@ -9,7 +10,7 @@ it('automatically teleports through30 consecutive portals, preserving all perman
  for(let index=0;index<30;index++){
   s.completed=true;s.completedRooms.push(index);s.claimedRooms.push(index);s=read(s);
   const before=s;for(let i=0;i<16;i++)s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index);
-  s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index+1);expect(s.xp).toBe(1200);expect(s.stock.erva).toBe(7);expect(s.rareEquipped).toBe('cristal');expect(s.activeCard).toBe('roots');expect(s.revision).toBeGreaterThan(before.revision);expect(s.completed).toBe(false);expect(s.player).toEqual(campaignRoom(index+1).camp);expect(read(s).roomIndex).toBe(index+1);
+  s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index+1);expect(s.xp).toBe(1200);expect(s.stock.erva).toBe(7);expect(s.rareEquipped).toBe('cristal');expect(s.activeCard).toBe('roots');expect(s.revision).toBeGreaterThan(before.revision);expect(s.completed).toBe(false);expect(pilotWalkable(s.player,s.gateOpen,.22,index+1)).toBe(true);expect(Math.hypot(s.player.x-returnPortal(index+1).x,s.player.y-returnPortal(index+1).y)).toBeGreaterThan(.7);expect(read(s).roomIndex).toBe(index+1);
  }
  const last=fixture(31);last.completed=true;expect(tickCombatPortal(last,5000)).toBe(last);
 });
@@ -21,7 +22,7 @@ it('reload during the teleport resumes without replay, extra rewards or free sup
 it('caps a stalled frame and ignores invalid portal time',()=>{
  const s=fixture(1);s.completed=true;expect(tickCombatPortal(s,5000).portalElapsed).toBe(50);expect(tickCombatPortal(s,-1)).toBe(s);expect(tickCombatPortal(s,NaN)).toBe(s);
 });
-it.each([4,10,14])('bridge room %i has no route between banks with its deck removed',index=>{
+it.each([4,10,14])('bridge room %i keeps the local touch route dependent on its bridge',index=>{
  const room=campaignRoom(index),bridge=room.bridge;expect(bridge).toBeDefined();expect(pilotRoute(room.camp,room.exit,false,index).length).toBeGreaterThan(0);
  try{room.bridge=undefined;expect(pilotRoute(room.camp,room.exit,false,index)).toEqual([]);expect(campaignWaterBlocks({x:8.5,y:5.5},.22,room)).toBe(true);}finally{room.bridge=bridge;}
 });
