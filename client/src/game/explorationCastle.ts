@@ -1,215 +1,30 @@
-/** Chapter five is a branch, not a substitute for the unfinished chapter-four campaign. */
-export type CastlePoint = { x: number; y: number };
-export const CASTLE_ROOMS = [
-  {
-    id: "vestibulo",
-    name: "Vestíbulo",
-    grid: [1, 1],
-    props: [
-      { kind: 5, x: 2, y: 2 },
-      { kind: 5, x: 8, y: 2 },
-    ],
-  },
-  {
-    id: "guarda",
-    name: "Sala da Guarda",
-    grid: [0, 1],
-    props: [
-      { kind: 1, x: 2, y: 2 },
-      { kind: 1, x: 8, y: 2 },
-    ],
-  },
-  {
-    id: "biblioteca",
-    name: "Biblioteca",
-    grid: [2, 1],
-    props: [
-      { kind: 0, x: 2, y: 2 },
-      { kind: 0, x: 8, y: 2 },
-      { kind: 0, x: 2, y: 6 },
-    ],
-  },
-  {
-    id: "trono",
-    name: "Salão do Trono",
-    grid: [1, 0],
-    props: [
-      { kind: 2, x: 5, y: 2 },
-      { kind: 5, x: 2, y: 3 },
-    ],
-  },
-  {
-    id: "arsenal",
-    name: "Arsenal",
-    grid: [0, 0],
-    props: [
-      { kind: 1, x: 2, y: 2 },
-      { kind: 1, x: 8, y: 2 },
-      { kind: 5, x: 2, y: 6 },
-    ],
-  },
-  {
-    id: "refeitorio",
-    name: "Refeitório",
-    grid: [2, 0],
-    props: [
-      { kind: 4, x: 2, y: 2 },
-      { kind: 3, x: 5, y: 4 },
-    ],
-  },
-] as const;
-export type CastleRoomId = (typeof CASTLE_ROOMS)[number]["id"];
-export type CastleProgress = {
-  active: boolean;
-  room: CastleRoomId;
-  player: CastlePoint;
-  visited: CastleRoomId[];
-  cooldown: number;
-};
-export const CASTLE_GATE = { x: 14.5, y: -8.1 };
-export const castleRoom = (id: CastleRoomId) =>
-  CASTLE_ROOMS.find(r => r.id === id)!;
-export function castleDoors(id: CastleRoomId) {
-  const r = castleRoom(id);
-  return CASTLE_ROOMS.filter(
-    q => Math.abs(q.grid[0] - r.grid[0]) + Math.abs(q.grid[1] - r.grid[1]) === 1
-  ).map(q => ({
-    target: q.id,
-    x: q.grid[0] < r.grid[0] ? 0.65 : q.grid[0] > r.grid[0] ? 9.35 : 5,
-    y: q.grid[1] < r.grid[1] ? 0.8 : q.grid[1] > r.grid[1] ? 7.2 : 4,
-  }));
-}
-export function castleWalkable(p: CastlePoint, id: CastleRoomId) {
-  return (
-    Number.isFinite(p.x) &&
-    Number.isFinite(p.y) &&
-    p.x >= 0.55 &&
-    p.x <= 9.45 &&
-    p.y >= 0.65 &&
-    p.y <= 7.35 &&
-    !castleRoom(id).props.some(
-      q => Math.abs(q.x - p.x) < 0.8 && Math.abs(q.y - p.y) < 0.55
-    )
-  );
-}
-export function readCastle(raw: unknown): CastleProgress | undefined {
-  if (!raw || typeof raw !== "object") return;
-  const r = raw as Partial<CastleProgress>;
-  if (!CASTLE_ROOMS.some(q => q.id === r.room)) return;
-  const room = r.room!;
-  return {
-    active: r.active === true,
-    room,
-    player:
-      r.player && castleWalkable(r.player, room)
-        ? { ...r.player }
-        : { x: 5, y: 6 },
-    visited: CASTLE_ROOMS.filter(
-      q =>
-        (Array.isArray(r.visited) && r.visited.includes(q.id)) || q.id === room
-    ).map(q => q.id),
-    cooldown: 600,
-  };
-}
-export function enterCastle(raw?: CastleProgress): CastleProgress {
-  return raw
-    ? {
-        ...raw,
-        active: true,
-        player: raw.room === "vestibulo" ? { x: 5, y: 6 } : raw.player,
-        cooldown: 800,
-      }
-    : {
-        active: true,
-        room: "vestibulo",
-        player: { x: 5, y: 6 },
-        visited: ["vestibulo"],
-        cooldown: 800,
-      };
-}
-export function stepCastle(
-  s: CastleProgress,
-  dx: number,
-  dy: number,
-  dt: number
-): CastleProgress {
-  const delta = Math.min(50, Math.max(0, dt)),
-    length = Math.max(1, Math.hypot(dx, dy)),
-    speed = delta * 0.0035;
-  let player = { ...s.player };
-  for (const [x, y] of [
-    [(dx / length) * speed, 0],
-    [0, (dy / length) * speed],
-  ]) {
-    const q = { x: player.x + x, y: player.y + y };
-    if (castleWalkable(q, s.room)) player = q;
-  }
-  const cooldown = Math.max(0, s.cooldown - delta);
-  if (!cooldown) {
-    if (
-      s.room === "vestibulo" &&
-      Math.hypot(player.x - 5, player.y - 7.2) < 0.55
-    )
-      return { ...s, active: false, player, cooldown: 900 };
-    const door = castleDoors(s.room).find(
-      q => Math.hypot(player.x - q.x, player.y - q.y) < 0.5
-    );
-    if (door) {
-      const reverse = castleDoors(door.target).find(q => q.target === s.room)!;
-      return {
-        active: true,
-        room: door.target,
-        player: {
-          x: reverse.x < 1 ? 1.5 : reverse.x > 9 ? 8.5 : 5,
-          y: reverse.y < 1 ? 1.6 : reverse.y > 7 ? 6.4 : 4,
-        },
-        visited: [...new Set([...s.visited, door.target])],
-        cooldown: 900,
-      };
-    }
-  }
-  return { ...s, player, cooldown };
-}
-export function castleRoute(
-  from: CastlePoint,
-  to: CastlePoint,
-  id: CastleRoomId
-): CastlePoint[] {
-  if (!castleWalkable(to, id)) return [];
-  const key = (p: CastlePoint) =>
-      `${Math.max(2, Math.min(18, Math.round(p.x * 2)))},${Math.max(2, Math.min(14, Math.round(p.y * 2)))}`,
-    start = key(from),
-    goal = key(to),
-    queue = [start],
-    parent = new Map<string, string | null>([[start, null]]);
-  for (let i = 0; i < queue.length && i < 400; i++) {
-    const k = queue[i];
-    if (k === goal) {
-      const route: CastlePoint[] = [to];
-      let p: string | null = k;
-      while (p && p !== start) {
-        const [x, y] = p.split(",").map(Number);
-        route.unshift({ x: x / 2, y: y / 2 });
-        p = parent.get(p) ?? null;
-      }
-      return route;
-    }
-    const [x, y] = k.split(",").map(Number);
-    for (const [dx, dy] of [
-      [1, 0],
-      [-1, 0],
-      [0, 1],
-      [0, -1],
-    ]) {
-      const n = `${x + dx},${y + dy}`;
-      if (
-        !parent.has(n) &&
-        castleWalkable({ x: (x + dx) / 2, y: (y + dy) / 2 }, id)
-      ) {
-        parent.set(n, k);
-        queue.push(n);
-      }
-    }
-  }
-  return [];
-}
+import roomData from './explorationCastleRooms.json';
+export type CastlePoint={x:number;y:number};
+export type CastleRoomId='vestibulo'|'guarda'|'biblioteca'|'trono'|'arsenal'|'refeitorio'|'aposentos'|'tesouro'|'jardim'|'cozinha'|'galeria'|'conselho'|'capela'|'masmorra'|'adega'|'torre-magia'|'torre-norte'|'torre-leste'|'torre-sul';
+export type CastlePort={id:string;x:number;y:number;arrival?:number[]};
+export type CastleRoom={id:CastleRoomId;name:string;asset:string;floor:number[][][];obstacles:number[][][];ports:CastlePort[];spawn:CastlePoint;mapPoint:number[];mapRect:number[];grid:number[];props:{kind:number;x:number;y:number}[]};
+export const CASTLE_SIZE=16;
+export const CASTLE_ROOMS=roomData.rooms as CastleRoom[];
+export const CASTLE_LINKS=roomData.links as {a:CastleRoomId;portA:string;b:CastleRoomId;portB:string}[];
+export type CastleProgress={layoutVersion?:2;active:boolean;room:CastleRoomId;player:CastlePoint;visited:CastleRoomId[];cooldown:number;transitionUntil?:number};
+export const CASTLE_GATE={x:14.5,y:-8.1};
+export const castleRoom=(id:CastleRoomId)=>CASTLE_ROOMS.find(r=>r.id===id)!;
+const uv=(p:CastlePoint)=>({x:p.x/CASTLE_SIZE,y:p.y/CASTLE_SIZE});
+function inside(p:CastlePoint,poly:number[][]){let yes=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const [x,y]=poly[i],[a,b]=poly[j];if((y>p.y)!==(b>p.y)&&p.x<(a-x)*(p.y-y)/(b-y)+x)yes=!yes;}return yes;}
+/** Source-image UV geometry; collision and routing share exactly the same floor and obstacles. */
+export function castleWalkable(p:CastlePoint,id:CastleRoomId,radius=.14){if(!Number.isFinite(p.x)||!Number.isFinite(p.y))return false;const room=castleRoom(id);if(!room)return false;return [p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>{const u=uv(q);return room.floor.some(poly=>inside(u,poly))&&!room.obstacles.some(poly=>inside(u,poly));});}
+function portPoint(room:CastleRoom,id:string){const p=room.ports.find(p=>p.id===id);if(!p)throw Error(`Missing ${room.id}/${id}`);return{x:p.x*CASTLE_SIZE,y:p.y*CASTLE_SIZE};}
+export function castleDoors(id:CastleRoomId){const room=castleRoom(id);return CASTLE_LINKS.filter(l=>l.a===id||l.b===id).map(l=>{const forward=l.a===id;return{...portPoint(room,forward?l.portA:l.portB),id:forward?l.portA:l.portB,target:forward?l.b:l.a,targetPort:forward?l.portB:l.portA};});}
+export const castleExit=()=>({...portPoint(castleRoom('vestibulo'),roomData.exitPort),id:roomData.exitPort,target:'exterior' as const,targetPort:''});
+export const castlePassages=(id:CastleRoomId)=>[...castleDoors(id),...(id==='vestibulo'?[castleExit()]:[])];
+export const castleSpawn=(id:CastleRoomId)=>{const s=castleRoom(id).spawn;return{x:s.x*CASTLE_SIZE,y:s.y*CASTLE_SIZE};};
+function arrival(id:CastleRoomId,portId:string){const authored=castleRoom(id).ports.find(p=>p.id===portId)?.arrival;if(authored){const q={x:authored[0]*CASTLE_SIZE,y:authored[1]*CASTLE_SIZE};if(castleWalkable(q,id)&&castlePassages(id).every(d=>Math.hypot(q.x-d.x,q.y-d.y)>.6))return q;}const p=portPoint(castleRoom(id),portId),s=castleSpawn(id),d=Math.hypot(s.x-p.x,s.y-p.y);for(const offset of [.8,1.1,1.4,1.8]){const q={x:p.x+(s.x-p.x)/Math.max(.01,d)*offset,y:p.y+(s.y-p.y)/Math.max(.01,d)*offset};if(castleWalkable(q,id)&&castlePassages(id).every(door=>Math.hypot(q.x-door.x,q.y-door.y)>.6))return q;}return s;}
+export function readCastle(raw:unknown):CastleProgress|undefined{if(!raw||typeof raw!=='object')return;const r=raw as Partial<CastleProgress>;if(!CASTLE_ROOMS.some(q=>q.id===r.room))return;const room=r.room!;const valid=r.layoutVersion===2&&r.player&&castleWalkable(r.player,room);return{layoutVersion:2,active:r.active===true,room,player:valid?{...r.player!}:castleSpawn(room),visited:CASTLE_ROOMS.filter(q=>(Array.isArray(r.visited)&&r.visited.includes(q.id))||q.id===room).map(q=>q.id),cooldown:900};}
+export function enterCastle(raw?:CastleProgress):CastleProgress{return{layoutVersion:2,active:true,room:'vestibulo',player:arrival('vestibulo',roomData.exitPort),visited:[...new Set([...(raw?.visited??[]),'vestibulo' as const])],cooldown:900};}
+export function stepCastle(s:CastleProgress,dx:number,dy:number,dt:number):CastleProgress{if(!Number.isFinite(dt)||!Number.isFinite(dx)||!Number.isFinite(dy)||dt<0)return s;const delta=Math.min(50,dt),length=Math.max(1,Math.hypot(dx,dy)),speed=delta*.003;let player={...s.player};for(const [x,y] of [[dx/length*speed,0],[0,dy/length*speed]]){const q={x:player.x+x,y:player.y+y};if(castleWalkable(q,s.room))player=q;}const cooldown=Math.max(0,s.cooldown-delta);if(!cooldown){const door=castlePassages(s.room).find(q=>Math.hypot(player.x-q.x,player.y-q.y)<.45);if(door){if(door.target==='exterior')return{...s,active:false,player,cooldown:900};return{layoutVersion:2,active:true,room:door.target,player:arrival(door.target,door.targetPort),visited:[...new Set([...s.visited,door.target])],cooldown:900,transitionUntil:450};}}return{...s,player,cooldown,transitionUntil:Math.max(0,(s.transitionUntil??0)-delta)};}
+const NAV_STEP=.16;
+const nav=new Map<CastleRoomId,Set<string>>();
+function navigation(id:CastleRoomId){let hit=nav.get(id);if(hit)return hit;hit=new Set();for(let y=0;y<=100;y++)for(let x=0;x<=100;x++)if(castleWalkable({x:x*NAV_STEP,y:y*NAV_STEP},id))hit.add(`${x},${y}`);nav.set(id,hit);return hit;}
+function nearest(p:CastlePoint,cells:Set<string>){let best='',distance=Infinity;for(const k of cells){const [x,y]=k.split(',').map(Number),d=Math.hypot(x*NAV_STEP-p.x,y*NAV_STEP-p.y);if(d<distance){distance=d;best=k;}}return best;}
+export function castleRoute(from:CastlePoint,to:CastlePoint,id:CastleRoomId):CastlePoint[]{if(!castleWalkable(from,id)||!castleWalkable(to,id))return[];const base=navigation(id),unwanted=castlePassages(id).filter(d=>Math.hypot(d.x-to.x,d.y-to.y)>.8&&Math.hypot(d.x-from.x,d.y-from.y)>.8),cells=new Set([...base].filter(k=>{const [x,y]=k.split(',').map(Number);return unwanted.every(d=>Math.hypot(d.x-x*NAV_STEP,d.y-y*NAV_STEP)>.65);})),start=nearest(from,cells),goal=nearest(to,cells),queue=[start],parent=new Map<string,string|null>([[start,null]]);for(let i=0;i<queue.length;i++){const k=queue[i];if(k===goal){const route:CastlePoint[]=[to];let p:string|null=k;while(p&&p!==start){const [x,y]=p.split(',').map(Number);route.unshift({x:x*NAV_STEP,y:y*NAV_STEP});p=parent.get(p)??null;}return route;}const [x,y]=k.split(',').map(Number);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const n=`${x+dx},${y+dy}`;if(!parent.has(n)&&cells.has(n)){parent.set(n,k);queue.push(n);}}}return[];}
+export function castleMapPosition(s:CastleProgress){const room=castleRoom(s.room),p=uv(s.player),[x,y,w,h]=room.mapRect;return{x:x+Math.max(0,Math.min(1,p.x))*w,y:y+Math.max(0,Math.min(1,p.y))*h};}

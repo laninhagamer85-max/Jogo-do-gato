@@ -1,0 +1,297 @@
+{
+  "source": "User-supplied castle playable-room illustrations and overview; original PNGs unchanged; uniform1254x1254WebP copies for runtime.",
+  "map": {
+    "asset": "castle-map.webp",
+    "dimensions": [
+      1024,
+      1536
+    ]
+  },
+  "rooms": [
+    {
+      "id": "vestibulo",
+      "name": "Vestíbulo",
+      "source": "file_000000002fd8820ebe061509280bf19f.png",
+      "asset": "/forest-adventure/castle5/rooms/vestibulo.webp",
+      "mapPoint": [
+        0.5,
+        0.48
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "ab91ad48650bf9f44cbcc9789d192747a925e7570be0473dbf6f0c5927517e7e"
+    },
+    {
+      "id": "guarda",
+      "name": "Dormitório da Guarda",
+      "source": "file_000000001498820eba7c71d27ff5b19d.png",
+      "asset": "/forest-adventure/castle5/rooms/guarda.webp",
+      "mapPoint": [
+        0.2,
+        0.55
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "363bb99fc7ff710ddd7024c485b9867d159a1b2105da7d46d69f3c4db48f7afc"
+    },
+    {
+      "id": "biblioteca",
+      "name": "Biblioteca",
+      "source": "file_000000005894820e9bb623bb56c73ae4.png",
+      "asset": "/forest-adventure/castle5/rooms/biblioteca.webp",
+      "mapPoint": [
+        0.5,
+        0.2
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "9e9f0ac211e2a8dbc0bb446afc586f6f660d8eb83febe8c708b71d3d87d8771b"
+    },
+    {
+      "id": "trono",
+      "name": "Salão do Trono",
+      "source": "file_000000002e24820e99eaf58df9063fef.png",
+      "asset": "/forest-adventure/castle5/rooms/trono.webp",
+      "mapPoint": [
+        0.5,
+        0.36
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "2c6efc3a46f4c2c765ef85a46f4f0ff1fe8660d005c22624a98ad799ad94f36d"
+    },
+    {
+      "id": "arsenal",
+      "name": "Arsenal",
+      "source": "file_0000000020a4820ea117c1969bbac1b0.png",
+      "asset": "/forest-adventure/castle5/rooms/arsenal.webp",
+      "mapPoint": [
+        0.8,
+        0.4
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "9922f83235fd11ed0bb84018cf5d43bc5e01829aeba1a9d2f16c7c4321c54030"
+    },
+    {
+      "id": "refeitorio",
+      "name": "Refeitório",
+      "source": "file_000000004ae8820e8c607c0eee546c7a.png",
+      "asset": "/forest-adventure/castle5/rooms/refeitorio.webp",
+      "mapPoint": [
+        0.8,
+        0.55
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "e2d3a26b7b1434d630ef98121d75338c296440f9e7e09f8cce66efdfadca1499"
+    },
+    {
+      "id": "aposentos",
+      "name": "Aposentos Reais",
+      "source": "file_000000000da4820e89fc25c61f8b06cd.png",
+      "asset": "/forest-adventure/castle5/rooms/aposentos.webp",
+      "mapPoint": [
+        0.21,
+        0.115
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "7934201af3eb85c1c1efaf9cf398bacf41b594711bff88a9b1e7798b35e34f54"
+    },
+    {
+      "id": "tesouro",
+      "name": "Sala do Tesouro",
+      "source": "file_000000003750820e8848ef39f9cfacd1.png",
+      "asset": "/forest-adventure/castle5/rooms/tesouro.webp",
+      "mapPoint": [
+        0.79,
+        0.115
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "54db07d82b55d303aa6b843f5b9c51233726674f1c1f52379d9c4bd9f75af1c1"
+    },
+    {
+      "id": "jardim",
+      "name": "Jardim Interno",
+      "source": "file_00000000262c820ea698430bfb0bc85f.png",
+      "asset": "/forest-adventure/castle5/rooms/jardim.webp",
+      "mapPoint": [
+        0.5,
+        0.59
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "fbc11a6eec88126a241412823f5b13c4a6de05a99eef56df5794f799c12a41fd"
+    },
+    {
+      "id": "cozinha",
+      "name": "Cozinha",
+      "source": "file_000000006d44820eb77fe6482334aa3f.png",
+      "asset": "/forest-adventure/castle5/rooms/cozinha.webp",
+      "mapPoint": [
+        0.5,
+        0.74
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "6f3ab79d4803fbeea17759b19112e6043a9c885d5977c84f06a443b35a37b78b"
+    },
+    {
+      "id": "galeria",
+      "name": "Galeria dos Retratos",
+      "source": "file_0000000099ec820e8384a3e14804bf27.png",
+      "asset": "/forest-adventure/castle5/rooms/galeria.webp",
+      "mapPoint": [
+        0.2,
+        0.4
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "f6b99b648ade17490a874235e226604c695e8f88bde62e4e37bb448bd2fdc16e"
+    },
+    {
+      "id": "conselho",
+      "name": "Sala do Conselho",
+      "source": "file_00000000ce0c820e83480ef0464c475e.png",
+      "asset": "/forest-adventure/castle5/rooms/conselho.webp",
+      "mapPoint": [
+        0.2,
+        0.27
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "8fe9209ca0dad8476f4d24a421e42b88502d5d3f382cc0d3e30cab5f9081ca5c"
+    },
+    {
+      "id": "capela",
+      "name": "Capela",
+      "source": "file_00000000af48820e8ac8d21ea2df28f3.png",
+      "asset": "/forest-adventure/castle5/rooms/capela.webp",
+      "mapPoint": [
+        0.8,
+        0.27
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "273c1058298e45b1dd26318a012532a1d2a907117a608aadd63d86018497785c"
+    },
+    {
+      "id": "masmorra",
+      "name": "Masmorra",
+      "source": "file_00000000a54c820ead4893dc56d01fe7.png",
+      "asset": "/forest-adventure/castle5/rooms/masmorra.webp",
+      "mapPoint": [
+        0.2,
+        0.72
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "771ba495ae85e1905c31f39ef81502acb9ba803fb4d3c4470bdcd04235518591"
+    },
+    {
+      "id": "adega",
+      "name": "Adega",
+      "source": "file_00000000e3c4820eb198e4e51eb22180.png",
+      "asset": "/forest-adventure/castle5/rooms/adega.webp",
+      "mapPoint": [
+        0.8,
+        0.72
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "f32afce3acc8938c79a806b6b20d58030c4a6c54c87d5bc62d23291772a0a666"
+    },
+    {
+      "id": "torre-magia",
+      "name": "Torre da Magia",
+      "source": "file_000000004820820ea938ad304b7c6a72.png",
+      "asset": "/forest-adventure/castle5/rooms/torre-magia.webp",
+      "mapPoint": [
+        0.115,
+        0.83
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "6eebe30ea9c50a2089312e4caed8f8bd1417f1c42568ed350e7bcd940a9d4b32"
+    },
+    {
+      "id": "torre-norte",
+      "name": "Torre Norte",
+      "source": "file_00000000dbf0820e82121330b9e8b426.png",
+      "asset": "/forest-adventure/castle5/rooms/torre-norte.webp",
+      "mapPoint": [
+        0.5,
+        0.06
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "7269c5642a3f1d20446f211caf5e9636e090a0377e673df5dc5681099621ff93"
+    },
+    {
+      "id": "torre-leste",
+      "name": "Torre Leste",
+      "source": "file_00000000ba60820e93a48ec62ecca802.png",
+      "asset": "/forest-adventure/castle5/rooms/torre-leste.webp",
+      "mapPoint": [
+        0.875,
+        0.83
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "80c9cd10439e52832af9757a495a0525f6d4131594a24ff92fa4c345d21209a3"
+    },
+    {
+      "id": "torre-sul",
+      "name": "Torre Sul",
+      "source": "file_00000000fbf8820e9db91ebccfc7c643.png",
+      "asset": "/forest-adventure/castle5/rooms/torre-sul.webp",
+      "mapPoint": [
+        0.5,
+        0.87
+      ],
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "414d41dae1092fe6f582bda34654e244481e4864c7e4b44b7bafa4150a18cad3"
+    }
+  ]
+}

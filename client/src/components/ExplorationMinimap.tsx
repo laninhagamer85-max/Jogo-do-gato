@@ -1,3 +1,4 @@
+import {drawCastleLens,onCastleArtChange} from '@/game/explorationCastleView';
 import {NASCENTES_ASSETS,returnPortal} from '@/game/explorationChapter4';
 import {drawNascentesTerrain} from '@/game/explorationChapter4View';
 import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from '@/game/explorationColorCache';
@@ -20,6 +21,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  const draw=()=>{
   const el=canvas.current,ctx=el?.getContext('2d'),images=art.current;
   if(!el||!ctx||!images)return;
+  if(latest.current.castle?.active){drawCastleLens(ctx,el.width,latest.current);return;}
   const source=images;
   const size=el.width,s=latest.current,v=lensProjection(size,s.player),t=v.scale,room=campaignRoom(s.roomIndex),river=room.biome==='river';
   const ground=room.biome==='autumn'?explorationColorVariant(images.ground,AUTUMN_GROUND_FILTER)!:images.ground,props=room.biome==='autumn'?explorationColorVariant(images.props,AUTUMN_PROP_FILTER)!:images.props,gardenArt=room.biome==='autumn'?explorationColorVariant(images.garden,AUTUMN_PROP_FILTER)!:images.garden;
@@ -78,9 +80,10 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   draw();return ()=>{active=false;};
  },[state.roomIndex]);
  useEffect(draw,[state]);
+ useEffect(()=>onCastleArtChange(draw),[]);
  const enemies=state.enemies.filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
- return <aside className="combat-minimap combat-minimap--lens" aria-label="Minimapa da clareira">
-  <canvas ref={canvas} width={384} height={384} role="img" aria-label={`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
+ return <aside className="combat-minimap combat-minimap--lens" aria-label={state.castle?.active?"Minimapa do castelo":"Minimapa da clareira"}>
+  <canvas ref={canvas} width={384} height={384} role="img" aria-label={state.castle?.active?"Lupa da sala do castelo. Ponto vermelho: posição do personagem.":`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
   <img className="combat-minimap-frame" src="/forest-adventure/map-lens-circle-v1.webp" alt="" aria-hidden="true"/>
   <span className="combat-minimap-north" aria-hidden="true">N</span>
   {children}
