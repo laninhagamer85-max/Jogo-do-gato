@@ -11,7 +11,7 @@ import {EXPLORATION_ROOMS} from '@/game/explorationCampaign';
 type LabMode='standard'|'legend'|'levelup'|'stairs'|'portal'|'castle'|'castle-room';
 /** QA solves the real challenge through the engine; no account writes. */
 function prepareStairs(initial:CombatState,landing=false){
- let s={...initial,portalCooldownUntil:1e9};
+ let s:CombatState={...initial,portalCooldownUntil:1e9};
  const walk=(target:{x:number;y:number})=>{const route=pilotRoute(s.player,target,s.gateOpen,s.roomIndex);if(!route.length)throw Error(`Percurso sala ${s.roomIndex+1}: ${JSON.stringify(s.player)} → ${JSON.stringify(target)} indisponível`);for(const p of route){let n=0;while(Math.hypot(p.x-s.player.x,p.y-s.player.y)>.04&&n++<1000){const d=Math.hypot(p.x-s.player.x,p.y-s.player.y),v=Math.min(1,d/.15);s=stepCombat(s,{dx:(p.x-s.player.x)/d*v,dy:(p.y-s.player.y)/d*v},50);}if(n>=1000)throw Error('Percurso da sala31 bloqueado');}};
  const room=EXPLORATION_ROOMS[s.roomIndex];for(const node of room.nodes.filter(n=>n.item==='fibra'))walk(node);for(const plate of room.switches){walk(plate);s=stepCombat(s,{interact:true},0);}if(!s.gateOpen)throw Error('Desafio da sala31 não liberou acesso');walk(stairBase(s.roomIndex));if(landing)walk(room.marker);return {...s,portalCooldownUntil:s.time+1500};
 }

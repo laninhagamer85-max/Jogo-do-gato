@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "source": "Original built-in imagegen",
+  "prompt": "Use case: stylized-concept. Production game sprite atlas for Meu Pet Virtual softly painted casual RPG. TRUE transparent background. Exactly4 columns by3 rows evenly sized SQUARE CELLS, sheet aspect4:3. Twelve complete isolated volumetric hand-painted objects centered with generous transparent margins, NO cell frames or dividing lines, no labels, no lettering. Reading order: row1 bundle of dry grass fibers tied with twine; two rich green healing leaves; orange red round fruit with leaf; warm translucent amber resin chunk. Row2 bronze leaf brooch; iridescent pearl; blue iridescent fish scale; ornate rare botanical ROOTS trading card with painted roots illustration. Row3 ornate rare OCEAN trading card with wave illustration; ornate rare AMBER FIRE trading card with golden resin flame illustration; low organic thorn patch growing from irregular earth; soft natural rising steam/mist plume over tiny stones. Cards have textured aged parchment and carved bronze frames, no words or numbers. Style tactile soft painterly shaded natural materials, warm upper-left light, child-friendly fantasy matching richly painted limestone castle and woodland sprites, overhead oblique view. No flat vector aesthetic, no outlines, no UI symbols, no emoji, no backdrop, no glow spilling into neighbors. Every subject fully contained within its own exact square cell. Alpha margins clear between all12 sprites.",
+  "dimensions": [
+    1448,
+    1086
+  ],
+  "grid": [
+    4,
+    3
+  ],
+  "cell": [
+    362,
+    362
+  ],
+  "file": "painted-atlas-v1.webp",
+  "alphaPreserved": true,
+  "conversion": "Original RGBA to WebP quality92 method0; alpha preserved; no pixel alterations",
+  "items": [
+    "fibra",
+    "erva",
+    "fruta",
+    "ambar",
+    "broche",
+    "perola",
+    "escama",
+    "roots",
+    "tide",
+    "amber",
+    "spikes",
+    "steam"
+  ]
+}

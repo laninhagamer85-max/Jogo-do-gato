@@ -197,3 +197,19 @@
 .exp-legend-unlock{width:100%;text-align:left}.exp-legend-unlock ul{list-style:none;padding:0;display:grid;gap:8px}.exp-legend-unlock li{display:flex;align-items:center;gap:8px;color:#eed6b2}.exp-legend-unlock li strong{margin-left:auto;white-space:nowrap}.exp-legend-unlock li.is-ready{color:#c7edba}
 
 .combat-pilot.is-chapter4-overview .combat-top,.combat-pilot.is-chapter4-overview .combat-vitals,.combat-pilot.is-chapter4-overview .combat-objective,.combat-pilot.is-chapter4-overview .combat-controls,.combat-pilot.is-chapter4-overview .combat-item-tray,.combat-pilot.is-chapter4-overview .combat-goal{visibility:hidden;pointer-events:none}
+
+/* 1.31.0: one flowing HUD stack. Labels, health and goals never share absolute slots. */
+.combat-status-stack{position:absolute;z-index:4;top:max(8px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));width:min(230px,var(--lens-hud-width));display:grid;gap:5px;pointer-events:none;min-width:0}
+.combat-pilot--lens-dock .combat-status-stack .combat-top{position:static;inset:auto;display:block;padding:0;min-width:0}
+.combat-status-stack .combat-top>div:first-child{padding:5px 8px;min-width:0}
+.combat-status-stack .combat-top small{display:block;font-size:9px;line-height:1.4;letter-spacing:.02em;overflow-wrap:anywhere}
+.combat-pilot--lens-dock .combat-status-stack .combat-top h1{max-width:100%;font-size:13px;line-height:1.35;margin-top:2px}
+.combat-status-stack .combat-top>div:last-child{display:none}
+.combat-pilot--lens-dock .combat-status-stack .combat-vitals{position:static;inset:auto;width:100%;max-width:100%;gap:3px}
+.combat-status-stack .combat-vitals label{height:22px;font-size:10px;padding:3px 6px}
+.combat-status-stack .combat-vitals label strong{font-size:10px}
+.combat-pilot--lens-dock .combat-status-stack .combat-objective,.combat-pilot--lens-dock .combat-status-stack .combat-goal{position:static;inset:auto;transform:none;width:auto;max-width:100%;margin:0;max-height:none;overflow:visible;font-size:10px;line-height:1.35;box-sizing:border-box}
+.combat-status-stack .combat-objective{justify-content:flex-start;align-items:center;gap:4px}
+.combat-pilot--lens-dock .combat-status-stack .combat-goal{max-height:58px;overflow:auto}
+@media(max-height:500px) and (orientation:landscape){.combat-status-stack{width:190px;gap:4px}.combat-status-stack .combat-top small{font-size:9px}.combat-pilot--lens-dock .combat-status-stack .combat-goal{max-height:40px;font-size:10px}.combat-status-stack .combat-vitals label{height:20px}}
+.combat-inventory-slot .exploration-painted-item{max-width:85%;max-height:85%}.combat-inventory-slot.is-empty-item>.exploration-painted-item{opacity:.55}
