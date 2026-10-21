@@ -18,4 +18,6 @@ Navegador real isolado:844×390 e390×844, portão32→Vestíbulo atravessado po
 
 A pedido adicional, pesquisa e plano de economia em docs/evolution/exploration-crafting-expansion-plan.json. Segundo atlas original criado com8 materiais e4 estações, declarado como preparado e ainda não habilitado no gameplay. Não altera os drops ou inventários existentes.
 
-Publicação1.31.0 pendente. Anexo indisponível no caminho local, não lido através da Library conforme instrução do usuário. Rollback Site116/1.30.0.
+Publicado produto1.31.0 / Site117: appgdep_6ad8d6c6dd7481919c2b09ecd4d078fc succeeded. Source2dc1163952548d7ce1b81c0011d94a834c39f4d3. GitHub907a4f4154e555135ad7ee1ed4acb4b1785aab7d verificado. URL https://meupet.aquimeusite.chatgpt.site . Anexo indisponível no caminho local, não lido através da Library conforme instrução do usuário. Rollback Site116/1.30.0.
+
+Adição de requisitos: ferramentas de machado/picareta,5 unidades por nó, renovação real12h, fabricação30s com fila/progresso persistente, construções únicas por perfil com evolução visual, melhorias com chance declarada e níveis/inventários separados até100 por personagem. Especificação em exploration-crafting-expansion-plan.json; funcionalidades planejadas, não habilitadas nesta publicação.

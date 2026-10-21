@@ -1,31 +1,297 @@
 {
-  "status":"proposed_design_assets_created_not_enabled",
-  "research_date":"2026-10-21",
-  "sources":["https://www.minecraft.net/pt-br/article/how-craft","https://learn.microsoft.com/en-us/minecraft/creator/reference/content/recipereference/examples/recipedefinitions/minecraftrecipe_furnace?view=minecraft-bedrock-stable"],
-  "principles":["Each NPC species has a characteristic material; variants inherit the family and adjust quantity/chance.","Keep existing common quest drops; add one separate material roll and one rare roll without replacing mission fibers.","Display every drop and probability in bestiary; no paid random rolls.","Common materials also come from exploration nodes to avoid combat-only bottlenecks.","Unique masters grant a first-clear rare recipe; replay grants materials without duplicating unique rewards.","Repairs restore equipment with no permanent loss; add durability only with repair station and clear HUD.","Material and chest transfer are atomic, bounded, saved and idempotent across portal travel and reload."],
-  "drop_bands":{"common":"60–100% base materials, 1–3 units","rare":"5–12% depending on species and level; proposed, not current live balance","master":"Guaranteed first-clear recipe, repeat material reward"},
-  "proposed_npc_families":[
-    {"family":"Besouro","common":"fibra","material":"stone","rare":"polishedCarapace","use":"Chest reinforcement; shield recipe"},
-    {"family":"Lagarta","common":"fruta","material":"silk","rare":"luminousCocoon","use":"Bowstrings; healing bandage"},
-    {"family":"Cogumelo Saltador","common":"erva","material":"resin","rare":"vitalSpore","use":"Healing tonic; herbal table"},
-    {"family":"Escaravelho Esmeralda","common":"fibra","material":"copperOre","rare":"emeraldShard","use":"Weapon fittings; elemental upgrade"},
-    {"family":"Guardião dos Troncos","common":"ambar","material":"wood","rare":"ancientHeartwood","use":"Storage chest; weapon workbench"},
-    {"family":"Caranguejo Azul","common":"ambar","material":"ironOre","rare":"escama","use":"Refining; armor and weapon repair"},
-    {"family":"Rã Ametista","common":"erva","material":"blueBerry","rare":"perola","use":"Recovery foods; protective potion"}
+  "status": "proposed_design_assets_created_not_enabled",
+  "research_date": "2026-10-21",
+  "sources": [
+    "https://www.minecraft.net/pt-br/article/how-craft",
+    "https://learn.microsoft.com/en-us/minecraft/creator/reference/content/recipereference/examples/recipedefinitions/minecraftrecipe_furnace?view=minecraft-bedrock-stable"
   ],
-  "stations":[
-    {"id":"storageChest","name":"Baú do abrigo","unlockLevel":2,"cost":{"wood":20,"fibra":12},"effect":"One persistent shared storage across biome shelters; transfer quantities, never duplicate per room"},
-    {"id":"weaponBench","name":"Bancada de armas","unlockLevel":3,"cost":{"wood":24,"stone":12,"fibra":16},"effect":"Craft existing dagger/sword/bow, then unlock new recipes; repair only after durability is implemented"},
-    {"id":"refiningFurnace","name":"Fornalha de refino","unlockLevel":5,"cost":{"stone":30,"copperOre":8,"charcoal":6},"effect":"Ore plus fuel becomes refined metal; input/result shown before confirmation"},
-    {"id":"healingTable","name":"Mesa de cura","unlockLevel":3,"cost":{"wood":16,"stone":8,"erva":10},"effect":"Herbs and fruit become stronger medicine; configurable quick-use slots reuse current controls"}
+  "principles": [
+    "Each NPC species has a characteristic material; variants inherit the family and adjust quantity/chance.",
+    "Keep existing common quest drops; add one separate material roll and one rare roll without replacing mission fibers.",
+    "Display every drop and probability in bestiary; no paid random rolls.",
+    "Common materials also come from exploration nodes to avoid combat-only bottlenecks.",
+    "Unique masters grant a first-clear rare recipe; replay grants materials without duplicating unique rewards.",
+    "Repairs restore equipment with no permanent loss; add durability only with repair station and clear HUD.",
+    "Material and chest transfer are atomic, bounded, saved and idempotent across portal travel and reload."
   ],
-  "recipes":[
-    {"id":"healingBandage","station":"inventory","input":{"erva":2,"fibra":3},"effect":"Small immediate heal; does not exceed max HP"},
-    {"id":"berrySnack","station":"healingTable","input":{"blueBerry":3,"fruta":1},"effect":"Energy recovery"},
-    {"id":"copperBar","station":"refiningFurnace","input":{"copperOre":3,"charcoal":1},"output":{"copperBar":1}},
-    {"id":"ironBar","station":"refiningFurnace","input":{"ironOre":3,"charcoal":1},"output":{"ironBar":1}},
-    {"id":"reinforcedBow","station":"weaponBench","input":{"wood":12,"silk":8,"resin":4},"effect":"Recipe locked until the existing bow is owned"}
+  "drop_bands": {
+    "common": "60–100% base materials, 1–3 units",
+    "rare": "5–12% depending on species and level; proposed, not current live balance",
+    "master": "Guaranteed first-clear recipe, repeat material reward"
+  },
+  "proposed_npc_families": [
+    {
+      "family": "Besouro",
+      "common": "fibra",
+      "material": "stone",
+      "rare": "polishedCarapace",
+      "use": "Chest reinforcement; shield recipe"
+    },
+    {
+      "family": "Lagarta",
+      "common": "fruta",
+      "material": "silk",
+      "rare": "luminousCocoon",
+      "use": "Bowstrings; healing bandage"
+    },
+    {
+      "family": "Cogumelo Saltador",
+      "common": "erva",
+      "material": "resin",
+      "rare": "vitalSpore",
+      "use": "Healing tonic; herbal table"
+    },
+    {
+      "family": "Escaravelho Esmeralda",
+      "common": "fibra",
+      "material": "copperOre",
+      "rare": "emeraldShard",
+      "use": "Weapon fittings; elemental upgrade"
+    },
+    {
+      "family": "Guardião dos Troncos",
+      "common": "ambar",
+      "material": "wood",
+      "rare": "ancientHeartwood",
+      "use": "Storage chest; weapon workbench"
+    },
+    {
+      "family": "Caranguejo Azul",
+      "common": "ambar",
+      "material": "ironOre",
+      "rare": "escama",
+      "use": "Refining; armor and weapon repair"
+    },
+    {
+      "family": "Rã Ametista",
+      "common": "erva",
+      "material": "blueBerry",
+      "rare": "perola",
+      "use": "Recovery foods; protective potion"
+    },
+    {
+      "family": "Tatu do Âmbar",
+      "common": "ambar",
+      "material": "charcoal",
+      "rare": "fossilAmber",
+      "use": "Fuel and refined amber gear"
+    },
+    {
+      "family": "Mariposa Cobre",
+      "common": "erva",
+      "material": "silk",
+      "rare": "moonDust",
+      "use": "Healing recipes and upgraded bowstring"
+    },
+    {
+      "family": "Javali das Avelãs",
+      "common": "fruta",
+      "material": "blueBerry",
+      "rare": "goldenHazelnut",
+      "use": "Energy food and protective tonic"
+    },
+    {
+      "family": "Mestre dos Troncos",
+      "material": "ancientHeartwood",
+      "rare": "forestRecipe",
+      "use": "First-clear advanced wood recipe"
+    },
+    {
+      "family": "Mestre das Marés",
+      "material": "escama",
+      "rare": "tideRecipe",
+      "use": "First-clear aquatic equipment recipe"
+    },
+    {
+      "family": "Mestre do Âmbar",
+      "material": "resin",
+      "rare": "amberRecipe",
+      "use": "First-clear refining/power recipe"
+    }
   ],
-  "art":{"atlas":"/forest-adventure/items/crafting-atlas-v1.webp","grid":[4,3],"order":["wood","stone","copperOre","ironOre","charcoal","resin","silk","blueBerry","storageChest","weaponBench","refiningFurnace","healingTable"]},
-  "next_implementation_order":["Versioned material inventory and save migration","Per-species drops plus bestiary","Chest transfer pilot in shelter","Healing and refining recipes","Workbench and repair","Additional biome-specific recipes"]
+  "stations": [
+    {
+      "id": "storageChest",
+      "name": "Baú do abrigo",
+      "unlockLevel": 2,
+      "cost": {
+        "wood": 20,
+        "fibra": 12
+      },
+      "effect": "One persistent shared storage across biome shelters; transfer quantities, never duplicate per room"
+    },
+    {
+      "id": "weaponBench",
+      "name": "Bancada de armas",
+      "unlockLevel": 3,
+      "cost": {
+        "wood": 24,
+        "stone": 12,
+        "fibra": 16
+      },
+      "effect": "Craft existing dagger/sword/bow, then unlock new recipes; repair only after durability is implemented"
+    },
+    {
+      "id": "refiningFurnace",
+      "name": "Fornalha de refino",
+      "unlockLevel": 5,
+      "cost": {
+        "stone": 30,
+        "copperOre": 8,
+        "charcoal": 6
+      },
+      "effect": "Ore plus fuel becomes refined metal; input/result shown before confirmation"
+    },
+    {
+      "id": "healingTable",
+      "name": "Mesa de cura",
+      "unlockLevel": 3,
+      "cost": {
+        "wood": 16,
+        "stone": 8,
+        "erva": 10
+      },
+      "effect": "Herbs and fruit become stronger medicine; configurable quick-use slots reuse current controls"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "healingBandage",
+      "station": "inventory",
+      "input": {
+        "erva": 2,
+        "fibra": 3
+      },
+      "effect": "Small immediate heal; does not exceed max HP"
+    },
+    {
+      "id": "berrySnack",
+      "station": "healingTable",
+      "input": {
+        "blueBerry": 3,
+        "fruta": 1
+      },
+      "effect": "Energy recovery"
+    },
+    {
+      "id": "copperBar",
+      "station": "refiningFurnace",
+      "input": {
+        "copperOre": 3,
+        "charcoal": 1
+      },
+      "output": {
+        "copperBar": 1
+      }
+    },
+    {
+      "id": "ironBar",
+      "station": "refiningFurnace",
+      "input": {
+        "ironOre": 3,
+        "charcoal": 1
+      },
+      "output": {
+        "ironBar": 1
+      }
+    },
+    {
+      "id": "reinforcedBow",
+      "station": "weaponBench",
+      "input": {
+        "wood": 12,
+        "silk": 8,
+        "resin": 4
+      },
+      "effect": "Recipe locked until the existing bow is owned"
+    }
+  ],
+  "art": {
+    "atlas": "/forest-adventure/items/crafting-atlas-v1.webp",
+    "grid": [
+      4,
+      3
+    ],
+    "order": [
+      "wood",
+      "stone",
+      "copperOre",
+      "ironOre",
+      "charcoal",
+      "resin",
+      "silk",
+      "blueBerry",
+      "storageChest",
+      "weaponBench",
+      "refiningFurnace",
+      "healingTable"
+    ]
+  },
+  "next_implementation_order": [
+    "Versioned per-character level/inventory and migration with no duplicated totals",
+    "Axe/pickaxe unlock and crafting pilot",
+    "One authored tree and ore node per pilot biome,5 units and12h renewal",
+    "Unique chest with atomic transfers",
+    "30s persisted crafting jobs and refining/medicine recipes",
+    "Visible upgrade levels, success chances and changing station/home artwork",
+    "Spread validated resource nodes and NPC-specific materials through other biomes"
+  ],
+  "harvesting": {
+    "status": "planned_not_active",
+    "authoredResourceNodes": "Stable biome/room/chunk/node ids; keep decoration and harvest nodes distinguishable. NPC material drops remain supplementary.",
+    "tools": {
+      "wood": "Crafted and unlocked axe required",
+      "ore": "Crafted and unlocked pickaxe required"
+    },
+    "unitsPerNode": 5,
+    "respawnSeconds": 43200,
+    "visualStates": [
+      "full resource",
+      "partially harvested",
+      "depleted stump or exposed rock",
+      "regrown resource"
+    ],
+    "interaction": "Real directional character swing, tool contact, short impact effect, resource item flies toward collection; one validated resource per accepted hit.",
+    "save": "Persist remaining units and depletedAt/respawnAt as epoch milliseconds, per profile. Reconcile on load/arrival; never rely on a background12-hour timeout."
+  },
+  "production": {
+    "durationSeconds": 30,
+    "jobsPerStation": 1,
+    "inventoryUI": "Show available weapon recipes, required inputs, missing ingredients, previewed result and success chance. Inputs reserved on start; visible countdown/progress and station animation.",
+    "persistence": "Store unique jobId, characterId, recipeId, startAt, finishAt, input reservation and claimed result; finish after reloading/offline and deliver once.",
+    "fuel": "Recipe declares fuel explicitly; no invisible extra consumption."
+  },
+  "upgrades": {
+    "targets": [
+      "axe",
+      "pickaxe",
+      "dagger",
+      "sword",
+      "bow",
+      "storageChest",
+      "refiningFurnace",
+      "healingTable",
+      "weaponBench"
+    ],
+    "visuals": "Show upgrade level, preview appearance, brief success glow; higher station levels change the painted art and improve applicable success chances.",
+    "failureRule": "PROPOSED: consume disclosed upgrade materials only; keep current tool/item and level, with no destruction or hidden downgrade.",
+    "probability": "Show exact percentage before each attempt; resolve and save result once, bound by station tier and recipe. Values require pilot balance, not active live rates."
+  },
+  "uniqueFacilities": {
+    "scope": "one logical instance of each facility per game profile; room replay, portal travel and switching characters cannot create duplicates",
+    "kinds": [
+      "storageChest",
+      "refiningFurnace",
+      "healingTable",
+      "weaponBench"
+    ],
+    "placement": "Author an accessible base location; biome resource deposits live in specific readable locations, clear of mission routes.",
+    "upgradeEffects": "Chest capacity and painted appearance; refinery, healing table and bench appearance and success modifiers; do not shorten the requested30-second duration without a later design change."
+  },
+  "characterProgression": {
+    "maximumLevel": 100,
+    "scope": "Separate level, XP, carried items, tools and equipment per pet/legend characterId; shared campaign unlock progress remains on profile.",
+    "home": "Upgrade the main house according to progression, with painted tiers adapted to the biome.",
+    "migration": "Preserve a legacy snapshot and exact existing item totals; define one owner for every migrated item and XP ledger, never copy shared stock into every legend. Validate switching, reload and chest transfers before enabling."
+  }
 }
