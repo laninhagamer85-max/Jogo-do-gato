@@ -13,4 +13,13 @@ TypeScript aprovado. 593 testes em 59 arquivos aprovados, incluindo simulação 
 
 Revisão no navegador com viewports móveis horizontal 844×390 e vertical 390×844: cenário fornecido, controles existentes, mapa geral, marcador e brilho nas portas. Travessia Jardim → Cozinha confirmada pela interface na vertical. Auditoria das 19 imagens/áreas realizada separadamente; não equivale a jogar manualmente todas as salas em aparelho físico.
 
-Corrigidas instruções externas que apareciam na pausa e ao retomar um save dentro do castelo. Publicação em preparação; aprovação visual final das áreas de colisão cabe ao teste do usuário.
+Corrigidas instruções externas que apareciam na pausa e ao retomar um save dentro do castelo. Publicação 1.28.0 concluída; aprovação visual final das áreas de colisão cabe ao teste do usuário.
+
+## Publicação confirmada
+
+- Site: https://meupet.aquimeusite.chatgpt.site
+- Fonte: b3b17aad00debadd8aefa0abf98cfb78bd5825f3
+- GitHub: 1bf363a1a59e8a9e522fc579bf819cc50a8c437f
+- Sites versão 113: appgprj_6ac40994d8d881919d46203a60801e46~appgver_b212c4918688819183aacfce94ce30cd
+- Deploy: appgdep_6ad87cf81c64819193c39262178200af — succeeded
+- Rollback preservado: versão 112 / produto 1.27.0.
