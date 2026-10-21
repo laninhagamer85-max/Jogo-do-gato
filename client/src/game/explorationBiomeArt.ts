@@ -1,0 +1,9 @@
+import {drawNascentesTree} from './explorationChapter4View';
+import {explorationColorVariant,AUTUMN_PROP_FILTER} from './explorationColorCache';
+const cache=new Map<string,HTMLImageElement>(),listeners=new Set<()=>void>();let revision=0;
+export const biomeArtRevision=()=>revision;
+export function onBiomeArtChange(f:()=>void){listeners.add(f);return()=>{listeners.delete(f);};}
+function asset(path:string){let image=cache.get(path);if(image)return image;if(typeof Image==='undefined')return;image=new Image();image.onload=image.onerror=()=>{revision++;listeners.forEach(f=>f());};image.src=path;cache.set(path,image);return image;}
+/** Chapter-specific painted shelter, uniformly scaled using its authored root anchor. */
+export function drawBiomeShelter(ctx:CanvasRenderingContext2D,index:number,x:number,y:number,tile:number,fallback?:HTMLImageElement){const chapter=Math.floor(index/10),im=chapter===1?asset('/forest-adventure/biome-shelters/river-v1.webp'):chapter===2?asset('/forest-adventure/biome-shelters/autumn-v1.webp'):fallback;if(!im?.complete||!im.naturalWidth)return false;const scale=tile*1.55/Math.max(im.naturalWidth,im.naturalHeight),w=im.naturalWidth*scale,h=im.naturalHeight*scale;ctx.save();if(chapter===1||chapter===2)ctx.filter=`hue-rotate(${(index%3-1)*4}deg)`;ctx.drawImage(im,x-w*(chapter===1||chapter===2?.53:.5),y-h*(chapter===1?.935:chapter===2?.96:1),w,h);ctx.restore();return true;}
+export function drawBiomeTree(ctx:CanvasRenderingContext2D,index:number,tree:{x:number;y:number;width:number;variant:number},x:number,y:number,tile:number){let image=asset('/forest-adventure/chapter4/trees-nascentes-v1.webp');if(!image?.complete||!image.naturalWidth)return false;image=explorationColorVariant(image,index>=20?AUTUMN_PROP_FILTER:index>=10?'saturate(.78) hue-rotate(8deg)':'saturate(.84)')!;drawNascentesTree(ctx,image,{...tree,radius:.28},x,y,tile);return true;}

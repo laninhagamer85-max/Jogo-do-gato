@@ -1,4 +1,5 @@
-import {CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM,NASCENTES_GARDENS} from './explorationChapter4';
+import {encounterPocket,openWorldBlocked,registerWorldClearings} from './explorationOpenWorld';
+import {CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM,NASCENTES_GARDENS,returnPortal} from './explorationChapter4';
 import {AUTUMN_ROOMS,autumnEnemy} from './explorationChapter3';
 import {ROOM_WALLS,ROOM_SCENERY,PILOT_SHELTER,ROOM_GARDENS,SCATTERED_GARDENS,hitsEdgeScenery} from './explorationRoom';
 import {pondComposition,crossingComposition,insideRegion,touchesRegion,type BiomeComposition} from './biomeComposition';
@@ -67,6 +68,7 @@ for(const r of [...riverRooms,...AUTUMN_ROOMS]){
  r.marker=fit(r.marker);r.exit=fit(r.exit);r.nodes=r.nodes.map(fit);r.switches=r.switches.map(fit);if(r.key)r.key=fit(r.key);r.enemies=r.enemies.map(fit);
 }
 export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS,CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM];
+for(const r of EXPLORATION_ROOMS)registerWorldClearings(r.index,[r.camp,r.marker,r.exit,...r.nodes,...r.switches,...r.enemies,...(r.key?[r.key]:[]),{x:-2.5,y:4.5},{x:17.5,y:4.5},{x:7.5,y:-2.5},{x:7.5,y:12.5}]);
 export const campaignRoom=(index=0)=>EXPLORATION_ROOMS[Math.max(0,Math.min(EXPLORATION_ROOMS.length-1,Math.floor(index)||0))];
 export const chapterName=(index:number)=>index>=30?'Jardim das Nascentes':index>=20?'Bosque do Âmbar':index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
 export const roomInChapter=(index:number)=>index%10+1;
@@ -112,7 +114,7 @@ const gardenCache=new WeakMap<CampaignRoom,ReturnType<typeof buildCampaignGarden
 export function campaignGardens(room:CampaignRoom){let value=gardenCache.get(room);if(!value){value=buildCampaignGardens(room);gardenCache.set(room,value);}return value;}
 const enemyCache=new Map<string,CampaignEnemy[]>();
 export const CAMPAIGN_ENEMY_CACHE_LIMIT=64;
-export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map(enemy=>({...campaignEnemyVariant(enemy,room.index,seed),previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))}));if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
+export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map((enemy,slot)=>{const pocket=enemy.id.startsWith('wild-')?encounterPocket(room.index,seed,slot):enemy;const position=!campaignWaterBlocks(pocket,.4,room)&&!openWorldBlocked(pocket,.4,room.index)?pocket:enemy;return {...campaignEnemyVariant(enemy,room.index,seed),x:position.x,y:position.y,previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))};});if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
 
 /** Additional resilience; Chapter 3 already includes its earlier tenfold increase. */
 export function npcHpMultiplier(index:number){return index>=20?1.25:index>=10?1.75:1.5;}

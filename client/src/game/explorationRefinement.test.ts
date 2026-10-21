@@ -1,3 +1,4 @@
+import {explorationGroves,openWorldBlocked} from './explorationOpenWorld';
 import {describe,it,expect} from 'vitest';
 import {EDGE_PROP_FOOTPRINTS,ROOM_EDGE_SOLIDS,SCATTERED_GARDENS,hitsEdgeScenery} from './explorationRoom';
 import {createCombatState,readCombatState,pilotWalkable,pilotRoute,clearPilotWalkLine,stepCombat,PILOT_CAMP,PILOT_NODES,PILOT_MARKER,PILOT_EXIT} from './explorationCombat';
@@ -7,21 +8,9 @@ import {readMinimap,minimapDiscovered} from './explorationMinimap';
 import {drawPortalEnergy,drawPortalArch,portalPhase} from './explorationPortal';
 
 describe('reported rock overlap regression',()=>{
- it('blocks every rendered perimeter rock or log at its foot contact',()=>{
-  expect(EDGE_PROP_FOOTPRINTS.length).toBe(ROOM_EDGE_SOLIDS.length);
-  for(const f of EDGE_PROP_FOOTPRINTS){expect(hitsEdgeScenery(f,.22)).toBe(true);expect(pilotWalkable(f,true)).toBe(false);}
- });
- it('prevents held movement entering the rock beside the shelter',()=>{
-  const rock=EDGE_PROP_FOOTPRINTS[0],s=createCombatState();s.player={x:rock.x+rock.rx+.5,y:rock.y};
-  let current=s;for(let i=0;i<90;i++)current=stepCombat(current,{dx:-1},16);
-  expect(hitsEdgeScenery(current.player,.22)).toBe(false);
-  expect(current.player.x).toBeGreaterThan(rock.x+rock.rx);
- });
- it('relocates an old save inside the new rock hitbox without losing earned progress',()=>{
-  const s=createCombatState();s.player={x:EDGE_PROP_FOOTPRINTS[0].x,y:EDGE_PROP_FOOTPRINTS[0].y};s.xp=120;s.hp=88;s.bag.fibra=16;s.stock.ambar=9;s.equipmentOwned=true;
-  const read=readCombatState(s);if(!read.supported)throw Error();
-  expect(pilotWalkable(read.state.player,false)).toBe(true);expect(read.state.xp).toBe(120);expect(read.state.hp).toBe(88);expect(read.state.stock).toEqual(s.stock);expect(read.state.bag).toEqual(s.bag);expect(read.state.equipmentOwned).toBe(true);
- });
+ it('blocks the roots of the newly distributed painted trees',()=>{for(const p of explorationGroves({left:-15,top:-10,width:45,height:35},0)){expect(openWorldBlocked(p,.22,0)).toBe(true);expect(pilotWalkable(p,true)).toBe(false);}});
+ it('prevents held movement entering a visible tree root',()=>{const tree=explorationGroves({left:30,top:30,width:8,height:8},0)[0],s=createCombatState();s.player={x:tree.x+.8,y:tree.y};let current=s;for(let i=0;i<90;i++)current=stepCombat(current,{dx:-1},16);expect(openWorldBlocked(current.player,.22,0)).toBe(false);expect(current.player.x).toBeGreaterThan(tree.x);});
+ it('relocates a save covered by revised tree roots while preserving earned progress',()=>{const tree=explorationGroves({left:30,top:30,width:8,height:8},0)[0],s=createCombatState();s.player={x:tree.x,y:tree.y};s.xp=120;s.hp=88;s.bag.fibra=16;s.stock.ambar=9;const read=readCombatState(s);if(!read.supported)throw Error();expect(pilotWalkable(read.state.player,false)).toBe(true);expect(read.state.hp).toBe(88);expect(read.state.xp).toBe(120);expect(read.state.bag).toEqual(s.bag);expect(read.state.stock).toEqual(s.stock);});
  it('preserves continuous routes to objectives and the expanded four directions',()=>{
   for(const target of [...PILOT_NODES,PILOT_MARKER,PILOT_EXIT,{x:-2.5,y:4.5},{x:17.5,y:4.5},{x:7.5,y:-2.5},{x:7.5,y:12.5}]){
    const route=pilotRoute(PILOT_CAMP,target,true);expect(route.length).toBeGreaterThan(0);

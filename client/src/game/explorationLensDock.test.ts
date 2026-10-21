@@ -29,7 +29,7 @@ describe('approved minimap shortcut slots',()=>{
  });
 });
 
-it('alternates world camera magnification and returns to normal from intermediate zoom',()=>{
- expect(toggleWorldCameraZoom(1)).toBe(2);expect(toggleWorldCameraZoom(2)).toBe(1);expect(toggleWorldCameraZoom(1.25)).toBe(1);
- let zoom=1;for(let i=0;i<20;i++)zoom=toggleWorldCameraZoom(zoom);expect(zoom).toBe(1);
+it('alternates two readable camera distances from either state',()=>{
+ expect(toggleWorldCameraZoom(.65)).toBe(1.15);expect(toggleWorldCameraZoom(1.15)).toBe(.65);expect(toggleWorldCameraZoom(2)).toBe(.65);
+ let zoom=.65;for(let i=0;i<20;i++)zoom=toggleWorldCameraZoom(zoom);expect(zoom).toBe(.65);
 });

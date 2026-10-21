@@ -1,3 +1,4 @@
+import {biomeArtRevision} from '@/game/explorationBiomeArt';
 import {castleRoom,castleRoute,castlePassages} from '@/game/explorationCastle';
 import {castleView,castleArtReady,castleArtRevision} from '@/game/explorationCastleView';
 import {nascentesView} from '@/game/explorationChapter4View';
@@ -40,7 +41,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const route = useRef<CombatPoint[]>([]), panelRef = useRef<Panel>(null), overviewRef = useRef(false);
   const canvas = useRef<HTMLCanvasElement>(null), dialog = useRef<HTMLDialogElement>(null), pauseButton = useRef<HTMLButtonElement>(null);
   const [assetStatus, setAssetStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom, setZoom] = useState(1);
+  const [panel, setPanel] = useState<Panel>(null), [overview, setOverview] = useState(false), [zoom, setZoom] = useState(.65);
   const [audioMix]=useState(loadExplorationAudio);
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
@@ -143,7 +144,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         const before=current.current;if(!replayMode||current.current.roomIndex>=30)current.current=tickCombatPortal(before,dt);
         if(current.current!==before){if(current.current.roomIndex!==before.roomIndex){clear();persist();}setGame(current.current);}
       }
-      const key=`${current.current.revision}:${w}:${h}:${zoomRef.current}:${overviewRef.current}:${assetsReady}:${reduced.matches}:${castleArtRevision()}`;
+      const key=`${current.current.revision}:${w}:${h}:${zoomRef.current}:${overviewRef.current}:${assetsReady}:${reduced.matches}:${castleArtRevision()}:${biomeArtRevision()}`;
       if(assetsReady&&shouldDrawExplorationFrame(!panelRef.current&&!overviewRef.current,key,paintKey)){
       drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water,autumnMobs,powerArt,stone,cliff,soil);
       paintKey=key;draws++;
@@ -203,7 +204,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
           <button className="combat-lens-slot combat-lens-inventory" onClick={()=>{setInventoryTab('all');dockAction('inventory');}} aria-label={panel==='inventory'?'Fechar mochila':'Abrir mochila'} aria-expanded={panel==='inventory'} aria-controls="combat-panel" title={panel==='inventory'?'Fechar mochila':'Abrir mochila'}>{panel==='inventory'?<X/>:<Backpack/>}</button>
           <button className="combat-lens-slot combat-lens-equipment" onClick={()=>{setInventoryTab('legends');openPanel('inventory');}} aria-label="Equipar itens do Lendário" title="Equipamentos do Lendário"><PowerSymbol power="roots"/></button><button className="combat-lens-slot combat-lens-size" onClick={()=>setLensExpanded(value=>!value)} aria-label={lensExpanded?'Reduzir tamanho da lupa':'Ampliar tamanho da lupa'} aria-pressed={lensExpanded} title={lensExpanded?'Reduzir lupa':'Ampliar lupa'}>{lensExpanded?<Minus/>:<Plus/>}</button>
           <button className="combat-lens-slot combat-lens-map" onClick={viewRoom} aria-label={overview?'Voltar ao pet':'Ver mapa completo'} aria-pressed={overview} title={overview?'Voltar ao pet':'Ver mapa completo'}>{overview?<X/>:<Map/>}</button>
-          <button type="button" className="combat-lens-slot combat-lens-camera" disabled={overview} onClick={()=>{route.current=[];setZoom(toggleWorldCameraZoom);}} aria-label={zoom>1?'Afastar câmera para 1×':'Aproximar câmera para 2×'} aria-pressed={zoom>1} title={zoom>1?'Câmera: voltar para 1×':'Câmera: aproximar para 2×'}>{zoom>1?<ZoomOut/>:<ZoomIn/>}</button>
+          <button type="button" className="combat-lens-slot combat-lens-camera" disabled={overview} onClick={()=>{route.current=[];setZoom(toggleWorldCameraZoom);}} aria-label={zoom>.8?'Ver mais cenário':'Ver o personagem de perto'} aria-pressed={zoom>.8} title={zoom>.8?'Câmera distante':'Câmera próxima'}>{zoom>.8?<ZoomOut/>:<ZoomIn/>}</button>
         </nav>
       </ExplorationMinimap>
       {!castle&&<div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(room.fibers, fibers)}/{room.fibers} fibras</span>{room.encounters>0&&<span>{Math.min(room.encounters,game.roomIndex===0?game.defeated:game.defeatedEnemyIds.length)}/{room.encounters} encontros</span>}<span>{game.gateOpen ? "Siga ao portal" : room.index>=30?"Libere a passagem":"Ative o marco"}</span>{room.switches.length>0&&<span>Placas {game.switchStep}/{room.switches.length}</span>}{room.key&&<span>{game.hasRoomKey?'Chave ✓':'Busque a chave'}</span>}{room.bridge&&<span>{game.bridgeCrossed?'Ponte ✓':'Atravesse a ponte'}</span>}{room.bossId&&<span>{game.defeatedEnemyIds.includes(room.bossId)?'Mestre ✓':'Vença o mestre'}</span>}{room.useConsumable&&<span>{game.consumablesUsed?'Recuperação ✓':'Use fruta/erva'}</span>}</div>}

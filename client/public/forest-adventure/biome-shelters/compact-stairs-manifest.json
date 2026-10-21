@@ -1,0 +1,258 @@
+{
+  "version": 1,
+  "file": "compact-stairs-v1.webp",
+  "source_png": "generated_images/exec-d469366c-03d0-486e-91e4-64351e3e2a1c.png",
+  "source": "Original built-in image_gen.imagegen; generated for this game from a textual brief after inspection of the existing plateau/castle masonry. No outside assets.",
+  "prompt": "Use case: stylized-concept. Asset type: one compact stone staircase sprite for a child-friendly softly painted 2D casual RPG environment, true transparent background. Subject: EXACTLY FOUR short BROAD chunky limestone treads, forming a very compact low stair connection between a small rocky ledge and its ground. Rounded warm gray-beige stone matching hand-painted fantasy castle masonry; softly weathered irregular block edges. No tall columns, no posts, no rails, no side walls. Four wide clear walking surfaces and short low risers, not a long ramp. The short staircase has a broad lower landing and a broad upper landing that meet the ground/ledge flush, without any scenery. Camera: HIGH OVERHEAD oblique view, looking down onto all the horizontal walking surfaces. Walking axis is almost vertical in the image: from lower landing slightly left to upper landing slightly right, roughly EIGHT degrees right of straight up. Tread front edges approximately horizontal. The entire stair is compact and about as wide as it is long (walking run only slightly longer than its width); do NOT generate a 10-step monumental staircase. Composition: single isolated complete stair centered on a square, occupies about 70 percent canvas width and75 percent canvas height, full silhouette with transparent margins on all sides, upper landing at upper-center, lower landing at lower-center. Painterly volume, tactile stone texture, warm soft upper-left lighting, no outlines, no graphic/vector appearance. Absolutely no grass, vegetation, rock island, floor plane, building, background, glow, particles, ornament, text, numbers, UI, characters, shadows detached outside the asset. True alpha transparency. This is a reusable independent modular environment sprite.",
+  "source_dimensions": [
+    1254,
+    1254
+  ],
+  "dimensions": [
+    1024,
+    1024
+  ],
+  "conversion": "Uniform downscale1254→1024 and RGBA WebP quality92/method6 only. No pixel edits.",
+  "upperFoot_source_pixel": [
+    700,
+    225
+  ],
+  "lowerFoot_source_pixel": [
+    625,
+    1065
+  ],
+  "walkablePolygon_source_pixel": [
+    [
+      465,
+      156
+    ],
+    [
+      972,
+      196
+    ],
+    [
+      991,
+      288
+    ],
+    [
+      1007,
+      389
+    ],
+    [
+      995,
+      475
+    ],
+    [
+      989,
+      555
+    ],
+    [
+      995,
+      655
+    ],
+    [
+      996,
+      752
+    ],
+    [
+      1005,
+      840
+    ],
+    [
+      1031,
+      940
+    ],
+    [
+      1048,
+      1099
+    ],
+    [
+      878,
+      1100
+    ],
+    [
+      685,
+      1094
+    ],
+    [
+      488,
+      1071
+    ],
+    [
+      288,
+      1038
+    ],
+    [
+      250,
+      980
+    ],
+    [
+      280,
+      883
+    ],
+    [
+      303,
+      803
+    ],
+    [
+      321,
+      710
+    ],
+    [
+      331,
+      624
+    ],
+    [
+      348,
+      545
+    ],
+    [
+      358,
+      455
+    ],
+    [
+      389,
+      365
+    ],
+    [
+      418,
+      267
+    ]
+  ],
+  "visibleSilhouetteBounds_source_pixel": [
+    187,
+    134,
+    1085,
+    1161
+  ],
+  "integration": {
+    "placement": "Use one uniform similarity transform mapping lowerFoot_pixel to world lower landing and upperFoot_pixel to world upper landing; apply it identically to walking polygon. Do not scale x/y independently.",
+    "landings": "Walking anchors are traced on the horizontal upper/lower landing surfaces, inset from outer silhouette. Upper landing should overlap the authored plateau floor; lower landing overlaps ground. Four short risers, broad treads, no railings.",
+    "clip": "Alpha already contains isolated silhouette; do not apply the old ten-tread staircase silhouette clip. No glow or backdrop.",
+    "rotation": "Actual direction from lower→upper is~5.1degrees right of vertical. A similarity transform may rotate to the authored world slope.",
+    "limitation": "Manual trace from rendered source; main browser QA must verify the seam and feet. World width is roughly1.1×the lower-to-upper anchor run; use a short world run rather than the old long ramp length.",
+    "landing_refinement": "Lower anchor moved inward to pixel y810 after real radius .22 route QA; original trace preserved as lowerFoot_source_pixel. Allows the pet radius to rest completely on the broad lower landing."
+  },
+  "anchors_pixel": {
+    "upperFoot": [
+      571.611,
+      183.732
+    ],
+    "lowerFoot": [
+      510.367,
+      810
+    ]
+  },
+  "walkablePolygon_pixel": [
+    [
+      379.713,
+      127.388
+    ],
+    [
+      793.722,
+      160.051
+    ],
+    [
+      809.238,
+      235.177
+    ],
+    [
+      822.303,
+      317.652
+    ],
+    [
+      812.504,
+      387.879
+    ],
+    [
+      807.604,
+      453.206
+    ],
+    [
+      812.504,
+      534.864
+    ],
+    [
+      813.321,
+      614.073
+    ],
+    [
+      820.67,
+      685.933
+    ],
+    [
+      841.901,
+      767.592
+    ],
+    [
+      855.783,
+      897.429
+    ],
+    [
+      716.963,
+      898.246
+    ],
+    [
+      559.362,
+      893.346
+    ],
+    [
+      398.494,
+      874.565
+    ],
+    [
+      235.177,
+      847.617
+    ],
+    [
+      204.147,
+      800.255
+    ],
+    [
+      228.644,
+      721.046
+    ],
+    [
+      247.426,
+      655.719
+    ],
+    [
+      262.124,
+      579.777
+    ],
+    [
+      270.29,
+      509.55
+    ],
+    [
+      284.172,
+      445.04
+    ],
+    [
+      292.338,
+      371.547
+    ],
+    [
+      317.652,
+      298.054
+    ],
+    [
+      341.333,
+      218.029
+    ]
+  ],
+  "visibleSilhouetteBounds_pixel": [
+    153,
+    109,
+    886,
+    948
+  ],
+  "alpha_preserved": true,
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "bytes": 184054,
+  "sha256": "e5e6c29785b17eb7d606a6dc2d9cb395b5805c6a0ea29e043e67b68c32576729",
+  "sourceWalkingLengthPixels": 688.6616789287756
+}

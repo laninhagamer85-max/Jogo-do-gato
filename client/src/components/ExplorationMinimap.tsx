@@ -1,4 +1,5 @@
-import {explorationGroves} from '@/game/explorationOpenWorld';
+import {drawBiomeShelter,drawBiomeTree,onBiomeArtChange} from '@/game/explorationBiomeArt';
+import {explorationGroves,openWorldPlants} from '@/game/explorationOpenWorld';
 import {drawCastleLens,onCastleArtChange} from '@/game/explorationCastleView';
 import {NASCENTES_ASSETS,returnPortal} from '@/game/explorationChapter4';
 import {drawNascentesTerrain} from '@/game/explorationChapter4View';
@@ -42,16 +43,16 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,props,gardenArt,images.riverProps);
   const visible=(p:{x:number;y:number})=>{const q=point(p);return q.x>-t*2&&q.y>-t*2&&q.x<size+t*2&&q.y<size+t*2;};
-  if(room.index<30&&ready(gardenArt))for(const garden of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
+  if(room.index<30&&ready(gardenArt))for(const garden of [...campaignGardens(room),...openWorldPlants({left:-v.left/t,top:-v.top/t,width:size/t,height:size/t},room.index)].filter(p=>!campaignWaterBlocks(p,.15,room))){
    if(visible(garden)){const q=point(garden);river?drawRiverProp(ctx,images.riverProps,3+garden.index%2,q.x,q.y,t,{width:garden.width,height:garden.height}):drawGardenPatch(ctx,gardenArt,garden,q.x,q.y,t,0,true);}
   }
-  if(room.index<30&&ready(props))for(const prop of [...room.scenery,...ROOM_EDGE_SOLIDS,...explorationGroves({left:-v.left/t,top:-v.top/t,width:size/t,height:size/t},room.index)].sort((a,b)=>a.y-b.y)){
-   if(visible(prop)){const q=point(prop);river?drawRiverProp(ctx,images.riverProps,prop.index,q.x,q.y,t,prop):drawWoodlandProp(ctx,props,prop.index,q.x,q.y,t,prop,true);}
+  if(room.index<30&&ready(props))for(const prop of [...room.scenery,...explorationGroves({left:-v.left/t,top:-v.top/t,width:size/t,height:size/t},room.index)].filter(p=>!campaignWaterBlocks(p,.22,room)).sort((a,b)=>a.y-b.y)){
+   if(visible(prop)){const q=point(prop);if('worldTree' in prop&&prop.worldTree&&drawBiomeTree(ctx,room.index,{...prop,variant:'variant' in prop?Number(prop.variant):0},q.x,q.y,t))continue;river?drawRiverProp(ctx,images.riverProps,prop.index,q.x,q.y,t,prop):drawWoodlandProp(ctx,props,prop.index,q.x,q.y,t,prop,true);}
   }
   const sprite=(im:HTMLImageElement,p:{x:number;y:number},width:number)=>{
    if(!ready(im)||!visible(p))return;const q=point(p),w=t*width,h=w*im.naturalHeight/im.naturalWidth;ctx.drawImage(im,q.x-w/2,q.y-h,w,h);
   };
-  if(room.index<30){sprite(images.shelter,PILOT_SHELTER,1.55);sprite(river?images.riverPortal:images.portal,room.exit,1.95);}drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
+  if(room.index<30){{const q=point(PILOT_SHELTER);drawBiomeShelter(ctx,room.index,q.x,q.y,t,images.shelter);}sprite(river?images.riverPortal:images.portal,room.exit,1.95);}drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
   if(room.key&&!s.hasRoomKey)drawCampaignKey(ctx,images.key,room.key,v.left,v.top,t,0,true);
   ctx.restore();
   const dot=(p:{x:number;y:number},color:string,r=3.5)=>{
@@ -61,8 +62,8 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   for(const [i,plate] of room.switches.entries())if(discovered(plate))dot(plate,i<s.switchStep?'#c4ef9c':'#f2d09a');
   if(discovered(room.camp))dot(room.camp,'#a3e8dd',4.5);
   if(discovered(room.marker))dot(room.marker,s.gateOpen?'#c0e99e':'#ffeab0',4.5);
-  if(room.index>0&&s.completedRooms.includes(room.index-1)&&discovered(returnPortal(room.index)))dot(returnPortal(room.index),'#a6e7ec',4.5);
-  if(discovered(room.exit))dot(room.exit,s.gateOpen?'#fff3b4':'#a5b790',4.5);
+  if(room.index>0&&s.completedRooms.includes(room.index-1))dot(returnPortal(room.index),'#a6e7ec',4.5);
+  if(s.gateOpen||s.completedRooms.includes(room.index)||discovered(room.exit))dot(room.exit,s.gateOpen?'#fff3b4':'#a5b790',4.5);
   for(const n of room.nodes)if(!s.collectedNodes.includes(n.id)&&discovered(n))dot(n,'#e3f1a9');
   for(const e of s.enemies)if(minimapNearby(s.player,e)&&discovered(e))dot(e,'#ffc175',4.5);
   ctx.restore();
@@ -83,6 +84,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  useEffect(draw,[state]);
  useEffect(()=>onCastleArtChange(draw),[]);
  const enemies=state.enemies.filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
+ useEffect(()=>onBiomeArtChange(draw),[]);
  return <aside className="combat-minimap combat-minimap--lens" aria-label={state.castle?.active?"Minimapa do castelo":"Minimapa da clareira"}>
   <canvas ref={canvas} width={384} height={384} role="img" aria-label={state.castle?.active?"Lupa da sala do castelo. Ponto vermelho: posição do personagem.":`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
   <img className="combat-minimap-frame" src="/forest-adventure/map-lens-circle-v1.webp" alt="" aria-hidden="true"/>

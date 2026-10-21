@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "source": "Original generated imagery using built-in image_gen.imagegen; no third-party assets; style matched to existing Meu Pet Virtual painted shelter.",
+  "conversion": "RGBA WebP quality92, method6; uniformly downscaled to1024x1024 only. No compositing, recoloring, background processing or other visual edits.",
+  "assets": [
+    {
+      "id": "river",
+      "file": "river-v1.webp",
+      "source_png": "generated_images/exec-19990979-9c4f-4679-9cb1-b62fed371a66.png",
+      "prompt": "Use case: stylized-concept. Asset type: a single production-ready transparent-background 2D environment sprite for the child-friendly fantasy exploration game Meu Pet Virtual. Subject: one SMALL CAT-SIZED RIVER BIOME SHELTER, a cozy compact pet hut built of rounded blue-gray river stones, short pale driftwood doorframe, softly bundled golden reed roof with muted teal moss accents. One open arched entrance facing down toward the viewer, empty interior with a simple beige cushion. Style: softly painted casual RPG illustration with tactile stone and wood, warm upper-left sunlight, gentle ambient shading, rich clear silhouette, NOT vector art, NOT a photograph, NOT low-poly. Camera: elevated three-quarter oblique view approximately 40 degrees from above, roof visible, front entrance slightly turned toward lower-right, consistent top-down game prop perspective. Composition: isolated single complete hut centered, generous transparent margin on every side, entire roof and grounded bottom sill visible, compact roughly square silhouette, no cropping. The shelter occupies about 78 percent of a square image, with doorway sill near image x0.55 y0.83. Constraints: true alpha transparency, no background scene, no terrain island, no floor slab, no surrounding lake, no other buildings, no character, no text, no watermark, no UI, no symbols. Tiny reeds may attach to hut base, but avoid detached objects or large shadows extending beyond the shelter.",
+      "foot_anchor_uv": [
+        0.53,
+        0.935
+      ],
+      "door_sill_uv": [
+        0.65,
+        0.875
+      ],
+      "visual_notes": "Blue-gray rounded river stone, golden reed roof, pale driftwood frame; top-left light. Whole sill and roof intact. Some extremely faint alpha edge pixels outside visible footprint retained unchanged.",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "bytes": 366428,
+      "sha256": "2318831534fabdd56f7b740b767c603db8390a77d122811f8d70aac7a8c7a0c3",
+      "alpha_preserved": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "world_width": 1.55
+    },
+    {
+      "id": "autumn",
+      "file": "autumn-v1.webp",
+      "source_png": "generated_images/exec-18eaaeba-ea69-4c0e-90b9-021fd1366ab6.png",
+      "prompt": "Use case: stylized-concept. Asset type: a single production-ready transparent-background 2D environment sprite for the child-friendly fantasy exploration game Meu Pet Virtual. Subject: one SMALL CAT-SIZED AUTUMN WOODLAND SHELTER, a cozy compact pet hut built of warm amber and chestnut timber with a distinctive rounded layered roof of golden ochre and rusty orange leaves, short sturdy branch supports, a few tiny attached acorns near its base. One open arched entrance facing down toward the viewer, empty interior with a simple beige cushion. Style: softly painted casual RPG illustration with tactile wood and natural leaf surfaces, warm upper-left sunlight, gentle ambient shading, rich clear silhouette, NOT vector art, NOT a photograph, NOT low-poly. Camera: elevated three-quarter oblique view approximately 40 degrees from above, roof visible, front entrance slightly turned toward lower-right, consistent top-down game prop perspective. Composition: isolated single complete hut centered, generous transparent margin on every side, entire roof and grounded bottom sill visible, compact roughly square silhouette, no cropping. The shelter occupies about 78 percent of a square image, with doorway sill near image x0.55 y0.83. Constraints: true alpha transparency, no background scene, no terrain island, no floor slab, no surrounding forest, no other buildings, no character, no text, no watermark, no UI, no symbols, no detached objects or large shadows extending beyond the shelter.",
+      "foot_anchor_uv": [
+        0.53,
+        0.96
+      ],
+      "door_sill_uv": [
+        0.65,
+        0.89
+      ],
+      "visual_notes": "Amber timber, branch frame and overlapping orange/ochre leaves; top-left light. Whole silhouette and bottom sill intact.",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "bytes": 247836,
+      "sha256": "67106f129bdb6ee1df5c7829e5358274154e8075ac1c0cf7518ff1b8189b30c1",
+      "alpha_preserved": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "world_width": 1.55
+    }
+  ]
+}

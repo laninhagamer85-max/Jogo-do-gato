@@ -1,4 +1,5 @@
-import {explorationGroves} from './explorationOpenWorld';
+import {drawBiomeShelter,drawBiomeTree} from './explorationBiomeArt';
+import {explorationGroves,openWorldPlants} from './explorationOpenWorld';
 import {returnPortal} from './explorationChapter4';
 import {drawCastleWorld} from './explorationCastleView';
 import {drawOverviewLocation} from './explorationOverviewLocation';
@@ -44,26 +45,27 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   ctx.restore();
-  const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number})=>{
+  const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number;worldTree?:boolean;variant?:number})=>{
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
+    if(prop.worldTree&&drawBiomeTree(ctx,room.index,{...prop,variant:prop.variant??0},p.x,p.y,t))return;
     if(river){if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawRiverProp(ctx,riverProps,prop.index,p.x,p.y,t,prop);return;}
     if(autumn)ctx.save();
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);if(autumn)ctx.restore();
   };
   ctx.save();
-  if(room.index<30&&gardenAtlas)for(const patch of [...campaignGardens(room),...ROOM_EDGE_GARDENS,...OUTER_GARDENS].filter(p=>!campaignWaterBlocks(p,.15,room))){
+  if(room.index<30&&gardenAtlas)for(const patch of [...campaignGardens(room),...openWorldPlants({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index)].filter(p=>!campaignWaterBlocks(p,.15,room))){
     const p=point(patch),b=gardenPlacement(patch,t,p.x,p.y);
     if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)river?drawRiverProp(ctx,riverProps,3+patch.index%2,p.x,p.y,t,{width:patch.width??1.2,height:1}):drawGardenPatch(ctx,gardenAtlas,patch,p.x,p.y,t,state.time,reducedMotion);
   }
   ctx.restore();
   if(room.index<30){drawForestSun(ctx,v.left,v.top,t);drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);}
-  const scenery=room.index>=30?[]:[...ROOM_EDGE_SOLIDS,...room.scenery,...explorationGroves({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index)];
+  const scenery=room.index>=30?[]:[...room.scenery,...explorationGroves({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index)].filter(p=>!campaignWaterBlocks(p,.4,room));
   if(room.index>0&&room.index<30&&state.completedRooms.includes(room.index-1)){const q=point(returnPortal(room.index));drawPortalEnergy(ctx,q.x,q.y,t,state.time,true,reducedMotion);drawPortalArch(ctx,river?riverPortal:portalAtlas,q.x,q.y,t);ctx.save();ctx.font="600 12px sans-serif";ctx.fillStyle="#fff1ce";ctx.textAlign="center";ctx.fillText(`Sala ${room.index} · voltar`,q.x,q.y+t*.4);ctx.restore();}
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
 
   if(room.index<30){
   const camp = point(room.camp); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.arc(camp.x, camp.y, t * .54, 0, Math.PI * 2); ctx.stroke();
+  // Safe area stays functional without a circular marker on the terrain.
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(room.marker);
   if(river)drawRiverProp(ctx,riverProps,5,marker.x,marker.y+t*.15,t*.8);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
@@ -102,8 +104,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     if(entity.type==='shelter'){
       if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
         if(room.index>=30){const h=t*1.55,w=h*1034/1103;ctx.drawImage(shelterAtlas,119,66,1034,1103,p.x-w/2,p.y-h,w,h);continue;}
-        const scale=Math.min(t*PILOT_SHELTER.width/shelterAtlas.naturalWidth,t*PILOT_SHELTER.height/shelterAtlas.naturalHeight),w=shelterAtlas.naturalWidth*scale,h=shelterAtlas.naturalHeight*scale;
-        ctx.drawImage(shelterAtlas,p.x-w/2,p.y-h,w,h);
+        drawBiomeShelter(ctx,room.index,p.x,p.y,t,shelterAtlas);
       }continue;
     }
     const shadow=entity.type==='enemy'?.21:.28;
