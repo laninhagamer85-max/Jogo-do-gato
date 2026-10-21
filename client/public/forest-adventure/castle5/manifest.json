@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "provenance": "Original generated raster art via built-in imagegen. Supplied castle used only as style/material reference.",
+  "reference": "Castelo isom\u00e9trico com fundo transparente-1(1).png",
+  "assets": {
+    "floor-limestone.webp": {
+      "width": 1254,
+      "height": 1254,
+      "sha256": "d0febb967ea93f2c966c5ebbda0e856e4933c91b35a8da1483a13e699b5c826e",
+      "bytes": 254372,
+      "alphaPreserved": false
+    },
+    "props-atlas.webp": {
+      "width": 1254,
+      "height": 1254,
+      "sha256": "dd980b078da1eba0ae143637ab61847f1691ecdaea83b25fef5f4237bfe96b05",
+      "bytes": 387700,
+      "alphaPreserved": true
+    },
+    "walls-atlas.webp": {
+      "width": 1774,
+      "height": 887,
+      "sha256": "51dd0ffcc50d7d33712db41095f7d0d1cd1b16be11200acd944b800017609936",
+      "bytes": 216594,
+      "alphaPreserved": true
+    }
+  },
+  "props": {
+    "bookcase": {
+      "atlas": "props-atlas.webp",
+      "crop": [
+        182,
+        21,
+        346,
+        415
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ],
+      "groundPoint": "bottom center of visible support, normalized within crop"
+    },
+    "weaponRack": {
+      "atlas": "props-atlas.webp",
+      "crop": [
+        753,
+        49,
+        391,
+        407
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ],
+      "groundPoint": "bottom center of visible support, normalized within crop"
+    },
+    "throne": {
+      "atlas": "props-atlas.webp",
+      "crop": [
+        131,
+        439,
+        480,
+        415
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ],
+      "groundPoint": "bottom center of visible support, normalized within crop"
+    },
+    "diningTable": {
+      "atlas": "props-atlas.webp",
+      "crop": [
+        673,
+        499,
+        534,
+        342
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ],
+      "groundPoint": "bottom center of visible support, normalized within crop"
+    },
+    "kitchenStove": {
+      "atlas": "props-atlas.webp",
+      "crop": [
+        156,
+        843,
+        419,
+        392
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ],
+      "groundPoint": "bottom center of visible support, normalized within crop"
+    },
+    "storage": {
+      "atlas": "props-atlas.webp",
+      "crop": [
+        727,
+        874,
+        456,
+        353
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ],
+      "groundPoint": "bottom center of visible support, normalized within crop"
+    }
+  },
+  "walls": {
+    "wall": {
+      "atlas": "walls-atlas.webp",
+      "crop": [
+        72,
+        77,
+        1091,
+        754
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ]
+    },
+    "torchPillar": {
+      "atlas": "walls-atlas.webp",
+      "crop": [
+        1339,
+        116,
+        364,
+        667
+      ],
+      "anchor": [
+        0.5,
+        0.98
+      ]
+    }
+  },
+  "notes": [
+    "Crop rectangles measured after inspection, not equal-cell splitting. Crop units [x,y,width,height].",
+    "Transparent alpha preserved losslessly through WebP conversion.",
+    "Warm floor is quiet and repeatable visually, but mathematical edge seamlessness is not guaranteed.",
+    "Walls are isometric sprites with diagonal top edge; do not stretch into screen-horizontal architectural geometry.",
+    "No characters, NPCs, room backgrounds or collision geometry are baked into props."
+  ],
+  "promptSet": {
+    "floor": "Quiet warm beige/pale-gray limestone block floor; flat overhead, square fill, subtle contrast, no objects, paths, walls or text.",
+    "props": "Transparent 2-column 3-row sprite atlas of complete bookcase, family-friendly weapons rack, throne on limestone podium, dining table with benches, stove with pots, storage crates/barrels; soft painted 3D casual isometric castle materials, upper-left light.",
+    "walls": "Transparent atlas of complete broad straight limestone wall and separate limestone torch pillar; oblique top-down game camera, warm upper-left lighting."
+  }
+}

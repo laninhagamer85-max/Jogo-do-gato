@@ -1,3 +1,4 @@
+import {drawOverviewLocation} from './explorationOverviewLocation';
 import {nascentesTrees} from './explorationChapter4';
 import {drawNascentesTerrain,drawNascentesItem,nascentesView,drawNascentesTree} from './explorationChapter4View';
 import {drawExplorationLegend} from './explorationLegendView';
@@ -170,6 +171,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     ctx.lineWidth = 2; ctx.strokeStyle = '#243a30'; ctx.strokeText(f.text.replace(/ HP$/, ''), p.x, y);
     ctx.fillStyle = f.kind === 'damage' ? '#e9a19a' : f.kind === 'heal' ? '#b9d8b0' : f.kind === 'xp' ? '#ddd2ac' : '#fffbe7'; ctx.fillText(f.text.replace(/ HP$/, ''), p.x, y); ctx.restore();
   });
+  if(overview)drawOverviewLocation(ctx,width,height,point(state.player));
 }
 
 /** Common pickup language for enemy drops and room collection nodes. */

@@ -1,11 +1,18 @@
+import stairArt from '../../public/forest-adventure/chapter4/stairs-nascentes-independent-v4-manifest.json';
+import {NASCENTES_ASSETS,stairSourcePoint} from './explorationChapter4';
 import {drawTerrainTexture,type TerrainBounds} from './terrainTexture';
 import {NASCENTES_SCENE,nascentesElevation,nascentesRoom,returnPortal,nascentesTrees,nascentesShoreProps,type NascentesTree} from './explorationChapter4';
 import {drawExplorationGround,drawWoodlandProp,FOREST_GROUND,FOREST_GRASS_MATERIAL} from './explorationScenery';
 import {drawBiomeWater,drawBiomeStatic} from './biomeCompositionView';
 import {drawPortalArch,drawPortalEnergy} from './explorationPortal';
 import {touchesRegion,type GroundPoint} from './biomeComposition';
-export function nascentesView(width:number,height:number,player:GroundPoint,zoom=1,overview=false){const s={left:Math.min(-18,player.x-3),top:Math.min(-10,player.y-3),width:Math.max(24,player.x+3)-Math.min(-18,player.x-3),height:Math.max(14,player.y+3)-Math.min(-10,player.y-3)},tile=overview?Math.min(width/s.width,Math.max(1,height-20)/s.height):Math.max(46,width/15,height/12)*zoom;return{tile,left:overview?width/2-(s.left+s.width/2)*tile:width/2-player.x*tile,top:overview?height*.54-(s.top+s.height/2)*tile:height*.46-player.y*tile};}
+export function nascentesView(width:number,height:number,player:GroundPoint,zoom=1,overview=false){
+ const s={left:Math.min(-18,player.x-3),top:Math.min(-15,player.y-3),width:Math.max(24,player.x+3)-Math.min(-18,player.x-3),height:Math.max(19,player.y+3)-Math.min(-15,player.y-3)};
+ if(overview){const portrait=height>width,padTop=portrait?180:12,availableWidth=Math.max(180,width-(portrait?12:165)),availableHeight=Math.max(100,height-padTop-12),tile=Math.min(availableWidth/s.width,availableHeight/s.height);return{tile,left:availableWidth/2-(s.left+s.width/2)*tile,top:padTop+availableHeight/2-(s.top+s.height/2)*tile};}
+ const tile=Math.max(46,width/15,height/12)*zoom;return{tile,left:width/2-player.x*tile,top:height*.46-player.y*tile};
+}
 export const nascentesOverview=(w:number,h:number)=>nascentesView(w,h,{x:0,y:0},1,true);
+let castleArt:HTMLImageElement|undefined,stairImage:HTMLImageElement|undefined;
 const ready=(im?:HTMLImageElement)=>im?.complete&&im.naturalWidth;
 /** Chunk-cached material ground; independent water/elevation/props and portals, no baked map image. */
 export function drawNascentesTerrain(ctx:CanvasRenderingContext2D,width:number,height:number,left:number,top:number,tile:number,grass:HTMLImageElement|undefined,_items?:HTMLImageElement,open=false,_stairs?:HTMLImageElement,plateau?:HTMLImageElement,props?:HTMLImageElement,time=0,reduced=true,portal?:HTMLImageElement,water?:HTMLImageElement,shelter?:HTMLImageElement,index=30,treesInTerrain=true,soil?:HTMLImageElement){
@@ -14,8 +21,11 @@ export function drawNascentesTerrain(ctx:CanvasRenderingContext2D,width:number,h
  ctx.save();ctx.globalAlpha=.48;drawBiomeWater(ctx,room.composition!,left,top,tile,time,reduced,water);ctx.restore();
  if(ready(props))for(const q of nascentesShoreProps(index)){const a=p(q);drawWoodlandProp(ctx,props!,0,a.x,a.y,tile,{width:q.width,height:q.width*.8});drawWoodlandProp(ctx,props!,1,a.x+tile*.5,a.y-tile*.2,tile,{width:.8,height:.7});}
  if(ready(props))for(const q of nascentesDecorations(left,top,tile,width,height,index)){const a=p(q);drawWoodlandProp(ctx,props!,q.index,a.x,a.y,tile,{width:q.size,height:q.size},false);}
- if(treesInTerrain)for(const tree of nascentesTrees({left:-left/tile,top:-top/tile,width:width/tile,height:height/tile},index).sort((a,b)=>a.y-b.y)){const q=p(tree);drawNascentesTree(ctx,_stairs,tree,q.x,q.y,tile);}
+
  if(ready(plateau)){const x=left+e.left*tile,y=top+e.top*tile,size=e.size*tile;if(x+size>=0&&y+size>=0&&x<=width&&y<=height)ctx.drawImage(plateau!,x,y,size,size);}
+ if(typeof Image!=='undefined'){if(!stairImage){stairImage=new Image();stairImage.src=NASCENTES_ASSETS.stairs;}if(ready(stairImage)){const a=p(stairSourcePoint(0,0,index)),b=p(stairSourcePoint(1,0,index));ctx.save();ctx.transform(b.x-a.x,b.y-a.y,-(b.y-a.y),b.x-a.x,a.x,a.y);ctx.beginPath();stairArt.physicalSilhouetteClip_pixel.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();ctx.drawImage(stairImage!,0,0);if(!open){ctx.fillStyle='#463e3266';ctx.fillRect(0,0,1024,1536);}ctx.restore();}}
+ if(treesInTerrain)for(const tree of nascentesTrees({left:-left/tile,top:-top/tile,width:width/tile,height:height/tile},index).sort((a,b)=>a.y-b.y)){const q=p(tree);drawNascentesTree(ctx,_stairs,tree,q.x,q.y,tile);}
+ if(index===31&&typeof Image!=='undefined'){if(!castleArt){castleArt=new Image();castleArt.src='/forest-adventure/chapter4/castle-gate-v1.webp';}if(ready(castleArt)){ctx.drawImage(castleArt!,left+12*tile,top-14.8*tile,10*tile,10*tile);const gate=p({x:14.5,y:-8.1});drawPortalEnergy(ctx,gate.x,gate.y,tile,time,true,reduced);if(tile>20){ctx.font='bold 12px sans-serif';ctx.fillStyle='#fff5cf';ctx.textAlign='center';ctx.fillText('Cap. 5 · Interior do Castelo',gate.x,gate.y+tile*.45);}}}
  if(ready(shelter)){const a=p({x:room.camp.x-.8,y:room.camp.y-.5}),w=tile*2,h=w*shelter!.naturalHeight/shelter!.naturalWidth;ctx.drawImage(shelter!,a.x-w/2,a.y-h,w,h);}
  for(const [q,active,label] of [[room.exit,open,index===30?'Sala 32':'Sala 31 · atalho'],[returnPortal(index),true,index===31?'Sala 31':'Retorno ao bosque']] as const){const a=p(q);drawPortalEnergy(ctx,a.x,a.y,tile,time,active,reduced);drawPortalArch(ctx,portal,a.x,a.y,tile);if(tile>20){ctx.save();ctx.font=`600 ${Math.min(12,tile*.2)}px sans-serif`;ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#263724';ctx.strokeText(label,a.x,a.y+tile*.35);ctx.fillStyle='#f8f4d3';ctx.fillText(label,a.x,a.y+tile*.35);ctx.restore();}}
 }

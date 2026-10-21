@@ -1,3 +1,4 @@
+import {CASTLE_GATE,enterCastle,readCastle,type CastleProgress} from './explorationCastle';
 import {nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
 import {readLegendProgress,legendWeapon,type LegendProgress} from './explorationLegends';
 import {hazardPhase} from './explorationHazards';
@@ -29,8 +30,9 @@ export const combatLootLifetime=(item:CombatItem)=>item==='ambar'?90000:180000;
 export type CombatFeedback = CombatPoint & { id: number; text: string; kind: 'damage' | 'heal' | 'xp' | 'info'; until: number };
 export type RoomMemory=Pick<CombatState,'collectedNodes'|'defeatedEnemyIds'|'roomCollectedFibers'|'switchStep'|'hasRoomKey'|'bridgeEntered'|'bridgeCrossed'|'consumablesUsed'|'gateOpen'|'enemies'|'loot'|'exploredCells'|'roomPerformance'|'encounterSeed'|'openWorldCells'>;
 export type CombatState = {
+ castle?:CastleProgress;
   roomVisits?:Record<string,RoomMemory>;portalTarget?:number;portalCooldownUntil?:number;openWorldCells?:string[];
-  levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:3;campaignVersion:2|3|4|5|6|7;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;campaignVersion:2|3|4|5|6|7|8;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -52,7 +54,7 @@ export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'|'legends'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0)+(legendWeapon(s as CombatState)?.bonus??0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
-  return {nascentesSceneVersion:room.index>=30?3:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=30?7:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=30?8:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -86,7 +88,7 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value: unknown): CombatRead {
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>7) return { supported: false, version };
+  if (version > 4 || Number(raw.campaignVersion??1)>8) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=Math.floor(number(raw.roomIndex,0,0,unlocked));
@@ -96,10 +98,11 @@ export function readCombatState(value: unknown): CombatRead {
   for(const [key,value] of Object.entries(object(raw.roomAttempts)))if(completedRooms.includes(Number(key))&&String(Number(key))===key&&typeof value==='string'&&value.length<100000)s.roomAttempts[key]=value;
   if(raw.legends){s.legends=readLegendProgress(raw.legends);s.campaignVersion=Math.max(4,s.campaignVersion) as CombatState['campaignVersion'];}
   s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
+  s.castle=readCastle(raw.castle);if(s.castle&&index!==31)s.castle={...s.castle,active:false};
   s.portalCooldownUntil=number(raw.portalCooldownUntil,0,0,1e9);
   if(Number.isInteger(raw.portalTarget)&&connectedPortal(index,raw.portalTarget as number))s.portalTarget=raw.portalTarget as number;
   s.openWorldCells=Array.isArray(raw.openWorldCells)?[...new Set(raw.openWorldCells.filter((v):v is string=>typeof v==='string'&&/^-?\d{1,6},-?\d{1,6}$/.test(v)))].slice(-12000):[];
-  s.campaignVersion=Math.max(s.campaignVersion,number(raw.campaignVersion,s.campaignVersion,2,7)) as CombatState['campaignVersion'];
+  s.campaignVersion=Math.max(s.campaignVersion,number(raw.campaignVersion,s.campaignVersion,2,8)) as CombatState['campaignVersion'];
   s.roomVisits={};
   for(const [key,memory] of Object.entries(object(raw.roomVisits))){
    const ri=Number(key);if(!Number.isInteger(ri)||ri<29||ri>=EXPLORATION_ROOMS.length||!memory||typeof memory!=='object')continue;
@@ -122,8 +125,8 @@ export function readCombatState(value: unknown): CombatRead {
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   s.roomCollectedFibers=Math.floor(number(raw.roomCollectedFibers,index===0?s.stock.fibra+s.bag.fibra:0,0,9999));
   const point = object(raw.player); const p = { x: number(point.x, room.camp.x, index>=30?-1e5:PILOT_SIZE.left, index>=30?1e5:PILOT_SIZE.left+PILOT_SIZE.width), y: number(point.y, room.camp.y, index>=30?-1e5:PILOT_SIZE.top, index>=30?1e5:PILOT_SIZE.top+PILOT_SIZE.height) };
-  s.player = nearestPilotPoint(room.index>=30&&raw.nascentesSceneVersion!==3?room.camp:p, s.gateOpen,s.roomIndex);
-  s.exploredCells = readMinimap(room.index>=30&&raw.nascentesSceneVersion!==3?[]:raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
+  s.player = nearestPilotPoint(room.index>=30&&raw.nascentesSceneVersion!==4?room.camp:p, s.gateOpen,s.roomIndex);
+  s.exploredCells = readMinimap(room.index>=30&&raw.nascentesSceneVersion!==4?[]:raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
   s.cards=Array.isArray(raw.cards)?[...new Set(raw.cards.filter((c):c is CombatCard=>c==='roots'||c==='tide'||c==='amber'))]:[];
@@ -193,7 +196,7 @@ export function equipCombatCharm(current: CombatState): CombatState {
 }
 function random(s: CombatState) { s.seed = (Math.imul(s.seed, 1664525) + 1013904223) >>> 0; return s.seed / 0x100000000; }
 export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: number): CombatState {
-  if (current.completed || !Number.isFinite(elapsedMs) || elapsedMs < 0) return current;
+  if (current.castle?.active || current.completed || !Number.isFinite(elapsedMs) || elapsedMs < 0) return current;
   const s = clone(current),room=campaignRoom(s.roomIndex),definitions=campaignEnemies(s.roomIndex,s.encounterSeed), dt = Math.min(50, elapsedMs); s.time += dt; s.revision++;
   if(s.roomIndex>=30){const cells=new Set(s.openWorldCells??[]);for(let y=Math.floor(s.player.y)-2;y<=Math.floor(s.player.y)+2;y++)for(let x=Math.floor(s.player.x)-2;x<=Math.floor(s.player.x)+2;x++)if(Math.hypot(x+.5-s.player.x,y+.5-s.player.y)<2.5)cells.add(`${x},${y}`);s.openWorldCells=[...cells].slice(-12000);}
   s.loot=s.loot.filter(l=>s.time<(l.expiresAt??Infinity));
@@ -203,6 +206,7 @@ export function stepCombat(current: CombatState, input: CombatInput, elapsedMs: 
   if (length) { s.facing = { x: dx / length, y: dy / length }; s.player = move(s.player, s.facing.x * Math.min(1, length) * dt * .003, s.facing.y * Math.min(1, length) * dt * .003, s.gateOpen,.22,s.roomIndex); }
   s.exploredCells = revealMinimap(s.exploredCells,s.player);
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
+  if(s.roomIndex===31&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=8;return s;}
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) {s.energy -= 25;s.powerFx={power:s.activePower??'burst',x:s.player.x,y:s.player.y,startedAt:s.time,until:s.time+800};}
     if(power&&(hasCombatCard(s,'tide')||s.activePower==='tide')){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
@@ -359,8 +363,8 @@ export function advanceCombatRoom(current:CombatState):CombatState{
  next.legends=current.legends?readLegendProgress(current.legends):undefined;if(next.legends)next.campaignVersion=Math.max(4,next.campaignVersion) as CombatState['campaignVersion'];next.roomStars={...current.roomStars};next.roomAttempts={...current.roomAttempts};next.cards=[...current.cards];next.activeCard=current.activeCard;next.secondaryCard=current.secondaryCard;next.activePower=current.activePower;next.quickItems=normalizeQuickItems(current.quickItems);next.rareEquipped=current.rareEquipped;next.stock={...current.stock};next.bag={...current.bag};next.rareStock={...current.rareStock};next.rareBag={...current.rareBag};next.equipmentOwned=current.equipmentOwned;next.equipmentOn=current.equipmentOn;
  next.completedRooms=[...new Set([...current.completedRooms,current.roomIndex])];next.claimedRooms=[...new Set([...current.claimedRooms,current.roomIndex])];next.completionRewardClaimed=next.claimedRooms.includes(next.roomIndex);
  next.deaths=current.deaths;next.seed=current.seed;next.invulnerableUntil=next.time+2500;next.attackAt=next.time;
- next.roomVisits=current.roomIndex>=29?{...current.roomVisits,[current.roomIndex]:rememberCombatRoom(current)}:current.roomVisits;
- if(next.roomIndex>=30)next.campaignVersion=7;
+ next.castle=current.castle;next.roomVisits=current.roomIndex>=29?{...current.roomVisits,[current.roomIndex]:rememberCombatRoom(current)}:current.roomVisits;
+ if(next.roomIndex>=30)next.campaignVersion=8;
  next.enemies=next.enemies.map(e=>({...e,attackAt:next.time+1500}));return next;
 }
 
@@ -433,11 +437,11 @@ export function travelCombatPortal(current:CombatState,visitedRoom?:number):Comb
  const target=menuVisit?visitedRoom:current.portalTarget;if(target===undefined||(!menuVisit&&!connectedPortal(current.roomIndex,target)))return current;
  if(!menuVisit&&target>current.roomIndex&&!current.completedRooms.includes(current.roomIndex))return current;
  const visits:Record<string,RoomMemory>={...current.roomVisits,[current.roomIndex]:rememberCombatRoom(current)},memory=visits[target];
- const next:CombatState={...current,...createCombatState(target),roomVisits:visits};
+ const next:CombatState={...current,...createCombatState(target),roomVisits:visits,castle:current.castle?{...current.castle,active:false}:undefined};
  for(const key of ['time','xp','hp','energy','stock','bag','rareStock','rareBag','legends','cards','activeCard','secondaryCard','activePower','quickItems','rareEquipped','equipmentOwned','equipmentOn','completedRooms','claimedRooms','roomStars','roomAttempts','deaths','seed'] as const)Object.assign(next,{[key]:current[key]});
  if(memory)Object.assign(next,memory);
  else if(current.completedRooms.includes(target)){const r=campaignRoom(target);next.gateOpen=true;next.collectedNodes=r.nodes.map(n=>n.id);next.switchStep=r.switches.length;next.roomCollectedFibers=r.fibers;next.hasRoomKey=true;next.bridgeCrossed=true;next.bridgeEntered=true;next.consumablesUsed=1;next.defeatedEnemyIds=r.enemies.map(e=>e.id);next.enemies=next.enemies.map(e=>({...e,hp:0,respawnAt:current.time+insectRespawnMs(campaignEnemies(target,current.encounterSeed).find(d=>d.id===e.id)!)}));}
- next.revision=current.revision+1;next.campaignVersion=7;next.completed=false;next.portalTarget=undefined;next.portalElapsed=0;next.portalCooldownUntil=current.time+500;next.completionRewardClaimed=current.claimedRooms.includes(target);next.walking=false;next.feedback=[];next.openWorldCells=memory?.openWorldCells??[];
+ next.revision=current.revision+1;next.campaignVersion=8;next.completed=false;next.portalTarget=undefined;next.portalElapsed=0;next.portalCooldownUntil=current.time+500;next.completionRewardClaimed=current.claimedRooms.includes(target);next.walking=false;next.feedback=[];next.openWorldCells=memory?.openWorldCells??[];
  const arrival=target>=30?(target>current.roomIndex?returnPortal(target):campaignRoom(target).exit):campaignRoom(target).exit;
  next.player=nearestPilotPoint({x:arrival.x+(target>=30?(target>current.roomIndex?2:-2):-1.7),y:arrival.y+(target>=30?.4:0)},next.gateOpen,target);next.invulnerableUntil=current.time+2500;next.message=`${campaignRoom(target).title}. Passagens já liberadas permanecem abertas.`;return next;
 }

@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-20",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.26.0_for_user_test",
+  "status": "implemented_1.27.0_awaiting_visual_validation",
   "active_run": "2026-10-20",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -12,14 +12,16 @@
     "source_site_commit": "eafc76b5d8bf85981139b498f64d81b2e648f07c",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "b6171d14b0ce77adfa3d9abebce3fac49b44d99b",
-    "code_commit_status": "1.26.0 source and assets synchronized to collaboration branch",
-    "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be"
+    "code_commit_status": "1.27.0 review checkpoint; implemented, build and573 offline tests passed, awaiting completion of browser visual QA; public release remains1.26.0",
+    "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
+    "review_source_commit": "324b6aea66d0e0f8a18502d8c02a73228e1dc7f5"
   },
   "current_improvement": {
-    "id": "open-world-modular-pilot",
-    "base_product_version": "1.25.0",
-    "implementation_status": "published_1.26.0",
-    "acceptance_status": "pending_user_test"
+    "id": "castle-chapter5-branch-and-plateau-fixes",
+    "base_product_version": "1.26.0",
+    "implementation_status": "implemented_awaiting_visual_validation",
+    "acceptance_status": "browser_tool_timeout_partial_QA",
+    "report": "docs/evolution/runs/2026-10-20-castle-branch.md"
   },
   "publication": {
     "id": "appgdep_6ad7fe74cdb4819193056cf666d8a3db",
@@ -696,5 +698,6 @@
     "NPCs": 0,
     "scope": "authored connected sector; continuous ground/forest beyond; not infinite generated missions or network streaming",
     "save": "campaignVersion7; per-room local memory; no resource reset on visits"
-  }
+  },
+  "next_action": "Resume browser QA for stairs, closed castle room composition, return to exterior, portrait and landscape; publish once validated. Current live version remains1.26.0."
 }

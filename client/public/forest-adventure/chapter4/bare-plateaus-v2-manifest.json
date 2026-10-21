@@ -1,0 +1,43 @@
+{
+  "source": "Built-in imagegen precise-object edits of user supplied elevation variants",
+  "assets": [
+    {
+      "file": "plateau-courtyard-bare-v2.webp",
+      "source_png": "/workspace/scratch/75b2b54f627b/generated_images/exec-18f9650c-94d6-4049-a141-dd328c6876f6.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_128": [
+        35,
+        344,
+        1216,
+        1158
+      ],
+      "alpha_preserved": true,
+      "bytes": 251916,
+      "sha256": "29d005c22ba1b6203d790441c411d804d11ce35a96528b53d1d12d564f588043"
+    },
+    {
+      "file": "plateau-grass-bare-v2.webp",
+      "source_png": "/workspace/scratch/75b2b54f627b/generated_images/exec-80d64a72-d582-4b97-b3da-ee4152d63eae.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_128": [
+        38,
+        343,
+        1211,
+        1155
+      ],
+      "alpha_preserved": true,
+      "bytes": 186884,
+      "sha256": "46489f5fac97a30c89aa0ab5235653e9f906b0c72b16b7f0db49ff619936e6f0"
+    }
+  ],
+  "invariants": "Same square framing/camera and rocky outline retained as closely as imagegen permitted. All conifers/trunks/tree shadows and baked short ladder staircase removed. No image post-edit, only WebP conversion preservingalpha.",
+  "geometry": "Original normalized top-floor geometry broadly retained; visual foot-contact check required. Old stair polygon must be replaced with independent stair geometry. No tree collisions should remain within plateau assets."
+}

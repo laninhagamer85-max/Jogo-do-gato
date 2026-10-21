@@ -1,0 +1,231 @@
+{
+  "file": "stairs-nascentes-independent-v4.webp",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "source_png": "/workspace/scratch/75b2b54f627b/generated_images/exec-a2bd7bb6-a517-4b3c-bddb-87d834b3b46e.png",
+  "source": "Original built-in imagegen; elevation reference used for painted limestone style. No pixel post-edits, only WebP conversion.",
+  "sha256": "1e3f03492193d2321b49d1c2846d76eafa981bc18e131b1a78d4b44a194b605e",
+  "bytes": 196664,
+  "alpha_preserved": true,
+  "anchors_pixel": {
+    "upperFoot": [
+      735,
+      200
+    ],
+    "lowerFoot": [
+      346,
+      1326
+    ]
+  },
+  "walkablePolygon_pixel": [
+    [
+      575,
+      150
+    ],
+    [
+      908,
+      194
+    ],
+    [
+      525,
+      1370
+    ],
+    [
+      145,
+      1240
+    ]
+  ],
+  "physicalSilhouetteClip_pixel": [
+    [
+      515,
+      106
+    ],
+    [
+      544,
+      75
+    ],
+    [
+      587,
+      81
+    ],
+    [
+      601,
+      119
+    ],
+    [
+      930,
+      143
+    ],
+    [
+      958,
+      141
+    ],
+    [
+      987,
+      155
+    ],
+    [
+      994,
+      193
+    ],
+    [
+      984,
+      270
+    ],
+    [
+      952,
+      370
+    ],
+    [
+      914,
+      483
+    ],
+    [
+      877,
+      594
+    ],
+    [
+      840,
+      707
+    ],
+    [
+      800,
+      825
+    ],
+    [
+      764,
+      940
+    ],
+    [
+      726,
+      1060
+    ],
+    [
+      690,
+      1172
+    ],
+    [
+      650,
+      1292
+    ],
+    [
+      616,
+      1406
+    ],
+    [
+      578,
+      1490
+    ],
+    [
+      533,
+      1480
+    ],
+    [
+      142,
+      1347
+    ],
+    [
+      66,
+      1300
+    ],
+    [
+      63,
+      1245
+    ],
+    [
+      112,
+      1176
+    ],
+    [
+      160,
+      1066
+    ],
+    [
+      201,
+      949
+    ],
+    [
+      239,
+      833
+    ],
+    [
+      277,
+      719
+    ],
+    [
+      316,
+      604
+    ],
+    [
+      355,
+      491
+    ],
+    [
+      394,
+      376
+    ],
+    [
+      432,
+      263
+    ],
+    [
+      472,
+      159
+    ]
+  ],
+  "stepCenters_pixel": [
+    [
+      722,
+      210
+    ],
+    [
+      669,
+      386
+    ],
+    [
+      633,
+      494
+    ],
+    [
+      596,
+      603
+    ],
+    [
+      560,
+      713
+    ],
+    [
+      523,
+      823
+    ],
+    [
+      484,
+      933
+    ],
+    [
+      448,
+      1042
+    ],
+    [
+      411,
+      1155
+    ],
+    [
+      352,
+      1290
+    ]
+  ],
+  "sourceWalkingLengthPixels": 1191.300549819398,
+  "directionRightOfUpDegrees": 19.058531038590257,
+  "integration": {
+    "coordinates": "source pixels, y down",
+    "placement": "Use ONE uniform similarity transform mapping lowerFoot to world lower landing and upperFoot to upper landing. Apply same transform to walk polygon and silhouetteclip. Never stretch x/y independently.",
+    "renderClipRequired": true,
+    "limitation": "Generator retained faint golden alpha glow outside physical stone despite targeted cleanup. Use physicalSilhouetteClip_pixel before drawing; no halo should enter scene. Exact silhouette trace is conservative and requires browser QA.",
+    "widthAtWorldLength4_5": "Walk corridor approx1.4world wide. For1.8width use~5.8worldlength uniformly; do not distort to force both dimensions.",
+    "anchorAccuracy": "visually traced actual generated treads/landings, not theoretical requested angle; browser footcontact required."
+  },
+  "prompt": "Independent softly painted warm limestone stair sprite;8–10broadwalkabletreads, low edging, clearupper/lowerlandings, bottomslightlyleft to top slightlyright, highoverheadoblique, upperleftlight, alpha/no wood/ladder/scenery/text. Requested11degree axis; actual~19degrees, compensated using similarity transform."
+}

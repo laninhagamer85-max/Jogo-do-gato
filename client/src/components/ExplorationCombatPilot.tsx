@@ -1,3 +1,5 @@
+import ExplorationCastle from './ExplorationCastle';
+import {CASTLE_GATE} from '@/game/explorationCastle';
 import {nascentesView} from '@/game/explorationChapter4View';
 import {NASCENTES_ASSETS} from '@/game/explorationChapter4';
 import {normalizeQuickItems,setCombatQuickItem,quickItemCount,canUseQuickItem,useCombatQuickItem,type CombatQuickItem} from '@/game/explorationCombat';
@@ -42,7 +44,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const [audioMix]=useState(loadExplorationAudio);
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
-  useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed,chapterNumber(game.roomIndex));},[audioMix,soundOn,panel,overview,assetStatus,game.completed,game.roomIndex]);
+  useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&!game.castle?.active&&assetStatus==='ready'&&!game.completed,chapterNumber(game.roomIndex));},[audioMix,soundOn,panel,overview,assetStatus,game.completed,game.roomIndex,game.castle?.active]);
   const [noticeVisible,setNoticeVisible]=useState(true);
   useEffect(()=>{setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),4500);return ()=>clearTimeout(timer);},[game.message,game.roomIndex]);
   const [inventoryTab,setInventoryTab]=useState<'all'|'legends'>('all');
@@ -123,6 +125,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         const urgent = pending.current.attack || pending.current.power || pending.current.interact;
         const before = current.current;
         current.current = stepCombat(before, { dx, dy, ...pending.current }, dt);
+        if(current.current.castle?.active){setGame(current.current);persist();}
         audio.current?.configure(mixRef.current,soundRef.current,chapterNumber(current.current.roomIndex));audio.current?.tick();
         if (soundRef.current) {
           if(current.current.enemies.some((e,i)=>(e.windupUntil??0)>(before.enemies[i]?.windupUntil??0)||e.attackAt>(before.enemies[i]?.attackAt??0)))audio.current?.cue(current.current.enemies.some(e=>(e.windupUntil??0)>current.current.time));
@@ -151,10 +154,10 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     };
     frame = window.requestAnimationFrame(loop);
     return () => { window.cancelAnimationFrame(frame); observer.disconnect(); clear(); };
-  }, [char, initial.supported,game.roomIndex]);
+  }, [char, initial.supported,game.roomIndex,game.castle?.active]);
 
   useEffect(() => {
-    if (!initial.supported) return;
+    if (!initial.supported||game.castle?.active) return;
     const map: Record<string, ForestDirection> = { arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down', arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right' };
     const down = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase(); if (event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
@@ -174,20 +177,21 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
     const blur = () => { clear(); openPanel('pause'); };
     window.addEventListener('keydown', down); window.addEventListener('keyup', up); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', hidden);
     return () => { clear(); window.removeEventListener('keydown', down); window.removeEventListener('keyup', up); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', hidden); };
-  }, [initial.supported]);
+  }, [initial.supported,game.castle?.active]);
   const room=campaignRoom(game.roomIndex);
   const fibers = game.roomIndex===0?game.stock.fibra+game.bag.fibra:game.roomCollectedFibers;
   const canUse = (item:CombatQuickItem) => canUseQuickItem(game,item);
   const useItem = (item:CombatQuickItem) => {if(!panelRef.current&&!overviewRef.current)change(useCombatQuickItem(current.current,item));};
   const modalTitle=panel==='inventory'?'Mochila da Exploração':panel==='exit'?'Voltar aos capítulos?':'Exploração pausada';
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
+  if(game.castle?.active)return <ExplorationCastle state={game} character={char} onBack={leave} onChange={castle=>{const base=current.current;change({...base,castle,player:castle.active?base.player:{x:CASTLE_GATE.x,y:CASTLE_GATE.y+1.5},portalCooldownUntil:castle.active?base.portalCooldownUntil:base.time+2000});}}/>;
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
   const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
   return <section onPointerDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} onKeyDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} style={dockStyle} className={`combat-pilot combat-pilot--lens-dock ${overview&&game.roomIndex>=30?'is-chapter4-overview':''}`} aria-label="Campanha de Exploração">
     <header className="combat-top"><div><small>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {game.roomIndex+1}/{EXPLORATION_ROOMS.length} · {room.title.toUpperCase()}</small><h1>{legendName(game)??profile?.name??'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
-      <canvas ref={canvas} aria-label="Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila." onPointerUp={event => {
+      <canvas ref={canvas} aria-label={overview?`Mapa completo da sala ${game.roomIndex+1}. O marcador vermelho com a legenda Você está aqui mostra a posição atual do personagem.`:"Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila."} onPointerUp={event => {
         if (panelRef.current || overviewRef.current || current.current.completed) return;
         const r = event.currentTarget.getBoundingClientRect(), v = current.current.roomIndex>=30?nascentesView(r.width,r.height,current.current.player,zoom,false):combatView(r.width, r.height, current.current.player, zoom, false);
         route.current = pilotRoute(current.current.player, { x: (event.clientX - r.left - v.left) / v.tile, y: (event.clientY - r.top - v.top) / v.tile }, current.current.gateOpen,current.current.roomIndex);
