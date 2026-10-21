@@ -12,3 +12,5 @@ Pesquisa: MDN https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingCo
 Validação: TypeScript passou;663 testes em66 arquivos passaram, Firebase staging excluído por credencial ausente. Novos testes: obra pendente/colisão/progresso/save/claim único,8 pontos acessíveis por rota real, coleta sem alterar arma e renderização troca/restauração da arma. Navegador isolado844x390 e390x844: coleta real de árvore5→4 nas salas31 e32 comKael; baú construindo18%, retirada após30s; casa de poções14% visível vertical. Sem dados de jogador real. Sem aparelho físico. Evidência ../evidence/meupet-1332-obra-vertical.jpg.
 
 Rollback1.33.1 Site120, versãoappgprj_6ac40994d8d881919d46203a60801e46~appgver_b72f323a008881918c7935e37a97aa63; deploymentappgdep_6ad9297c4a948191852ad499324e82f8. Fonte based0b6fb6d77f7ed77eecb2af0a0444a150b8e8013.
+
+Publicado com sucesso: produto1.33.2 Site121. Build18.97s. Fonte51db7d0762baadcf90536eaa0e7403dcdbdfbcb1; GitHub44ee1324f362d885eb9853bf56fa1c945ebb159c; versãoappgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94; deploymentappgdep_6ad92bd8a2e48191b9c510e6e0f2d325. URL https://meupet.aquimeusite.chatgpt.site
