@@ -1,6 +1,6 @@
 # 1.34.0 — Teste público do castelo e Tesouro Real
 
-Estado: validado; publicação em andamento.
+Estado: publicado.
 
 Base conhecida: produto 1.33.3, Site nativo122, fonte479bc279ec18cdff2c6b3448702bbfbe4c1d7645. Rollback: republicar pacote anterior122.
 
@@ -22,3 +22,9 @@ Navegador cloud, fixtures isoladas sem salvar na conta:844×390 e390×844. Baú 
 ## Limites
 
 Estado econômico segue a arquitetura existente por conta/perfil e persistência do jogo; não altera a autoridade do backend. Acesso de teste é temporário via CASTLE_TEST_ACCESS. Datas e recompensas são locais como os demais sistemas de exploração existentes.
+
+## Publicação confirmada
+
+Produto1.34.0 · Site nativo123 · deployment appgdep_6ad93e32e0c481919c9cebbf0037809f, succeeded.
+URL: https://meupet.aquimeusite.chatgpt.site
+Fonte oficial:4bda21e7db2af6672be6c35a1f65f4304d216ab7. GitHub verificado:d1606803aab1c3d42fc4bef93230defd44f9748f. Build oficial19.26s e typecheck aprovados. Evidências: docs/evolution/evidence/meupet-1340-trono.jpg e meupet-1340-armadura.jpg.
