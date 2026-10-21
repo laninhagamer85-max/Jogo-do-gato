@@ -229,3 +229,6 @@
 .is-base-editing .combat-status-stack,.is-base-editing .combat-minimap,.is-base-editing .combat-item-tray,.is-base-editing .combat-controls{visibility:hidden}.base-placement .base-placement-handle{width:64px;height:64px;padding:5px}.base-placement-handle>span:not([aria-hidden]){display:none}.base-placement-handle img,.base-placement-handle>span[aria-hidden]{width:52px!important;height:52px!important}
 @media(min-height:501px){.combat-pilot--lens-dock .combat-base-shortcut{top:auto;bottom:150px}}
 .base-building-catalog{grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}.base-building-catalog article,.base-building-catalog article button{overflow-wrap:normal;word-break:normal;font-size:14px}
+
+/* First-use harvesting guide: readable in both phone orientations. */
+.gathering-guide{max-width:660px;margin:auto;line-height:1.55}.gathering-guide h3{font-size:1.2rem}.gathering-guide nav{display:flex;gap:12px;justify-content:space-between}.gathering-guide button{min-height:44px}.combat-actions{position:relative}.combat-gather-hint{position:absolute;right:0;bottom:100%;width:230px;max-width:65vw;background:#254235ee;color:#fff4da;padding:8px 12px;border-radius:14px;font-size:12px;pointer-events:none}

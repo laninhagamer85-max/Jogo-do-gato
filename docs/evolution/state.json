@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.33.0",
+  "status": "validated_1.33.1_pending_publication",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,11 +20,11 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "safe-base-drag-crafting",
-    "base_product_version": "1.32.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-21-safe-base-drag-crafting.md",
-    "acceptance_status": "658 tests passed; typecheck/build passed; real isolated portrait/landscape browser QA"
+    "id": "gathering-first-use-guide",
+    "base_product_version": "1.33.0",
+    "implementation_status": "validated_pending_package",
+    "report": "docs/evolution/runs/2026-10-21-gathering-guide.md",
+    "acceptance_status": "TypeScript and44tests passed; real isolated browser two orientations; wood5→4"
   },
   "publication": {
     "id": "appgdep_6ad92190166481919514793d84b1904a",
