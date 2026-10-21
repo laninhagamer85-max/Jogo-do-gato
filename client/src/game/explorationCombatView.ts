@@ -1,6 +1,8 @@
+import {drawExplorationTrails} from './explorationTrails';
+import {woodlandResource} from './explorationWoodlandResources';
 import {baseLayout,baseVisible,baseView,insideSafeBase,BASE_BUILDINGS} from './explorationBase';
-import {resourceNodes,harvestingActive} from './explorationWorkshop';
-import {drawResource,drawHarvestTool,drawBaseBuilding,drawBaseProtection} from './explorationWorkshopView';
+import {resourceNodes,resourceState,harvestingActive} from './explorationWorkshop';
+import {drawResource,drawResourceLabel,drawHarvestTool,drawBaseBuilding,drawBaseProtection} from './explorationWorkshopView';
 import {drawPaintedItem,type PaintedItem} from './explorationPaintedItems';
 import {drawBiomeShelter,drawBiomeTree} from './explorationBiomeArt';
 import {explorationGroves,openWorldPlants} from './explorationOpenWorld';
@@ -47,11 +49,12 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
+  drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   ctx.restore();
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number;worldTree?:boolean;variant?:number})=>{
     const p=point(prop),b=woodlandPropPlacement(prop.index,p.x,p.y,t,prop);
-    if(prop.worldTree&&drawBiomeTree(ctx,room.index,{...prop,variant:prop.variant??0},p.x,p.y,t))return;
+    if(prop.worldTree){const n=woodlandResource(room.index,prop);if(n&&!resourceState(state.workshop,n.id).remaining){drawResource(ctx,state,n,p.x,p.y,t);return;}if(drawBiomeTree(ctx,room.index,{...prop,variant:prop.variant??0},p.x,p.y,t)){if(n)drawResourceLabel(ctx,state,n,p.x,p.y,t);return;}}
     if(river){if(b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawRiverProp(ctx,riverProps,prop.index,p.x,p.y,t,prop);return;}
     if(autumn)ctx.save();
     if(propsAtlas&&b.x+b.width>=0&&b.y+b.height>=0&&b.x<=width&&b.y<=height)drawWoodlandProp(ctx,propsAtlas,prop.index,p.x,p.y,t,prop,true);if(autumn)ctx.restore();
@@ -105,7 +108,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p = point(entity.p);
     if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing);continue;}
     if(entity.type==='resource'){drawResource(ctx,state,entity.p,p.x,p.y,t);continue;}
-    if(entity.type==='nascentes-tree'){drawNascentesTree(ctx,bridgeAtlas,entity.p,p.x,p.y,t);continue;}
+    if(entity.type==='nascentes-tree'){const n=woodlandResource(room.index,entity.p);if(n&&!resourceState(state.workshop,n.id).remaining)drawResource(ctx,state,n,p.x,p.y,t);else{drawNascentesTree(ctx,bridgeAtlas,entity.p,p.x,p.y,t);if(n)drawResourceLabel(ctx,state,n,p.x,p.y,t);}continue;}
     if(entity.type==='prop'){drawProp(entity.p);continue;}
     if(entity.type==='portal'){ctx.save();drawPortalArch(ctx,river?riverPortal:portalAtlas,p.x,p.y,t);ctx.restore();continue;}
     if(entity.type==='shelter'){

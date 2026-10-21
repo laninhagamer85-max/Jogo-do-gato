@@ -232,3 +232,5 @@
 
 /* First-use harvesting guide: readable in both phone orientations. */
 .gathering-guide{max-width:660px;margin:auto;line-height:1.55}.gathering-guide h3{font-size:1.2rem}.gathering-guide nav{display:flex;gap:12px;justify-content:space-between}.gathering-guide button{min-height:44px}.combat-actions{position:relative}.combat-gather-hint{position:absolute;right:0;bottom:100%;width:230px;max-width:65vw;background:#254235ee;color:#fff4da;padding:8px 12px;border-radius:14px;font-size:12px;pointer-events:none}
+
+@media(min-height:501px){.combat-gather-hint{bottom:calc(100% + 50px)}}

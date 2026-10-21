@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.33.2",
+  "status": "validated_1.33.3_pending_package",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,11 +20,11 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "world-construction-harvest",
-    "base_product_version": "1.33.1",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-21-world-construction-harvest.md",
-    "acceptance_status": "663 tests and TypeScript passed; real browser portrait/landscape"
+    "id": "woodland-trails-renewal",
+    "base_product_version": "1.33.2",
+    "implementation_status": "validated_pending_package",
+    "report": "docs/evolution/runs/2026-10-21-woodland-trails-renewal.md",
+    "acceptance_status": "672 tests passed; expanded32room trail checks passed; browser five viewports"
   },
   "publication": {
     "id": "appgdep_6ad92bd8a2e48191b9c510e6e0f2d325",
@@ -66,9 +66,9 @@
     "Improve art/placement after user feedback; castle interior resource nodes remain outside this cycle."
   ],
   "rollback": {
-    "product_version": "1.33.1",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b72f323a008881918c7935e37a97aa63",
-    "site_commit": "797dc935e829c5342235341b6295e84fcd299bf2",
+    "product_version": "1.33.2",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94",
+    "site_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1",
     "instructions": "Redeploy only if no newer publication exists; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-21-world-construction-harvest.md",

@@ -1,0 +1,11 @@
+import {campaignRoom} from './explorationCampaign';
+import {returnPortal} from './explorationChapter4';
+import {pilotRoute,pilotWalkable,type CombatPoint} from './explorationCombat';
+import {resourceNodes} from './explorationWorkshop';
+const cache=new Map<number,CombatPoint[][]>();
+/** Ground routes are derived from the real walkability graph, including stairs and bridges. */
+export function explorationTrails(index:number){const hit=cache.get(index);if(hit)return hit;const r=campaignRoom(index),start=r.camp,goals=[r.exit,r.marker,returnPortal(index),...resourceNodes(index).slice(0,2),...[[-12,0],[12,0],[0,-12],[0,12]].map(([x,y])=>({x:start.x+x,y:start.y+y}))],paths:CombatPoint[][]=[];
+ for(const goal of goals){const candidates=[goal,...[.8,1.4].flatMap(d=>[[d,0],[-d,0],[0,d],[0,-d]].map(([x,y])=>({x:goal.x+x,y:goal.y+y})))];const end=candidates.find(q=>pilotWalkable(q,true,.25,index));if(!end)continue;const route=pilotRoute(start,end,true,index);if(!route.length)continue;const points=[start,...route],simple=[points[0]];for(let i=1;i<points.length-1;i++){const a=simple[simple.length-1],b=points[i],c=points[i+1];if(Math.abs((b.x-a.x)*(c.y-b.y)-(b.y-a.y)*(c.x-b.x))>.0001)simple.push(b);}simple.push(points[points.length-1]);if(Math.hypot(end.x-start.x,end.y-start.y)>1)paths.push(simple);}
+ cache.set(index,paths);return paths;}
+/** Soil bitmap is repeated at world scale, never stretched into a background image. */
+export function drawExplorationTrails(ctx:CanvasRenderingContext2D,index:number,left:number,top:number,tile:number,soil?:HTMLImageElement){if(!soil?.complete||!soil.naturalWidth)return;const paths=explorationTrails(index),pattern=ctx.createPattern(soil,'repeat');if(!pattern)return;pattern.setTransform(new DOMMatrix().scale(3.4/soil.naturalWidth));ctx.save();ctx.translate(left,top);ctx.scale(tile,tile);ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();for(const points of paths){ctx.moveTo(points[0].x,points[0].y);for(const p of points.slice(1))ctx.lineTo(p.x,p.y);}ctx.strokeStyle=pattern;for(const [width,alpha] of [[1.05,.07],[.9,.12],[.72,.62]]){ctx.lineWidth=width;ctx.globalAlpha=alpha;ctx.stroke();}ctx.restore();}
