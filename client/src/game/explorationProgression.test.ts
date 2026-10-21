@@ -1,3 +1,4 @@
+import {placeBaseBuilding,insideSafeBase} from './explorationBase';
 import {it,expect} from 'vitest';
 import {returnPortal} from './explorationChapter4';
 import {EXPLORATION_ROOMS,campaignEnemies,campaignRoom,campaignWaterBlocks} from './explorationCampaign';
@@ -52,9 +53,9 @@ it.each(EXPLORATION_ROOMS)('room $index: random encounters have reachable cells 
  for(const seed of [1,42,999])for(const def of campaignEnemies(room.index,seed))expect(pilotRoute(room.camp,def,false,room.index).length,`${room.index}:${seed}:${def.id}`).toBeGreaterThan(0);
 });
 it('a creature pursues nearby targets then returns home outside its leash',()=>{
- let s=fixture(10),def=campaignEnemies(10,42).find(e=>e.id==='river-crab')!,e=s.enemies.find(e=>e.id===def.id)!;
+ let s=fixture(10),def=campaignEnemies(10,42).find(e=>e.id==='river-crab')!,e=s.enemies.find(e=>e.id===def.id)!;s=placeBaseBuilding(s,'home',{x:-10,y:-10},()=>true);
  s.player={x:def.x-.9,y:def.y};for(let i=0;i<5;i++)s=stepCombat(s,{},50);e=s.enemies.find(e=>e.id===def.id)!;expect(e.x).toBeLessThan(def.x);
- s.player={x:1.5,y:1.5};const before=e.x;s=stepCombat(s,{},50);e=s.enemies.find(e=>e.id===def.id)!;expect(e.x).toBeGreaterThan(before);
+ s.player={x:-9,y:-10};expect(insideSafeBase(s)).toBe(true);const before=e.x;s=stepCombat(s,{},50);e=s.enemies.find(e=>e.id===def.id)!;expect(e.x).toBeGreaterThan(before);
 });
 
 it('master special attacks telegraph before damage and can be avoided by retreating',()=>{

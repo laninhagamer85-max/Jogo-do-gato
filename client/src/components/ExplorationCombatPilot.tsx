@@ -1,3 +1,8 @@
+import ExplorationWorkshop from './ExplorationWorkshop';
+import ExplorationBasePlacement from './ExplorationBasePlacement';
+import {baseLayout,buildingAt,insideSafeBase,placeBaseBuilding,BASE_NAMES,type BaseBuilding} from '@/game/explorationBase';
+import {baseArtRevision} from '@/game/explorationWorkshopView';
+import {pilotWalkable} from '@/game/explorationCombat';
 import {workshopCommand,nearestResource} from '@/game/explorationWorkshop';
 import {PAINTED_ITEMS} from '@/game/explorationPaintedItems';
 import {biomeArtRevision} from '@/game/explorationBiomeArt';
@@ -40,6 +45,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const replayElapsed=useRef(0),backRef=useRef(onBack);backRef.current=onBack;
   const current = useRef(game), saveRef = useRef(onSave), controls = useRef(new ForestControls());
   const pending = useRef({ attack: false, power: false, interact: false });
+  const pendingBuilding=useRef<BaseBuilding|null>(null);
   const route = useRef<CombatPoint[]>([]), panelRef = useRef<Panel>(null), overviewRef = useRef(false);
   const canvas = useRef<HTMLCanvasElement>(null), dialog = useRef<HTMLDialogElement>(null), pauseButton = useRef<HTMLButtonElement>(null);
   const [assetStatus, setAssetStatus] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -59,7 +65,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const soundRef = useRef(soundOn); soundRef.current = soundOn;
   const char = profile?.characterId ?? 'menino-preto';
   saveRef.current = onSave; zoomRef.current = zoom;
-  function clear() { stick.current = { x: 0, y: 0, pointer: -1 }; controls.current.clear(); route.current = []; pending.current = { attack: false, power: false, interact: false }; for (const id of accessibleTimers.current) window.clearTimeout(id); accessibleTimers.current.clear(); }
+  function clear() { pendingBuilding.current=null;stick.current = { x: 0, y: 0, pointer: -1 }; controls.current.clear(); route.current = []; pending.current = { attack: false, power: false, interact: false }; for (const id of accessibleTimers.current) window.clearTimeout(id); accessibleTimers.current.clear(); }
   function persist() { if (!initial.supported) return; const snapshot = combatSnapshot(current.current), key = JSON.stringify(snapshot); if (key !== lastSaved.current) { lastSaved.current = key; saveRef.current(snapshot); } }
   function openPanel(value: Panel) { clear(); persist(); overviewRef.current=false;setOverview(false);panelRef.current = value; setPanel(value); }
   function change(next: CombatState) { if(next.legends?.active)preloadLegend(next.legends.active); if (next === current.current) return; current.current = next; setGame(next); persist(); }
@@ -73,8 +79,8 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
 
   useEffect(() => {
     const el=dialog.current;if(!el)return;
-    if(panel&&!el.open)el.showModal();
-    if(!panel&&el.open){el.close();pauseButton.current?.focus();}
+    if(panel&&panel!=='build'&&!el.open)el.showModal();
+    if((!panel||panel==='build')&&el.open){el.close();pauseButton.current?.focus();}
   },[panel]);
   useEffect(()=>{const resize=()=>setViewport({width:window.innerWidth,height:window.innerHeight});window.addEventListener('resize',resize);resize();return ()=>window.removeEventListener('resize',resize);},[]);
   useEffect(() => {
@@ -137,6 +143,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         }
         pending.current = { attack: false, power: false, interact: false };
         if (current.current.roomIndex!==before.roomIndex || current.current.castle?.room!==before.castle?.room || current.current.castle?.active!==before.castle?.active || current.current.deaths !== before.deaths || current.current.completed) clear();
+        if(pendingBuilding.current&&insideSafeBase(current.current)){const k=pendingBuilding.current;openPanel(k);}
         const changedEvent = current.current.castle?.room!==before.castle?.room || current.current.castle?.active!==before.castle?.active || urgent || current.current.xp !== before.xp || current.current.collectedNodes.length !== before.collectedNodes.length || current.current.loot.length !== before.loot.length || current.current.feedback.length !== before.feedback.length || current.current.hp !== before.hp || current.current.completed;
         if (changedEvent || now - savedAt > 1000) { persist(); savedAt = now; }
         if (now - ui > 100 || current.current.completed) { setGame(current.current); ui = now; }
@@ -146,9 +153,9 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         const before=current.current;if(!replayMode||current.current.roomIndex>=30)current.current=tickCombatPortal(before,dt);
         if(current.current!==before){if(current.current.roomIndex!==before.roomIndex){clear();persist();}setGame(current.current);}
       }
-      const key=`${current.current.revision}:${w}:${h}:${zoomRef.current}:${overviewRef.current}:${assetsReady}:${reduced.matches}:${castleArtRevision()}:${biomeArtRevision()}`;
+      const key=`${current.current.revision}:${w}:${h}:${zoomRef.current}:${overviewRef.current}:${assetsReady}:${reduced.matches}:${castleArtRevision()}:${biomeArtRevision()}:${baseArtRevision()}:${panelRef.current}`;
       if(assetsReady&&shouldDrawExplorationFrame(!panelRef.current&&!overviewRef.current,key,paintKey)){
-      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water,autumnMobs,powerArt,stone,cliff,soil);
+      drawCombatPilot(ctx, w, h, current.current, pet, atlas, bg, zoomRef.current, overviewRef.current, reduced.matches, enemies, props, itemArt,garden,shelter,portal,bridge,keyArt,mobs,rareArt,riverMobs,riverProps,riverPortal,water,autumnMobs,powerArt,stone,cliff,soil,panelRef.current==='build');
       paintKey=key;draws++;
       }
       if(window.location.pathname==='/qa-exploration-lab'&&now-ui<40){const position=current.current.castle?.active?current.current.castle.player:current.current.player;el.dataset.runningDraws=String(draws);el.dataset.gameTime=String(Math.round(current.current.time));el.dataset.playerX=String(position.x);el.dataset.playerY=String(position.y);}
@@ -184,24 +191,26 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const fibers = game.roomIndex===0?game.stock.fibra+game.bag.fibra:game.roomCollectedFibers;
   const canUse = (item:CombatQuickItem) => canUseQuickItem(game,item);
   const useItem = (item:CombatQuickItem) => {if(!panelRef.current&&!overviewRef.current)change(useCombatQuickItem(current.current,item));};
-  const modalTitle=panel==='inventory'?'Mochila da Exploração':panel==='exit'?'Voltar aos capítulos?':'Exploração pausada';
+  const modalTitle=panel&&panel in BASE_NAMES?BASE_NAMES[panel as BaseBuilding]:panel==='inventory'?'Mochila da Exploração':panel==='exit'?'Voltar aos capítulos?':'Exploração pausada';
   if (!initial.supported) return <section className="combat-pilot combat-unavailable"><h1>Atualize o jogo para continuar</h1><p>Este progresso pertence a uma versão mais nova e foi preservado.</p><button onClick={onBack}>Voltar à Exploração</button></section>;
 
   const dock=lensDockLayout(viewport.width,viewport.height,lensExpanded);
   const dockStyle={'--lens-size':`${dock.diameter}px`,'--lens-top':`${dock.top}px`,'--lens-bottom':`${dock.bottom}px`,'--lens-hud-width':`${dock.hudWidth}px`} as CSSProperties;
-  return <section onPointerDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} onKeyDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} style={dockStyle} className={`combat-pilot combat-pilot--lens-dock ${overview&&game.roomIndex>=30?'is-chapter4-overview':''}`} aria-label="Campanha de Exploração">
+  return <section onPointerDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} onKeyDownCapture={()=>{if(soundRef.current)audio.current?.unlock();}} style={dockStyle} className={`combat-pilot combat-pilot--lens-dock ${panel==='build'?'is-base-editing':''} ${overview&&game.roomIndex>=30?'is-chapter4-overview':''}`} aria-label="Campanha de Exploração">
 
     <div className="combat-stage">
       {assetStatus !== 'ready' && <div className="combat-result" role="status"><h2>{assetStatus === 'error' ? 'Não foi possível carregar seu pet' : 'Preparando a caminhada…'}</h2><p>{assetStatus === 'error' ? 'Volte ao mapa e tente novamente. Seu progresso foi preservado.' : 'A sala começa quando a animação estiver pronta.'}</p><button onClick={leave}>Voltar ao mapa</button></div>}
       <canvas ref={canvas} aria-label={castle?(overview?`Mapa geral do Castelo. Você está em ${castleRoom(castle.room).name}.`:`${castleRoom(castle.room).name}. Mesmos controles da exploração; caminhe até as portas brilhantes.`):overview?`Mapa completo da sala ${game.roomIndex+1}. O marcador vermelho com a legenda Você está aqui mostra a posição atual do personagem.`:"Clareira de combate. Joystick, setas ou WASD movem. E ou Espaço: patada. Q: poder. F: marco. I: mochila."} onPointerUp={event => {
         if (panelRef.current || overviewRef.current || current.current.completed) return;
         const r = event.currentTarget.getBoundingClientRect();if(current.current.castle?.active){const c=current.current.castle,v=castleView(r.width,r.height,c.player,zoom);const target={x:(event.clientX-r.left-v.left)/v.tile,y:(event.clientY-r.top-v.top)/v.tile};const door=castlePassages(c.room).find(d=>Math.hypot(d.x-target.x,d.y-target.y)<1);route.current=castleRoute(c.player,door??target,c.room);return;}const v = current.current.roomIndex>=30?nascentesView(r.width,r.height,current.current.player,zoom,false):combatView(r.width, r.height, current.current.player, zoom, false);
-        route.current = pilotRoute(current.current.player, { x: (event.clientX - r.left - v.left) / v.tile, y: (event.clientY - r.top - v.top) / v.tile }, current.current.gateOpen,current.current.roomIndex);
+        const target={x:(event.clientX-r.left-v.left)/v.tile,y:(event.clientY-r.top-v.top)/v.tile},building=buildingAt(current.current,target);if(building){if(insideSafeBase(current.current)){openPanel(building);return;}pendingBuilding.current=building;const q=baseLayout(current.current)[building];route.current=pilotRoute(current.current.player,{x:q.x,y:q.y+.9},current.current.gateOpen,current.current.roomIndex,current.current.workshop);return;}route.current=pilotRoute(current.current.player,target,current.current.gateOpen,current.current.roomIndex,current.current.workshop);
       }} />
 
       <div className="combat-status-stack" aria-label="Estado da exploração">    <header className="combat-top"><div><small>{castle?`CAP. 5 · ${castleRoom(castle.room).name.toUpperCase()}`:<>{replayMode?'REPETIÇÃO · ':''}CAP. {chapterNumber(game.roomIndex)} · SALA {game.roomIndex+1}/{EXPLORATION_ROOMS.length} · {room.title.toUpperCase()}</>}</small><h1>{legendName(game)??profile?.name??'Seu pet'} · Nv {combatLevel(game.xp)}</h1></div><div><span>XP {game.xp} / {combatLevel(game.xp) ** 2 * 40}</span></div></header>      <div className="combat-vitals"><label>HP <strong>{Math.ceil(game.hp)}/{combatMaxHp(game.xp)}</strong><progress value={game.hp} max={combatMaxHp(game.xp)} aria-label="Vida do pet" /></label><label>Energia <strong>{Math.floor(game.energy)}/100</strong><progress value={game.energy} max={100} aria-label="Energia de combate" /></label></div>      {!castle&&<div className="combat-objective"><ExplorationItemIcon item="fibra" size={23} /><span>{Math.min(room.fibers, fibers)}/{room.fibers} fibras</span>{room.encounters>0&&<span>{Math.min(room.encounters,game.roomIndex===0?game.defeated:game.defeatedEnemyIds.length)}/{room.encounters} encontros</span>}<span>{game.gateOpen ? "Siga ao portal" : room.index>=30?"Libere a passagem":"Ative o marco"}</span>{room.switches.length>0&&<span>Placas {game.switchStep}/{room.switches.length}</span>}{room.key&&<span>{game.hasRoomKey?'Chave ✓':'Busque a chave'}</span>}{room.bridge&&<span>{game.bridgeCrossed?'Ponte ✓':'Atravesse a ponte'}</span>}{room.bossId&&<span>{game.defeatedEnemyIds.includes(room.bossId)?'Mestre ✓':'Vença o mestre'}</span>}{room.useConsumable&&<span>{game.consumablesUsed?'Recuperação ✓':'Use fruta/erva'}</span>}</div>}
       {(overview||noticeVisible)&&<div className="combat-goal" role="status">{overview ? (castle?'Mapa geral · Portas livres · Voltar ao pet retoma':'Inspeção pausada · Voltar ao pet retoma') : game.message}</div>}
 </div>
+      {!castle&&panel!=='build'&&<button className="combat-base-shortcut" onClick={()=>openPanel('home')} aria-label="Abrir casa e construções">Casa e construções <span className="combat-base-state">{insideSafeBase(game)?' · Protegido':''}</span></button>}
+      {panel==='build'&&!castle&&<ExplorationBasePlacement game={game} width={canvas.current?.clientWidth??viewport.width} height={canvas.current?.clientHeight??viewport.height} onDone={()=>openPanel('home')} onPlace={(k,p)=>change(placeBaseBuilding(current.current,k,p,(q,r)=>pilotWalkable(q,current.current.gateOpen,r,current.current.roomIndex,undefined,true)))}/>}
       <ExplorationMinimap state={game}>
         <nav className="combat-lens-dock" aria-label="Atalhos da Exploração">
           <button className="combat-lens-slot combat-lens-sound" onClick={()=>{if(!soundOn)audio.current?.unlock();onToggleSound();}} aria-label={soundOn?'Desligar som':'Ligar som'} aria-pressed={soundOn} title={soundOn?'Desligar som':'Ligar som'}>{soundOn?<Volume2/>:<VolumeX/>}</button>
@@ -226,9 +235,9 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
       </div>}
       {game.completed && <div className={`combat-teleport ${game.roomIndex===EXPLORATION_ROOMS.length-1?'combat-teleport-final':''}`} role="status" aria-live="polite"><div className="combat-teleport-light"/><h2>{game.portalTarget!==undefined?'Atravessando o portal…':replayMode?'Sala repetida! Voltando ao mapa…':game.roomIndex===EXPLORATION_ROOMS.length-1?(game.roomIndex>=30?'Sala piloto concluída!':'Biomas concluídos!'):'Atravessando o portal…'}</h2><p>{game.portalTarget!==undefined?`Destino: ${chapterName(game.portalTarget)} · Sala ${game.portalTarget+1}`:replayMode?'Seu ponto de avanço na campanha foi preservado.':game.roomIndex<EXPLORATION_ROOMS.length-1?`${chapterName(game.roomIndex+1)} · Sala ${game.roomIndex+2}/${EXPLORATION_ROOMS.length}`:'Progresso salvo. As próximas salas serão criadas após a aprovação deste cenário.'}</p>{room.bossId&&game.activeCard&&<p><strong>Carta rara: {COMBAT_CARDS[game.activeCard].name}</strong><br/>{COMBAT_CARDS[game.activeCard].description}</p>}{!replayMode&&game.portalTarget===undefined&&game.roomIndex===EXPLORATION_ROOMS.length-1&&<button onClick={leave}>Salvar e sair</button>}</div>}
     </div>
-    <dialog id="combat-panel" ref={dialog} className={`combat-dialog ${panel === 'inventory' ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current) openPanel(null); }}>
+    <dialog id="combat-panel" ref={dialog} className={`combat-dialog ${panel&&panel in BASE_NAMES?'combat-dialog-base':''} ${panel === 'inventory'||panel&&panel in BASE_NAMES ? 'combat-dialog-inventory' : ''}`} aria-labelledby="combat-dialog-title" onCancel={event => { event.preventDefault(); openPanel(null); }} onClose={() => { if (panelRef.current&&panelRef.current!=='build') openPanel(null); }}>
       <header className="combat-dialog-heading"><h2 id="combat-dialog-title">{modalTitle}</h2>{panel && <button onClick={() => openPanel(null)} aria-label={panel==='inventory'?'Fechar mochila e retomar':'Fechar painel e retomar'}><X size={20}/></button>}</header>
-      {panel === 'inventory' ? <CombatInventory onWorkshop={a=>change(workshopCommand(current.current,a))} onQuick={(slot,item)=>change(setCombatQuickItem(current.current,slot,item))} key={inventoryTab} initialTab={inventoryTab} gender={profile?.gender??'menino'} onLegend={a=>change(changeLegend(current.current,profile?.gender??'menino',a))} game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} onRare={item=>change(useRareCombatItem(current.current,item))} onPower={power=>change(equipCombatPower(current.current,power))} onCard={(card,slot)=>change(equipCombatCard(current.current,card,slot))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>{castle?'Explore as salas do castelo. As portas brilhantes estão liberadas para ir e voltar; veja sua localização no mapa da lupa.':room.hint}</p><p>As configurações e os guias ficam na tela de capítulos. Salve e volte ao mapa para consultá-los.</p></>}
+      {panel&&panel in BASE_NAMES?<ExplorationWorkshop key={panel} game={game} mode={panel as BaseBuilding} onAction={a=>change(workshopCommand(current.current,a))} onOrganize={()=>openPanel('build')} onOpenBuilding={k=>openPanel(k)}/>:panel === 'inventory' ? <CombatInventory onWorkshop={a=>change(workshopCommand(current.current,a))} onQuick={(slot,item)=>change(setCombatQuickItem(current.current,slot,item))} key={inventoryTab} initialTab={inventoryTab} gender={profile?.gender??'menino'} onLegend={a=>change(changeLegend(current.current,profile?.gender??'menino',a))} game={game} onUse={item => change(consumeCombatItem(current.current, item))} onEquip={() => change(equipCombatCharm(current.current))} onRare={item=>change(useRareCombatItem(current.current,item))} onPower={power=>change(equipCombatPower(current.current,power))} onCard={(card,slot)=>change(equipCombatCard(current.current,card,slot))} /> : panel === 'exit' ? <p>Seu nível de combate, HP, inimigos e coleta serão mantidos para continuar depois.</p> : <><p>{castle?'Explore as salas do castelo. As portas brilhantes estão liberadas para ir e voltar; veja sua localização no mapa da lupa.':room.hint}</p><p>As configurações e os guias ficam na tela de capítulos. Salve e volte ao mapa para consultá-los.</p></>}
 
       {panel !== 'inventory' && <div className="combat-dialog-actions"><button onClick={() => openPanel(null)}><Play size={16} />{panel === 'exit' ? 'Continuar aqui' : 'Retomar'}</button>{panel === 'exit' ? <button onClick={leave}>Salvar e voltar</button> : <button onClick={() => openPanel('exit')}>Voltar aos capítulos</button>}</div>}
     </dialog>

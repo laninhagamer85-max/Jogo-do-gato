@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "source": "Built-in imagegen",
+  "original": "exec-369ad677-1448-41ec-b38a-fe8328d4df29.png",
+  "width": 1086,
+  "height": 1448,
+  "columns": [
+    "chest-hut",
+    "forge-workshop",
+    "potion-cottage"
+  ],
+  "rows": [
+    "forest",
+    "river",
+    "autumn",
+    "rocky"
+  ],
+  "conversion": "RGBA WebP quality92 method0, no bitmap edits",
+  "prompt": "Use case: stylized-concept. Original production sprites for cozy painted fantasy RPG Meu Pet Virtual, soft richly textured hand painted 2D isometric/top down three quarter view, matching a small cat exploration game. TRUE TRANSPARENT background. Exact REGULAR GRID 3 COLUMNS and 4 ROWS, square equal cells with 15% transparent padding, each cell exactly one complete small freestanding building. Columns: 1 tiny secure storage hut with open front revealing a wooden treasure chest; 2 compact blacksmith workshop with stone forge furnace chimney, anvil and tools, a shelter roof; 3 herbalist potion cottage with bottles, herbs, mortar on table beneath shelter roof. Rows: first forest biome brown timber moss green roof; second river biome pale timber blue teal roof and river stones; third autumn biome warm wood golden ochre leaf roof; fourth rocky mountain biome grey carved stone and slate roof. All are low compact shelters with a clear front approach, no raised islands or platforms, no landscape terrain base. Same viewing angle, lighting upper left and scale across all 12 cells. Organic painted natural material volume, readable silhouettes, full objects intact inside own cell. No text, no numbers, no labels, no cell borders, no icons, no vector outlines, no characters, no symbols floating above building. Small soft contact shadow only immediately beneath each structure. Atlas portrait 3:4 ratio."
+}

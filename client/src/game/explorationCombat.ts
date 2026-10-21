@@ -1,3 +1,4 @@
+import {baseLayout,baseBlocks,insideSafeBase} from './explorationBase';
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
 import {CASTLE_GATE,enterCastle,readCastle,stepCastle,castleRoom,type CastleProgress} from './explorationCastle';
@@ -35,7 +36,7 @@ export type CombatState = {
  workshop?:Workshop;
  castle?:CastleProgress;
   roomVisits?:Record<string,RoomMemory>;portalTarget?:number;portalCooldownUntil?:number;openWorldCells?:string[];
-  worldLayoutVersion?:1;levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;campaignVersion:2|3|4|5|6|7|8|9;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  worldLayoutVersion?:1;levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;campaignVersion:2|3|4|5|6|7|8|9|10;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -57,7 +58,7 @@ export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'|'legends'|'workshop'>>) => 16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0)+(legendWeapon(s as CombatState)?.bonus??0);
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
   const room=campaignRoom(roomIndex);
-  return {workshop:newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:room.index>=30?8:room.index>=20?3:2,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {workshop:newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:10,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -66,33 +67,34 @@ export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101
     attackAt: 0, strikeUntil: 0, invulnerableUntil: 0, feedback: [],
     message: room.hint };
 }
-export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22,roomIndex=0): boolean {
+export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22,roomIndex=0,workshop?:Workshop,ignoreBase=false): boolean {
   const room=campaignRoom(roomIndex);
-  if(room.index>=30)return !nascentesBlocked(p,radius,gateOpen,room.index)&&!campaignWaterBlocks(p,radius,room);
+  if(room.index>=30)return !nascentesBlocked(p,radius,gateOpen,room.index,Boolean(workshop)||ignoreBase)&&!campaignWaterBlocks(p,radius,room)&&(ignoreBase||!baseBlocks(p,radius,roomIndex,workshop));
   if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||campaignWaterBlocks(p,radius,room)||openWorldBlocked(p,radius,roomIndex))return false;
   if(resourceNodes(roomIndex).some(n=>Math.hypot(n.x-p.x,n.y-p.y)<radius+.24))return false;
   const walls = gateOpen||!room.gateBlock ? room.walls : [...room.walls,room.gateBlock];
+  if(!ignoreBase&&workshop&&baseBlocks(p,radius,roomIndex,workshop))return false;
   const f=PILOT_SHELTER.footprint;
-  if(p.x+radius>f.x && p.x-radius<f.x+f.width && p.y+radius>f.y && p.y-radius<f.y+f.height)return false;
+  if(!ignoreBase&&!workshop&&p.x+radius>f.x && p.x-radius<f.x+f.width && p.y+radius>f.y && p.y-radius<f.y+f.height)return false;
   return !walls.some(w => p.x + radius > w.x && p.x - radius < w.x + 1 && p.y + radius > w.y && p.y - radius < w.y + 1);
 }
 /** Relocate positions covered by revised scenery, preserving earned state. */
-export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean,roomIndex=0):CombatPoint {
+export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean,roomIndex=0,workshop?:Workshop):CombatPoint {
   const room=campaignRoom(roomIndex);
-  if(pilotWalkable(p,gateOpen,.22,roomIndex))return {...p};
+  if(pilotWalkable(p,gateOpen,.22,roomIndex,workshop))return {...p};
   if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||!insideExploration(p))return {...room.camp};
-  const candidates=Array.from({length:PILOT_SIZE.width*PILOT_SIZE.height},(_,i)=>({x:PILOT_SIZE.left+.5+i%PILOT_SIZE.width,y:PILOT_SIZE.top+.5+Math.floor(i/PILOT_SIZE.width)})).filter(q=>pilotWalkable(q,gateOpen,.22,roomIndex));
+  const candidates=Array.from({length:PILOT_SIZE.width*PILOT_SIZE.height},(_,i)=>({x:PILOT_SIZE.left+.5+i%PILOT_SIZE.width,y:PILOT_SIZE.top+.5+Math.floor(i/PILOT_SIZE.width)})).filter(q=>pilotWalkable(q,gateOpen,.22,roomIndex,workshop));
   candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...room.camp};
 }
-function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22,roomIndex=0): CombatPoint {
-  const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen, radius,roomIndex) && (roomIndex<30||nascentesTraverse(p,{x:p.x+dx,y:p.y},roomIndex)) ? p.x + dx : p.x;
-  return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen, radius,roomIndex) && (roomIndex<30||nascentesTraverse({x,y:p.y},{x,y:p.y+dy},roomIndex)) ? p.y + dy : p.y };
+function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22,roomIndex=0,workshop?:Workshop): CombatPoint {
+  const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen, radius,roomIndex,workshop) && (roomIndex<30||nascentesTraverse(p,{x:p.x+dx,y:p.y},roomIndex)) ? p.x + dx : p.x;
+  return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen, radius,roomIndex,workshop) && (roomIndex<30||nascentesTraverse({x,y:p.y},{x,y:p.y+dy},roomIndex)) ? p.y + dy : p.y };
 }
 function object(v: unknown): Record<string, unknown> { return v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : {}; }
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value: unknown): CombatRead {
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>9) return { supported: false, version };
+  if (version > 4 || Number(raw.campaignVersion??1)>10) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=Math.floor(number(raw.roomIndex,0,0,unlocked));
@@ -129,7 +131,7 @@ export function readCombatState(value: unknown): CombatRead {
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   s.roomCollectedFibers=Math.floor(number(raw.roomCollectedFibers,index===0?s.stock.fibra+s.bag.fibra:0,0,9999));
   const point = object(raw.player); const p = { x: number(point.x, room.camp.x, -1e5, 1e5), y: number(point.y, room.camp.y, -1e5, 1e5) };
-  s.player = nearestPilotPoint(room.index>=30&&raw.nascentesSceneVersion!==4?room.camp:p, s.gateOpen,s.roomIndex);
+  s.player = nearestPilotPoint(room.index>=30&&raw.nascentesSceneVersion!==4?room.camp:p, s.gateOpen,s.roomIndex,s.workshop);
   s.exploredCells = readMinimap(room.index>=30&&raw.nascentesSceneVersion!==4?[]:raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
   s.facing = length ? { x: fx / length, y: fy / length } : { x: 1, y: 0 };
@@ -149,7 +151,7 @@ export function readCombatState(value: unknown): CombatRead {
     const rawEnemy = object(Array.isArray(raw.enemies) ? raw.enemies.find(e => object(e).id === def.id) : null);
     const migrate=raw.worldLayoutVersion!==1&&def.id.startsWith('wild-');
     const ep = { x: migrate?def.x:number(rawEnemy.x, def.x, -1e5, 1e5), y: migrate?def.y:number(rawEnemy.y, def.y, -1e5, 1e5) };
-    return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen,s.roomIndex), hp: number(typeof rawEnemy.hp==='number'&&index>=20&&raw.chapter3BalanceVersion!==2?rawEnemy.hp*def.hp/(def.previousHp??((def.previousBalanceHp??def.hp)/10)):typeof rawEnemy.hp==='number'&&raw.npcBalanceVersion!==1?rawEnemy.hp*def.hp/(def.previousBalanceHp??def.hp):rawEnemy.hp, def.hp, 0, def.hp),
+    return { id: def.id, ...nearestPilotPoint(ep, s.gateOpen,s.roomIndex,s.workshop), hp: number(typeof rawEnemy.hp==='number'&&index>=20&&raw.chapter3BalanceVersion!==2?rawEnemy.hp*def.hp/(def.previousHp??((def.previousBalanceHp??def.hp)/10)):typeof rawEnemy.hp==='number'&&raw.npcBalanceVersion!==1?rawEnemy.hp*def.hp/(def.previousBalanceHp??def.hp):rawEnemy.hp, def.hp, 0, def.hp),
       generation: Math.floor(number(rawEnemy.generation, 0)), specialAt:number(rawEnemy.specialAt,s.time+3000,0,s.time+6000),windupUntil:number(rawEnemy.windupUntil,0,0,s.time+1000),slowUntil:number(rawEnemy.slowUntil,0,0,s.time+2000), attackAt: number(rawEnemy.attackAt, s.time + 1500, 0, s.time + 2000), respawnAt: number(rawEnemy.respawnAt, 0, 0, s.time + Math.max(45000,insectRespawnMs(def))) };
   });
   if(!Array.isArray(raw.defeatedEnemyIds))s.defeatedEnemyIds=s.enemies.filter(e=>e.hp===0||e.generation>0).map(e=>e.id);
@@ -165,7 +167,7 @@ export function readCombatState(value: unknown): CombatRead {
     const ownerKey=owner?.id+(rare?':rare':'');
     const def=definitions.find(e=>e.id===owner?.id);
     if (!owner || !def || id!==`${owner.id}:${generation}${rare?':rare':''}` || !Number.isInteger(generation) || generation<0 || generation>owner.generation || (generation===owner.generation && owner.hp>0) || allowedLoot.has(ownerKey) || (!rare&&item!==def.item)||(rare&&(rareDropChance(def)===0||rare!==rareDropKind(def)||item!=='ambar')) || !Number.isFinite(p.x)||!Number.isFinite(p.y)||distance(p,def)>(def.leash??6)+40) return [];
-    allowedLoot.add(ownerKey); return [{ id, item, rare, ...nearestPilotPoint(p,s.gateOpen,s.roomIndex), bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), expiresAt:number(l.expiresAt,s.time+combatLootLifetime(item),0,s.time+combatLootLifetime(item)), quantity: Math.floor(number(l.quantity, 1, 1, 9999)) }];
+    allowedLoot.add(ownerKey); return [{ id, item, rare, ...nearestPilotPoint(p,s.gateOpen,s.roomIndex,s.workshop), bornAt: number(l.bornAt, Math.max(0, s.time - 500), 0, s.time), landedAt: number(l.landedAt, s.time, 0, s.time + 500), expiresAt:number(l.expiresAt,s.time+combatLootLifetime(item),0,s.time+combatLootLifetime(item)), quantity: Math.floor(number(l.quantity, 1, 1, 9999)) }];
   }) : [];
   if (s.hp === 0) return { supported: true, state: defeatCombat(s) };
   if(s.castle?.active)s.message=`${castleRoom(s.castle.room).name}. Portas liberadas para explorar o castelo.`;
@@ -183,7 +185,7 @@ function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeed
 export function defeatCombat(current: CombatState): CombatState {
   const s = clone(current),room=campaignRoom(s.roomIndex); let lost = 0;
   for (const item of ['fibra', 'ambar'] as const) { const loss = Math.floor(s.bag[item] * .1); s.bag[item] -= loss; lost += loss; }
-  s.hp = combatMaxHp(s.xp); s.player = { ...room.camp }; s.walking = false; s.deaths++; if(s.roomPerformance)s.roomPerformance.defeats++; s.revision++;
+  s.hp = combatMaxHp(s.xp); s.player = {x:baseLayout(s).home.x+1.05,y:baseLayout(s).home.y-.4}; s.walking = false; s.deaths++; if(s.roomPerformance)s.roomPerformance.defeats++; s.revision++;
   s.invulnerableUntil = s.time + 2500; s.strikeUntil = 0;
   s.message = `Retorno ao ponto seguro. ${lost} material(is) da tentativa perdido(s); itens permanentes preservados.`;
   feedback(s, s.player, 'Ponto seguro', 'info'); return s;
@@ -193,7 +195,7 @@ export function consumeCombatItem(current: CombatState, item: 'erva' | 'fruta'):
   const hp = item === 'erva', maximum = hp ? combatMaxHp(current.xp) : 100, before = hp ? current.hp : current.energy;
   if (before >= maximum || current.stock[item] + current.bag[item] < 1) return current;
   const s = clone(current); if (s.bag[item] > 0) s.bag[item]--; else s.stock[item]--;
-  const amount = Math.min(hp ? 35 : 30, maximum - before);
+  const amount = Math.min(hp ? 35+(s.workshop?.enhancements.potion??0)*5 : 30, maximum - before);
   if (hp) s.hp += amount; else s.energy += amount;
   s.consumablesUsed++;s.revision++; s.message = `${COMBAT_ITEMS[item]}: +${Math.round(amount)} ${hp ? 'HP' : 'energia'}.`;
   feedback(s, s.player, `+${Math.round(amount)} ${hp ? 'HP' : 'energia'}`, 'heal'); return s;
@@ -207,7 +209,7 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   if(current.completed||!Number.isFinite(elapsedMs)||elapsedMs<0)return current;
   if(current.castle?.active){
    const s=clone(current),dt=Math.min(50,elapsedMs),old=current.castle,p=old.player,dx=clamp(input.dx||0,-1,1),dy=clamp(input.dy||0,-1,1),length=Math.hypot(dx,dy);
-   s.time+=dt;s.revision++;s.campaignVersion=9;s.castle=stepCastle(old,dx,dy,dt);s.energy=Math.min(100,s.energy+dt*.004);s.feedback=s.feedback.filter(f=>f.until>s.time);
+   s.time+=dt;s.revision++;s.campaignVersion=10;s.castle=stepCastle(old,dx,dy,dt);s.energy=Math.min(100,s.energy+dt*.004);s.feedback=s.feedback.filter(f=>f.until>s.time);
    const d=distance(p,s.castle.player);s.walking=s.castle.room===old.room&&d>.00001;s.walkPhase=s.walking?(s.walkPhase+d/.72)%1:0;if(length)s.facing={x:dx/length,y:dy/length};
    if((input.attack||input.power)&&s.time>=s.attackAt&&(!input.power||s.energy>=25)){if(input.power){s.energy-=25;s.powerFx={power:s.activePower??'burst',...s.castle.player,startedAt:s.time,until:s.time+800};}s.attackAt=s.time+(input.power?1000:500);s.strikeUntil=s.time+320;}
    if(s.castle.room!==old.room){s.message=`${castleRoom(s.castle.room).name} · Portas livres para explorar.`;s.powerFx=undefined;s.strikeUntil=0;}
@@ -221,10 +223,10 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   s.feedback = s.feedback.filter(f => f.until > s.time); s.energy = Math.min(100, s.energy + dt * .004);
   const dx = clamp(input.dx || 0, -1, 1), dy = clamp(input.dy || 0, -1, 1), length = Math.hypot(dx, dy);
   const previous = s.player;
-  if (length) { s.facing = { x: dx / length, y: dy / length }; s.player = move(s.player, s.facing.x * Math.min(1, length) * dt * .003, s.facing.y * Math.min(1, length) * dt * .003, s.gateOpen,.22,s.roomIndex); }
+  if (length) { s.facing = { x: dx / length, y: dy / length }; s.player = move(s.player, s.facing.x * Math.min(1, length) * dt * .003, s.facing.y * Math.min(1, length) * dt * .003, s.gateOpen,.22,s.roomIndex,s.workshop); }
   s.exploredCells = revealMinimap(s.exploredCells,s.player);
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
-  if(s.roomIndex===31&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=9;s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
+  if(s.roomIndex===31&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=10;s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) {s.energy -= 25;s.powerFx={power:s.activePower??'burst',x:s.player.x,y:s.player.y,startedAt:s.time,until:s.time+800};}
     if(power&&(hasCombatCard(s,'tide')||s.activePower==='tide')){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
@@ -234,9 +236,9 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
       if(arrowSpent)break;
       const def = definitions.find(e => e.id === enemy.id)!; const range = distance(s.player, enemy);
       const dot = range ? ((enemy.x - s.player.x) * s.facing.x + (enemy.y - s.player.y) * s.facing.y) / range : 1;
-      if (enemy.hp <= 0 || range > (power ? (s.activePower==='roots'?2.2:1.7) : legendWeapon(s)?.range??1.25) || (!power && dot < (s.legends?.active&&s.legends.weapon==='bow'?.94:.25)) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) continue;
+      if (enemy.hp <= 0 || range > (power ? (s.activePower==='roots'?2.2:1.7) : legendWeapon(s)?.range??1.25) || (!power && dot < (s.legends?.active&&s.legends.weapon==='bow'?.94:.25)) || !clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex,s.workshop)) continue;
       if(!power&&s.legends?.active&&s.legends.weapon==='bow')arrowSpent=true;
-      const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? 1.6*((hasCombatCard(s,'amber')||s.activePower==='amber')?1.25:1) : 1) - def.defense)));
+      const damage = Math.min(enemy.hp, Math.max(1, Math.round(combatAttack(s) * (power ? (1+[...new Set([s.activePower??'burst',s.activeCard,s.secondaryCard])].reduce((sum,k)=>sum+(k?s.workshop?.enhancements[k]??0:0),0)*.05)*1.6*((hasCombatCard(s,'amber')||s.activePower==='amber')?1.25:1) : 1) - def.defense)));
       enemy.hp -= damage; if(power&&(hasCombatCard(s,'roots')||s.activePower==='roots'))enemy.slowUntil=s.time+2000; feedback(s, enemy, `−${damage} HP`, 'damage');
       if (enemy.hp === 0) {
         awardWorkshopMaterial(s,def);
@@ -266,15 +268,15 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
       if (!def.boss && s.time >= enemy.respawnAt && !occupied) { Object.assign(enemy, { x: def.x, y: def.y, hp: def.hp, generation: enemy.generation + 1, attackAt: s.time + 1500, respawnAt: 0 }); }
       continue;
     }
-    const range = distance(s.player, enemy), safe = distance(s.player, room.camp) < 1.6;
+    const range = distance(s.player, enemy), safe = insideSafeBase(s);
     if (!safe && range < (def.detection??4) && distance(s.player,def)<(def.leash??99) && range > (def.art? .62:PILOT_INSECT.stopDistance)) {
-      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), (s.player.y - enemy.y) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex));
+      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), (s.player.y - enemy.y) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex,s.workshop));
     } else if (safe || range > (def.detection??4) || distance(s.player,def)>=(def.leash??99)) {
-      const home = distance(enemy, def); if (home > .1) Object.assign(enemy, move(enemy, (def.x - enemy.x) / home * dt * .0006, (def.y - enemy.y) / home * dt * .0006, s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex));
+      const home = distance(enemy, def); if (home > .1) Object.assign(enemy, move(enemy, (def.x - enemy.x) / home * dt * .0006, (def.y - enemy.y) / home * dt * .0006, s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex,s.workshop));
     }
     if(def.boss&&!safe&&range<3.2&&s.time>=(enemy.specialAt??3000)&&!enemy.windupUntil){enemy.windupUntil=s.time+900;enemy.specialAt=s.time+5500;feedback(s,enemy,'Afaste-se: golpe do mestre!','info');}
-    if(enemy.windupUntil&&s.time>=enemy.windupUntil){enemy.windupUntil=0;if(!safe&&range<2.1&&s.time>=s.invulnerableUntil&&clearPilotLine(s.player,enemy,s.gateOpen,s.roomIndex)){const damage=Math.min(s.hp,Math.round(def.attack*1.5));s.hp-=damage;if(s.roomPerformance)s.roomPerformance.damage+=damage;s.invulnerableUntil=s.time+550;feedback(s,s.player,`−${damage} HP`,'damage');if(!s.hp)return defeatCombat(s);}}
-    if (!safe && !enemy.windupUntil && distance(s.player, enemy) <= (def.attackRange??PILOT_INSECT.attackDistance) && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex)) {
+    if(enemy.windupUntil&&s.time>=enemy.windupUntil){enemy.windupUntil=0;if(!safe&&range<2.1&&s.time>=s.invulnerableUntil&&clearPilotLine(s.player,enemy,s.gateOpen,s.roomIndex,s.workshop)){const damage=Math.min(s.hp,Math.round(def.attack*1.5));s.hp-=damage;if(s.roomPerformance)s.roomPerformance.damage+=damage;s.invulnerableUntil=s.time+550;feedback(s,s.player,`−${damage} HP`,'damage');if(!s.hp)return defeatCombat(s);}}
+    if (!safe && !enemy.windupUntil && distance(s.player, enemy) <= (def.attackRange??PILOT_INSECT.attackDistance) && s.time >= enemy.attackAt && s.time >= s.invulnerableUntil && clearPilotLine(s.player, enemy, s.gateOpen,s.roomIndex,s.workshop)) {
       const damage = Math.min(s.hp, Math.max(1, def.attack - Math.floor(combatLevel(s.xp) / 2) - (s.equipmentOn ? 1 : 0)-(s.rareEquipped==='escama'?4:0)));
       s.hp -= damage; if(s.roomPerformance)s.roomPerformance.damage+=damage; s.invulnerableUntil = s.time + 550; enemy.attackAt = s.time + 1500;
       feedback(s, s.player, `−${damage} HP`, 'damage');
@@ -291,7 +293,7 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
     if(s.player.x>=b.x&&s.player.x<b.x+.9&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeEntered=true;
     if(s.bridgeEntered&&s.player.x>b.x+b.width-.9&&s.player.y>b.y&&s.player.y<b.y+b.height)s.bridgeCrossed=true;
   }
-  for(const hazard of room.hazards??[]){if(hazardPhase(hazard,s.time)==='active'&&distance(s.player,room.camp)>1.6&&distance(s.player,hazard)<hazard.radius+.2&&s.time>=s.invulnerableUntil){const damage=Math.min(s.hp,hazard.kind==='steam'?16:12);s.hp-=damage;if(s.roomPerformance)s.roomPerformance.damage+=damage;s.invulnerableUntil=s.time+1000;feedback(s,s.player,`−${damage} HP`,'damage');s.message=hazard.kind==='steam'?'Vapor ativo: afaste-se do círculo.':'Espinhos abertos: contorne ou aguarde.';if(!s.hp)return defeatCombat(s);}}
+  for(const hazard of room.hazards??[]){if(hazardPhase(hazard,s.time)==='active'&&!insideSafeBase(s)&&distance(s.player,hazard)<hazard.radius+.2&&s.time>=s.invulnerableUntil){const damage=Math.min(s.hp,hazard.kind==='steam'?16:12);s.hp-=damage;if(s.roomPerformance)s.roomPerformance.damage+=damage;s.invulnerableUntil=s.time+1000;feedback(s,s.player,`−${damage} HP`,'damage');s.message=hazard.kind==='steam'?'Vapor ativo: afaste-se do círculo.':'Espinhos abertos: contorne ou aguarde.';if(!s.hp)return defeatCombat(s);}}
   if(input.interact){
     const plate=room.switches.findIndex(p=>distance(s.player,p)<1);
     if(plate>=0){
@@ -322,34 +324,34 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   }
   return s;
 }
-export function clearPilotLine(from: CombatPoint, to: CombatPoint, gateOpen: boolean,roomIndex=0) {
-  return clearPilotWalkLine(from,to,gateOpen,0,roomIndex);
+export function clearPilotLine(from: CombatPoint, to: CombatPoint, gateOpen: boolean,roomIndex=0,workshop?:Workshop) {
+  return clearPilotWalkLine(from,to,gateOpen,0,roomIndex,workshop);
 }
 /** Shared edge check prevents touch paths from cutting across a curved shore. */
-export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:boolean,radius=.22,roomIndex=0){
+export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:boolean,radius=.22,roomIndex=0,workshop?:Workshop){
   const steps = Math.max(1, Math.ceil(distance(from, to) / .1));
-  for (let i = 0; i <= steps; i++){const p={x:from.x+(to.x-from.x)*i/steps,y:from.y+(to.y-from.y)*i/steps},prev={x:from.x+(to.x-from.x)*Math.max(0,i-1)/steps,y:from.y+(to.y-from.y)*Math.max(0,i-1)/steps};if(!pilotWalkable(p,gateOpen,radius,roomIndex)||(roomIndex>=30&&!nascentesTraverse(prev,p,roomIndex)))return false;}
+  for (let i = 0; i <= steps; i++){const p={x:from.x+(to.x-from.x)*i/steps,y:from.y+(to.y-from.y)*i/steps},prev={x:from.x+(to.x-from.x)*Math.max(0,i-1)/steps,y:from.y+(to.y-from.y)*Math.max(0,i-1)/steps};if(!pilotWalkable(p,gateOpen,radius,roomIndex,workshop)||(roomIndex>=30&&!nascentesTraverse(prev,p,roomIndex)))return false;}
   return true;
 }
 /** Breadth-first touch route around the same geometry used by movement. */
-export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen: boolean,roomIndex=0): CombatPoint[] {
+export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen: boolean,roomIndex=0,workshop?:Workshop): CombatPoint[] {
   if(![from.x,from.y,destination.x,destination.y].every(Number.isFinite))return [];
-  if(roomIndex>=30)return nascentesRoute(from,destination,gateOpen,roomIndex); 
+  if(roomIndex>=30)return nascentesRoute(from,destination,gateOpen,roomIndex,workshop); 
   if(Math.hypot(destination.x-from.x,destination.y-from.y)>80)return [];
   // Short taps within one navigation cell still check the full support radius.
-  if(Math.floor(from.x)===Math.floor(destination.x)&&Math.floor(from.y)===Math.floor(destination.y)&&clearPilotWalkLine(from,destination,gateOpen,.22,roomIndex))return [{...destination}];
+  if(Math.floor(from.x)===Math.floor(destination.x)&&Math.floor(from.y)===Math.floor(destination.y)&&clearPilotWalkLine(from,destination,gateOpen,.22,roomIndex,workshop))return [{...destination}];
 
   const minX=Math.min(from.x,destination.x)-10,maxX=Math.max(from.x,destination.x)+10,minY=Math.min(from.y,destination.y)-10,maxY=Math.max(from.y,destination.y)+10;
   const start = { x: Math.floor(from.x), y: Math.floor(from.y) }, end = { x: Math.floor(destination.x), y: Math.floor(destination.y) };
-  if (!pilotWalkable({ x: end.x + .5, y: end.y + .5 }, gateOpen,.22,roomIndex)) return [];
+  if (!pilotWalkable({ x: end.x + .5, y: end.y + .5 }, gateOpen,.22,roomIndex,workshop)) return [];
   const key = (p: CombatPoint) => `${p.x},${p.y}`, queue = [start], previous = new Map<string, CombatPoint | null>([[key(start), null]]);
   for (let index = 0; index < queue.length; index++) {
-    const p = queue[index]; if (key(p) === key(end)) { const route: CombatPoint[] = []; let current: CombatPoint | null = p; while (current && key(current) !== key(start)) { route.unshift({ x: current.x + .5, y: current.y + .5 }); current = previous.get(key(current)) ?? null; } const last=route[route.length-1]??from;if(!clearPilotWalkLine(last,destination,gateOpen,.22,roomIndex))return [];if(distance(last,destination)>.001)route.push({...destination});return route; }
+    const p = queue[index]; if (key(p) === key(end)) { const route: CombatPoint[] = []; let current: CombatPoint | null = p; while (current && key(current) !== key(start)) { route.unshift({ x: current.x + .5, y: current.y + .5 }); current = previous.get(key(current)) ?? null; } const last=route[route.length-1]??from;if(!clearPilotWalkLine(last,destination,gateOpen,.22,roomIndex,workshop))return [];if(distance(last,destination)>.001)route.push({...destination});return route; }
     for (const d of [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }]) {
       const n = { x: p.x + d.x, y: p.y + d.y };
       if(n.x<minX||n.x>maxX||n.y<minY||n.y>maxY)continue;
       const edgeStart=index===0?from:{x:p.x+.5,y:p.y+.5};
-      if (!previous.has(key(n)) && clearPilotWalkLine(edgeStart,{x:n.x+.5,y:n.y+.5},gateOpen,.22,roomIndex)) { previous.set(key(n), p); queue.push(n); }
+      if (!previous.has(key(n)) && clearPilotWalkLine(edgeStart,{x:n.x+.5,y:n.y+.5},gateOpen,.22,roomIndex,workshop)) { previous.set(key(n), p); queue.push(n); }
     }
   }
   return [];
@@ -405,7 +407,7 @@ export function useRareCombatItem(current:CombatState,item:RareItem):CombatState
  if(current.completed||current.rareStock[item]+current.rareBag[item]<1)return current;
  const s=clone(current);
  if(item==='cristal'||item==='escama'){s.rareEquipped=s.rareEquipped===item?null:item;s.message=item==='cristal'?'Cristal do bosque: +6 de ataque.':'Escama das marés: reduz dano comum em 4.';}
- else{const amount=Math.min(item==='perola'?90:60,combatMaxHp(s.xp)-s.hp);if(amount<=0)return current;if(s.rareBag[item]>0)s.rareBag[item]--;else s.rareStock[item]--;s.hp+=amount;s.consumablesUsed++;feedback(s,s.player,`+${amount} HP`,'heal');s.message=`${RARE_ITEMS[item]}: +${amount} HP.`;}
+ else{const amount=Math.min((item==='perola'?90:60)+(s.workshop?.enhancements.potion??0)*5,combatMaxHp(s.xp)-s.hp);if(amount<=0)return current;if(s.rareBag[item]>0)s.rareBag[item]--;else s.rareStock[item]--;s.hp+=amount;s.consumablesUsed++;feedback(s,s.player,`+${amount} HP`,'heal');s.message=`${RARE_ITEMS[item]}: +${amount} HP.`;}
  s.revision++;return s;
 }
 /** Paused/hidden time never advances teleport. Save both sides; resume completed legacy rooms automatically. */
@@ -433,19 +435,19 @@ export function canUseQuickItem(s:CombatState,item:CombatQuickItem){return !s.co
 export function useCombatQuickItem(s:CombatState,item:CombatQuickItem){return item==='erva'||item==='fruta'?consumeCombatItem(s,item):useRareCombatItem(s,item);}
 
 /** Half-unit route graph follows the diagonal stair and the actual painted courtyard. */
-function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=30):CombatPoint[]{
+function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=30,workshop?:Workshop):CombatPoint[]{
  if(Math.hypot(to.x-from.x,to.y-from.y)>80||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===31&&to.x>12)))return [];
  const e=roomIndex>=30?nascentesElevation(roomIndex):{left:-8,top:-7,size:30};
  const bounds={left:Math.min(from.x,to.x,e.left)-4,right:Math.max(from.x,to.x,e.left+e.size)+4,top:Math.min(from.y,to.y,e.top)-4,bottom:Math.max(from.y,to.y,e.top+e.size)+4};
- if(!pilotWalkable(to,open,.22,roomIndex))return [];
- if(clearPilotWalkLine(from,to,open,.22,roomIndex))return [to];
+ if(!pilotWalkable(to,open,.22,roomIndex,workshop))return [];
+ if(clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
  const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},queue=[start],previous=new Map<string,CombatPoint|null>([[key(start),null]]);
  for(let i=0;i<queue.length;i++){
   const p=queue[i],actual=i===0?from:{x:p.x/2,y:p.y/2};
-  if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,roomIndex)){
+  if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,roomIndex,workshop)){
    const route:CombatPoint[]=[to];let current:CombatPoint|null=p;while(current&&key(current)!==key(start)){route.unshift({x:current.x/2,y:current.y/2});current=previous.get(key(current))??null;}return route;
   }
-  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const n={x:p.x+dx,y:p.y+dy};if(n.x<bounds.left*2||n.x>bounds.right*2||n.y<bounds.top*2||n.y>bounds.bottom*2)continue;if(!previous.has(key(n))&&clearPilotWalkLine(actual,{x:n.x/2,y:n.y/2},open,.22,roomIndex)){previous.set(key(n),p);queue.push(n);}}
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const n={x:p.x+dx,y:p.y+dy};if(n.x<bounds.left*2||n.x>bounds.right*2||n.y<bounds.top*2||n.y>bounds.bottom*2)continue;if(!previous.has(key(n))&&clearPilotWalkLine(actual,{x:n.x/2,y:n.y/2},open,.22,roomIndex,workshop)){previous.set(key(n),p);queue.push(n);}}
  }
  return [];
 }
@@ -465,5 +467,5 @@ export function travelCombatPortal(current:CombatState,visitedRoom?:number):Comb
  if(current.completedRooms.includes(target))next.gateOpen=true;
  next.revision=current.revision+1;next.campaignVersion=next.castle?.layoutVersion===2?9:8;next.completed=false;next.portalTarget=undefined;next.portalElapsed=0;next.portalCooldownUntil=current.time+500;next.completionRewardClaimed=current.claimedRooms.includes(target);next.walking=false;next.feedback=[];next.openWorldCells=memory?.openWorldCells??[];
  const arrival=target>current.roomIndex?returnPortal(target):campaignRoom(target).exit;
- next.player=nearestPilotPoint({x:arrival.x+(target>current.roomIndex?2:-1.7),y:arrival.y+(target>=30?.4:0)},next.gateOpen,target);next.invulnerableUntil=current.time+2500;next.message=`${campaignRoom(target).title}. Passagens já liberadas permanecem abertas.`;return next;
+ next.player=nearestPilotPoint({x:arrival.x+(target>current.roomIndex?2:-1.7),y:arrival.y+(target>=30?.4:0)},next.gateOpen,target,next.workshop);next.invulnerableUntil=current.time+2500;next.message=`${campaignRoom(target).title}. Passagens já liberadas permanecem abertas.`;return next;
 }

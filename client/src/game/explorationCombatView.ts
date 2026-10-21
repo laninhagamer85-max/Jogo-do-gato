@@ -1,5 +1,6 @@
+import {baseLayout,baseBuilt,baseView,insideSafeBase,BASE_BUILDINGS} from './explorationBase';
 import {resourceNodes} from './explorationWorkshop';
-import {drawResource,drawHarvestTool,drawWorkshopStations} from './explorationWorkshopView';
+import {drawResource,drawHarvestTool,drawBaseBuilding,drawBaseProtection} from './explorationWorkshopView';
 import {drawPaintedItem,type PaintedItem} from './explorationPaintedItems';
 import {drawBiomeShelter,drawBiomeTree} from './explorationBiomeArt';
 import {explorationGroves,openWorldPlants} from './explorationOpenWorld';
@@ -34,15 +35,15 @@ export function combatView(width: number, height: number, player: CombatPoint, z
   return {tile,left:width/2-player.x*tile,top:height*.46-player.y*tile};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
-  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement,chapter4Soil?:HTMLImageElement) {
+  pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement,chapter4Soil?:HTMLImageElement,baseEditing=false) {
   if(state.castle?.active){drawCastleWorld(ctx,width,height,state,pet,atlas,zoom,overview,reducedMotion,powerArt);return;}
   const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
-  const v = room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview), t = v.tile;
+  const v = baseEditing?baseView(width,height,state):room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   ctx.save();
-  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas,state.time,reducedMotion,portalAtlas,waterTexture,shelterAtlas,room.index,false,chapter4Soil);
+  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas,state.time,reducedMotion,portalAtlas,waterTexture,undefined,room.index,false,chapter4Soil);
   else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
@@ -67,7 +68,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
 
   if(room.index<30){
-  const camp = point(room.camp); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
+  const camp = point(baseLayout(state).home); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   // Safe area stays functional without a circular marker on the terrain.
   ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(room.marker);
@@ -98,10 +99,11 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   for(const h of room.hazards??[]){const p=point(h),phase=hazardPhase(h,state.time);ctx.save();const warning=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,t*h.radius);warning.addColorStop(0,phase==='active'?'#d89b5b55':phase==='warning'?'#e8c87844':'#00000000');warning.addColorStop(1,'#00000000');ctx.fillStyle=warning;ctx.fillRect(p.x-t*h.radius,p.y-t*h.radius,t*h.radius*2,t*h.radius*2);ctx.globalAlpha=phase==='active'?1:phase==='warning'?.75:.4;drawPaintedItem(ctx,itemArt?.fibra,h.kind==='steam'?'steam':'spikes',p.x,p.y-t*.18,t*h.radius*2.2);ctx.globalAlpha=1;ctx.fillStyle='#fff0be';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(h.kind==='steam'?'Vapor':'Espinhos',p.x,p.y+t*.6);ctx.restore();}
   const fx=state.powerFx;
   if(fx&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
-  drawWorkshopStations(ctx,state,room.camp,point,t);
-  const entities = [...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...(room.index>=30?[]:[{type:'shelter' as const,p:PILOT_SHELTER},{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  drawBaseProtection(ctx,state,point,t);
+  const entities = [...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseBuilt(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
+    if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing);continue;}
     if(entity.type==='resource'){drawResource(ctx,state,entity.p,p.x,p.y,t);continue;}
     if(entity.type==='nascentes-tree'){drawNascentesTree(ctx,bridgeAtlas,entity.p,p.x,p.y,t);continue;}
     if(entity.type==='prop'){drawProp(entity.p);continue;}
@@ -117,7 +119,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     if (entity.type === 'enemy') {
       const enemy = entity.p as CombatState['enemies'][number], def = definitions.find(e => e.id === enemy.id)!;
       const range = Math.hypot(state.player.x-enemy.x,state.player.y-enemy.y);
-      const safe = Math.hypot(state.player.x-room.camp.x,state.player.y-room.camp.y)<1.6;
+      const safe = insideSafeBase(state);
       const moving = (!safe && range<4 && range>PILOT_INSECT.stopDistance) || ((safe || range>4) && Math.hypot(enemy.x-def.x,enemy.y-def.y)>.1);
       const mobImage=def.art==='autumn-mobs'?autumnMobs:def.art==='river-mobs'?riverMobs:mobsAtlas;
       if(def.art&&mobImage?.complete&&mobImage.naturalWidth){
@@ -139,7 +141,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62, t * .065);
       ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      if(!overview||def.boss)ctx.fillText(`${def.name}${def.variantName?" · "+def.variantName:""} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
+      if(!overview&&!baseEditing||def.boss)ctx.fillText(`${def.name}${def.variantName?" · "+def.variantName:""} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
     } else {
       if((state.levelUpUntil??0)>state.time){
         const remaining=(state.levelUpUntil!-state.time)/2600,fade=Math.min(1,remaining*4),pulse=reducedMotion?1:1+Math.sin(state.time/140)*.06;

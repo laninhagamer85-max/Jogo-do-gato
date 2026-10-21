@@ -1,3 +1,5 @@
+import {baseLayout,baseBuilt,BASE_BUILDINGS} from '@/game/explorationBase';
+import {drawBaseBuilding,onBaseArtChange} from '@/game/explorationWorkshopView';
 import {drawBiomeShelter,drawBiomeTree,onBiomeArtChange} from '@/game/explorationBiomeArt';
 import {explorationGroves,openWorldPlants} from '@/game/explorationOpenWorld';
 import {drawCastleLens,onCastleArtChange} from '@/game/explorationCastleView';
@@ -32,14 +34,14 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   ctx.clearRect(0,0,size,size);ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();
   // Dark textured terrain occupies undiscovered parts too, without a rectangular map inset.
   ctx.save();
-  if(ready(ground)){if(room.index>=30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props,0,true,images.portal,images.water,images.shelter,room.index,true,images.soil);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
+  if(ready(ground)){if(room.index>=30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props,0,true,images.portal,images.water,undefined,room.index,true,images.soil);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
   else {ctx.fillStyle='#345331';ctx.fillRect(0,0,size,size);}
   ctx.restore();
   ctx.fillStyle='rgba(8,24,19,.91)';ctx.fillRect(0,0,size,size);
   ctx.save();ctx.beginPath();
   for(const cell of (s.openWorldCells?.length??0)>0?(s.openWorldCells??[]).map(k=>{const [x,y]=k.split(',').map(Number);return{x:x+.5,y:y+.5}}):s.exploredCells.map(discoveredWorldPoint)){const p=point(cell);ctx.moveTo(p.x+t*.74,p.y);ctx.arc(p.x,p.y,t*.74,0,Math.PI*2);}
   ctx.clip();ctx.save();
-  if(ready(ground)){if(room.index>=30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props,0,true,images.portal,images.water,images.shelter,room.index,true,images.soil);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
+  if(ready(ground)){if(room.index>=30)drawNascentesTerrain(ctx,size,size,v.left,v.top,t,ground,images.stone,s.gateOpen,images.bridge,images.cliff,props,0,true,images.portal,images.water,undefined,room.index,true,images.soil);else drawExplorationGround(ctx,size,size,ground,v.left,v.top,t,FOREST_GROUND,room.composition??false);}
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,0,true,images.water);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,props,gardenArt,images.riverProps);
   const visible=(p:{x:number;y:number})=>{const q=point(p);return q.x>-t*2&&q.y>-t*2&&q.x<size+t*2&&q.y<size+t*2;};
@@ -52,7 +54,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   const sprite=(im:HTMLImageElement,p:{x:number;y:number},width:number)=>{
    if(!ready(im)||!visible(p))return;const q=point(p),w=t*width,h=w*im.naturalHeight/im.naturalWidth;ctx.drawImage(im,q.x-w/2,q.y-h,w,h);
   };
-  if(room.index<30){{const q=point(PILOT_SHELTER);drawBiomeShelter(ctx,room.index,q.x,q.y,t,images.shelter);}sprite(river?images.riverPortal:images.portal,room.exit,1.95);}drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
+  for(const k of BASE_BUILDINGS){if(!baseBuilt(s,k)||!visible(baseLayout(s)[k]))continue;const q=point(baseLayout(s)[k]);if(k==='home')drawBiomeShelter(ctx,room.index,q.x,q.y,t,images.shelter);else drawBaseBuilding(ctx,s,k,q.x,q.y,t,false);}if(room.index<30)sprite(river?images.riverPortal:images.portal,room.exit,1.95);drawCampaignBridge(ctx,images.bridge,room,v.left,v.top,t);
   if(room.key&&!s.hasRoomKey)drawCampaignKey(ctx,images.key,room.key,v.left,v.top,t,0,true);
   ctx.restore();
   const dot=(p:{x:number;y:number},color:string,r=3.5)=>{
@@ -60,7 +62,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   };
   const discovered=(p:{x:number;y:number})=>(s.openWorldCells?.length??0)>0?(s.openWorldCells??[]).includes(`${Math.floor(p.x)},${Math.floor(p.y)}`):minimapDiscovered(s.exploredCells,p);
   for(const [i,plate] of room.switches.entries())if(discovered(plate))dot(plate,i<s.switchStep?'#c4ef9c':'#f2d09a');
-  if(discovered(room.camp))dot(room.camp,'#a3e8dd',4.5);
+  if(discovered(baseLayout(s).home))dot(baseLayout(s).home,'#a3e8dd',4.5);
   if(discovered(room.marker))dot(room.marker,s.gateOpen?'#c0e99e':'#ffeab0',4.5);
   if(room.index>0&&s.completedRooms.includes(room.index-1))dot(returnPortal(room.index),'#a6e7ec',4.5);
   if(s.gateOpen||s.completedRooms.includes(room.index)||discovered(room.exit))dot(room.exit,s.gateOpen?'#fff3b4':'#a5b790',4.5);
@@ -82,7 +84,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   draw();return ()=>{active=false;};
  },[state.roomIndex]);
  useEffect(draw,[state]);
- useEffect(()=>onCastleArtChange(draw),[]);
+ useEffect(()=>onCastleArtChange(draw),[]);useEffect(()=>onBaseArtChange(draw),[]);
  const enemies=state.enemies.filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
  useEffect(()=>onBiomeArtChange(draw),[]);
  return <aside className="combat-minimap combat-minimap--lens" aria-label={state.castle?.active?"Minimapa do castelo":"Minimapa da clareira"}>
