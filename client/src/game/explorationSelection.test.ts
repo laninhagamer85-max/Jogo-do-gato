@@ -3,7 +3,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {it,expect,vi} from 'vitest';
 import ExplorationCampaignMap from '../components/ExplorationCampaignMap';
 import {explorationRoomStatus,startExplorationReplay,saveExplorationReplay} from './explorationSelection';
-import {createCombatState,combatSnapshot,readCombatState,stepCombat,advanceCombatRoom} from './explorationCombat';
+import {createCombatState,combatSnapshot,readCombatState,stepCombat,tickCombatPortal,advanceCombatRoom} from './explorationCombat';
 import {campaignRoom} from './explorationCampaign';
 vi.stubGlobal('React',React);
 const fixture=()=>{const s=createCombatState(7,42);s.completedRooms=[0,1,2,3,4,5,6];s.claimedRooms=[...s.completedRooms];s.xp=1600;s.hp=151;s.player={x:3.5,y:6.5};s.roomCollectedFibers=5;s.switchStep=1;s.stock.erva=3;s.bag.ambar=2;s.time=9000;return s;};
@@ -46,4 +46,25 @@ it('invalid, stale and locked replay snapshots cannot overwrite campaign progres
 });
 it('migrates previous campaign saves without resetting progress and rejects future schema versions',()=>{
  const raw={...combatSnapshot(fixture()),version:3};delete raw.roomAttempts;const r=readCombatState(raw);if(!r.supported)throw Error();expect(r.state.roomIndex).toBe(7);expect(r.state.xp).toBe(1600);expect(r.state.roomAttempts).toEqual({});expect(r.state.version).toBe(4);expect(readCombatState({version:5}).supported).toBe(false);
+});
+
+it('continues a replay through the portal, rejoins the frontier and saves subsequent rooms',()=>{
+ const base=fixture();let replay=startExplorationReplay(base,6)!;
+ replay.completed=true;replay.portalTarget=7;replay.bag.fibra=0;
+ for(let i=0;i<17;i++)replay=tickCombatPortal(replay,50);
+ expect(replay.roomIndex).toBe(7);expect(replay.completed).toBe(false);
+ expect(replay.roomCollectedFibers).toBe(base.roomCollectedFibers);
+ let saved=saveExplorationReplay(base,combatSnapshot(replay));
+ expect(saved.roomIndex).toBe(7);expect(saved.player).toEqual(replay.player);
+ replay.completed=true;replay.completedRooms.push(7);replay.claimedRooms.push(7);
+ saved=saveExplorationReplay(saved,combatSnapshot(replay));
+ replay=advanceCombatRoom(replay);saved=saveExplorationReplay(saved,combatSnapshot(replay));
+ expect(saved.roomIndex).toBe(8);expect(saved.completedRooms).toContain(7);
+});
+it('keeps the campaign checkpoint while travelling between previously completed rooms',()=>{
+ const base=fixture();let replay=startExplorationReplay(base,2)!;replay.completed=true;replay.portalTarget=3;
+ for(let i=0;i<17;i++)replay=tickCombatPortal(replay,50);
+ expect(replay.roomIndex).toBe(3);
+ const saved=saveExplorationReplay(base,combatSnapshot(replay));
+ expect(saved.roomIndex).toBe(7);expect(saved.player).toEqual(base.player);expect(saved.claimedRooms).toEqual(base.claimedRooms);
 });

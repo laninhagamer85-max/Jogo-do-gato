@@ -4,7 +4,7 @@ import {CASTLE_TEST_ACCESS,readCastleQuest} from './explorationCastleQuest';
 import {readWorkshop} from './explorationWorkshop';
 import {readLegendProgress} from './explorationLegends';
 import {EXPLORATION_ROOMS,campaignRoom} from './explorationCampaign';
-import {travelCombatPortal,createCombatState,readCombatState,combatSnapshot,combatMaxHp,type CombatState} from './explorationCombat';
+import {rememberCombatRoom,travelCombatPortal,createCombatState,readCombatState,combatSnapshot,combatMaxHp,type CombatState} from './explorationCombat';
 export function explorationRoomStatus(s:CombatState,index:number):'completed'|'current'|'locked'{
  if(s.completedRooms.includes(index))return 'completed';
  return index===(s.completed?s.roomIndex+1:s.roomIndex)?'current':'locked';
@@ -17,6 +17,7 @@ export function startExplorationReplay(campaign:CombatState,index:number):Combat
  try{const raw=JSON.parse(campaign.roomAttempts[index]??'null');if(raw&&typeof raw==='object'){const read=readCombatState({...raw,roomAttempts:{}});if(read.supported&&read.state.roomIndex===index&&!read.state.completed)attempt=read.state;}}catch{/* An invalid attempt starts afresh, never changes campaign progress. */}
  const s=attempt??createCombatState(index,campaign.encounterSeed+index+1);
  s.village=readVillage(campaign.village);s.castleQuest=readCastleQuest(campaign.castleQuest);s.workshop=readWorkshop(campaign.workshop);s.legends=campaign.legends?readLegendProgress(campaign.legends):undefined;if(s.legends)s.campaignVersion=Math.max(4,s.campaignVersion) as CombatState['campaignVersion'];
+ s.roomVisits={...campaign.roomVisits,[campaign.roomIndex]:rememberCombatRoom(campaign)};
  s.roomStars={...campaign.roomStars};s.roomAttempts={};s.completedRooms=[...campaign.completedRooms];s.claimedRooms=[...campaign.claimedRooms];s.completionRewardClaimed=true;
  s.xp=campaign.xp;s.stock={...campaign.stock};s.rareStock={...campaign.rareStock};s.equipmentOwned=campaign.equipmentOwned;s.equipmentOn=campaign.equipmentOn;s.cards=[...campaign.cards];s.activeCard=campaign.activeCard;s.secondaryCard=campaign.secondaryCard;s.activePower=campaign.activePower;s.quickItems=campaign.quickItems?.slice();s.rareEquipped=campaign.rareEquipped;
  if(s.rareEquipped&&s.rareStock[s.rareEquipped]+s.rareBag[s.rareEquipped]<1)s.rareEquipped=null;
@@ -24,16 +25,21 @@ export function startExplorationReplay(campaign:CombatState,index:number):Combat
  s.message=attempt?'Repetição retomada de onde parou. O avanço da campanha está preservado.':`Repetindo ${campaignRoom(index).title}. O avanço da campanha está preservado.`;
  return s;
 }
-/** Banking and spending replace totals once; campaign geometry, HP and quest flags stay intact. */
+/** Replay banking preserves the checkpoint until the player rejoins its room through a portal. */
 export function saveExplorationReplay(campaign:CombatState,replayValue:unknown):CombatState{
  const raw=replayValue&&typeof replayValue==='object'?replayValue as Record<string,unknown>:{};
- if(typeof raw.roomIndex!=='number'||!Number.isInteger(raw.roomIndex)||!campaign.completedRooms.includes(raw.roomIndex))return campaign;
+ if(typeof raw.roomIndex!=='number'||!Number.isInteger(raw.roomIndex))return campaign;
  const read=readCombatState(replayValue);if(!read.supported||read.state.roomIndex!==raw.roomIndex)return campaign;
- const replay=read.state;if(!campaign.completedRooms.includes(replay.roomIndex))return campaign;
+ const replay=read.state;
+ // Rejoining the current frontier resumes ordinary progression without leaving the room.
+ if(!campaign.completedRooms.includes(replay.roomIndex)){
+  if(replay.roomIndex!==campaign.roomIndex&&!(campaign.completed&&replay.roomIndex===campaign.roomIndex+1))return campaign;
+  return {...replay,roomAttempts:{...campaign.roomAttempts,...replay.roomAttempts},roomVisits:{...campaign.roomVisits,...replay.roomVisits}};
+ }
  const snapshot=JSON.stringify({...combatSnapshot(replay),roomAttempts:{}});
  if(campaign.roomAttempts[replay.roomIndex]===snapshot)return campaign;
  try{const previous=JSON.parse(campaign.roomAttempts[replay.roomIndex]??'null');if(previous&&previous.revision>replay.revision)return campaign;}catch{/* Replace only the invalid attempt. */}
- return {...campaign,village:readVillage(replay.village),castleQuest:readCastleQuest(replay.castleQuest),workshop:readWorkshop(replay.workshop),legends:replay.legends?readLegendProgress(replay.legends):campaign.legends,campaignVersion:Math.max(campaign.campaignVersion,replay.campaignVersion) as CombatState['campaignVersion'],roomStars:{...campaign.roomStars,...(replay.completed&&replay.roomStars[replay.roomIndex]?{[replay.roomIndex]:Math.max(campaign.roomStars[replay.roomIndex]??0,replay.roomStars[replay.roomIndex])}:{})},revision:Math.max(campaign.revision,replay.revision)+1,xp:Math.max(campaign.xp,replay.xp),stock:{...replay.stock},rareStock:{...replay.rareStock},equipmentOwned:campaign.equipmentOwned||replay.equipmentOwned,equipmentOn:replay.equipmentOn,cards:[...new Set([...campaign.cards,...replay.cards])],activeCard:replay.activeCard,secondaryCard:replay.secondaryCard,activePower:replay.activePower,quickItems:replay.quickItems?.slice(),rareEquipped:replay.rareEquipped,roomAttempts:{...campaign.roomAttempts,[replay.roomIndex]:snapshot}};
+ return {...campaign,village:readVillage(replay.village),castleQuest:readCastleQuest(replay.castleQuest),workshop:readWorkshop(replay.workshop),legends:replay.legends?readLegendProgress(replay.legends):campaign.legends,campaignVersion:Math.max(campaign.campaignVersion,replay.campaignVersion) as CombatState['campaignVersion'],roomStars:{...campaign.roomStars,...(replay.completed&&replay.roomStars[replay.roomIndex]?{[replay.roomIndex]:Math.max(campaign.roomStars[replay.roomIndex]??0,replay.roomStars[replay.roomIndex])}:{})},roomVisits:{...campaign.roomVisits,...replay.roomVisits},revision:Math.max(campaign.revision,replay.revision)+1,xp:Math.max(campaign.xp,replay.xp),stock:{...replay.stock},rareStock:{...replay.rareStock},equipmentOwned:campaign.equipmentOwned||replay.equipmentOwned,equipmentOn:replay.equipmentOn,cards:[...new Set([...campaign.cards,...replay.cards])],activeCard:replay.activeCard,secondaryCard:replay.secondaryCard,activePower:replay.activePower,quickItems:replay.quickItems?.slice(),rareEquipped:replay.rareEquipped,roomAttempts:{...campaign.roomAttempts,[replay.roomIndex]:snapshot}};
 }
 
 /** Temporary public access retains all account economy and genuine chapter completion. */
