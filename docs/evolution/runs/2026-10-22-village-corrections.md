@@ -1,6 +1,6 @@
 # 1.39.0 — Correções das vilas, mapa e produção
 
-Estado: validado em testes, inspeção visual e publicação em andamento.
+Estado: publicado — 1.39.0, Sites 129.
 
 ## Problemas verificados nas imagens do jogador
 Mapa com nomes de todas as construções sobrepostos. Cabeças cortadas porque os atlas usavam quatro linhas de altura idêntica, mas a arte ultrapassa essas linhas. Nomes sem relação com a aparência e repetidos. Praça de pedra de baixa resolução contrastando com a trilha. Casas transparentes e colisão insuficiente. Produção sem acompanhar todos os trabalhos no cenário.
@@ -19,3 +19,10 @@ Suíte completa: 793 testes/77 arquivos aprovados. Últimos ajustes de origem do
 Referências técnicas consultadas em 2026-10-22: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas (pré-renderização e cache de objetos repetidos); https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/imageSmoothingEnabled (escala de raster e suavização). Sem dependências novas nem arte de terceiros.
 
 Rollback: publicação anterior 1.38.0, Sites 128, deployment appgdep_6ada0f2999688191a1e3995f56b984e8; fonte 0f558ed18fcd6276f50601c09d105a2462770385.
+
+## Resultado publicado
+Typecheck aprovado, build oficial 19,61s; últimos testes de produção e UI aprovados. Nova aba Produzidos reúne ferramentas com nível/material, armas, materiais refinados e melhorias de poderes; o aviso de conclusão abre essa grade. QA confirmou Machado Nv 2 após a produção, aviso de sucesso e barra no cenário. Falha preserva nível/equipamento e tem aviso próprio; verificação de integridade feita nos testes automatizados, sem alegar repetição manual de todas as receitas.
+
+GitHub: bdeb70add6752472812f91d2529983dace4d5c21. Fonte publicada: f42221e8ba803160362ac0680be31dd82db3786b. Versão: appgprj_6ac40994d8d881919d46203a60801e46~appgver_3515c4bcf4508191a2c7f7fb7e2586e2. Deployment: appgdep_6ada348ccf588191b953a281bbc6a15c, succeeded. URL: https://meupet.aquimeusite.chatgpt.site.
+
+Provas em ../proofs/2026-10-22-139-map.jpg, ../proofs/2026-10-22-139-produced.jpg e ../proofs/2026-10-22-139-success.jpg.
