@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-21",
+  "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
   "status": "published_1.29.1_for_user_test",
   "active_run": "2026-10-21",
@@ -19,10 +19,10 @@
     "acceptance_status": "offline_verified_pending_user_visual_review"
   },
   "publication": {
-    "id": "appgdep_6ad8a6510da08191bb7e6d7b901f3d82",
+    "id": "appgdep_6ad953d08fb481918fafcb4177d82ab3",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_84aa02be9e588191895e83268bc8b029",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -31,11 +31,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-21T11:47:39.896060+00:00",
-    "version_number": 115,
-    "product_version": "1.29.1",
-    "site_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "attempted_in_this_cycle": true
+    "updated_at": "2026-10-22T00:08:08.081923+00:00",
+    "product_version": "1.36.0",
+    "version_number": 125,
+    "source_commit": "8074032e5a049e8a1e65d6381120852884158695"
   },
   "verification": {
     "typescript": "passed",
@@ -251,5 +250,23 @@
       "fps": "not_measured",
       "real_online_phases_completed_in_cycle": 0
     }
+  },
+  "independent_review": {
+    "date": "2026-10-22",
+    "status": "independent_checks_passed_deploy_deferred_concurrent_revision",
+    "report": "docs/evolution/runs/2026-10-22.md",
+    "code_modified": false,
+    "source_initial": "feaa2a5cd13be852f9fc3ea579cd20f527a0f169",
+    "source_latest": "1a8514a4615f49a3dcefb714858b0861601451ae",
+    "pending_product_version": "1.37.0",
+    "typescript": "passed_1.36.1",
+    "build": "passed_1.36.1",
+    "offline_tests": "737/737_1.36.1_after_timeout_recheck",
+    "targeted_tests": "51/51_1.37.0_population_and_selection",
+    "browser": "source_changed_during_QA; final_visual_validation_not_claimed",
+    "publication_attempted": false,
+    "real_online_phases_completed": 0,
+    "real_player_data_modified": false,
+    "report_commit": "c8666c6ea86e2d1b449db30fd580707d13779164"
   }
 }
