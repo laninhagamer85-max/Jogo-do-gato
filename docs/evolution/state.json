@@ -9,28 +9,28 @@
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "7fb2a83aadf28944caf958b0d4f1ea053c45433b",
+    "source_site_commit": "b963a600e8152b4af3c9afccbc8fa86b049eac14",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.39.2 published and GitHub synchronized",
+    "code_commit_status": "1.40.0 published and GitHub synchronized",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "71d1cd31f75334bf68daaa22e03ccf79eead2b01",
-    "published_code_github_commit": "71d1cd31f75334bf68daaa22e03ccf79eead2b01",
+    "code_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
+    "published_code_github_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "direct-portals-movement-night",
-    "base_product_version": "1.39.0",
+    "id": "backpack-loadout-stutter-royal-tools",
+    "base_product_version": "1.39.2",
     "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-22-movement-night.md",
-    "acceptance_status": "795 tests/77 files passed; typecheck/build passed; isolated portal, movement and night mobile QA"
+    "report": "docs/evolution/runs/2026-10-22-backpack-1400.md",
+    "acceptance_status": "805 tests/80 files passed; final UI 7 tests passed; typecheck and official build19.64s; isolated mobile inventory/combat and desktop drag/drop QA"
   },
   "publication": {
-    "id": "appgdep_6ada3fc3bbb48191bcb3fd04eba34d77",
+    "id": "appgdep_6ada4acc7ab48191a9c748b5928d2edd",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1a1faa760ad88191b1287f8be049a40b",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_da52631e43f08191836b9757fc2c1b56",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,10 +39,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-22T16:54:51.271799+00:00",
-    "product_version": "1.39.2",
-    "version_number": 131,
-    "source_commit": "7fb2a83aadf28944caf958b0d4f1ea053c45433b"
+    "updated_at": "2026-10-22T17:41:56.801723+00:00",
+    "product_version": "1.40.0",
+    "version_number": 133,
+    "source_commit": "b963a600e8152b4af3c9afccbc8fa86b049eac14"
   },
   "verification": {
     "typescript": "passed",
