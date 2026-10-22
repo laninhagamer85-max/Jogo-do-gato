@@ -3,45 +3,45 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.42.0_pending_publish",
+  "status": "published_1.42.0",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "94ef92bb6913ed46145584e32dd11b2cebe2e646",
+    "source_site_commit": "24855a3f90106c2e104fe5ca294b3ebbd3aca7c8",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.41.0 published; GitHub implementation verified",
+    "code_commit_status": "1.42.0 published; GitHub implementation verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "b7a9805da8b1e09da49503efe52b5243bd514a86",
+    "code_commit": "627cf5aa929daf7829316cd15ce70b5e50ecf1e2",
     "published_code_github_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "village-order-original-identities-next-step",
     "base_product_version": "1.41.0",
-    "implementation_status": "validated_pending_publish",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-22-village-order-1420.md"
   },
   "publication": {
-    "id": "appgdep_6ada959cbb0881919d5c1c04bd0a2b33",
+    "id": "appgdep_6adaa2d764108191aae9c483320b271f",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1e7d94ffa5f481918b8889ffd65598ed",
-    "version_number": 135,
-    "product_version": "1.41.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9319019a4c248191b25a125420ea0a88",
+    "version_number": 136,
+    "product_version": "1.42.0",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "94ef92bb6913ed46145584e32dd11b2cebe2e646"
+    "source_commit": "24855a3f90106c2e104fe5ca294b3ebbd3aca7c8"
   },
   "verification": {
     "typescript": "passed",
     "offline_tests": "827 passed /85 files; Firebase staging integration excluded (credential absent)",
-    "browser": "Isolated 844x390 and390x844: objective, original clothes, guard escort movement. 60-second expiry/reload validated with controlled-clock tests.",
+    "browser": "Isolated844x390/390x844: next objective and original clothes. Observed guard escort, detention countdown and release back to routines; controlled-clock tests additionally verify exact60s and reload. No physical phone or FPS measurement.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
-    "build": "passed; Vite20.22s; existing chunk-size warning"
+    "build": "passed; Vite18.38s; existing chunk-size warning"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
