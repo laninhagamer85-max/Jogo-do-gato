@@ -56,3 +56,7 @@ Proposta adicionada a pedido do usuário, ainda não implementada. Somente algun
 Ao iniciar o duelo por qualquer uma das duas formas, o motor troca para uma sessão própria antes de aplicar o primeiro golpe: Lendário e aldeão usam apenas socos. Bloquear temporariamente armas, arco, poderes, efeitos/passivas de equipamentos e cura consumível. Evitar que o primeiro golpe armado cause dano e só depois desarme. Guardar referência do equipamento original sem retirar itens do inventário e restaurar ao terminar, sair ou recuperar uma sessão interrompida. O inventário não pode reativar poderes durante o combate.
 
 Minha recomendação é tratar como treino amistoso, com vida da disputa separada doHP de exploração, sem morte ou perda de itens raros. Vitória pode dar experiência de treino, reputação ou recompensa comum limitada. Não definir aposta ou quantia sem especificação do usuário. Perder apenas encerra o desafio; ambos voltam à rotina. O nível alto do guerreiro continua visível, mas a luta respeita atributos de treino e golpes legíveis; sem habilidades escondidas. Cada vitória tem identificador persistente e intervalo para impedir duplicação de prêmios por recarga. Validar primeiro um guerreiro e uma guerreira no piloto.
+
+
+## Atualização de implementação —1.36.0
+Vila piloto da sala1 publicada:3casas/4moradores/rotinas/doações/treino sem armas e mercado comum com moedas e trocas. Relatório:../runs/2026-10-21-village-market-natural-trails.md. Expansão para outros biomas, catálogo de equipamentos e simulação completa intersalas continuam como desenho futuro.

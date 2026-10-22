@@ -1,6 +1,6 @@
 # 1.36.0 — Vila piloto, comércio e composição das trilhas
 
-Estado: validado, aguardando pacote e publicação. Base Site28eeede / produto1.35.0 / publicação124. Mesma identidade Site appgprj_6ac40994d8d881919d46203a60801e46 e GitHub laninhagamer85-max/Jogo-do-gato, branch review/grass-option3-20261016, HEAD esperado7bf474f9f90cddddde0341c61622c9985a05db88. Datas America/Sao_Paulo.
+Estado: publicado1.36.0. Base Site28eeede / produto1.35.0 / publicação124. Mesma identidade Site appgprj_6ac40994d8d881919d46203a60801e46 e GitHub laninhagamer85-max/Jogo-do-gato, branch review/grass-option3-20261016, HEAD esperado7bf474f9f90cddddde0341c61622c9985a05db88. Datas America/Sao_Paulo.
 
 ## Entrega
 - Vila dos Troncos somente na sala1: três casas distintas, praça com poço, duas barracas e empório. Acesso pela exploração em Visitar Vila dos Troncos, sem substituir o checkpoint da campanha. Casas/objetos bloqueiam os pés e participam da ordenação por profundidade.
@@ -12,7 +12,7 @@ Estado: validado, aguardando pacote e publicação. Base Site28eeede / produto1.
 
 ## Verificação
 - 723 testes aprovados em73arquivos; Firebase Admin integration excluído por depender de credencial staging externa. Cobrem32salas/rotas, rotina/doação, moedas e estoque persistidos, falhas atômicas, renovação, proteção de equipamentos, duelo e checkpoint.
-- TypeScript aprovado antes das últimas mudanças pontuais de enquadramento/cache; rerun/check e build oficial exigidos no pacote.
+- TypeScript final aprovado; build oficial concluído em20.64s. Aviso preexistente de tamanho de chunks.
 - Navegador cloud pelo preview oficial, perfil isolado sem conta real.390x844 e844x390. Mercado: venda2frutas gerou6moedas; compra1erva debitou6 e aumentou8→9; troca5madeira por2frutas concluída. Corrigido contraste branco sobre pergaminho observado em QA.
 - Treino aceito pelo diálogo, poderes/consumíveis suspensos, soco reduziu Bento172→142, encerramento preservouHP de exploração. HUD vertical reduzido para manter área central visível.
 - Inspeção visual de pátio/portal31 e entrada do castelo32 nas duas orientações: nenhum desenho da nova trilha por cima do portal, escada ou platô. Os anexos relatados no histórico estavam indisponíveis em scratch; revisão feita no código e na execução real do preview.
@@ -25,4 +25,13 @@ A* e rotas esparsas, estados locais e atualização fora da câmera; aplicados n
 - https://github.com/godotengine/godot-demo-projects/blob/master/2d/finite_state_machine/state_machine/state_machine.gd
 
 ## Publicação
-Pendente. Não confundir fonte1.36.0 com versão em produção até retorno final do deploy. Rollback: versão salva1.35.0 nativa124, appgprj_6ac40994d8d881919d46203a60801e46~appgver_64ae3ea8f2508191b936d7cdfbbdfb03.
+Concluída conforme registro abaixo. Rollback: versão salva1.35.0 nativa124, appgprj_6ac40994d8d881919d46203a60801e46~appgver_64ae3ea8f2508191b936d7cdfbbdfb03.
+
+
+Publicação concluída em2026-10-21 às21:08(America/Sao_Paulo), status succeeded. Produto1.36.0 / versão nativa125.
+- Fonte Site:8074032e5a049e8a1e65d6381120852884158695.
+- GitHub código4fda23f886ee446211a9bcd062979dd98cf9aa8e, entrada gerada dba8d84c4e55120aec2e22a7589149486deb8e28.
+- Saved version:appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a
+- Deployment:appgdep_6ad953d08fb481918fafcb4177d82ab3
+- URL:https://meupet.aquimeusite.chatgpt.site
+- Registro JSON:docs/evolution/village-publication-1.36.0.json. Documentação posterior não gera novo deploy.

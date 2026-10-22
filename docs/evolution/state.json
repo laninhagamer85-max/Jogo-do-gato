@@ -3,34 +3,34 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-21",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.36.0_pending_publication",
+  "status": "published_1.36.0",
   "active_run": "2026-10-21",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "9f2dde27629e87efe7afe44d9455c133096de5ed",
+    "source_site_commit": "8074032e5a049e8a1e65d6381120852884158695",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.35.0 published, GitHub implementation verified",
+    "code_commit_status": "1.36.0 published; GitHub implementation and generated entrypoint verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
-    "published_code_github_commit": "7b43744e3afb3d1dbd4a8ac8f0e24b42f86512ad",
+    "published_code_github_commit": "dba8d84c4e55120aec2e22a7589149486deb8e28",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "village-market-natural-trails",
     "base_product_version": "1.35.0",
-    "implementation_status": "validated_pending_build_publication",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-21-village-market-natural-trails.md",
     "acceptance_status": "723 tests passed; browser shop buy/sell/trade and barehand duel, portrait390x844/landscape844x390; chapter4 portals inspected both orientations"
   },
   "publication": {
-    "id": "appgdep_6ad946c5c8ec8191b0039e65b729e254",
+    "id": "appgdep_6ad953d08fb481918fafcb4177d82ab3",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_64ae3ea8f2508191b936d7cdfbbdfb03",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,18 +39,19 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-21T23:12:26.434641+00:00",
-    "product_version": "1.35.0",
-    "version_number": 124,
-    "source_commit": "9f2dde27629e87efe7afe44d9455c133096de5ed"
+    "updated_at": "2026-10-22T00:08:08.081923+00:00",
+    "product_version": "1.36.0",
+    "version_number": 125,
+    "source_commit": "8074032e5a049e8a1e65d6381120852884158695"
   },
   "verification": {
-    "typescript": "passed; final packaging will rerun after final view/cache changes",
+    "typescript": "passed final release check",
     "offline_tests": "723 passed; only Firebase staging credential integration excluded",
     "browser": "Isolated QA: market sell fruit8→7 coins0→3, second sale coins6, buy herb8→9 coins0, wood5→fruit2; training Bento172→142 and suspended powers; rooms31/32 layered ground below raised platforms, stairs and portals in390x844 and844x390",
     "physical_phone": "not_tested",
     "fps": "not_measured",
-    "real_online_phases_completed_in_cycle": 0
+    "real_online_phases_completed_in_cycle": 0,
+    "build": "passed official release build20.64s; pre-existing chunk size warning"
   },
   "blockers": [],
   "next_actions": [
