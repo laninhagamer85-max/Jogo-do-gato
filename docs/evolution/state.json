@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.41.0",
+  "status": "validated_1.42.0_pending_publish",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "living-villages-rare-conversations-human-gait",
-    "base_product_version": "1.40.1",
-    "implementation_status": "published_with_seated_art_pending",
-    "report": "docs/evolution/runs/2026-10-22-villages-1410.md"
+    "id": "village-order-original-identities-next-step",
+    "base_product_version": "1.41.0",
+    "implementation_status": "validated_pending_publish",
+    "report": "docs/evolution/runs/2026-10-22-village-order-1420.md"
   },
   "publication": {
     "id": "appgdep_6ada959cbb0881919d5c1c04bd0a2b33",
@@ -37,8 +37,8 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "819 passed in83 files; targeted tests after final spacing adjustment; Firebase staging integration excluded (credential absent)",
-    "browser": "Isolated bosque/river villages and autumn/nascentes cities; both phone orientations. Growth info, gift and clean closest-NPC labels verified. No account writes.",
+    "offline_tests": "827 passed /85 files; Firebase staging integration excluded (credential absent)",
+    "browser": "Isolated 844x390 and390x844: objective, original clothes, guard escort movement. 60-second expiry/reload validated with controlled-clock tests.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "build": "passed; Vite20.22s; existing chunk-size warning"

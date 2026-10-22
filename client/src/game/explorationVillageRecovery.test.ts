@@ -1,14 +1,14 @@
 import {expect,it} from 'vitest';
 import {createCombatState,pilotWalkable} from './explorationCombat';
-import {WORLD_VILLAGERS,villageDoor,villageSettlements} from './explorationVillageLayout';
+import {activeVillageDefinitions,WORLD_VILLAGERS,villageDoor,villageSettlements} from './explorationVillageLayout';
 import {tickVillage} from './explorationVillage';
-it('gives every citizen a distinct stable name and varied trainer clothing',()=>{
+it('gives every citizen a distinct stable name and original unmodified clothing',()=>{
  expect(new Set(WORLD_VILLAGERS.map(d=>d.name)).size).toBe(WORLD_VILLAGERS.length);
- for(const room of [0,10,23,31])expect(new Set(WORLD_VILLAGERS.filter(d=>d.room===room&&d.warrior).map(d=>d.clothing)).size).toBeGreaterThan(1);
+ expect(WORLD_VILLAGERS.every(d=>d.clothing===0)).toBe(true);
 });
-it('trainers in the reported autumn city walk and resume their routine',()=>{
+it('original residents in the reported autumn city walk and resume their routine',()=>{
  let s=createCombatState(23,42);s.village!.growth=Object.fromEntries(villageSettlements(23).map(t=>[t.id,24]));
- const d=WORLD_VILLAGERS.find(d=>d.room===23&&d.warrior&&d.birthStage===2)!;
+ const d=activeVillageDefinitions(s.village,23).find(d=>d.kind==='worker')!;
  const door=villageDoor(d.home,23);s.player={...door};s=tickVillage(s,0,1000);
  const c=s.village!.people[d.id];Object.assign(c,door,{task:'visit',timer:0});
  let moved=false,cycle=false;
