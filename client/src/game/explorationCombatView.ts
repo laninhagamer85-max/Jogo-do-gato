@@ -18,7 +18,7 @@ import {drawOverviewLocation} from './explorationOverviewLocation';
 import {nascentesTrees} from './explorationChapter4';
 import {drawNascentesTerrain,drawNascentesItem,nascentesView,drawNascentesTree} from './explorationChapter4View';
 import {drawExplorationLegend} from './explorationLegendView';
-import {explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from './explorationColorCache';
+import {explorationColorCacheStats,explorationColorCrop,explorationColorVariant,AUTUMN_GROUND_FILTER,AUTUMN_PROP_FILTER} from './explorationColorCache';
 import {hazardPhase} from './explorationHazards';
 import {explorationMobFrame} from './explorationMobArt';
 import {campaignRoom,campaignGardens,campaignEnemies,campaignWaterBlocks,RARE_ITEMS} from './explorationCampaign';
@@ -33,9 +33,9 @@ import { combatLevel, COMBAT_ITEMS, PILOT_CAMP, PILOT_ENEMIES, PILOT_INSECT, PIL
 import { drawWalkFrame } from './petWalkAtlas';
 import { homeWalkDirection } from './petFrameCleanup';
 
-/** Match phone pixel density while bounding the backing buffer to six million pixels. */
+/** Bound phone fill-rate: native UI remains sharp while the scene uses at most 2× density. */
 export function combatCanvasScale(width:number,height:number,pixelRatio:number){
-  return Math.max(.5,Math.min(3,Math.max(1,pixelRatio||1),Math.sqrt(6_000_000/(Math.max(1,width)*Math.max(1,height)))));
+  return Math.max(.1,Math.min(2,Math.max(1,pixelRatio||1),Math.sqrt(1_800_000/(Math.max(1,width)*Math.max(1,height)))));
 }
 export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false,roomIndex=0) {
   if(overview){const l=Math.min(-84,player.x-3),r=Math.max(84,player.x+3),u=Math.min(-46,player.y-3),b=Math.max(80,player.y+3),portrait=height>width,top=portrait?180:12,availableW=width-(portrait?12:165),availableH=Math.max(100,height-top-12),tile=Math.min(availableW/(r-l),availableH/(b-u));return{tile,left:availableW/2-(l+r)/2*tile,top:top+availableH/2-(u+b)/2*tile};}
@@ -78,6 +78,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   }
   ctx.restore();
   if(room.index<30){drawForestSun(ctx,v.left,v.top,t);drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);}
+  trace('foliageMs');
   const scenery=room.index>=30?[]:[...room.scenery,...explorationGroves({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index)].filter(p=>!campaignWaterBlocks(p,.4,room));
   if(room.index>0&&room.index<30&&state.completedRooms.includes(room.index-1)){const q=point(returnPortal(room.index));drawPortalEnergy(ctx,q.x,q.y,t,state.time,true,reducedMotion);drawPortalArch(ctx,river?riverPortal:portalAtlas,q.x,q.y,t);ctx.save();ctx.font="600 12px sans-serif";ctx.fillStyle="#fff1ce";ctx.textAlign="center";if(!overview)ctx.fillText(`Sala ${room.index} · voltar`,q.x,q.y+t*.4);ctx.restore();}
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
@@ -98,6 +99,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p=point(plate);if(room.index>=30)drawNascentesItem(ctx,chapter4Stone,3,p.x,p.y,t,.58);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,p.x,p.y+t*.15,t*.65,undefined,true);
     ctx.fillStyle=i<state.switchStep?'#caf1a0':'#fff2bd';ctx.font=`600 ${Math.max(12,t*.2)}px sans-serif`;ctx.textAlign='center';ctx.fillText(i<state.switchStep?'✓':String(i+1),p.x,p.y-t*.35);
   }
+  trace('objectivesMs');
   for (const n of room.nodes) if (!state.collectedNodes.includes(n.id)) {
     const cue=combatPickupCue(state.time,0,reducedMotion);
     if(room.index>=30){const p=point(n);drawNascentesItem(ctx,chapter4Stone,n.item==='fibra'?0:n.item==='ambar'?1:2,p.x,p.y-cue.hover,t,.45);}else drawPickup(ctx,n.item,point(n),t,cue.hover,n.quantity,Math.hypot(state.player.x-n.x,state.player.y-n.y)<2,itemArt?.[n.item]);
@@ -111,15 +113,18 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       ctx.fillStyle='#e9dcac';ctx.font=`600 ${Math.max(10,t*.14)}px sans-serif`;ctx.textAlign='center';ctx.fillText(`${RARE_ITEMS[loot.rare]} ×${loot.quantity}`,p.x,p.y+t*.18);
     }else drawPickup(ctx,loot.item,p,t,fall+cue.hover,loot.quantity,Math.hypot(state.player.x-loot.x,state.player.y-loot.y)<2,itemArt?.[loot.item]);
   }
+  trace('pickupsMs');
   for(const h of room.hazards??[]){const p=point(h),phase=hazardPhase(h,state.time);ctx.save();const warning=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,t*h.radius);warning.addColorStop(0,phase==='active'?'#d89b5b55':phase==='warning'?'#e8c87844':'#00000000');warning.addColorStop(1,'#00000000');ctx.fillStyle=warning;ctx.fillRect(p.x-t*h.radius,p.y-t*h.radius,t*h.radius*2,t*h.radius*2);ctx.globalAlpha=phase==='active'?1:phase==='warning'?.75:.4;drawPaintedItem(ctx,itemArt?.fibra,h.kind==='steam'?'steam':'spikes',p.x,p.y-t*.18,t*h.radius*2.2);ctx.globalAlpha=1;ctx.fillStyle='#fff0be';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(h.kind==='steam'?'Vapor':'Espinhos',p.x,p.y+t*.6);ctx.restore();}
   const fx=state.powerFx;
   if(fx&&!royalActive(state,'power')&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
   drawRoyalPower(ctx,state,point,t);
   drawBaseProtection(ctx,state,point,t);
+  trace('itemsMs');
   const citizens=villageCitizens(state),focusedCitizen=nearestVillager(state)?.id??null;
   const entities = [...(villageLayout(room.index).markets.map(m=>({type:'village-market' as const,p:m}))),...(villageLayout(room.index).homes.map(h=>({type:'village-home' as const,p:h}))),...(villageLayout(room.index).work.map(w=>({type:'village-resource' as const,p:w}))),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
+    if(entity.type==='enemy'&&(p.x<-t*3||p.x>width+t*3||p.y<-t*3||p.y>height+t*3))continue;
     if((entity.type.startsWith('village-')||entity.type==='citizen'||entity.type==='resource')&&(p.x<-t*5||p.x>width+t*5||p.y<-t*2||p.y>height+t*5))continue;
     if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t,!overview);continue;}
     if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t,state,!overview);continue;}
@@ -148,16 +153,18 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       if(def.art&&mobImage?.complete&&mobImage.naturalWidth){
         const frame=def.art==='autumn-mobs'?((enemy.windupUntil??0)>state.time||enemy.attackAt-state.time>1250&&enemy.attackAt-state.time<=1500?3:moving&&!reducedMotion?1+Math.floor(state.time/170)%2:0):moving&&!reducedMotion?Math.floor(state.time/170)%4:0,rect=explorationMobFrame(def.art,def.spriteRow??0,frame,mobImage.naturalWidth,mobImage.naturalHeight),cw=rect.width,ch=rect.height;
         const dw=t*(def.width??.78),dh=dw*ch/cw;
-        ctx.save();if(def.tint&&(!autumn||def.variantName))ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
-        ctx.drawImage(mobImage,rect.x,rect.y,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
+        ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
+        const tinted=explorationColorCrop(mobImage,[rect.x,rect.y,cw,ch],def.tint&&(!autumn||def.variantName)?def.tint:'none');
+        if(tinted)ctx.drawImage(tinted,0,0,tinted.naturalWidth,tinted.naturalHeight,-dw/2,t*.12-dh,dw,dh);else ctx.drawImage(mobImage,rect.x,rect.y,cw,ch,-dw/2,t*.12-dh,dw,dh);ctx.restore();
       }else if(!def.art&&enemiesAtlas?.complete && enemiesAtlas.naturalWidth){
         const row=def.name==='Besouro'?0:1, frame=moving&&!reducedMotion?Math.floor(state.time/150)%4:0;
         const cw=enemiesAtlas.naturalWidth/4,ch=enemiesAtlas.naturalHeight/2;
-        ctx.save();if(def.tint&&(!autumn||def.variantName))ctx.filter=def.tint;ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
+        ctx.save();ctx.translate(p.x,p.y);if(state.player.x<enemy.x)ctx.scale(-1,1);
         const attacking=enemy.attackAt-state.time>1250 && enemy.attackAt-state.time<=1500;
         if(attacking&&!reducedMotion)ctx.rotate(-.08*Math.sin((1500-enemy.attackAt+state.time)/250*Math.PI));
         const sy=(row ? .125 : .2734375)*ch+row*ch, sh=ch*(row ? .5859375 : .6640625), dw=t*PILOT_INSECT.width, dh=dw*sh/cw;
-        ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-dw/2,t*.07-dh,dw,dh);ctx.restore();
+        const tinted=explorationColorCrop(enemiesAtlas,[frame*cw,sy,cw,sh],def.tint&&(!autumn||def.variantName)?def.tint:'none');
+        if(tinted)ctx.drawImage(tinted,0,0,tinted.naturalWidth,tinted.naturalHeight,-dw/2,t*.07-dh,dw,dh);else ctx.drawImage(enemiesAtlas,frame*cw,sy,cw,sh,-dw/2,t*.07-dh,dw,dh);ctx.restore();
       }
       if(def.boss&&enemy.windupUntil&&enemy.windupUntil>state.time){ctx.save();ctx.strokeStyle='#f3b86c';ctx.lineWidth=t*.04;ctx.setLineDash([t*.12,t*.08]);ctx.beginPath();ctx.ellipse(p.x,p.y,t*2.1,t*2.1,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
       const labelY=def.boss?1.75:.83;
@@ -207,6 +214,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   });
   if(overview){ctx.save();ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.strokeStyle='#20372c';ctx.lineWidth=3;ctx.fillStyle='#fff0c9';for(const c of villageSettlements(room.index)){const q=point(c),stage=settlementStage(state.village,room.index,c.slot),name=`${stage===2?'C':stage===1?'V':'P'}${c.slot+1}`;ctx.font='600 10px sans-serif';ctx.strokeText(name,q.x,q.y+t*3);ctx.fillText(name,q.x,q.y+t*3);}ctx.restore();}
   if(!overview)drawCraftingActivity(ctx,state,point,t);
+  if(qa){const c=explorationColorCacheStats();ctx.canvas.dataset.colorPixels=String(c.pixels);ctx.canvas.dataset.colorMisses=String(c.misses);}
   trace('entitiesMs');
   if(!overview&&!baseEditing)drawExplorationDaylight(ctx,width,height,state,v);
   if(overview)drawOverviewLocation(ctx,width,height,point(state.player));

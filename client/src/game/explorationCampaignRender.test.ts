@@ -4,7 +4,7 @@ import {it,expect,vi} from 'vitest';
 vi.stubGlobal('React',React);
 import {createCombatState,combatSnapshot} from './explorationCombat';
 import {EXPLORATION_ROOMS} from './explorationCampaign';
-import {drawCombatPilot} from './explorationCombatView';
+import {combatView,drawCombatPilot} from './explorationCombatView';
 import ExplorationCombatPilot from '../components/ExplorationCombatPilot';
 import CombatInventory from '../components/CombatInventory';
 it.each(EXPLORATION_ROOMS)('room $index: UI, minimap and live-NPC renderer use the active room',room=>{
@@ -14,7 +14,7 @@ it.each(EXPLORATION_ROOMS)('room $index: UI, minimap and live-NPC renderer use t
  const labels:string[]=[],ctx=new Proxy({measureText:()=>({width:40}),fillText:(text:string)=>labels.push(text),createRadialGradient:()=>({addColorStop:()=>{}}),createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>k in o?o[k as keyof typeof o]:()=>{}}) as unknown as CanvasRenderingContext2D;
  const unloaded={complete:false,naturalWidth:0} as HTMLImageElement;
  drawCombatPilot(ctx,390,844,s,unloaded,unloaded,unloaded,1,false,true);
- for(const enemy of s.enemies)expect(labels.some(text=>text.includes('Nv'))).toBe(true);
+ const v=combatView(390,844,s.player);const visible=s.enemies.filter(e=>{const x=v.left+e.x*v.tile,y=v.top+e.y*v.tile;return x>=-v.tile*3&&x<=390+v.tile*3&&y>=-v.tile*3&&y<=844+v.tile*3;});expect(labels.filter(t=>t.includes(' · Nv '))).toHaveLength(visible.length);
 });
 it('shows rare collection slots and quantities from the same raster atlas in the backpack',()=>{
  const s=createCombatState();s.rareStock.seiva=3;s.rareBag.cristal=1;

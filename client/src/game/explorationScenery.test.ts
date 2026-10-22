@@ -17,6 +17,7 @@ describe('non repeating woodland ground',()=>{
     const unloaded={complete:false,naturalWidth:0} as HTMLImageElement;
     const insects={complete:true,naturalWidth:1024,naturalHeight:512} as HTMLImageElement;
     const state=createCombatState(),v=combatView(390,844,state.player);
+    state.enemies=state.enemies.slice(0,2).map((e,i)=>({...e,x:state.player.x+i*.6,y:state.player.y+1}));
     drawCombatPilot(ctx,390,844,state,unloaded,unloaded,unloaded,1,false,true,insects);
     const sprites=calls.filter(c=>c[0]===insects);expect(sprites).toHaveLength(2);
     for(const c of sprites){
@@ -56,7 +57,7 @@ describe('sharp scenery without stretching',()=>{
  });
 });
 
-it('matches mobile pixel density and bounds large canvas memory',()=>{expect(combatCanvasScale(390,844,2.625)).toBe(2.625);expect(combatCanvasScale(844,390,2.625)).toBe(2.625);const s=combatCanvasScale(3840,2160,3);expect(3840*2160*s*s).toBeLessThanOrEqual(6000000.01);});
+it('matches mobile pixel density and bounds large canvas memory',()=>{expect(combatCanvasScale(390,844,2.625)).toBe(2);expect(combatCanvasScale(844,390,2.625)).toBe(2);const s=combatCanvasScale(3840,2160,3);expect(3840*2160*s*s).toBeLessThanOrEqual(1800000.01);});
 
 import {chapterGroundCrop} from './explorationScenery';
 it('uses one centered chapter crop without stretching or reading outside the source',()=>{

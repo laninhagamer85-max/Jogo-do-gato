@@ -61,9 +61,11 @@ const distance = (a: CombatPoint, b: CombatPoint) => Math.hypot(a.x - b.x, a.y -
 export const combatLevel = (xp: number) => Math.min(100, 1 + Math.floor(Math.sqrt(Math.max(0, xp) / 40)));
 export const combatMaxHp = (xp: number) => 100 + (combatLevel(xp) - 1) * 12;
 export const combatAttack = (s: Pick<CombatState, 'xp' | 'equipmentOn'> & Partial<Pick<CombatState,'rareEquipped'|'legends'|'workshop'|'castleQuest'>>) => Math.round((16 + (combatLevel(s.xp) - 1) * 3 + (s.equipmentOn ? 4 : 0)+(s.rareEquipped==='cristal'?6:0)+(legendWeapon(s as CombatState)?.bonus??0))*(royalActive(s as CombatState,'sword')&&(!s.legends?.active||s.legends.weapon==='sword')?1.4:1)*(royalActive(s as CombatState,'card')?1.15:1));
-export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101): CombatState {
+type CombatShared=Pick<CombatState,'village'|'workshop'|'castleQuest'|'legends'>;
+export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101):CombatState{return createCombatStateShared(roomIndex,encounterSeed);}
+function createCombatStateShared(roomIndex:number,encounterSeed:number,shared?:CombatShared): CombatState {
   const room=campaignRoom(roomIndex);
-  return {village:newVillage(),castleQuest:newCastleQuest(),workshop:newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:13,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {village:shared?.village??newVillage(),castleQuest:shared?.castleQuest??newCastleQuest(),workshop:shared?.workshop??newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:13,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -98,19 +100,20 @@ function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=
 }
 function object(v: unknown): Record<string, unknown> { return v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : {}; }
 /** Forward-version saves are never replaced; known fields are bounded on read. */
-export function readCombatState(value: unknown): CombatRead {
+export function readCombatState(value:unknown):CombatRead{return readCombatStateShared(value);}
+function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
   if (version > 4 || Number(raw.campaignVersion??1)>13) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=CASTLE_TEST_ACCESS&&(raw.roomIndex===30||raw.roomIndex===31)?raw.roomIndex:Math.floor(number(raw.roomIndex,0,0,unlocked));
-  const room=campaignRoom(index),s = createCombatState(index,number(raw.encounterSeed,290519+index*101,0,0xffffffff));
+  const room=campaignRoom(index),s = createCombatStateShared(index,number(raw.encounterSeed,290519+index*101,0,0xffffffff),shared);
   const definitions=campaignEnemies(index,s.encounterSeed);
   for(const group of ['rareStock','rareBag'] as const)for(const item of Object.keys(RARE_ITEMS) as RareItem[])s[group][item]=Math.floor(number(object(raw[group])[item],0,0,9999));
   for(const [key,value] of Object.entries(object(raw.roomAttempts)))if(completedRooms.includes(Number(key))&&String(Number(key))===key&&typeof value==='string'&&value.length<100000)s.roomAttempts[key]=value;
-  if(raw.legends){s.legends=readLegendProgress(raw.legends);s.campaignVersion=Math.max(4,s.campaignVersion) as CombatState['campaignVersion'];}
-  s.village=readVillage(raw.village);s.workshop=readWorkshop(raw.workshop);s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
-  s.castleQuest=readCastleQuest(raw.castleQuest);s.castle=readCastle(raw.castle,royalDispersed(s));if(s.castle&&index!==31)s.castle={...s.castle,active:false};
+  if(raw.legends){s.legends=shared?.legends??readLegendProgress(raw.legends);s.campaignVersion=Math.max(4,s.campaignVersion) as CombatState['campaignVersion'];}
+  s.village=shared?.village??readVillage(raw.village);s.workshop=shared?.workshop??readWorkshop(raw.workshop);s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
+  s.castleQuest=shared?.castleQuest??readCastleQuest(raw.castleQuest);s.castle=readCastle(raw.castle,royalDispersed(s));if(s.castle&&index!==31)s.castle={...s.castle,active:false};
   s.portalCooldownUntil=number(raw.portalCooldownUntil,0,0,1e9);
   if(Number.isInteger(raw.portalTarget)&&connectedPortal(index,raw.portalTarget as number))s.portalTarget=raw.portalTarget as number;
   s.openWorldCells=Array.isArray(raw.openWorldCells)?[...new Set(raw.openWorldCells.filter((v):v is string=>typeof v==='string'&&/^-?\d{1,6},-?\d{1,6}$/.test(v)))].slice(-12000):[];
@@ -118,7 +121,7 @@ export function readCombatState(value: unknown): CombatRead {
   s.roomVisits={};
   for(const [key,memory] of Object.entries(object(raw.roomVisits))){
    const ri=Number(key);if(!Number.isInteger(ri)||ri<0||ri>=EXPLORATION_ROOMS.length||!memory||typeof memory!=='object')continue;
-   const parsed=readCombatState({...raw,...object(memory),roomIndex:ri,completed:false,roomVisits:undefined,worldLayoutVersion:object(memory).worldLayoutVersion,portalTarget:undefined});
+   const parsed=readCombatStateShared({...raw,...object(memory),roomIndex:ri,completed:false,roomVisits:undefined,worldLayoutVersion:object(memory).worldLayoutVersion,portalTarget:undefined},s);
    if(parsed.supported)s.roomVisits[key]=rememberCombatRoom(parsed.state);
   }
   if (!Object.keys(raw).length) return { supported: true, state: s };
