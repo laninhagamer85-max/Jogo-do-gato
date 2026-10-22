@@ -27,7 +27,7 @@ it('prepares body and illustrated weapon once and reuses native images, without 
 it('shows future names and information while concealing their portrait art',()=>{
  vi.stubGlobal('React',React);const html=renderToStaticMarkup(React.createElement(ExplorationLegends,{game:createCombatState(),gender:'menino',onAction:()=>{}}));
  expect(html).toContain('Kael');
- expect(html).toContain('Carrossel giratório de Lendários');expect(html).toContain('Carrossel giratório de Lendários');expect(html).toContain('weapons-v1.png');
+ expect(html).toContain('Carrossel giratório de Lendários');expect(html).toContain('Carrossel giratório de Lendários');expect(html).not.toContain('weapons-v1.png');expect(html).toContain('Características de Kael');expect(html).not.toContain('Mochila de equipamentos');
 });
 it('swaps the illustrated weapon for a harvesting tool and restores it without changing equipment',()=>{
  class HarvestImage{complete=true;naturalWidth=1254;src='';}

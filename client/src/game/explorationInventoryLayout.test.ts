@@ -1,0 +1,11 @@
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {it,expect,vi} from 'vitest';
+import CombatInventory from '../components/CombatInventory';
+import {createCombatState} from './explorationCombat';
+vi.stubGlobal('React',React);
+const fixture=()=>{const s=createCombatState();s.legends={unlocked:['kael'],active:'kael',weapons:['sword','dagger','bow'],weapon:'sword'};s.castleQuest!.actor='legend:kael';s.castleQuest!.claims['legend:kael']={issued:true,equipmentCards:1,equipped:{sword:true,axe:true}};s.cards=['roots','tide'];s.activeCard='roots';return s;};
+const render=(s:ReturnType<typeof fixture>,initialTab:'all'|'equipment'|'legends')=>renderToStaticMarkup(React.createElement(CombatInventory,{game:s,gender:'menino',initialTab,onUse:()=>{},onEquip:()=>{},onLegend:()=>{},onRoyal:()=>{}}));
+it('places owned Royal Treasure before common items and keeps unearned treasures out of My items',()=>{const html=render(fixture(),'all');expect(html.indexOf('Meus itens raros · Tesouro Real')).toBeLessThan(html.indexOf('aria-label="Itens da mochila"'));expect(html).toContain('Machado da Coroa');expect(html).toContain('Meus itens');expect(render(createCombatState(),'all')).not.toContain('Meus itens raros · Tesouro Real');});
+it('keeps the legend collection focused on character information and the carousel',()=>{const html=render(fixture(),'legends');expect(html).toContain('Carrossel giratório de Lendários');expect(html).toContain('Características de Kael');expect(html).toContain('Nível da exploração');expect(html).not.toContain('Mochila de equipamentos');expect(html).not.toContain('data-equip-target');});
+it('puts the active character above equipped and available items, retaining both card and royal-tool targets',()=>{const html=render(fixture(),'equipment');const board=html.indexOf('aria-label="Equipamentos de Kael"'),worn=html.indexOf('Itens equipados'),available=html.indexOf('Itens disponíveis');expect(board).toBeGreaterThan(0);expect(board).toBeLessThan(worn);expect(worn).toBeLessThan(available);for(const target of ['hero','weapon','card0','card1','axe','pickaxe','charm','power'])expect(html).toContain(`data-equip-target="${target}"`);expect(html).toContain('Arraste ou toque para selecionar');expect(html).toContain('Ver todos');expect(html).not.toContain('Carrossel giratório de Lendários');});

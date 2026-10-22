@@ -1,3 +1,49 @@
 .legend-rpg-panel{color:#eee1bb}.legend-rpg-layout{display:grid;grid-template-columns:minmax(0,1fr) 205px;gap:10px}.legend-paperdoll{display:grid;grid-template-columns:65px minmax(0,1fr) 65px;gap:4px;min-height:295px;padding:9px;background:radial-gradient(ellipse at 50% 50%,#294e49,#102d2c);border:2px solid #ad925c;border-radius:14px}.legend-slots-left,.legend-slots-right{display:grid;gap:12px;align-content:space-around}.exp-legends .legend-equipment-slot{display:grid!important;justify-items:center;gap:4px;width:100%;padding:6px!important;background:#273c30!important;border:1px solid #ab955d!important;border-radius:9px;color:#f9e9ba!important;font-size:10px!important;line-height:1.2;min-width:0;min-height:108px}.legend-equipment-slot small{font-size:10px}.legend-equipment-slot .exp-weapon-portrait{height:45px}.legend-empty-slot{font-size:30px;color:#bfae86}.exp-legends .legend-paperdoll-hero{display:flex!important;flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:4px!important;background:transparent!important;color:#ffedbd!important;border:1px solid transparent!important;min-width:0}.legend-paperdoll-hero>svg{height:215px;width:100%;pointer-events:none;filter:drop-shadow(0 9px 5px #0007)}.legend-paperdoll-hero small{font-size:10px}.legend-paperdoll-hero strong{font-size:15px}.exp-legends .is-drop-target{border-color:#ffe392!important;box-shadow:0 0 15px #f3c661!important}.legend-items-bag{padding:10px;border:1px solid #ad925c;border-radius:14px;background:#302e21}.legend-items-bag h3{margin:0;font-size:16px;color:#ffe4ac}.legend-items-bag p{font-size:11px;margin:4px 0 9px}.legend-bag-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.exp-legends .legend-bag-item{display:flex!important;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:3px;min-width:0;min-height:78px;padding:5px!important;background:#1e3026!important;color:#f1e5bc!important;border:1px solid #8c7a50!important;touch-action:none;user-select:none;cursor:grab}.legend-bag-item small{font-size:9px;line-height:1.15}.legend-bag-item .exp-weapon-portrait{height:37px;width:26px}.legend-equipped-dot{position:absolute;right:3px;top:3px;width:6px;height:6px;border-radius:50%;background:#ebc664}.legend-bag-item.is-equipped{box-shadow:inset 0 0 0 1px #e1be71}.legend-selected-item{margin:10px 0;padding:10px;border:1px solid #ac9662;border-radius:12px;background:#fff4d9;color:#382d1b}.legend-selected-item>div{display:flex;align-items:center;gap:8px}.legend-selected-item p{margin:5px 0;font-size:12px}.legend-selected-item .exp-weapon-portrait{height:35px}.legend-selected-item button,.legend-bag-expand{width:100%;min-height:44px;margin-top:7px}.legend-workshop{padding:10px;border:1px solid #99825a;border-radius:12px}.legend-workshop summary{min-height:35px;cursor:pointer}.legend-workshop article{display:grid;grid-template-columns:30px 1fr;gap:7px;margin:9px 0;padding:9px;background:#293e2d;border-radius:10px}.legend-workshop article small,.legend-workshop article button{grid-column:1/-1}.legend-notice-backdrop{position:fixed;inset:0;z-index:10000;background:#081911b8;display:grid;place-items:center;padding:16px}.legend-equip-notice{width:min(100%,330px);padding:20px;border-radius:16px;background:#fff3d4;color:#362914;box-shadow:0 10px 40px #0008;border:2px solid #b59957}.legend-equip-notice h3{font-size:17px;margin:0 0 10px}.legend-equip-notice p{font-size:14px}.legend-equip-notice button{width:100%;display:flex;justify-content:center;gap:7px;min-height:44px}.legend-drag-ghost{position:fixed;z-index:10001;pointer-events:none;transform:translate(-50%,-50%);background:#fff2d5df;border:2px solid #e1bd60;border-radius:10px;padding:10px;box-shadow:0 5px 20px #0005}.legend-drag-ghost .exp-weapon-portrait{height:60px;width:40px}@media(max-width:580px){.legend-rpg-layout{grid-template-columns:1fr}.legend-paperdoll{min-height:290px}.legend-bag-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.legend-items-bag{padding:9px}.legend-bag-item small{font-size:10px}}@media(prefers-reduced-motion:no-preference){.is-drop-target{transition:box-shadow .12s}}
 
 .legend-character-preview{width:100%;height:215px;object-fit:contain;touch-action:none;cursor:ew-resize}.legend-preview-tools{grid-column:1/-1;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:4px;text-align:center}.exp-legends .legend-preview-tools button{min-height:36px;padding:3px!important;font-size:15px!important}.legend-preview-tools small{font-size:10px}.legend-preview-tools .legend-demo-attack{grid-column:1/-1;font-size:11px!important;min-height:36px}.legend-paperdoll{min-height:350px}
+
+/* Equipar keeps the character first and both item groups below it in every orientation. */
+.legend-equipping .legend-paperdoll{grid-template-columns:65px minmax(0,1fr) 65px;min-height:280px}
+.legend-equipping .legend-equipment-slot{min-height:76px;font-size:10px!important}
+.legend-equipping .legend-slots-left,.legend-equipping .legend-slots-right{gap:6px}
+.legend-equipping .legend-paperdoll-hero{display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0;overflow:hidden}
+.legend-pet-preview{height:190px;max-width:100%;object-fit:contain}
+.legend-equipping .legend-character-preview{height:200px}
+.legend-loadout-summary{display:grid;gap:5px;margin:8px 0;color:#fff0ce}
+.legend-loadout-summary small{font-size:12px}
+.legend-loadout-summary button{justify-self:start;font-size:12px}
+.legend-charm-slot{grid-column:1/-1;max-width:130px;justify-self:center}
+.legend-charm-slot .legend-equipment-slot{min-height:70px}
+.legend-equipping .legend-items-bag{margin-top:12px}
+.legend-equipping .legend-items-bag h3{margin-top:8px}
+.legend-card-actions{display:flex;gap:6px}
+.legend-equipping .legend-selected-item{position:sticky;bottom:0;z-index:5;background:#193b32f2;color:#fff0ce;backdrop-filter:blur(8px);border-color:#baa16c}
+.legend-equipping .legend-equip-notice{background:#183c30f2;color:#fff0ce;backdrop-filter:blur(12px)}
+.exp-legend-information{margin:12px 0;padding:12px;border:1px solid #ac986366;border-radius:14px;background:#1b3c32bb;color:#fff0cf}
+.exp-legend-information h3{font-size:16px;margin:0 0 8px}
+.exp-legend-information p{font-size:12px;line-height:1.5}
+.exp-legend-information dl{display:grid;gap:8px;margin:12px 0}
+.exp-legend-information dl>div{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.exp-legend-information dt{opacity:.8}.exp-legend-information dd{margin:0;text-align:right}
+.royal-featured{margin:8px 0 16px;padding:10px;border:1px solid #d1af65;border-radius:14px;background:linear-gradient(135deg,#4a3d23bb,#1c3b31ee);color:#fff0cd}
+.royal-featured h3{margin:0;font-size:16px}.royal-featured p{font-size:12px;line-height:1.4}
+.royal-featured .base-item-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.royal-featured .base-item-grid button{padding:5px;font-size:10px;min-width:0}
+.royal-item-detail{padding:8px;border:1px solid #ab955f66;border-radius:10px;background:#173b30b0}
+.royal-item-detail button{width:100%}
+
+.legend-equipping .legend-equipment-slot{padding:4px!important;gap:2px;line-height:1.15}
+.legend-equipping .legend-equipment-slot>span:last-child{font-size:9px;overflow-wrap:anywhere}
+.legend-equipping .legend-charm-slot{margin-top:5px;width:100%;max-width:115px}
+@media(max-height:500px) and (orientation:landscape){
+ .combat-dialog-inventory:has(.legend-equipping){width:min(96vw,760px);max-width:calc(100vw - 16px)}
+ .legend-equipping .legend-paperdoll{grid-template-columns:90px minmax(0,1fr) 90px;min-height:220px;gap:4px}
+ .legend-equipping .legend-character-preview,.legend-equipping .legend-pet-preview{height:110px}
+ .legend-equipping .legend-equipment-slot{min-height:62px;display:grid;grid-template-columns:35px 1fr;align-items:center}
+ .legend-equipping .legend-equipment-slot>small{grid-column:1/-1}
+ .legend-equipping .legend-preview-tools{grid-template-columns:40px 1fr 40px minmax(130px,1fr)}
+ .legend-equipping .legend-demo-attack{grid-column:auto;font-size:11px!important}
+ .legend-equipping .legend-bag-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+
+.combat-inventory-tabs,.combat-dialog-inventory{scrollbar-width:thin;scrollbar-color:#b5a16c #193c30}
