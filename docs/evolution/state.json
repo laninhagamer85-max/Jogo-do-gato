@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.40.1",
+  "status": "validated_1.41.0",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,38 +20,32 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "home-feedback-building-crops-village-routing",
-    "base_product_version": "1.40.0",
+    "id": "living-villages-rare-conversations-human-gait",
+    "base_product_version": "1.40.1",
     "implementation_status": "validated",
-    "report": "docs/evolution/runs/2026-10-22-home-feedback-1401.md"
+    "report": "docs/evolution/runs/2026-10-22-villages-1410.md"
   },
   "publication": {
-    "id": "appgdep_6ada4acc7ab48191a9c748b5928d2edd",
+    "id": "appgdep_6ada8d4b91cc8191b5d8c1a0984a3d1d",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_da52631e43f08191836b9757fc2c1b56",
-    "type": "publish",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_660df25169c88191a960cd2d1f79739d",
+    "version_number": 134,
+    "product_version": "1.40.1",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "has_mcp": false,
-    "screenshot_asset_pointer": null,
-    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
-    "failure_message": null,
-    "env_set_revision": 0,
-    "updated_at": "2026-10-22T17:41:56.801723+00:00",
-    "product_version": "1.40.0",
-    "version_number": 133,
-    "source_commit": "b963a600e8152b4af3c9afccbc8fa86b049eac14"
+    "source_commit": "a5b86c3bffb83df51e2cba9d4e104dbe9b0c8b7d"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "807 passed; Firebase staging integration unavailable because credential is absent",
+    "offline_tests": "819 passed in83 files; targeted tests after final spacing adjustment; Firebase staging integration excluded (credential absent)",
     "browser": "Isolated bosque/river villages and autumn/nascentes cities; both phone orientations. Growth info, gift and clean closest-NPC labels verified. No account writes.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "build": "passed; Vite27.20s, pre-existing large-chunk warning retained"
   },
-  "blockers": [],
+  "blockers": [
+    "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
+  ],
   "next_actions": [
     "David: Exploração → Visitar povoados desta sala. Check maps, traders and autonomous growth on a real phone.",
     "Future city expansion: additional dedicated building art, lots and professions; current city uses fixed safe footprints.",

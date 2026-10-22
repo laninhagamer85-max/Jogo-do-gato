@@ -1,3 +1,4 @@
+import {worldEnemyDefinitions} from './explorationWilderness';
 import {drawExplorationDaylight} from './explorationDaylightView';
 import {villageLayout,villageSettlements,settlementStage} from './explorationVillageLayout';
 import {nearestVillager,villageCitizens} from './explorationVillage';
@@ -47,7 +48,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(state.castle?.active){drawCastleWorld(ctx,width,height,state,pet,atlas,zoom,overview,reducedMotion,powerArt);return;}
   if(state.village?.duel)state={...state,player:state.village.duel.player};
   const qa=typeof window!=='undefined'&&window.location.pathname==='/qa-exploration-lab';let mark=qa?performance.now():0;const trace=(name:string)=>{if(qa){ctx.canvas.dataset[name]=(performance.now()-mark).toFixed(1);mark=performance.now();}};
-  const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
+  const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=worldEnemyDefinitions(state);
   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
   trace('paletteMs');
   const v = baseEditing?baseView(width,height,state):room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview,room.index), t = v.tile;
@@ -121,7 +122,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   drawBaseProtection(ctx,state,point,t);
   trace('itemsMs');
   const citizens=villageCitizens(state),focusedCitizen=nearestVillager(state)?.id??null;
-  const entities = [...(villageLayout(room.index).markets.map(m=>({type:'village-market' as const,p:m}))),...(villageLayout(room.index).homes.map(h=>({type:'village-home' as const,p:h}))),...(villageLayout(room.index).work.map(w=>({type:'village-resource' as const,p:w}))),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...(villageLayout(room.index).markets.map(m=>({type:'village-market' as const,p:m}))),...(villageLayout(room.index).homes.map(h=>({type:'village-home' as const,p:h}))),...(villageLayout(room.index).work.map(w=>({type:'village-resource' as const,p:w}))),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0&&(!overview||!definitions.find(d=>d.id===e.id)?.boss)).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='enemy'&&(p.x<-t*3||p.x>width+t*3||p.y<-t*3||p.y>height+t*3))continue;
@@ -171,7 +172,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
       ctx.fillStyle = '#273d37'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62, t * .065);
       ctx.fillStyle = '#ef817d'; ctx.fillRect(p.x - t * .31, p.y - t * (labelY-.11), t * .62 * enemy.hp / def.hp, t * .065);
       ctx.fillStyle = def.level > combatLevel(state.xp) ? '#ffe4a2' : '#fff9df'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center';
-      if(!overview&&!baseEditing||def.boss)ctx.fillText(`${def.name}${def.variantName?" · "+def.variantName:""} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
+      if((!overview&&!baseEditing||def.boss)&&(!enemy.id.startsWith('master-escort:')||state.enemies.filter(e=>e.hp>0&&e.id.startsWith('master-escort:')).sort((a,b)=>Math.hypot(a.x-state.player.x,a.y-state.player.y)-Math.hypot(b.x-state.player.x,b.y-state.player.y))[0]?.id===enemy.id))ctx.fillText(`${def.name}${def.variantName?" · "+def.variantName:""} · Nv ${def.level}${def.boss?' · MESTRE':def.rarity==='rare'?' · Raro':''}`, p.x, p.y - t * labelY);
     } else {
       if((state.levelUpUntil??0)>state.time){
         const remaining=(state.levelUpUntil!-state.time)/2600,fade=Math.min(1,remaining*4),pulse=reducedMotion?1:1+Math.sin(state.time/140)*.06;

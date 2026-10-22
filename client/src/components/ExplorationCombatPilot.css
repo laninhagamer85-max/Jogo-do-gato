@@ -269,3 +269,5 @@
 .combat-craft-result>.combat-notice-close{position:absolute;right:0;top:0;border:0;background:transparent;color:#fff2cc}
 .combat-craft-result>strong{font-size:14px}.combat-craft-result>button:not(.combat-notice-close){min-height:44px}
 @media(max-height:500px) and (orientation:landscape){.combat-craft-result{top:10px;left:50%;max-width:280px}.combat-craft-result span{font-size:11px}.combat-base-shortcut{max-width:310px}}
+
+.village-news>button{min-height:44px;min-width:88px;color:#fff1ca;background:#315344;border:1px solid #a5ad82;border-radius:10px;padding:8px 14px}.village-speech{scrollbar-width:thin;scrollbar-color:#a6b18c #203b32}.village-news p{padding-right:2px}

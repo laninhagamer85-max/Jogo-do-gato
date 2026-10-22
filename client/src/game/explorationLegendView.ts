@@ -1,3 +1,4 @@
+import {drawHumanSideWalk} from './explorationHumanGait';
 import {heldPose,meleeSwing} from './explorationHeldPose';
 import {royalActive,castleDown} from './explorationCastleQuest';
 import {drawRoyalHeld} from './explorationRoyalView';
@@ -25,7 +26,7 @@ function cutout(key:string,image:HTMLImageElement|undefined,r:{x:number;y:number
 export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatState,x:number,y:number,tile:number,reduced:boolean){
  const id=state.legends?.active;if(!id)return false;preloadLegend(id);
  const anim=legendAnimation(state.facing.x,state.facing.y,state.walking,state.walkPhase,state.time,state.strikeUntil,reduced);
- const pose=legendPose(id,anim.row,anim.frame),rect=pose.rect,sprite=cutout(pose.key,images.get(id),rect);if(!sprite)return false;
+ const side=Math.abs(state.facing.x)>Math.abs(state.facing.y),lateralWalk=side&&state.walking&&!anim.attacking;const pose=legendPose(id,anim.row,lateralWalk?0:anim.frame),rect=pose.rect,sprite=cutout(pose.key,images.get(id),rect);if(!sprite)return false;
  const dh=tile*1.12,dw=dh*rect.width/rect.height,hand=legendHand(id,pose.sourceRow,pose.sourceFrame);
  const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
  const harvesting=harvestingActive(state),weapon=harvesting||state.village?.duel?null:state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
@@ -44,5 +45,5 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  }
  // Rear-facing equipment sits behind the body instead of cutting through the torso.
  const behind=state.facing.y<-.3;if(behind)drawItem();if(harvesting&&behind)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});
- ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();if(harvesting&&!behind)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});return true;
+ ctx.save();ctx.translate(x,y);if(pose.mirror)ctx.scale(-1,1);if(lateralWalk)drawHumanSideWalk(ctx,sprite,{width:rect.width,height:rect.height},-dw/2,-dh,dw,dh,state.walkPhase,true,reduced);else ctx.drawImage(sprite,-dw/2,-dh,dw,dh);ctx.restore();if(!behind)drawItem();if(harvesting&&!behind)drawHarvestTool(ctx,state,x,y,tile,{x:hx,y:hy});return true;
 }

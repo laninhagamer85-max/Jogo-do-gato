@@ -1,3 +1,4 @@
+import {campaignRoom as minimapRoom} from '@/game/explorationCampaign';
 import {drawExplorationTrails} from '@/game/explorationTrails';
 import {baseLayout,baseBuilt,BASE_BUILDINGS} from '@/game/explorationBase';
 import {drawBaseBuilding,onBaseArtChange} from '@/game/explorationWorkshopView';
@@ -71,7 +72,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   if(room.index>0&&s.completedRooms.includes(room.index-1))dot(returnPortal(room.index),'#a6e7ec',4.5);
   if(s.gateOpen||s.completedRooms.includes(room.index)||discovered(room.exit))dot(room.exit,s.gateOpen?'#fff3b4':'#a5b790',4.5);
   for(const n of room.nodes)if(!s.collectedNodes.includes(n.id)&&discovered(n))dot(n,'#e3f1a9');
-  for(const e of s.enemies)if(minimapNearby(s.player,e)&&discovered(e))dot(e,'#ffc175',4.5);
+  for(const e of s.enemies.filter(e=>!e.id.startsWith('roaming-master:')&&minimapRoom(s.roomIndex).bossId!==e.id))if(minimapNearby(s.player,e)&&discovered(e))dot(e,'#ffc175',4.5);
   ctx.restore();
   // Red player beacon stays above the fog and is the only pulsing-free primary marker.
   const pet=point(s.player),halo=ctx.createRadialGradient(pet.x,pet.y,1,pet.x,pet.y,11);
@@ -90,7 +91,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  // Keep terrain work out of every HUD refresh; read the latest position at paint time.
  useEffect(()=>{const id=window.setTimeout(draw,Math.max(0,200-(performance.now()-lastPaint.current)));return()=>window.clearTimeout(id);},[state]);
  useEffect(()=>onCastleArtChange(draw),[]);useEffect(()=>onBaseArtChange(draw),[]);
- const enemies=state.enemies.filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
+ const enemies=state.enemies.filter(e=>!e.id.startsWith('roaming-master:')&&minimapRoom(state.roomIndex).bossId!==e.id).filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
  useEffect(()=>onBiomeArtChange(draw),[]);
  return <aside className="combat-minimap combat-minimap--lens" aria-label={state.castle?.active?"Minimapa do castelo":"Minimapa da clareira"}>
   <canvas ref={canvas} width={384} height={384} role="img" aria-label={state.castle?.active?"Lupa da sala do castelo. Ponto vermelho: posição do personagem.":`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
