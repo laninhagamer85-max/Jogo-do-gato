@@ -19,8 +19,9 @@ Estado: validado em testes, aguardando pacote e publicação. Base publicada1.36
 
 ## Validação
 -777 testes aprovados em75 arquivos. Exclusão única: integração FirebaseAdmin que exige credencial externa de staging. Testes verificam portas/rotas em32 salas, crescimento e persistência, moradores de cidade em chão navegável, fabricação pública com gasto/tempo, checkpoint após testes31/32, progressão e portais existentes, duelo sem armas, inventário e limites comerciais.
--TypeScript aprovado antes do empacotamento; build oficial será registrado no pacote.
+-TypeScript aprovado antes do empacotamento; build oficial concluído (44,07s); novo pacote inclui o refinamento de nomes.
 -Navegador de QA com perfil isolado: cidade no outono horizontal e Nascentes vertical, informações24/24 e10moradores, pedido de recurso comum respondido. Demais inspeções finais registradas antes da publicação.
+-Conferência final encontrou sobreposição dos nomes dos moradores em grupos. Apenas o aldeão mais próximo recebe identificação; duelista mantém sua identificação própria. Vila do bosque vertical, vila do rio horizontal e cidades do outono/Nascentes foram inspecionadas; nenhuma escrita em conta real.
 -Não foi medido FPS nem testado telefone físico. Não alegar campanha inteira jogada manualmente. Crescimento é local por perfil, não cidade global compartilhada entre contas.
 
 ## Referências técnicas consultadas em22/10/2026
