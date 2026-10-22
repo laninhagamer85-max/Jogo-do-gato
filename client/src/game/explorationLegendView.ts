@@ -27,7 +27,7 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  const pose=legendPose(id,anim.row,anim.frame),rect=pose.rect,sprite=cutout(pose.key,images.get(id),rect);if(!sprite)return false;
  const dh=tile*1.12,dw=dh*rect.width/rect.height,hand=legendHand(id,pose.sourceRow,pose.sourceFrame);
  const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
- const harvesting=harvestingActive(state),weapon=harvesting?null:state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
+ const harvesting=harvestingActive(state),weapon=harvesting||state.village?.duel?null:state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
  const a=Math.atan2(state.facing.y,state.facing.x),sway=state.walking&&!reduced?Math.sin(state.walkPhase*Math.PI*2)*.065:0;
  function drawItem(){if(!weapon||castleDown(state))return;if(weapon==='sword'&&royalActive(state,'sword')){drawRoyalHeld(ctx,state,'sword',hx,hy,tile);return;}const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tier?tierSprite(weapon,tier):null,tierImage=tierArt?imageFor('equipment-tiers',tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
   ctx.save();ctx.translate(hx,hy);

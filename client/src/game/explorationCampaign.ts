@@ -1,3 +1,4 @@
+import {VILLAGE_CLEARINGS} from './explorationVillageLayout';
 import {encounterPocket,openWorldBlocked,registerWorldClearings} from './explorationOpenWorld';
 import {CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM,NASCENTES_GARDENS,returnPortal} from './explorationChapter4';
 import {AUTUMN_ROOMS,autumnEnemy} from './explorationChapter3';
@@ -68,7 +69,7 @@ for(const r of [...riverRooms,...AUTUMN_ROOMS]){
  r.marker=fit(r.marker);r.exit=fit(r.exit);r.nodes=r.nodes.map(fit);r.switches=r.switches.map(fit);if(r.key)r.key=fit(r.key);r.enemies=r.enemies.map(fit);
 }
 export const EXPLORATION_ROOMS:readonly CampaignRoom[]=[...forestRooms,...riverRooms,...AUTUMN_ROOMS,CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM];
-for(const r of EXPLORATION_ROOMS)registerWorldClearings(r.index,[r.camp,r.marker,r.exit,...r.nodes,...r.switches,...r.enemies,...(r.key?[r.key]:[]),{x:-2.5,y:4.5},{x:17.5,y:4.5},{x:7.5,y:-2.5},{x:7.5,y:12.5}]);
+for(const r of EXPLORATION_ROOMS)registerWorldClearings(r.index,[...(r.index===0?VILLAGE_CLEARINGS:[]),r.camp,r.marker,r.exit,...r.nodes,...r.switches,...r.enemies,...(r.key?[r.key]:[]),{x:-2.5,y:4.5},{x:17.5,y:4.5},{x:7.5,y:-2.5},{x:7.5,y:12.5}]);
 export const campaignRoom=(index=0)=>EXPLORATION_ROOMS[Math.max(0,Math.min(EXPLORATION_ROOMS.length-1,Math.floor(index)||0))];
 export const chapterName=(index:number)=>index>=30?'Jardim das Nascentes':index>=20?'Bosque do Âmbar':index>=10?'Riacho dos Cristais':'Clareira dos Troncos';
 export const roomInChapter=(index:number)=>index%10+1;

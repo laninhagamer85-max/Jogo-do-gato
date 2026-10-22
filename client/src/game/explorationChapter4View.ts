@@ -14,9 +14,10 @@ export const nascentesOverview=(w:number,h:number)=>nascentesView(w,h,{x:0,y:0},
 let castleArt:HTMLImageElement|undefined,stairImage:HTMLImageElement|undefined;
 const ready=(im?:HTMLImageElement)=>im?.complete&&im.naturalWidth;
 /** Chunk-cached material ground; independent water/elevation/props and portals, no baked map image. */
-export function drawNascentesTerrain(ctx:CanvasRenderingContext2D,width:number,height:number,left:number,top:number,tile:number,grass:HTMLImageElement|undefined,_items?:HTMLImageElement,open=false,_stairs?:HTMLImageElement,plateau?:HTMLImageElement,props?:HTMLImageElement,time=0,reduced=true,portal?:HTMLImageElement,water?:HTMLImageElement,shelter?:HTMLImageElement,index=30,treesInTerrain=true,soil?:HTMLImageElement){
+export function drawNascentesTerrain(ctx:CanvasRenderingContext2D,width:number,height:number,left:number,top:number,tile:number,grass:HTMLImageElement|undefined,_items?:HTMLImageElement,open=false,_stairs?:HTMLImageElement,plateau?:HTMLImageElement,props?:HTMLImageElement,time=0,reduced=true,portal?:HTMLImageElement,water?:HTMLImageElement,shelter?:HTMLImageElement,index=30,treesInTerrain=true,soil?:HTMLImageElement,drawGroundPaths?:()=>void){
  if(!ready(grass))return;const room=nascentesRoom(index),e=nascentesElevation(index),p=(q:GroundPoint)=>({x:left+q.x*tile,y:top+q.y*tile});
  drawNascentesGround(ctx,width,height,grass!,soil,left,top,tile,index);
+ drawGroundPaths?.();
  ctx.save();ctx.globalAlpha=.48;drawBiomeWater(ctx,room.composition!,left,top,tile,time,reduced,water);ctx.restore();
  if(ready(props))for(const q of nascentesShoreProps(index)){const a=p(q);drawWoodlandProp(ctx,props!,0,a.x,a.y,tile,{width:q.width,height:q.width*.8});drawWoodlandProp(ctx,props!,1,a.x+tile*.5,a.y-tile*.2,tile,{width:.8,height:.7});}
  if(ready(props))for(const q of nascentesDecorations(left,top,tile,width,height,index)){const a=p(q);drawWoodlandProp(ctx,props!,q.index,a.x,a.y,tile,{width:q.size,height:q.size},false);}

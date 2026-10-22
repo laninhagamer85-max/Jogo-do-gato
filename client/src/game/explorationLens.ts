@@ -10,7 +10,7 @@ export function discoveredWorldPoint(index:number){
  return {x:EXPLORATION_WORLD.left+index%MINIMAP_WIDTH+.5,y:EXPLORATION_WORLD.top+Math.floor(index/MINIMAP_WIDTH)+.5};
 }
 
-export type ExplorationPanel='guide'|'pause'|'inventory'|'exit'|'home'|'chest'|'workshop'|'potions'|'build'|null;
+export type ExplorationPanel='market'|'village'|'guide'|'pause'|'inventory'|'exit'|'home'|'chest'|'workshop'|'potions'|'build'|null;
 /** Slot actions are shared by pointer and keyboard; switching a panel clears map inspection. */
 export function lensDockAction(panel:ExplorationPanel,overview:boolean,action:'pause'|'inventory'|'map'):{panel:ExplorationPanel;overview:boolean}{
  if(action==='pause')return {panel:panel||overview?null:'pause',overview:false};

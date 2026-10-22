@@ -37,7 +37,7 @@ export function legendWeapon(game:Pick<CombatState,'legends'|'workshop'>){const 
 export function legendName(game:Pick<CombatState,'legends'>){return LEGENDS.find(l=>l.id===game.legends?.active)?.name;}
 export type LegendAction={type:'unlock';id:LegendId}|{type:'select';id:LegendId|null}|{type:'craft';weapon:LegendWeapon}|{type:'equip';weapon:LegendWeapon|null};
 /** Inventory commands are immutable and atomic; no resource or ownership changes on a failed command. */
-export function changeLegend(game:CombatState,gender:LegendGender,action:LegendAction):CombatState{
+export function changeLegend(game:CombatState,gender:LegendGender,action:LegendAction):CombatState{if(game.village?.duel)return game;
  if(game.completed)return game;
  const l=readLegendProgress(game.legends),eligible=eligibleLegend(gender);
  if(action.type==='unlock'){

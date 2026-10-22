@@ -1,3 +1,6 @@
+import {VILLAGE_MARKET,VILLAGE_HOMES,VILLAGE_WORK} from './explorationVillageLayout';
+import {villageCitizens} from './explorationVillage';
+import {drawVillageMarket,drawVillageHouse,drawVillageResource,drawVillageCitizen} from './explorationVillageView';
 import {royalActive} from './explorationCastleQuest';
 import {drawRoyalHeld,drawRoyalPower} from './explorationRoyalView';
 import {drawExplorationTrails} from './explorationTrails';
@@ -33,25 +36,26 @@ import { homeWalkDirection } from './petFrameCleanup';
 export function combatCanvasScale(width:number,height:number,pixelRatio:number){
   return Math.max(.5,Math.min(3,Math.max(1,pixelRatio||1),Math.sqrt(6_000_000/(Math.max(1,width)*Math.max(1,height)))));
 }
-export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false) {
-  if(overview){const l=Math.min(-8,player.x-3),r=Math.max(22,player.x+3),u=Math.min(-7,player.y-3),b=Math.max(17,player.y+3),portrait=height>width,top=portrait?180:12,availableW=width-(portrait?12:165),availableH=Math.max(100,height-top-12),tile=Math.min(availableW/(r-l),availableH/(b-u));return{tile,left:availableW/2-(l+r)/2*tile,top:top+availableH/2-(u+b)/2*tile};}
+export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false,roomIndex=0) {
+  if(overview){const l=Math.min(roomIndex===0?-21:-8,player.x-3),r=Math.max(22,player.x+3),u=Math.min(roomIndex===0?-18:-7,player.y-3),b=Math.max(17,player.y+3),portrait=height>width,top=portrait?180:12,availableW=width-(portrait?12:165),availableH=Math.max(100,height-top-12),tile=Math.min(availableW/(r-l),availableH/(b-u));return{tile,left:availableW/2-(l+r)/2*tile,top:top+availableH/2-(u+b)/2*tile};}
   const tile=Math.max(52,width/11,height/9)*zoom;
   return {tile,left:width/2-player.x*tile,top:height*.46-player.y*tile};
 }
 export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, height: number, state: CombatState,
   pet: HTMLImageElement, atlas: HTMLImageElement, background: HTMLImageElement, zoom: number, overview: boolean, reducedMotion: boolean, enemiesAtlas?: HTMLImageElement, propsAtlas?: HTMLImageElement, itemArt?:Partial<Record<keyof typeof COMBAT_ITEMS,HTMLImageElement>>&Partial<Record<'perola'|'escama',HTMLImageElement>>,gardenAtlas?:HTMLImageElement,shelterAtlas?:HTMLImageElement,portalAtlas?:HTMLImageElement,bridgeAtlas?:HTMLImageElement,keyAtlas?:HTMLImageElement,mobsAtlas?:HTMLImageElement,rareAtlas?:HTMLImageElement,riverMobs?:HTMLImageElement,riverProps?:HTMLImageElement,riverPortal?:HTMLImageElement,waterTexture?:HTMLImageElement,autumnMobs?:HTMLImageElement,powerArt?:HTMLImageElement,chapter4Stone?:HTMLImageElement,chapter4Cliff?:HTMLImageElement,chapter4Soil?:HTMLImageElement,baseEditing=false) {
   if(state.castle?.active){drawCastleWorld(ctx,width,height,state,pet,atlas,zoom,overview,reducedMotion,powerArt);return;}
+  if(state.village?.duel)state={...state,player:state.village.duel.player};
   const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=campaignEnemies(state.roomIndex,state.encounterSeed);
   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
-  const v = baseEditing?baseView(width,height,state):room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview), t = v.tile;
+  const v = baseEditing?baseView(width,height,state):room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview,room.index), t = v.tile;
   const point = (p: CombatPoint) => ({ x: v.left + p.x * t, y: v.top + p.y * t });
   ctx.clearRect(0, 0, width, height);
   ctx.save();
-  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas,state.time,reducedMotion,portalAtlas,waterTexture,undefined,room.index,false,chapter4Soil);
+  if(room.biome==='nascentes')drawNascentesTerrain(ctx,width,height,v.left,v.top,t,background,chapter4Stone,state.gateOpen,bridgeAtlas,chapter4Cliff,propsAtlas,state.time,reducedMotion,portalAtlas,waterTexture,undefined,room.index,false,chapter4Soil,()=>drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil,state.encounterSeed));
   else drawExplorationGround(ctx,width,height,background,v.left,v.top,t,FOREST_GROUND,room.composition??false);
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
-  drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil,state.encounterSeed);
+  if(room.biome!=='nascentes')drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil,state.encounterSeed);
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
   ctx.restore();
   const drawProp=(prop:{x:number;y:number;index:number;width:number;height:number;worldTree?:boolean;variant?:number})=>{
@@ -106,9 +110,14 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(fx&&!royalActive(state,'power')&&fx.until>state.time&&powerArt?.complete&&powerArt.naturalWidth){const progress=Math.max(0,Math.min(1,(state.time-fx.startedAt)/800)),p=point(fx),column={burst:0,roots:1,tide:2,amber:3}[fx.power],cw=powerArt.naturalWidth/4,ch=powerArt.naturalHeight/2,size=t*(fx.power==='roots'?4.4:3.4)*(reducedMotion?1:.8+progress*.35);ctx.save();ctx.globalAlpha=(1-progress)*.8;ctx.drawImage(powerArt,column*cw,ch,cw,ch,p.x-size/2,p.y-size*.62,size,size);ctx.restore();}
   drawRoyalPower(ctx,state,point,t);
   drawBaseProtection(ctx,state,point,t);
-  const entities = [...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const citizens=villageCitizens(state);
+  const entities = [...(room.index===0?VILLAGE_MARKET.map(m=>({type:'village-market' as const,p:m})):[]),...(room.index===0?VILLAGE_HOMES.map(h=>({type:'village-home' as const,p:h})):[]),...(room.index===0?VILLAGE_WORK.map(w=>({type:'village-resource' as const,p:w})):[]),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
+    if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t);continue;}
+    if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t);continue;}
+    if(entity.type==='village-resource'){drawVillageResource(ctx,entity.p.kind,p.x,p.y,t);continue;}
+    if(entity.type==='citizen'){drawVillageCitizen(ctx,state,entity.id,p.x,p.y,t,reducedMotion);continue;}
     if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing);continue;}
     if(entity.type==='resource'){drawResource(ctx,state,entity.p,p.x,p.y,t);continue;}
     if(entity.type==='nascentes-tree'){const n=woodlandResource(room.index,entity.p);if(n&&!resourceState(state.workshop,n.id).remaining)drawResource(ctx,state,n,p.x,p.y,t);else{drawNascentesTree(ctx,bridgeAtlas,entity.p,p.x,p.y,t);if(n)drawResourceLabel(ctx,state,n,p.x,p.y,t);}continue;}
@@ -170,7 +179,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
         ctx.save(); ctx.translate(px, py); if (direction.mirror) ctx.scale(-1, 1);
         drawWalkFrame(ctx, atlas, direction.row, attack.active ? attack.phase*.74 : state.walkPhase, -t * .46, -t * .82, t * .92, t * .92); ctx.restore();
       } else if (pet.complete && pet.naturalWidth) ctx.drawImage(pet, px - t * .38, py - t * .72, t * .76, t * .8);
-      if(!legendDrawn){if(state.facing.y>=-.3)drawHarvestTool(ctx,state,px,py,t);if(!harvestingActive(state)&&royalActive(state,'sword'))drawRoyalHeld(ctx,state,'sword',px+t*.25,py-t*.35,t);}
+      if(!legendDrawn){if(state.facing.y>=-.3)drawHarvestTool(ctx,state,px,py,t);if(!state.village?.duel&&!harvestingActive(state)&&royalActive(state,'sword'))drawRoyalHeld(ctx,state,'sword',px+t*.25,py-t*.35,t);}
       if (attack.active && !harvestingActive(state) && !(state.powerFx&&state.time-state.powerFx.startedAt<320) && !(state.legends?.active&&state.legends.weapon==='bow')) {
         // A short swipe in front of the body, never a synthetic limb over the face.
         ctx.save();ctx.translate(px+state.facing.x*t*.35,py+state.facing.y*t*.28-t*.03);ctx.rotate(Math.atan2(state.facing.y,state.facing.x));
