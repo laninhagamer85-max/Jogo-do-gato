@@ -350,6 +350,18 @@ export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:bool
   for (let i = 0; i <= steps; i++){const p={x:from.x+(to.x-from.x)*i/steps,y:from.y+(to.y-from.y)*i/steps},prev={x:from.x+(to.x-from.x)*Math.max(0,i-1)/steps,y:from.y+(to.y-from.y)*Math.max(0,i-1)/steps};if(!pilotWalkable(p,gateOpen,radius,roomIndex,workshop)||(roomIndex>=30&&!nascentesTraverse(prev,p,roomIndex)))return false;}
   return true;
 }
+// Static grid edges are shared by villagers. Movable player buildings bypass this cache.
+const routeEdges=new Map<string,boolean>();
+const routeGeometry=new Map<number,unknown[]>();
+function routeEdge(from:CombatPoint,to:CombatPoint,gateOpen:boolean,roomIndex:number,workshop?:Workshop){
+ if(workshop)return clearPilotWalkLine(from,to,gateOpen,.22,roomIndex,workshop);
+ const room=campaignRoom(roomIndex),geometry=[room.bridge,room.walls,room.gateBlock,room.composition],previous=routeGeometry.get(roomIndex);
+ if(!previous||geometry.some((value,i)=>value!==previous[i])){routeEdges.clear();routeGeometry.set(roomIndex,geometry);}
+ const a=`${from.x},${from.y}`,b=`${to.x},${to.y}`,key=`${roomIndex}:${Number(gateOpen)}:${a<b?a+':'+b:b+':'+a}`;
+ const hit=routeEdges.get(key);if(hit!==undefined)return hit;
+ const clear=clearPilotWalkLine(from,to,gateOpen,.22,roomIndex);
+ if(routeEdges.size>=20000)routeEdges.clear();routeEdges.set(key,clear);return clear;
+}
 /** Breadth-first touch route around the same geometry used by movement. */
 export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen: boolean,roomIndex=0,workshop?:Workshop): CombatPoint[] {
   if(![from.x,from.y,destination.x,destination.y].every(Number.isFinite))return [];
@@ -368,7 +380,7 @@ export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen
       const n = { x: p.x + d.x, y: p.y + d.y };
       if(n.x<minX||n.x>maxX||n.y<minY||n.y>maxY)continue;
       const edgeStart=index===0?from:{x:p.x+.5,y:p.y+.5};
-      if (!previous.has(key(n)) && clearPilotWalkLine(edgeStart,{x:n.x+.5,y:n.y+.5},gateOpen,.22,roomIndex,workshop)) { previous.set(key(n), p); queue.push(n); }
+      if (!previous.has(key(n)) && (index===0?clearPilotWalkLine(edgeStart,{x:n.x+.5,y:n.y+.5},gateOpen,.22,roomIndex,workshop):routeEdge(edgeStart,{x:n.x+.5,y:n.y+.5},gateOpen,roomIndex,workshop))) { previous.set(key(n), p); queue.push(n); }
     }
   }
   return [];

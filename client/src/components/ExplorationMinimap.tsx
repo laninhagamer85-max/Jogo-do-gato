@@ -21,12 +21,14 @@ import { drawGardenPatch,FOREST_NATURE } from '@/game/forestNature';
 type LensArt={soil:HTMLImageElement;stone:HTMLImageElement;cliff:HTMLImageElement;ground:HTMLImageElement;props:HTMLImageElement;garden:HTMLImageElement;shelter:HTMLImageElement;portal:HTMLImageElement;bridge:HTMLImageElement;key:HTMLImageElement;riverProps:HTMLImageElement;riverPortal:HTMLImageElement;water:HTMLImageElement};
 /** The full lens shows actual terrain, clipped discovery and north-up world markers. */
 export default function ExplorationMinimap({state,children}:{state:CombatState;children?:ReactNode}){
+ const lastPaint=useRef(0);
  const canvas=useRef<HTMLCanvasElement>(null),art=useRef<LensArt|null>(null),latest=useRef(state);
  latest.current=state;
  const draw=()=>{
   const el=canvas.current,ctx=el?.getContext('2d'),images=art.current;
   if(!el||!ctx||!images)return;
   if(latest.current.castle?.active){drawCastleLens(ctx,el.width,latest.current);return;}
+  lastPaint.current=performance.now();
   const source=images;
   const size=el.width,s=latest.current,v=lensProjection(size,s.player),t=v.scale,room=campaignRoom(s.roomIndex),river=room.biome==='river';
   const ground=room.biome==='autumn'?explorationColorVariant(images.ground,AUTUMN_GROUND_FILTER)!:images.ground,props=room.biome==='autumn'?explorationColorVariant(images.props,AUTUMN_PROP_FILTER)!:images.props,gardenArt=room.biome==='autumn'?explorationColorVariant(images.garden,AUTUMN_PROP_FILTER)!:images.garden;
@@ -85,7 +87,8 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
   art.current={soil:make(NASCENTES_ASSETS.soil),stone:make(spring?NASCENTES_ASSETS.stone:'/forest-adventure/ground-proposals-20261016/option-3.webp'),cliff:make(spring?(latest.current.roomIndex===31?NASCENTES_ASSETS.grassPlateau:NASCENTES_ASSETS.cliff):'/forest-adventure/ground-proposals-20261016/option-3.webp'),ground:make(spring?NASCENTES_ASSETS.grass:'/forest-adventure/ground-proposals-20261016/option-3.webp'),props:make('/forest-adventure/woodland-props-v2.png'),garden:make(FOREST_NATURE.garden.asset),shelter:make(spring?NASCENTES_ASSETS.shelter:PILOT_SHELTER.asset),portal:make(spring?NASCENTES_ASSETS.portal:'/forest-adventure/woodland-portal-v2.webp'),bridge:make(spring?NASCENTES_ASSETS.trees:'/forest-adventure/chapter1-bridge-v1.webp'),key:make('/forest-adventure/chapter1-key-v1.webp'),riverProps:make('/forest-adventure/river-props-v1.webp'),riverPortal:make('/forest-adventure/river-portal-v1.webp'),water:make('/forest-adventure/painted-water-v1.webp')};
   draw();return ()=>{active=false;};
  },[state.roomIndex]);
- useEffect(draw,[state]);
+ // Keep terrain work out of every HUD refresh; read the latest position at paint time.
+ useEffect(()=>{const id=window.setTimeout(draw,Math.max(0,200-(performance.now()-lastPaint.current)));return()=>window.clearTimeout(id);},[state]);
  useEffect(()=>onCastleArtChange(draw),[]);useEffect(()=>onBaseArtChange(draw),[]);
  const enemies=state.enemies.filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
  useEffect(()=>onBiomeArtChange(draw),[]);

@@ -432,8 +432,6 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
   const enterTest=(index:30|31)=>{const parsed=readCombatState(campaignRef.current);if(parsed.supported)setCombatEntry({progress:combatSnapshot(startExplorationTestRoom(parsed.state,index)),replay:false,testVisit:true});};
   const enterReplay=(index:number)=>{const parsed=readCombatState(campaignRef.current);if(!parsed.supported)return;const attempt=startExplorationReplay(parsed.state,index);if(attempt)setCombatEntry({progress:combatSnapshot(attempt),replay:index<30});};
   const saveCombatEntry=(value:Record<string,unknown>)=>{let save=value;if(combatEntry?.villageVisit||combatEntry?.testVisit){const base=readCombatState(campaignRef.current);if(!base.supported)return;save=combatSnapshot(saveVillageVisit(recoverExplorationCheckpoint(base.state),value));}else if(combatEntry?.replay){const base=readCombatState(campaignRef.current);if(!base.supported)return;save=combatSnapshot(saveExplorationReplay(base.state,value));}campaignRef.current=save;onSaveCombatProgress(save);};
-  const parsedCampaign=readCombatState(combatProgress);const combatCampaign=parsedCampaign.supported?{...parsedCampaign,state:recoverExplorationCheckpoint(parsedCampaign.state)}:parsedCampaign;
-  const combatRoomNumber=combatCampaign.supported?combatCampaign.state.roomIndex+1:1;
   const petImage = GAME_ASSETS.characters[characterId];
   const currentSpec = game ? getForestRoom(game.chapter, game.room) : null;
   const qaTelemetryEnabled = import.meta.env.DEV && typeof window !== "undefined" && ["/qa-review.html", "/qa-adventure.html"].includes(window.location.pathname);
@@ -446,6 +444,9 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
   } : {};
 
   if (combatEntry) return <ExplorationCombatPilot replayMode={combatEntry.replay} soundOn={soundOn} onToggleSound={onToggleSound} profile={profile} progress={combatEntry.progress} onSave={saveCombatEntry} onBack={() => setCombatEntry(null)} />;
+
+  const parsedCampaign=readCombatState(combatProgress);const combatCampaign=parsedCampaign.supported?{...parsedCampaign,state:recoverExplorationCheckpoint(parsedCampaign.state)}:parsedCampaign;
+  const combatRoomNumber=combatCampaign.supported?combatCampaign.state.roomIndex+1:1;
 
   return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label="Bosque dos Caminhos, modo de exploração">
     <header className="forest-adventure-topbar">
