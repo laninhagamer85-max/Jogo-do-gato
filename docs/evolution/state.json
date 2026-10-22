@@ -706,5 +706,22 @@
     "product_version": "1.33.2",
     "version_number": 121,
     "source_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1"
+  },
+  "independent_review": {
+    "date": "2026-10-22",
+    "status": "independent_checks_passed_deploy_deferred_concurrent_revision",
+    "report": "docs/evolution/runs/2026-10-22.md",
+    "code_modified": false,
+    "source_initial": "feaa2a5cd13be852f9fc3ea579cd20f527a0f169",
+    "source_latest": "1a8514a4615f49a3dcefb714858b0861601451ae",
+    "pending_product_version": "1.37.0",
+    "typescript": "passed_1.36.1",
+    "build": "passed_1.36.1",
+    "offline_tests": "737/737_1.36.1_after_timeout_recheck",
+    "targeted_tests": "51/51_1.37.0_population_and_selection",
+    "browser": "source_changed_during_QA; final_visual_validation_not_claimed",
+    "publication_attempted": false,
+    "real_online_phases_completed": 0,
+    "real_player_data_modified": false
   }
 }
