@@ -3,34 +3,34 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.37.0_pending_publication",
+  "status": "published",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "8074032e5a049e8a1e65d6381120852884158695",
+    "source_site_commit": "0f4d54727984096e5fc8fe44d6c292012a141b3d",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.36.0 published; GitHub implementation and generated entrypoint verified",
+    "code_commit_status": "1.37.0 published; GitHub code and independent review preserved",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
-    "published_code_github_commit": "dba8d84c4e55120aec2e22a7589149486deb8e28",
+    "code_commit": "faac2db53baee0c5960c709812b7c83e4e0cc7ff",
+    "published_code_github_commit": "faac2db53baee0c5960c709812b7c83e4e0cc7ff",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "world-settlements-autonomous-growth",
     "base_product_version": "1.36.0",
-    "implementation_status": "validated_pending_package",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-22-settlement-growth.md",
-    "acceptance_status": "777 tests/75 files passed; mobile browser QA continuing; includes unpublished equipment/card fixes"
+    "acceptance_status": "777 tests/75files passed; typecheck and official build27.20s passed; four-biome mobile QA, final labels checked in both orientations"
   },
   "publication": {
-    "id": "appgdep_6ad953d08fb481918fafcb4177d82ab3",
+    "id": "appgdep_6ad9fbf0e85081919f578efbd0c466b6",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_1372c5c67508819195b1a7155efe320c",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,23 +39,25 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-22T00:08:08.081923+00:00",
-    "product_version": "1.36.0",
-    "version_number": 125,
-    "source_commit": "8074032e5a049e8a1e65d6381120852884158695"
+    "updated_at": "2026-10-22T12:05:27.618716+00:00",
+    "product_version": "1.37.0",
+    "version_number": 127,
+    "source_commit": "0f4d54727984096e5fc8fe44d6c292012a141b3d",
+    "github_commit": "faac2db53baee0c5960c709812b7c83e4e0cc7ff"
   },
   "verification": {
     "typescript": "passed",
     "offline_tests": "777 tests passed across75files; Firebase staging credential integration excluded",
-    "browser": "Isolated city/village rendering, conversation, growth info and resource gift inspected; no account writes. Final orientation check in progress.",
+    "browser": "Isolated bosque/river villages and autumn/nascentes cities; both phone orientations. Growth info, gift and clean closest-NPC labels verified. No account writes.",
     "physical_phone": "not_tested",
-    "fps": "not_measured"
+    "fps": "not_measured",
+    "build": "passed; Vite27.20s, pre-existing large-chunk warning retained"
   },
   "blockers": [],
   "next_actions": [
-    "Publish validated1.37.0 on the existing public Site and sync existing GitHub branch.",
-    "Player tests actual-device performance and long-term growth.",
-    "Further city building types/guard professions are future content; stone/sand redesign remains a preview awaiting visual feedback."
+    "David: Exploração → Visitar povoados desta sala. Check maps, traders and autonomous growth on a real phone.",
+    "Future city expansion: additional dedicated building art, lots and professions; current city uses fixed safe footprints.",
+    "Review proposed stone/sand road art before replacement."
   ],
   "rollback": {
     "product_version": "1.36.0",
@@ -690,10 +692,10 @@
   },
   "next_action": "David tests chapter4 gathering and construction on physical phone.",
   "previous_publication": {
-    "id": "appgdep_6ad92bd8a2e48191b9c510e6e0f2d325",
+    "id": "appgdep_6ad953d08fb481918fafcb4177d82ab3",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_00f3d3b0e4508191b6c27f117f5e3e94",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -702,10 +704,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-21T21:17:32.942479+00:00",
-    "product_version": "1.33.2",
-    "version_number": 121,
-    "source_commit": "51db7d0762baadcf90536eaa0e7403dcdbdfbcb1"
+    "updated_at": "2026-10-22T00:08:08.081923+00:00",
+    "product_version": "1.36.0",
+    "version_number": 125,
+    "source_commit": "8074032e5a049e8a1e65d6381120852884158695"
   },
   "independent_review": {
     "date": "2026-10-22",

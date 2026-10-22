@@ -1,6 +1,6 @@
 #1.37.0 — Povoados distribuídos e crescimento comunitário
 
-Estado: validado em testes, aguardando pacote e publicação. Base publicada1.36.0, Site nativo125; fonte d190e3e260587aad744fc67acf1133ff00a5bbb6. Inclui as correções de equipamentos/aviso da revisão1.36.1 que não foi publicada separadamente.
+Estado: publicado e confirmado pelo Sites. Base publicada1.36.0, Site nativo125; fonte d190e3e260587aad744fc67acf1133ff00a5bbb6. Inclui as correções de equipamentos/aviso da revisão1.36.1 que não foi publicada separadamente.
 
 ## Entrega
 -32 salas externas, quatro biomas, dez núcleos separados por sala.40 moradores iniciais por sala (1.280 definições iniciais), crescendo até100 por sala (3.200 definições máximas). Geração determinística e IDs próprios; instanciação e salvamento apenas das populações visitadas. Arte pintada existente reutilizada com variação de paleta por bioma, nomes, papéis, níveis e posições. Não são3.200 sprites exclusivos.
@@ -19,7 +19,7 @@ Estado: validado em testes, aguardando pacote e publicação. Base publicada1.36
 
 ## Validação
 -777 testes aprovados em75 arquivos. Exclusão única: integração FirebaseAdmin que exige credencial externa de staging. Testes verificam portas/rotas em32 salas, crescimento e persistência, moradores de cidade em chão navegável, fabricação pública com gasto/tempo, checkpoint após testes31/32, progressão e portais existentes, duelo sem armas, inventário e limites comerciais.
--TypeScript aprovado antes do empacotamento; build oficial concluído (44,07s); novo pacote inclui o refinamento de nomes.
+-TypeScript e build oficial final aprovados (27,20s); pacote inclui o refinamento de nomes.
 -Navegador de QA com perfil isolado: cidade no outono horizontal e Nascentes vertical, informações24/24 e10moradores, pedido de recurso comum respondido. Demais inspeções finais registradas antes da publicação.
 -Conferência final encontrou sobreposição dos nomes dos moradores em grupos. Apenas o aldeão mais próximo recebe identificação; duelista mantém sua identificação própria. Vila do bosque vertical, vila do rio horizontal e cidades do outono/Nascentes foram inspecionadas; nenhuma escrita em conta real.
 -Não foi medido FPS nem testado telefone físico. Não alegar campanha inteira jogada manualmente. Crescimento é local por perfil, não cidade global compartilhada entre contas.
@@ -31,3 +31,10 @@ Estado: validado em testes, aguardando pacote e publicação. Base publicada1.36
 
 ## Publicação
 Pendente. Mesmo Site público e domínio, sem alteração de autenticação, permissões, saves ou infraestrutura. Rollback:1.36.0, versão nativa125, saved_version appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a.
+
+
+## Publicação confirmada
+Produto1.37.0, Sites127, saved_version appgprj_6ac40994d8d881919d46203a60801e46~appgver_1372c5c67508819195b1a7155efe320c.
+Source 0f4d54727984096e5fc8fe44d6c292012a141b3d; GitHub faac2db53baee0c5960c709812b7c83e4e0cc7ff.
+Deployment appgdep_6ad9fbf0e85081919f578efbd0c466b6 succeeded, 2026-10-22T12:05:27.618716+00:00. URL: https://meupet.aquimeusite.chatgpt.site.
+Versão126 foi apenas salva, sem deploy; a publicação final usa a127. Documentação de revisão independente preservada. Nenhum redeploy para este registro.

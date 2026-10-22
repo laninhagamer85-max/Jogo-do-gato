@@ -1,6 +1,6 @@
 #1.36.1 — Empunhadura e aviso de carta
 
-Estado: integrado à1.37.0, aguardando publicação conjunta;1.36.1 não foi publicado separadamente. Base fonte Site d190e3e260587aad744fc67acf1133ff00a5bbb6, produto1.36.0, versão nativa125; GitHub esperado0d0460af9061ae79de3aa68b813bfac00bca52d6.
+Estado: publicado como parte da1.37.0;1.36.1 não foi publicado separadamente. Base fonte Site d190e3e260587aad744fc67acf1133ff00a5bbb6, produto1.36.0, versão nativa125; GitHub esperado0d0460af9061ae79de3aa68b813bfac00bca52d6.
 
 ## Problemas e correções
 - Espada real tinha ponta/cabo invertidos: rotação assumia uma diagonal genérica, enquanto a arte original aponta para baixo/esquerda. Novo módulo explorationHeldPose.ts descreve punho e extremidade útil em coordenadas normalizadas por família de bitmap. Calcula rotação pelo vetor punho→ponta em vez de compensação fixa. O punho permanece na mão durante o arco do golpe.
@@ -22,4 +22,4 @@ Usuário pediu mostrar antes de aplicar. Gerada comparação visual pedra/areia 
 - https://react.dev/reference/react/useEffect — temporizador descartado no cleanup e acionado pela conquista nova, não por histórico persistente.
 
 ## Publicação
-Pendente. Rollback1.36.0 versão125, appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a. Preservar público, domínio e contas.
+Integrado à publicação1.37.0, Sites127, deployment appgdep_6ad9fbf0e85081919f578efbd0c466b6. Rollback1.36.0 versão125, appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a. Preservar público, domínio e contas.
