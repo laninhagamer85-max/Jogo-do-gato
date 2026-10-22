@@ -26,9 +26,9 @@ export function readLegendProgress(value:unknown):LegendProgress{
  return {unlocked,active:unlocked.includes(r.active as LegendId)?r.active as LegendId:null,weapons,weapon:weapons.includes(r.weapon as LegendWeapon)?r.weapon as LegendWeapon:null};
 }
 export const LEGEND_UNLOCK_LEVEL=6;
-export const LEGEND_UNLOCK_RECIPE={fibra:180,ambar:60,cristal:6,seiva:8} as const;
+export const LEGEND_UNLOCK_RECIPE={fibra:60,ambar:20,cristal:0,seiva:0} as const;
 export function legendUnlockRequirements(game:CombatState){
- const materials=(Object.keys(LEGEND_UNLOCK_RECIPE) as (keyof typeof LEGEND_UNLOCK_RECIPE)[]).map(item=>({item,required:LEGEND_UNLOCK_RECIPE[item],owned:item==='fibra'||item==='ambar'?game.stock[item]+game.bag[item]:game.rareStock[item]+game.rareBag[item]}));
+ const materials=(Object.keys(LEGEND_UNLOCK_RECIPE) as (keyof typeof LEGEND_UNLOCK_RECIPE)[]).filter(item=>LEGEND_UNLOCK_RECIPE[item]>0).map(item=>({item,required:LEGEND_UNLOCK_RECIPE[item],owned:item==='fibra'||item==='ambar'?game.stock[item]+game.bag[item]:game.rareStock[item]+game.rareBag[item]}));
  const level=combatLevel(game.xp),firstRoom=game.completedRooms.includes(0);
  return {level,firstRoom,materials,ready:!game.completed&&firstRoom&&level>=LEGEND_UNLOCK_LEVEL&&materials.every(m=>m.owned>=m.required)};
 }

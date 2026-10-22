@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "published",
+  "status": "validated_pending_publication",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -12,7 +12,7 @@
     "source_site_commit": "0f4d54727984096e5fc8fe44d6c292012a141b3d",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.37.0 published; GitHub code and independent review preserved",
+    "code_commit_status": "1.38.0 ready for publication; previous published version remains 1.37.0",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "code_commit": "faac2db53baee0c5960c709812b7c83e4e0cc7ff",
@@ -20,11 +20,11 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "world-settlements-autonomous-growth",
-    "base_product_version": "1.36.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-22-settlement-growth.md",
-    "acceptance_status": "777 tests/75files passed; typecheck and official build27.20s passed; four-biome mobile QA, final labels checked in both orientations"
+    "id": "village-life-map-performance",
+    "base_product_version": "1.37.0",
+    "implementation_status": "validated_pending_publication",
+    "report": "docs/evolution/runs/2026-10-22-village-life.md",
+    "acceptance_status": "Typecheck; complete suite 785 passed/one timeout, isolated progression/trails 81 passed; new cache/day cycle checks; phone portrait and landscape browser QA. Packaging pending."
   },
   "publication": {
     "id": "appgdep_6ad9fbf0e85081919f578efbd0c466b6",
