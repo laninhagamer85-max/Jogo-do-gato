@@ -1,3 +1,4 @@
+import {baseArtRect} from '@/game/explorationBaseArt';
 import React,{useEffect,useState,useRef} from 'react';
 import type {CombatState} from '@/game/explorationCombat';
 import {FACILITIES,MATERIALS,newWorkshop,atWorkshop,recipeProblem,workshopRecipes,workshopStock,upgradeChance,type WorkshopAction,type Material,type Recipe} from '@/game/explorationWorkshop';
@@ -14,7 +15,7 @@ export function WorkshopItemArt({item,size=44}:{item:string;size?:number}){
  const cells:Record<string,number>={wood:0,stone:1,copperOre:2,ironOre:3,charcoal:4,resin:5,silk:6,blueBerry:7,copperBar:2,ironBar:3,goldOre:2,goldBar:2};const cell=cells[item]??1;
  return <span aria-hidden="true" style={{display:'inline-block',width:size,height:size,backgroundImage:'url(/forest-adventure/items/crafting-atlas-v1.webp)',backgroundSize:'400% 300%',backgroundPosition:`${cell%4*100/3}% ${Math.floor(cell/4)*50}%`,filter:item.startsWith('gold')?'sepia(1) saturate(3) brightness(1.15)':item.endsWith('Bar')?'brightness(1.25)':undefined}}/>;
 }
-export function BuildingArt({kind,index,size=80}:{kind:BaseBuilding;index:number;size?:number}){return kind==='home'?<img src={index>=30?'/forest-adventure/chapter4/shelter-nascentes-v1.webp':index>=20?'/forest-adventure/biome-shelters/autumn-v1.webp':index>=10?'/forest-adventure/biome-shelters/river-v1.webp':'/forest-adventure/cat-safe-house-v1.webp'} width={size} height={size} style={{objectFit:'contain'}} alt=""/>:<span aria-hidden="true" style={{display:'inline-block',width:size,height:size,backgroundImage:`url(${BASE_ATLAS})`,backgroundSize:'300% 400%',backgroundPosition:`${({chest:0,workshop:1,potions:2})[kind]*50}% ${Math.min(3,Math.floor(index/10))*100/3}%`}}/>;}
+export function BuildingArt({kind,index,size=80}:{kind:BaseBuilding;index:number;size?:number}){return kind==='home'?<img src={index>=30?'/forest-adventure/chapter4/shelter-nascentes-v1.webp':index>=20?'/forest-adventure/biome-shelters/autumn-v1.webp':index>=10?'/forest-adventure/biome-shelters/river-v1.webp':'/forest-adventure/cat-safe-house-v1.webp'} width={size} height={size} style={{objectFit:'contain'}} alt=""/>:<span aria-hidden="true" style={{display:'inline-block',width:size,height:size,backgroundImage:`url(${BASE_ATLAS})`,...buildingArtStyle(kind,index,size)}}/>;}
 type Mode='all'|BaseBuilding;
 export default function ExplorationWorkshop({game,onAction,mode='all',onOrganize,onOpenBuilding,onGuide}:{game:CombatState;onAction:(a:WorkshopAction)=>void;mode?:Mode;onOrganize?:()=>void;onOpenBuilding?:(k:BaseBuilding)=>void;onGuide?:()=>void}){
  const w=game.workshop??newWorkshop(),[now,setNow]=useState(Date.now()),[section,setSection]=useState<'recipes'|'stock'|'chest'>(mode==='chest'?'chest':'recipes'),[category,setCategory]=useState('all'),[chosen,setChosen]=useState('wood'),[source,setSource]=useState<'bag'|'chest'>('bag');
@@ -44,3 +45,5 @@ export default function ExplorationWorkshop({game,onAction,mode='all',onOrganize
  {ghost&&<div className="base-ingredient-ghost" style={{left:ghost.x,top:ghost.y}}><WorkshopItemArt item={ghost.item} size={55}/></div>}
  </section>;
 }
+
+function buildingArtStyle(kind:Exclude<BaseBuilding,'home'>,index:number,size:number){const [x,y,w,h]=baseArtRect(({chest:0,workshop:1,potions:2})[kind],index);return {backgroundSize:`${1086*size/w}px ${1448*size/h}px`,backgroundPosition:`${-x*size/w}px ${-y*size/h}px`};}

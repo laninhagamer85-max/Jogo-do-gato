@@ -259,3 +259,13 @@
 
 /* Live controls sit above an animated canvas: translucent fills avoid re-blurring each frame. */
 .combat-pilot .combat-top>div:first-child,.combat-pilot .combat-top button,.combat-pilot .combat-item-tray button{backdrop-filter:none;-webkit-backdrop-filter:none}
+
+/* Brief feedback stays away from the character; closing keeps the home shortcut accessible. */
+.combat-base-shortcut{display:flex;align-items:center;padding:0;max-width:calc(100% - 24px)}
+.combat-base-shortcut>button{display:flex;align-items:center;justify-content:center;gap:4px;min-height:44px;border:0;border-radius:12px;background:transparent;color:inherit;padding:8px 10px;font:inherit}
+.combat-base-shortcut.is-compact{width:44px;height:44px;border-radius:50%}
+.combat-notice-close{width:44px!important;min-width:44px;min-height:44px;padding:8px!important;display:flex;align-items:center;justify-content:center}
+.combat-craft-result{top:12px;left:50%;transform:translateX(-50%);width:max-content;max-width:min(330px,calc(100% - 24px));padding:10px 48px 10px 14px;gap:4px;background:#18352bd9;box-shadow:0 3px 14px #0003;pointer-events:auto}
+.combat-craft-result>.combat-notice-close{position:absolute;right:0;top:0;border:0;background:transparent;color:#fff2cc}
+.combat-craft-result>strong{font-size:14px}.combat-craft-result>button:not(.combat-notice-close){min-height:44px}
+@media(max-height:500px) and (orientation:landscape){.combat-craft-result{top:10px;left:50%;max-width:280px}.combat-craft-result span{font-size:11px}.combat-base-shortcut{max-width:310px}}
