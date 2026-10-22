@@ -1,6 +1,6 @@
 # 1.38.0 — Vida dos povoados e navegação
 
-Estado: implementação validando; ainda não publicada.
+Estado: publicada — 1.38.0, Sites 128.
 
 ## Escopo
 - Aldeões 16% maiores, poses laterais estáveis e espelhadas; oito novos cidadãos pintados (crianças, idosos, nobres e comerciantes). As fases de crescimento revelam novos perfis. Famílias não duelam.
@@ -28,3 +28,10 @@ Consultadas em 2026-10-22: https://developer.mozilla.org/en-US/docs/Web/CSS/back
 Typecheck; testes de relógio, preservação, receita e cache; suíte de campanha. QA em partida isolada, sem saves reais: cidade, noite e mapa em celular 390×844 e 844×390. Suíte completa: 785 testes passaram e um teste excedeu o tempo durante concorrência com a inspeção gráfica; rerun isolado de progressão e trilhas: 81 testes passaram, sem aumentar timeout. Testes novos de cache/relógio: 11 passaram. Sem teste em telefone físico. Primeira geração de caminhos e mapa completo pode custar aproximadamente 1–2 segundos a frio; fluxo normal reutiliza geometria e máscaras. Demais IDs serão registrados após conclusão.
 
 Rollback: versão pública anterior 1.37.0, deployment appgdep_6ad9fbf0e85081919f578efbd0c466b6, fonte 0f4d54727984096e5fc8fe44d6c292012a141b3d.
+
+## Resultado final
+Build oficial 41,81s e typecheck aprovados. A última suíte completa teve 787 testes aprovados e uma regressão de colocação ao mover a casa; o espaçamento padrão foi corrigido. Rerun de base, construção e progressão: 92 testes aprovados, incluindo 32 acessos às construções e a perseguição do inimigo. Não foram aumentados timeouts. Quando a casa ampliada encobre o personagem, o telhado fica transparente; aplica-se também a oficina/baú/poções.
+
+GitHub: 2f61920a253f94fab818c5ef04060a077200ccfb. Fonte publicada: 0f558ed18fcd6276f50601c09d105a2462770385. Versão salva: appgprj_6ac40994d8d881919d46203a60801e46~appgver_7f29bd0197848191894d500228aa40dc. Deployment: appgdep_6ada0f2999688191a1e3995f56b984e8, succeeded. URL: https://meupet.aquimeusite.chatgpt.site.
+
+Provas: ../proofs/2026-10-22-base.jpg e ../proofs/2026-10-22-map-horizontal.jpg. Consulta do mapa usa ampliação da imagem já desenhada: a nitidez dos elementos pequenos é limitada no zoom máximo, sem criação de caminho automático por toque. Arraste implementado com captura de ponteiro; ampliação, centralização e recolhimento verificados no navegador.
