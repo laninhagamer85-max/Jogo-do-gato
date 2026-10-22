@@ -1,7 +1,8 @@
+import {registerPatrolNavigation} from './explorationCampaign';
 import {newVillage,readVillage,villageSnapshot,tickVillage,nearestVillager,startVillageDuel,stepVillageDuel,villageDueling,type VillageProgress} from './explorationVillage';
 import {villageHouseBlocks} from './explorationVillageLayout';
 import {newCastleQuest,readCastleQuest,castleQuestTick,openRoyalChest,nearestRoyalChest,castleDown,royalActive,royalDispersed,clearRoyalSlot,CASTLE_TEST_ACCESS,type CastleQuest} from './explorationCastleQuest';
-import {baseLayout,baseBlocks,insideSafeBase} from './explorationBase';
+import {defaultBase,baseLayout,baseBlocks,insideSafeBase} from './explorationBase';
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
 import {CASTLE_GATE,enterCastle,readCastle,stepCastle,castleRoom,type CastleProgress} from './explorationCastle';
@@ -180,7 +181,7 @@ export function readCombatState(value: unknown): CombatRead {
 }
 export function combatSnapshot(s: CombatState): Record<string, unknown> {
   const { levelUpUntil:_levelUpUntil,powerFx:_powerFx,feedback: _feedback, message: _message, strikeUntil: _strike, walking: _walking, walkPhase: _phase, ...save } = s;
-  return {...save,village:s.village?villageSnapshot(s.village):undefined};
+  return {...save,workshop:s.workshop?{...s.workshop,result:undefined}:undefined,village:s.village?villageSnapshot(s.village):undefined};
 }
 function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms],roomStars:{...s.roomStars},roomPerformance:s.roomPerformance?{...s.roomPerformance}:null,roomAttempts:{...s.roomAttempts},cards:[...s.cards],defeatedEnemyIds:[...s.defeatedEnemyIds] }; }
 function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeedback['kind']) {
@@ -190,7 +191,7 @@ function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeed
 export function defeatCombat(current: CombatState): CombatState {
   const s = clone(current),room=campaignRoom(s.roomIndex); let lost = 0;
   for (const item of ['fibra', 'ambar'] as const) { const loss = Math.floor(s.bag[item] * .1); s.bag[item] -= loss; lost += loss; }
-  s.hp = combatMaxHp(s.xp); s.player = {x:baseLayout(s).home.x+1.05,y:baseLayout(s).home.y-.4}; s.walking = false; s.deaths++; if(s.roomPerformance)s.roomPerformance.defeats++; s.revision++;
+  s.hp = combatMaxHp(s.xp); s.player = {x:baseLayout(s).home.x,y:baseLayout(s).home.y+1}; s.walking = false; s.deaths++; if(s.roomPerformance)s.roomPerformance.defeats++; s.revision++;
   s.invulnerableUntil = s.time + 2500; s.strikeUntil = 0;
   s.message = `Retorno ao ponto seguro. ${lost} material(is) da tentativa perdido(s); itens permanentes preservados.`;
   feedback(s, s.player, 'Ponto seguro', 'info'); return s;
@@ -485,3 +486,5 @@ export function travelCombatPortal(current:CombatState,visitedRoom?:number):Comb
  const arrival=target>current.roomIndex?returnPortal(target):campaignRoom(target).exit;
  next.player=nearestPilotPoint({x:arrival.x+(target>current.roomIndex?2:-1.7),y:arrival.y+(target>=30?.4:0)},next.gateOpen,target,next.workshop);next.invulnerableUntil=current.time+2500;next.message=`${campaignRoom(target).title}. Passagens já liberadas permanecem abertas.`;return next;
 }
+
+registerPatrolNavigation((index,p)=>pilotWalkable(p,false,.5,index)&&pilotRoute(campaignRoom(index).camp,p,false,index).length>0);

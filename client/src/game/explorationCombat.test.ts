@@ -1,3 +1,4 @@
+import {baseLayout} from './explorationBase';
 import { describe, it, expect } from 'vitest';
 import { createCombatState, replayCompletedCombat, stepCombat, consumeCombatItem, defeatCombat, combatSnapshot, readCombatState, PILOT_CAMP, PILOT_EXIT, PILOT_MARKER, PILOT_INSECT, pilotWalkable, insectRespawnMs } from './explorationCombat';
 import { createInitialGameState, saveExplorationCombatProgress, migrateGameState } from './PetGame';
@@ -47,7 +48,7 @@ describe('Exploration combat pilot', () => {
   });
   it('preserves permanent stock and loses only 10% of current common collection',()=>{
     const s=createCombatState();s.bag.fibra=19;s.bag.ambar=9;s.stock.fibra=99;s.equipmentOwned=true;s.xp=80;
-    const a=defeatCombat(s);expect(a.bag.fibra).toBe(18);expect(a.bag.ambar).toBe(9);expect(a.stock.fibra).toBe(99);expect(a.xp).toBe(80);expect(a.equipmentOwned).toBe(true);expect(a.player).toEqual(PILOT_CAMP);
+    const a=defeatCombat(s);expect(a.bag.fibra).toBe(18);expect(a.bag.ambar).toBe(9);expect(a.stock.fibra).toBe(99);expect(a.xp).toBe(80);expect(a.equipmentOwned).toBe(true);expect(a.player).toEqual({x:baseLayout(a).home.x,y:baseLayout(a).home.y+1});
   });
   it('heals actual missing HP without consuming at full health',()=>{
     const s=createCombatState();expect(consumeCombatItem(s,'erva')).toBe(s);s.hp=95;
@@ -96,7 +97,7 @@ describe('Exploration combat pilot', () => {
   });
   it('returns to safety on incoming fatal damage',()=>{
     const s=createCombatState();s.player={x:4,y:6};s.hp=1;s.enemies[0].attackAt=0;
-    const a=stepCombat(s,{},50);expect(a.deaths).toBe(1);expect(a.hp).toBe(100);expect(a.player).toEqual(PILOT_CAMP);
+    const a=stepCombat(s,{},50);expect(a.deaths).toBe(1);expect(a.hp).toBe(100);expect(a.player).toEqual({x:baseLayout(a).home.x,y:baseLayout(a).home.y+1});
   });
   it('blocks attacks through terrain',()=>{
     const s=createCombatState();s.player={x:4.75,y:3.5};s.facing={x:1,y:0};s.enemies[0]={...s.enemies[0],x:6.05,y:3.5};

@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "published",
+  "status": "validated_pending_publication",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,11 +20,11 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "village-life-map-performance",
-    "base_product_version": "1.37.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-22-village-life.md",
-    "acceptance_status": "Typecheck and official build 41.81s passed. Full suite 787 passed/one placement regression; fixed and targeted base/construction/progression rerun 92 passed. Prior slow-run timeouts passed in isolated runs without timeout changes. Isolated mobile QA portrait and landscape; no physical phone benchmark."
+    "id": "village-corrections-production",
+    "base_product_version": "1.38.0",
+    "implementation_status": "validated_pending_publication",
+    "report": "docs/evolution/runs/2026-10-22-village-corrections.md",
+    "acceptance_status": "793 tests/77 files passed, targeted 14 tests passed; mobile visual QA; final build pending"
   },
   "publication": {
     "id": "appgdep_6ada0f2999688191a1e3995f56b984e8",

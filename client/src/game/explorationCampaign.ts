@@ -1,4 +1,4 @@
-import {villageClearings} from './explorationVillageLayout';
+import {villageSettlements,villageClearings} from './explorationVillageLayout';
 import {encounterPocket,openWorldBlocked,registerWorldClearings} from './explorationOpenWorld';
 import {CHAPTER4_ROOM,CHAPTER4_SECOND_ROOM,NASCENTES_GARDENS,returnPortal} from './explorationChapter4';
 import {AUTUMN_ROOMS,autumnEnemy} from './explorationChapter3';
@@ -115,7 +115,7 @@ const gardenCache=new WeakMap<CampaignRoom,ReturnType<typeof buildCampaignGarden
 export function campaignGardens(room:CampaignRoom){let value=gardenCache.get(room);if(!value){value=buildCampaignGardens(room);gardenCache.set(room,value);}return value;}
 const enemyCache=new Map<string,CampaignEnemy[]>();
 export const CAMPAIGN_ENEMY_CACHE_LIMIT=64;
-export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map((enemy,slot)=>{const pocket=enemy.id.startsWith('wild-')?encounterPocket(room.index,seed,slot):enemy;const position=!campaignWaterBlocks(pocket,.4,room)&&!openWorldBlocked(pocket,.4,room.index)?pocket:enemy;return {...campaignEnemyVariant(enemy,room.index,seed),x:position.x,y:position.y,previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))};});if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
+export function campaignEnemies(index:number,seed=290519+index*101):CampaignEnemy[]{const room=campaignRoom(index),key=`${room.index}:${seed>>>0}`;let value=enemyCache.get(key);if(value){enemyCache.delete(key);enemyCache.set(key,value);return value;}value=buildCampaignEnemies(room.index,seed).map((enemy,slot)=>{const firstWild=room.enemies.length,nearVillage=enemy.id.startsWith('wild-')&&slot===firstWild?settlementPatrol(room.index):undefined,pocket=enemy.id.startsWith('wild-')?(nearVillage??encounterPocket(room.index,seed,slot)):enemy;const position=!campaignWaterBlocks(pocket,.4,room)&&!openWorldBlocked(pocket,.4,room.index)?pocket:enemy;return {...campaignEnemyVariant(enemy,room.index,seed),x:position.x,y:position.y,previousBalanceHp:enemy.hp,hp:Math.ceil(enemy.hp*npcHpMultiplier(room.index))};});if(enemyCache.size>=CAMPAIGN_ENEMY_CACHE_LIMIT)enemyCache.delete(enemyCache.keys().next().value!);enemyCache.set(key,value);return value;}
 
 /** Additional resilience; Chapter 3 already includes its earlier tenfold increase. */
 export function npcHpMultiplier(index:number){return index>=20?1.25:index>=10?1.75:1.5;}
@@ -131,3 +131,9 @@ export function campaignEnemyVariant(enemy:CampaignEnemy,index:number,seed:numbe
  const hue=biome==='forest'?(agile?12:-12):biome==='river'?(agile?-18:18):(agile?8:-10);
  return {...enemy,variantName:name,width:(enemy.width??.78)*(agile?.9:1.08),speed:(enemy.speed??.0008)*(agile?1.12:.94),tint:`hue-rotate(${hue}deg) saturate(${agile?1.1:.85})`};
 }
+
+const patrolCache=new Map<number,{x:number;y:number}|null>();
+function settlementPatrol(index:number){if(patrolCache.has(index))return patrolCache.get(index);const c=villageSettlements(index)[0],r=campaignRoom(index);for(let i=0;i<8;i++){const a=i*Math.PI/4,p={x:Math.round((c.x+Math.cos(a)*14)*2)/2,y:Math.round((c.y+Math.sin(a)*14)*2)/2};if(!patrolNavigation?.(index,p))continue;patrolCache.set(index,p);return p;}patrolCache.set(index,null);return null;}
+
+let patrolNavigation:((index:number,p:{x:number;y:number})=>boolean)|undefined;
+export function registerPatrolNavigation(validate:(index:number,p:{x:number;y:number})=>boolean){patrolNavigation=validate;patrolCache.clear();enemyCache.clear();}

@@ -8,7 +8,7 @@ import {drawExplorationTrails} from './explorationTrails';
 import {woodlandResource} from './explorationWoodlandResources';
 import {baseLayout,baseVisible,baseView,insideSafeBase,BASE_BUILDINGS} from './explorationBase';
 import {resourceNodes,resourceState,harvestingActive} from './explorationWorkshop';
-import {drawResource,drawResourceLabel,drawHarvestTool,drawBaseBuilding,drawBaseProtection} from './explorationWorkshopView';
+import {drawCraftingActivity,drawResource,drawResourceLabel,drawHarvestTool,drawBaseBuilding,drawBaseProtection} from './explorationWorkshopView';
 import {drawPaintedItem,type PaintedItem} from './explorationPaintedItems';
 import {drawBiomeShelter,drawBiomeTree} from './explorationBiomeArt';
 import {explorationGroves,openWorldPlants} from './explorationOpenWorld';
@@ -79,16 +79,16 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   ctx.restore();
   if(room.index<30){drawForestSun(ctx,v.left,v.top,t);drawForestFauna(ctx,v.left,v.top,t,state.time,reducedMotion,width,height);}
   const scenery=room.index>=30?[]:[...room.scenery,...explorationGroves({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index)].filter(p=>!campaignWaterBlocks(p,.4,room));
-  if(room.index>0&&room.index<30&&state.completedRooms.includes(room.index-1)){const q=point(returnPortal(room.index));drawPortalEnergy(ctx,q.x,q.y,t,state.time,true,reducedMotion);drawPortalArch(ctx,river?riverPortal:portalAtlas,q.x,q.y,t);ctx.save();ctx.font="600 12px sans-serif";ctx.fillStyle="#fff1ce";ctx.textAlign="center";ctx.fillText(`Sala ${room.index} · voltar`,q.x,q.y+t*.4);ctx.restore();}
+  if(room.index>0&&room.index<30&&state.completedRooms.includes(room.index-1)){const q=point(returnPortal(room.index));drawPortalEnergy(ctx,q.x,q.y,t,state.time,true,reducedMotion);drawPortalArch(ctx,river?riverPortal:portalAtlas,q.x,q.y,t);ctx.save();ctx.font="600 12px sans-serif";ctx.fillStyle="#fff1ce";ctx.textAlign="center";if(!overview)ctx.fillText(`Sala ${room.index} · voltar`,q.x,q.y+t*.4);ctx.restore();}
   if(!state.gateOpen&&room.gateBlock)scenery.push({x:room.gateBlock.x+.5,y:room.gateBlock.y+.9,index:2,width:1.28,height:1.28});
 
   if(room.index<30){
   const camp = point(baseLayout(state).home); ctx.strokeStyle = '#b7e4b5'; ctx.lineWidth = 2;
   // Safe area stays functional without a circular marker on the terrain.
-  ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
+  ctx.fillStyle = '#e8f4c2'; ctx.font = `500 ${Math.min(12, Math.max(10, t * .16))}px sans-serif`; ctx.textAlign = 'center'; if(!overview)ctx.fillText('Local seguro', camp.x, camp.y - t * .6);
   const marker = point(room.marker);
   if(river)drawRiverProp(ctx,riverProps,5,marker.x,marker.y+t*.15,t*.8);else if(propsAtlas)drawWoodlandProp(ctx,propsAtlas,5,marker.x,marker.y+t*.15,t*.8,undefined,true);
-  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';ctx.fillText(state.gateOpen?'✓':room.index>=30?'Platô superior':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
+  ctx.fillStyle=state.gateOpen?'#e0d499':'#d5d1ab';ctx.font=`600 ${Math.max(10,t*.15)}px sans-serif`;ctx.textAlign='center';if(!overview)ctx.fillText(state.gateOpen?'✓':room.index>=30?'Platô superior':`${room.fibers} fibras`,marker.x,marker.y-t*.4);
   const exit = point(room.exit);
   drawPortalEnergy(ctx,exit.x,exit.y,t,state.time,state.gateOpen,reducedMotion);
 
@@ -121,17 +121,17 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   for (const entity of entities) {
     const p = point(entity.p);
     if((entity.type.startsWith('village-')||entity.type==='citizen'||entity.type==='resource')&&(p.x<-t*5||p.x>width+t*5||p.y<-t*2||p.y>height+t*5))continue;
-    if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t);continue;}
-    if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t,state);continue;}
+    if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t,!overview);continue;}
+    if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t,state,!overview);continue;}
     if(entity.type==='village-resource'){drawVillageResource(ctx,entity.p.kind,p.x,p.y,t);continue;}
     if(entity.type==='citizen'){drawVillageCitizen(ctx,state,entity.id,p.x,p.y,t,reducedMotion,focusedCitizen);continue;}
-    if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing);continue;}
+    if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing&&!overview);continue;}
     if(entity.type==='resource'){drawResource(ctx,state,entity.p,p.x,p.y,t);continue;}
     if(entity.type==='nascentes-tree'){const n=woodlandResource(room.index,entity.p);if(n&&!resourceState(state.workshop,n.id).remaining)drawResource(ctx,state,n,p.x,p.y,t);else{drawNascentesTree(ctx,bridgeAtlas,entity.p,p.x,p.y,t);if(n)drawResourceLabel(ctx,state,n,p.x,p.y,t);}continue;}
     if(entity.type==='prop'){drawProp(entity.p);continue;}
     if(entity.type==='portal'){ctx.save();drawPortalArch(ctx,river?riverPortal:portalAtlas,p.x,p.y,t);ctx.restore();continue;}
     if(entity.type==='shelter'){
-      ctx.save();if(state.player.y<entity.p.y&&state.player.y>entity.p.y-3.6&&Math.abs(state.player.x-entity.p.x)<1.8)ctx.globalAlpha=.3;
+      ctx.save();
       if(shelterAtlas?.complete&&shelterAtlas.naturalWidth){
         if(room.index>=30){const h=t*3.6,w=h*1034/1103;ctx.drawImage(shelterAtlas,119,66,1034,1103,p.x-w/2,p.y-h,w,h);ctx.restore();continue;}
         drawBiomeShelter(ctx,room.index,p.x,p.y,t,shelterAtlas);
@@ -205,7 +205,8 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     ctx.lineWidth = 2; ctx.strokeStyle = '#243a30'; ctx.strokeText(f.text.replace(/ HP$/, ''), p.x, y);
     ctx.fillStyle = f.kind === 'damage' ? '#e9a19a' : f.kind === 'heal' ? '#b9d8b0' : f.kind === 'xp' ? '#ddd2ac' : '#fffbe7'; ctx.fillText(f.text.replace(/ HP$/, ''), p.x, y); ctx.restore();
   });
-  if(overview){ctx.save();ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.strokeStyle='#20372c';ctx.lineWidth=3;ctx.fillStyle='#fff0c9';for(const c of villageSettlements(room.index)){const q=point(c),stage=settlementStage(state.village,room.index,c.slot),name=`${stage===2?'Cidade':stage===1?'Vila':'Povoado'} ${c.slot+1}`;ctx.strokeText(name,q.x,q.y+t*3);ctx.fillText(name,q.x,q.y+t*3);}ctx.restore();}
+  if(overview){ctx.save();ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.strokeStyle='#20372c';ctx.lineWidth=3;ctx.fillStyle='#fff0c9';for(const c of villageSettlements(room.index)){const q=point(c),stage=settlementStage(state.village,room.index,c.slot),name=`${stage===2?'C':stage===1?'V':'P'}${c.slot+1}`;ctx.font='600 10px sans-serif';ctx.strokeText(name,q.x,q.y+t*3);ctx.fillText(name,q.x,q.y+t*3);}ctx.restore();}
+  if(!overview)drawCraftingActivity(ctx,state,point,t);
   trace('entitiesMs');
   if(!overview&&!baseEditing)drawExplorationDaylight(ctx,width,height,state,v);
   if(overview)drawOverviewLocation(ctx,width,height,point(state.player));

@@ -1,0 +1,12 @@
+import {it,expect} from 'vitest';
+import {WORLD_VILLAGERS,roomVillagers,villageSettlements} from './explorationVillageLayout';
+import {createCombatState,combatSnapshot,readCombatState,pilotWalkable} from './explorationCombat';
+import {baseBlocks,baseLayout} from './explorationBase';
+import {biomeDeposits,resourceNodes,upgradeChance,newWorkshop,workshopRecipes,workshopCommand} from './explorationWorkshop';
+import {validResourceSaveId} from './explorationWoodlandResources';
+import art from './explorationCitizenArt.json';
+it('keeps unique full names per room, maps female art to female identity and provides clothing variants',()=>{for(let room=0;room<32;room++){const defs=roomVillagers(room);expect(new Set(defs.map(d=>d.name)).size).toBe(100);expect(new Set(defs.map(d=>d.clothing)).size).toBe(4);for(const d of defs){if(d.kind!=='worker')expect(d.gender).toBe(d.variant?'female':'male');else expect(d.gender).toBe(d.art%2?'female':'male');}}});
+it('includes the entire elderly heads above the old rigid row boundary',()=>{for(const r of art.families.rects[3])expect(r[1]).toBeLessThan(768);for(const r of art.families.rects[2])expect(r[1]).toBeLessThan(512);});
+it('places shared mineral deposits outside village centers with persistent ids',()=>{for(const room of [0,10,20,30,31]){const nodes=biomeDeposits(room);expect(nodes.length).toBeGreaterThan(15);for(const n of nodes){expect(validResourceSaveId(n.id)).toBe(true);expect(resourceNodes(room)).toContain(n);expect(Math.min(...villageSettlements(room).map(c=>Math.hypot(c.x-n.x,c.y-n.y)))).toBeGreaterThan(10);}}});
+it('blocks the house body and spawns the pet on the free front approach',()=>{const s=createCombatState();const h=baseLayout(s).home;expect(baseBlocks({x:h.x,y:h.y-.7},.22,0,s.workshop)).toBe(true);expect(pilotWalkable(s.player,false,.22,0,s.workshop)).toBe(true);});
+it('increases improvement chance with player level and credits finished output once with a result effect',()=>{const w=newWorkshop(),r=workshopRecipes(w).find(r=>r.kind==='upgrade')??{kind:'upgrade'} as any;expect(upgradeChance(w,r,50)).toBeGreaterThan(upgradeChance(w,r,6));let s=createCombatState();s.xp=1000;s.workshop!.materials.wood=5;s=workshopCommand(s,{type:'start',recipe:'charcoal'},1000);s=workshopCommand(s,{type:'claim'},31000);expect(s.workshop!.materials.charcoal).toBe(2);expect(s.workshop!.result?.success).toBe(true);expect(workshopCommand(s,{type:'claim'},32000)).toBe(s);const parsed=readCombatState(combatSnapshot(s));expect(parsed.supported&&parsed.state.workshop!.result).toBeUndefined();});
