@@ -1,3 +1,4 @@
+import {villageClearings} from './explorationVillageLayout';
 import stairArt from '../../public/forest-adventure/biome-shelters/compact-stairs-manifest.json';
 import {insideRegion,touchesRegion,organicOutline,type GroundPoint,type BiomeComposition} from './biomeComposition';
 import type {CampaignRoom} from './explorationCampaign';
@@ -27,7 +28,7 @@ export const stairBase=(index=30)=>elevationPoint(.32,.845,index),stairTop=(inde
 export const NASCENTES_STAIR_BASE=stairBase(),NASCENTES_STAIR_TOP=stairTop();
 export function nascentesHeight(p:GroundPoint,index=30){if(index===31){if(insideRegion(p,castleStairFloor))return stairProgress(p,castleStairBase,castleStairTop);if(castleLanding(p))return 1;}if(insideRegion(p,geo(index).stairs)){const a=stairBase(index),b=stairTop(index),dx=b.x-a.x,dy=b.y-a.y;return Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy)));}return insideRegion(p,geo(index).floor)?1:0;}
 export const nascentesTraverse=(a:GroundPoint,b:GroundPoint,index=30)=>{const near=(p:GroundPoint)=>p.x>13.5&&p.x<16&&p.y>-9&&p.y<-6.8;const castle=index===31&&(near(a)||near(b))&&(insideRegion(a,castleStairFloor)||insideRegion(b,castleStairFloor)||castleLanding(a)||castleLanding(b));return Math.abs(nascentesHeight(a,index)-nascentesHeight(b,index))<=Math.hypot(a.x-b.x,a.y-b.y)*(castle?1:.65)+.025;};
-export function nascentesBlocked(p:GroundPoint,radius:number,open:boolean,index=30,ignoreShelter=false){const {stairs,floor,footprint}=geo(index);if(index===31&&p.x>12.4-radius&&p.x<21.5+radius&&p.y>-12.5-radius&&p.y<-5.8+radius&&!([p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>insideRegion(q,castleStairFloor)||castleLanding(q)||(q.x>13.5&&q.x<14.85&&q.y>castleStairBase.y))))return true;if(!open&&touchesRegion(p,radius,stairs))return true;if(nascentesTrees({left:p.x-4,top:p.y-4,width:8,height:8},index).some(t=>Math.hypot(t.x-p.x,t.y-p.y)<radius+t.radius))return true;
+export function nascentesBlocked(p:GroundPoint,radius:number,open:boolean,index=30,ignoreShelter=false){const {stairs,floor,footprint}=geo(index);if(index===31&&p.x>12.4-radius&&p.x<21.5+radius&&p.y>-12.5-radius&&p.y<-5.8+radius&&!([p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>insideRegion(q,castleStairFloor)||castleLanding(q)||(q.x>13.5&&q.x<14.85&&q.y>castleStairBase.y))))return true;if(!open&&touchesRegion(p,radius,stairs))return true;if(nascentesCollisionTrees(p,index).some(t=>Math.hypot(t.x-p.x,t.y-p.y)<radius+t.radius))return true;
  const camp=index===31?{x:8,y:9}:{x:-12,y:8};if(!ignoreShelter&&Math.abs(p.x-(camp.x-.8))<.65+radius&&Math.abs(p.y-(camp.y-.5))<.22+radius)return true;
  if(nascentesShoreProps(index).some(q=>Math.hypot(p.x-q.x,p.y-q.y)<radius+.25))return true;
  const ground=(q:GroundPoint)=>!insideRegion(q,footprint)||insideRegion(q,floor)||insideRegion(q,stairs);if(![p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(ground))return true;return false;}
@@ -53,7 +54,7 @@ export function nascentesTrees(bounds:{left:number;top:number;width:number;heigh
   if(x>-23&&x<29&&y>-18&&y<20)continue;
   for(let i=0;i<2+n%2;i++){const angle=i*2.399+(n%11)*.3,spread=i?1.2+((n>>>16)%10)/10:0;trees.push({x:x+Math.cos(angle)*spread,y:y+Math.sin(angle)*spread,variant:(n+i)%4,width:1.7+((n>>>(4+i))%12)/10,radius:.28});}
  }
- return trees.filter(t=>t.x>=bounds.left-3&&t.x<=bounds.left+bounds.width+3&&t.y>=bounds.top-3&&t.y<=bounds.top+bounds.height+6);
+ return trees.filter(t=>!villageClearings(index).some(c=>Math.hypot(c.x-t.x,c.y-t.y)<3.4)).filter(t=>t.x>=bounds.left-3&&t.x<=bounds.left+bounds.width+3&&t.y>=bounds.top-3&&t.y<=bounds.top+bounds.height+6);
 }
 
 /** Explicit graph: adding an area adds its authored content and links, not a fake room counter. */
@@ -62,3 +63,6 @@ export const connectedPortal=(from:number,to:number)=>EXPLORATION_CONNECTIONS.so
 export const portalDestination=(from:number,kind:'exit'|'return')=>EXPLORATION_CONNECTIONS.find(link=>link.from===from&&link.kind===kind)?.to;
 
 export function nascentesShoreProps(index=30){return (index===31?[[8.2,6],[10,3.4],[15.1,8.9],[11,10.3]]:[[-10,2.8],[-8.5,-2.6],[-3.2,4.3],[-1,0]]).map(([x,y],i)=>({x,y,width:1.15+(i%3)*.18}));}
+
+const collisionTrees=new Map<string,NascentesTree[]>();
+function nascentesCollisionTrees(p:GroundPoint,index:number){const cx=Math.floor(p.x/8),cy=Math.floor(p.y/8),key=`${index}:${cx}:${cy}`;let trees=collisionTrees.get(key);if(!trees){trees=nascentesTrees({left:cx*8-2,top:cy*8-2,width:12,height:12},index);if(collisionTrees.size>=512)collisionTrees.delete(collisionTrees.keys().next().value!);collisionTrees.set(key,trees);}return trees;}

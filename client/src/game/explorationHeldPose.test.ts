@@ -1,0 +1,5 @@
+import {it,expect} from 'vitest';
+import {heldPose,heldAnchors,meleeSwing} from './explorationHeldPose';
+import {EQUIPMENT_KINDS} from './explorationEquipmentTiers';
+for(const kind of EQUIPMENT_KINDS)for(const variant of ['base','tier','royal'] as const){if(variant==='royal'&&(kind==='dagger'||kind==='bow'))continue;it(`${variant} ${kind}: hand anchor and outward blade in eight directions throughout swing`,()=>{for(let n=0;n<8;n++)for(const swing of [-.85,-.7,0,.22,.7]){const angle=n*Math.PI/4,facing={x:Math.cos(angle),y:Math.sin(angle)},w=89,h=100,p=heldPose(kind,variant,w,h,facing,swing),a=heldAnchors(kind,variant);expect(p.x+a.grip.x*w).toBeCloseTo(0);expect(p.y+a.grip.y*h).toBeCloseTo(0);const dx=(a.aim.x-a.grip.x)*w,dy=(a.aim.y-a.grip.y)*h,x=dx*Math.cos(p.rotation)-dy*Math.sin(p.rotation),y=dx*Math.sin(p.rotation)+dy*Math.cos(p.rotation);expect(x*facing.x+y*facing.y).toBeGreaterThan(0);}});}
+it('a full melee swing never turns the blade through the wielder',()=>{for(let t=0;t<320;t++)expect(Math.abs(meleeSwing(t,320))).toBeLessThan(Math.PI/2);});

@@ -6,7 +6,7 @@ import {drawBiomeWater,drawBiomeStatic} from './biomeCompositionView';
 import {drawPortalArch,drawPortalEnergy} from './explorationPortal';
 import {touchesRegion,type GroundPoint} from './biomeComposition';
 export function nascentesView(width:number,height:number,player:GroundPoint,zoom=1,overview=false){
- const s={left:Math.min(-18,player.x-3),top:Math.min(-15,player.y-3),width:Math.max(24,player.x+3)-Math.min(-18,player.x-3),height:Math.max(19,player.y+3)-Math.min(-15,player.y-3)};
+ const s={left:Math.min(-84,player.x-3),top:Math.min(-46,player.y-3),width:Math.max(84,player.x+3)-Math.min(-84,player.x-3),height:Math.max(80,player.y+3)-Math.min(-46,player.y-3)};
  if(overview){const portrait=height>width,padTop=portrait?180:12,availableWidth=Math.max(180,width-(portrait?12:165)),availableHeight=Math.max(100,height-padTop-12),tile=Math.min(availableWidth/s.width,availableHeight/s.height);return{tile,left:availableWidth/2-(s.left+s.width/2)*tile,top:padTop+availableHeight/2-(s.top+s.height/2)*tile};}
  const tile=Math.max(46,width/15,height/12)*zoom;return{tile,left:width/2-player.x*tile,top:height*.46-player.y*tile};
 }

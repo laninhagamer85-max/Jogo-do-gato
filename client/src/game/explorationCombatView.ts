@@ -1,4 +1,4 @@
-import {VILLAGE_MARKET,VILLAGE_HOMES,VILLAGE_WORK} from './explorationVillageLayout';
+import {villageLayout,villageSettlements,settlementStage} from './explorationVillageLayout';
 import {villageCitizens} from './explorationVillage';
 import {drawVillageMarket,drawVillageHouse,drawVillageResource,drawVillageCitizen} from './explorationVillageView';
 import {royalActive} from './explorationCastleQuest';
@@ -37,7 +37,7 @@ export function combatCanvasScale(width:number,height:number,pixelRatio:number){
   return Math.max(.5,Math.min(3,Math.max(1,pixelRatio||1),Math.sqrt(6_000_000/(Math.max(1,width)*Math.max(1,height)))));
 }
 export function combatView(width: number, height: number, player: CombatPoint, zoom = 1, overview = false,roomIndex=0) {
-  if(overview){const l=Math.min(roomIndex===0?-21:-8,player.x-3),r=Math.max(22,player.x+3),u=Math.min(roomIndex===0?-18:-7,player.y-3),b=Math.max(17,player.y+3),portrait=height>width,top=portrait?180:12,availableW=width-(portrait?12:165),availableH=Math.max(100,height-top-12),tile=Math.min(availableW/(r-l),availableH/(b-u));return{tile,left:availableW/2-(l+r)/2*tile,top:top+availableH/2-(u+b)/2*tile};}
+  if(overview){const l=Math.min(-84,player.x-3),r=Math.max(84,player.x+3),u=Math.min(-46,player.y-3),b=Math.max(80,player.y+3),portrait=height>width,top=portrait?180:12,availableW=width-(portrait?12:165),availableH=Math.max(100,height-top-12),tile=Math.min(availableW/(r-l),availableH/(b-u));return{tile,left:availableW/2-(l+r)/2*tile,top:top+availableH/2-(u+b)/2*tile};}
   const tile=Math.max(52,width/11,height/9)*zoom;
   return {tile,left:width/2-player.x*tile,top:height*.46-player.y*tile};
 }
@@ -111,11 +111,11 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   drawRoyalPower(ctx,state,point,t);
   drawBaseProtection(ctx,state,point,t);
   const citizens=villageCitizens(state);
-  const entities = [...(room.index===0?VILLAGE_MARKET.map(m=>({type:'village-market' as const,p:m})):[]),...(room.index===0?VILLAGE_HOMES.map(h=>({type:'village-home' as const,p:h})):[]),...(room.index===0?VILLAGE_WORK.map(w=>({type:'village-resource' as const,p:w})):[]),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
+  const entities = [...(villageLayout(room.index).markets.map(m=>({type:'village-market' as const,p:m}))),...(villageLayout(room.index).homes.map(h=>({type:'village-home' as const,p:h}))),...(villageLayout(room.index).work.map(w=>({type:'village-resource' as const,p:w}))),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => a.p.y - b.p.y);
   for (const entity of entities) {
     const p = point(entity.p);
     if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t);continue;}
-    if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t);continue;}
+    if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t,state);continue;}
     if(entity.type==='village-resource'){drawVillageResource(ctx,entity.p.kind,p.x,p.y,t);continue;}
     if(entity.type==='citizen'){drawVillageCitizen(ctx,state,entity.id,p.x,p.y,t,reducedMotion);continue;}
     if(entity.type==='base'){drawBaseBuilding(ctx,state,entity.k,p.x,p.y,t,!baseEditing);continue;}
@@ -197,6 +197,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     ctx.lineWidth = 2; ctx.strokeStyle = '#243a30'; ctx.strokeText(f.text.replace(/ HP$/, ''), p.x, y);
     ctx.fillStyle = f.kind === 'damage' ? '#e9a19a' : f.kind === 'heal' ? '#b9d8b0' : f.kind === 'xp' ? '#ddd2ac' : '#fffbe7'; ctx.fillText(f.text.replace(/ HP$/, ''), p.x, y); ctx.restore();
   });
+  if(overview){ctx.save();ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.strokeStyle='#20372c';ctx.lineWidth=3;ctx.fillStyle='#fff0c9';for(const c of villageSettlements(room.index)){const q=point(c),stage=settlementStage(state.village,room.index,c.slot),name=`${stage===2?'Cidade':stage===1?'Vila':'Povoado'} ${c.slot+1}`;ctx.strokeText(name,q.x,q.y+t*3);ctx.fillText(name,q.x,q.y+t*3);}ctx.restore();}
   if(overview)drawOverviewLocation(ctx,width,height,point(state.player));
 }
 

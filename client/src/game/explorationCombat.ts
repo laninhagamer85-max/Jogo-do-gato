@@ -1,11 +1,11 @@
-import {newVillage,readVillage,tickVillage,nearestVillager,startVillageDuel,stepVillageDuel,villageDueling,type VillageProgress} from './explorationVillage';
+import {newVillage,readVillage,villageSnapshot,tickVillage,nearestVillager,startVillageDuel,stepVillageDuel,villageDueling,type VillageProgress} from './explorationVillage';
 import {villageHouseBlocks} from './explorationVillageLayout';
 import {newCastleQuest,readCastleQuest,castleQuestTick,openRoyalChest,nearestRoyalChest,castleDown,royalActive,royalDispersed,clearRoyalSlot,CASTLE_TEST_ACCESS,type CastleQuest} from './explorationCastleQuest';
 import {baseLayout,baseBlocks,insideSafeBase} from './explorationBase';
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
 import {CASTLE_GATE,enterCastle,readCastle,stepCastle,castleRoom,type CastleProgress} from './explorationCastle';
-import {castleStairBase,nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
+import {castleStairBase,castleStairTop,nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
 import {readLegendProgress,legendWeapon,type LegendProgress} from './explorationLegends';
 import {hazardPhase} from './explorationHazards';
 import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
@@ -180,7 +180,7 @@ export function readCombatState(value: unknown): CombatRead {
 }
 export function combatSnapshot(s: CombatState): Record<string, unknown> {
   const { levelUpUntil:_levelUpUntil,powerFx:_powerFx,feedback: _feedback, message: _message, strikeUntil: _strike, walking: _walking, walkPhase: _phase, ...save } = s;
-  return save;
+  return {...save,village:s.village?villageSnapshot(s.village):undefined};
 }
 function clone(s: CombatState): CombatState { return { ...s, player: { ...s.player }, facing: { ...s.facing }, stock: { ...s.stock }, bag: { ...s.bag },rareStock:{...s.rareStock},rareBag:{...s.rareBag}, enemies: s.enemies.map(e => ({ ...e })), loot: s.loot.map(l => ({ ...l })), feedback: [...s.feedback], collectedNodes: [...s.collectedNodes],completedRooms:[...s.completedRooms],claimedRooms:[...s.claimedRooms],roomStars:{...s.roomStars},roomPerformance:s.roomPerformance?{...s.roomPerformance}:null,roomAttempts:{...s.roomAttempts},cards:[...s.cards],defeatedEnemyIds:[...s.defeatedEnemyIds] }; }
 function feedback(s: CombatState, p: CombatPoint, text: string, kind: CombatFeedback['kind']) {
@@ -352,7 +352,7 @@ export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:bool
 /** Breadth-first touch route around the same geometry used by movement. */
 export function pilotRoute(from: CombatPoint, destination: CombatPoint, gateOpen: boolean,roomIndex=0,workshop?:Workshop): CombatPoint[] {
   if(![from.x,from.y,destination.x,destination.y].every(Number.isFinite))return [];
-  if(roomIndex>=30)return nascentesRoute(from,destination,gateOpen,roomIndex,workshop); 
+  if(roomIndex>=30||Math.hypot(destination.x-from.x,destination.y-from.y)>20)return nascentesRoute(from,destination,gateOpen,roomIndex,workshop); 
   if(Math.hypot(destination.x-from.x,destination.y-from.y)>80)return [];
   // Short taps within one navigation cell still check the full support radius.
   if(Math.floor(from.x)===Math.floor(destination.x)&&Math.floor(from.y)===Math.floor(destination.y)&&clearPilotWalkLine(from,destination,gateOpen,.22,roomIndex,workshop))return [{...destination}];
@@ -453,19 +453,19 @@ export function useCombatQuickItem(s:CombatState,item:CombatQuickItem){return it
 /** Half-unit route graph follows the diagonal stair and the actual painted courtyard. */
 function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=30,workshop?:Workshop):CombatPoint[]{
  if(Math.hypot(to.x-from.x,to.y-from.y)>80||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===31&&to.x>12)))return [];
- const e=roomIndex>=30?nascentesElevation(roomIndex):{left:-8,top:-7,size:30};
- const bounds={left:Math.min(from.x,to.x,e.left)-4,right:Math.max(from.x,to.x,e.left+e.size)+4,top:Math.min(from.y,to.y,e.top)-4,bottom:Math.max(from.y,to.y,e.top+e.size)+4};
  if(!pilotWalkable(to,open,.22,roomIndex,workshop))return [];
+ if(roomIndex===31&&to.x>13.5&&to.x<17&&to.y<-7.3&&from.y>-7){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop);if(approach.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop)&&clearPilotWalkLine(castleStairTop,to,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},to];}
  if(clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
- const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},queue=[start],previous=new Map<string,CombatPoint|null>([[key(start),null]]);
- for(let i=0;i<queue.length;i++){
-  const p=queue[i],actual=i===0?from:{x:p.x/2,y:p.y/2};
-  if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,roomIndex,workshop)){
-   const route:CombatPoint[]=[to];let current:CombatPoint|null=p;while(current&&key(current)!==key(start)){route.unshift({x:current.x/2,y:current.y/2});current=previous.get(key(current))??null;}return route;
-  }
-  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const n={x:p.x+dx,y:p.y+dy};if(n.x<bounds.left*2||n.x>bounds.right*2||n.y<bounds.top*2||n.y>bounds.bottom*2)continue;if(!previous.has(key(n))&&clearPilotWalkLine(actual,{x:n.x/2,y:n.y/2},open,.22,roomIndex,workshop)){previous.set(key(n),p);queue.push(n);}}
- }
- return [];
+ const e=roomIndex>=30?nascentesElevation(roomIndex):{left:-8,top:-7,size:30},bounds={left:Math.min(from.x,to.x,e.left)-4,right:Math.max(from.x,to.x,e.left+e.size)+4,top:Math.min(from.y,to.y,e.top)-4,bottom:Math.max(from.y,to.y,e.top+e.size)+4};
+ const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},previous=new Map<string,CombatPoint|null>([[key(start),null]]),cost=new Map([[key(start),0]]);
+ type Entry={p:CombatPoint;g:number;f:number};const heap:Entry[]=[];
+ const push=(a:Entry)=>{heap.push(a);let i=heap.length-1;while(i){const parent=(i-1)>>1;if(heap[parent].f<=a.f)break;heap[i]=heap[parent];i=parent;}heap[i]=a;};
+ const pop=()=>{const first=heap[0],last=heap.pop()!;if(heap.length){let i=0;while(i*2+1<heap.length){let child=i*2+1;if(child+1<heap.length&&heap[child+1].f<heap[child].f)child++;if(heap[child].f>=last.f)break;heap[i]=heap[child];i=child;}heap[i]=last;}return first;};
+ push({p:start,g:0,f:Math.hypot(start.x-to.x*2,start.y-to.y*2)});let visited=0;
+ while(heap.length&&visited++<12000){const entry=pop(),p=entry.p;if(entry.g!==cost.get(key(p)))continue;const actual=key(p)===key(start)?from:{x:p.x/2,y:p.y/2};
+ if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,roomIndex,workshop)){const route:CombatPoint[]=[to];let current:CombatPoint|null=p;while(current&&key(current)!==key(start)){route.unshift({x:current.x/2,y:current.y/2});current=previous.get(key(current))??null;}return route;}
+ for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const n={x:p.x+dx,y:p.y+dy},g=entry.g+Math.hypot(dx,dy);if(n.x<bounds.left*2||n.x>bounds.right*2||n.y<bounds.top*2||n.y>bounds.bottom*2||g>=(cost.get(key(n))??Infinity))continue;if(clearPilotWalkLine(actual,{x:n.x/2,y:n.y/2},open,.22,roomIndex,workshop)){cost.set(key(n),g);previous.set(key(n),p);push({p:n,g,f:g+Math.hypot(n.x-to.x*2,n.y-to.y*2)});}}
+ }return [];
 }
 
 export function rememberCombatRoom(s:CombatState):RoomMemory{return{worldLayoutVersion:1,collectedNodes:[...s.collectedNodes],defeatedEnemyIds:[...s.defeatedEnemyIds],roomCollectedFibers:s.roomCollectedFibers,switchStep:s.switchStep,hasRoomKey:s.hasRoomKey,bridgeEntered:s.bridgeEntered,bridgeCrossed:s.bridgeCrossed,consumablesUsed:s.consumablesUsed,gateOpen:s.gateOpen,enemies:s.enemies.map(e=>({...e})),loot:s.loot.map(l=>({...l})),exploredCells:[...s.exploredCells],roomPerformance:s.roomPerformance?{...s.roomPerformance}:null,encounterSeed:s.encounterSeed,openWorldCells:[...s.openWorldCells??[]]};}

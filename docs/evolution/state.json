@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-21",
+  "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.36.0",
-  "active_run": "2026-10-21",
+  "status": "validated_1.37.0_pending_publication",
+  "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -20,11 +20,11 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "village-market-natural-trails",
-    "base_product_version": "1.35.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-21-village-market-natural-trails.md",
-    "acceptance_status": "723 tests passed; browser shop buy/sell/trade and barehand duel, portrait390x844/landscape844x390; chapter4 portals inspected both orientations"
+    "id": "world-settlements-autonomous-growth",
+    "base_product_version": "1.36.0",
+    "implementation_status": "validated_pending_package",
+    "report": "docs/evolution/runs/2026-10-22-settlement-growth.md",
+    "acceptance_status": "777 tests/75 files passed; mobile browser QA continuing; includes unpublished equipment/card fixes"
   },
   "publication": {
     "id": "appgdep_6ad953d08fb481918fafcb4177d82ab3",
@@ -45,26 +45,25 @@
     "source_commit": "8074032e5a049e8a1e65d6381120852884158695"
   },
   "verification": {
-    "typescript": "passed final release check",
-    "offline_tests": "723 passed; only Firebase staging credential integration excluded",
-    "browser": "Isolated QA: market sell fruit8→7 coins0→3, second sale coins6, buy herb8→9 coins0, wood5→fruit2; training Bento172→142 and suspended powers; rooms31/32 layered ground below raised platforms, stairs and portals in390x844 and844x390",
+    "typescript": "passed",
+    "offline_tests": "777 tests passed across75files; Firebase staging credential integration excluded",
+    "browser": "Isolated city/village rendering, conversation, growth info and resource gift inspected; no account writes. Final orientation check in progress.",
     "physical_phone": "not_tested",
-    "fps": "not_measured",
-    "real_online_phases_completed_in_cycle": 0,
-    "build": "passed official release build20.64s; pre-existing chunk size warning"
+    "fps": "not_measured"
   },
   "blockers": [],
   "next_actions": [
-    "David tests pilot village from exploration chapter selector → Visitar Vila dos Troncos.",
-    "After pilot approval, author biome-specific villages and extended merchant stock; other rooms do not yet have villages."
+    "Publish validated1.37.0 on the existing public Site and sync existing GitHub branch.",
+    "Player tests actual-device performance and long-term growth.",
+    "Further city building types/guard professions are future content; stone/sand redesign remains a preview awaiting visual feedback."
   ],
   "rollback": {
-    "product_version": "1.35.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_64ae3ea8f2508191b936d7cdfbbdfb03",
-    "site_commit": "9f2dde27629e87efe7afe44d9455c133096de5ed",
-    "instructions": "Redeploy prior saved version only if no newer publication exists. Never replace player data."
+    "product_version": "1.36.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a",
+    "site_commit": "8074032e5a049e8a1e65d6381120852884158695",
+    "instructions": "Redeploy only if no newer publication exists; preserve player saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-21-village-market-natural-trails.md",
+  "latest_report": "docs/evolution/runs/2026-10-22-equipment-directions-card-notice.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

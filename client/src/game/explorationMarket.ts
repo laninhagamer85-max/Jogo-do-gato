@@ -1,12 +1,12 @@
 import type {CombatState} from './explorationCombat';
 import {newVillage,villageDueling} from './explorationVillage';
-import {VILLAGE_MARKET,type MarketId} from './explorationVillageLayout';
+import {villageLayout,type MarketId} from './explorationVillageLayout';
 export const MARKET_GOODS={wood:{name:'Madeira',buy:4,sell:1},stone:{name:'Pedra',buy:4,sell:1},erva:{name:'Erva de cura',buy:6,sell:2},fruta:{name:'Fruta',buy:8,sell:3}} as const;
 export type MarketGood=keyof typeof MARKET_GOODS;
 export const MARKET_TRADES=[{give:'wood',quantity:5,receive:'fruta',output:2},{give:'stone',quantity:3,receive:'erva',output:1}] as const;
 export const marketCount=(s:CombatState,key:MarketGood)=>key==='wood'||key==='stone'?s.workshop?.materials[key]??0:s.stock[key];
-export function nearMarket(s:CombatState){if(s.castle?.active||s.roomIndex!==0||villageDueling(s))return;return VILLAGE_MARKET.filter(m=>m.id!=='poco').find(m=>Math.hypot(m.x-s.player.x,m.y+.9-s.player.y)<2);}
-export function marketGoods(id:MarketId):MarketGood[]{return id==='frutas'?['fruta','erva']:id==='materiais'?['wood','stone']:['fruta','erva','wood','stone'];}
+export function nearMarket(s:CombatState){if(s.castle?.active||villageDueling(s))return;return villageLayout(s.roomIndex).markets.filter(m=>m.art!==2).find(m=>Math.hypot(m.x-s.player.x,m.y+.9-s.player.y)<2);}
+export function marketGoods(id:MarketId):MarketGood[]{id=id.split(':').pop()!;return id==='frutas'?['fruta','erva']:id==='materiais'?['wood','stone']:['fruta','erva','wood','stone'];}
 export function marketAvailable(s:CombatState,key:MarketGood,now=Date.now()){const r=s.village?.shops?.[key];return !r||now>=r.renewAt?8:8-r.sold;}
 export type MarketAction={type:'buy'|'sell';item:MarketGood}|{type:'trade';recipe:0|1};
 /** Atomic one-unit purchases/sales, bounded common resources, no equipped or unique item keys accepted. */
