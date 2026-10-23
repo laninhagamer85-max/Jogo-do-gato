@@ -4,7 +4,7 @@
   "updated_date": "2026-10-23",
   "timezone": "America/Sao_Paulo",
   "status": "published_1.44.0",
-  "active_run": "2026-10-22",
+  "active_run": "2026-10-23",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -56,12 +56,12 @@
     "Receber teste do usuário sobre caminhada lateral, frequência das conversas e rotina das vilas."
   ],
   "rollback": {
-    "product_version": "1.36.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_752e8f0bb3e88191bd4574ccb5f01f0a",
-    "site_commit": "8074032e5a049e8a1e65d6381120852884158695",
-    "instructions": "Redeploy only if no newer publication exists; preserve player saves."
+    "product_version": "1.43.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_430214bdc5948191a1d18d947d7b042c",
+    "site_commit": "e483d514abf27967269a21d66dfbbc7ab939f293",
+    "instructions": "Before rollback verify no newer publication exists; preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-22-equipment-directions-card-notice.md",
+  "latest_report": "docs/evolution/runs/2026-10-23.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -698,20 +698,20 @@
     "source_commit": "a5b86c3bffb83df51e2cba9d4e104dbe9b0c8b7d"
   },
   "independent_review": {
-    "date": "2026-10-22",
-    "status": "independent_checks_passed_deploy_deferred_concurrent_revision",
-    "report": "docs/evolution/runs/2026-10-22.md",
-    "code_modified": false,
-    "source_initial": "feaa2a5cd13be852f9fc3ea579cd20f527a0f169",
-    "source_latest": "1a8514a4615f49a3dcefb714858b0861601451ae",
-    "pending_product_version": "1.37.0",
-    "typescript": "passed_1.36.1",
-    "build": "passed_1.36.1",
-    "offline_tests": "737/737_1.36.1_after_timeout_recheck",
-    "targeted_tests": "51/51_1.37.0_population_and_selection",
-    "browser": "source_changed_during_QA; final_visual_validation_not_claimed",
-    "publication_attempted": false,
-    "real_online_phases_completed": 0,
-    "real_player_data_modified": false
+    "date": "2026-10-23",
+    "status": "passed_published_1440_recovery_review",
+    "report": "docs/evolution/runs/2026-10-23.md",
+    "runtime_modified": false,
+    "regression_test_added": true,
+    "source_published": "332de46020bf1c3ed14f337a30134d2e686d7738",
+    "source_reviewed": "b40514963b7f0708b25714cc85647025feb42651",
+    "typescript": "passed",
+    "build": "passed",
+    "offline_suite": "840/840 in 89 files before added regression",
+    "added_regression_file": "9/9 after added regression",
+    "browser": "isolated final8s recovery horizontal844x390 and portrait390x844; HP0->304; notice removed; movement enabled",
+    "new_deploy": false,
+    "real_player_data_modified": false,
+    "real_online_phases_completed": 0
   }
 }

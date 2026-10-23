@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública confirmada em21/10/2026: **1.29.1** (Sites115), com correção dos pequenos deslocamentos por toque nos capítulos1–3. Castelo, relevo e portais da1.29.0 preservados. TypeScript,603testes e build aprovados; cliques reais em cinco viewports isolados. Teste em aparelho físico pendente. Confirmação final em `docs/evolution/state.json` e `docs/evolution/runs/2026-10-21.md`.
+Versão pública confirmada em 23/10/2026: **1.44.0** (Sites 139), com cinco aldeões originais e recuperação do personagem após os 60 segundos mesmo fora do castelo. Publicação com status `succeeded`, fonte Sites `332de46020bf1c3ed14f337a30134d2e686d7738`. Consulte `docs/evolution/state.json` e `docs/evolution/runs/2026-10-23.md` para a verificação independente e seus limites. Os registros de v7/v8 abaixo são históricos.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 
@@ -14,16 +14,16 @@ Ramo de retomada e revisão móvel de 09/10/2026, preparado para colaboração c
 
 **Comece por [Retomada e instruções para o Manus](recovery/RETOMADA-MANUS.md).**
 
-O projeto reúne o código React/TypeScript recuperado, as 158 mídias da publicação e uma cópia íntegra da distribuição v7. A fonte recuperada é anterior à v7; as diferenças de ícones e painel de conta estão documentadas e ainda precisam ser conciliadas.
+O projeto preserva o código React/TypeScript recuperado, as mídias da publicação e uma cópia íntegra da distribuição v7. A fonte original antecedia a v7; painel de conta e atlas foram posteriormente reconciliados. As restrições antigas a seguir documentam aquela recuperação, não o processo atual de entrega.
 
 - `pnpm dev`: cliente de desenvolvimento.
 - `/qa-review.html`: demonstração local da aventura, sem contas nem partidas reais.
 - `pnpm check`: verificação TypeScript.
-- `pnpm build`: build do código editável, ainda sujeito à conciliação.
+- `pnpm build`: build atual de entrega pelo script `build-sites-release.mjs`.
 - `pnpm build:recovery`: gera `out/` preservando a v7 e aplicando somente as correções móveis desta revisão.
 - `pnpm dev:server`: fluxo anterior com Express.
 
-A revisão móvel foi publicada como versão 8 em 09/10/2026. As alterações de entrada da Aventura de 12/10/2026 estão somente na fonte editável e aguardam validação visual e conciliação com os recursos publicados. Não publicar o build normal antes dessas verificações. O build de recuperação não inclui o novo componente de entrada.
+A revisão móvel foi publicada como versão 8 em 09/10/2026. Naquele checkpoint, as alterações de entrada da Aventura de 12/10 aguardavam validação e conciliação. A distribuição histórica permanece disponível para recuperação; não deve substituir automaticamente a fonte atual nem uma publicação mais recente.
 
 - `node --import tsx scripts/verify-adventure-entry.ts`: verifica seleção da próxima fase, replay e imutabilidade do progresso, sem navegador ou conta. Não executa as fases.
 - `docs/evolution/state.json` e `docs/evolution/runs/2026-10-12.md`: estado e limites da revisão.

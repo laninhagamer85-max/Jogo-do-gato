@@ -4,8 +4,22 @@ import {enterCastle,castleSpawn,castleWalkable,castleRoute,CASTLE_ROOMS,castleDo
 import {ROYAL_CHESTS,castleArmors,COMMON_CHEST_ROOMS,scatteredCastleChest} from './explorationCastleObjects';
 import {openRoyalChest,newCastleQuest,bindCastleActor,castleQuestTick,visibleCastleChests} from './explorationCastleQuest';
 import {startExplorationTestRoom} from './explorationSelection';
+import {recoverCastlePlayer} from './explorationCastleQuest';
 function throne(){const s=startExplorationTestRoom(createCombatState(),31);s.castle={...enterCastle(),room:'tesouro',player:castleSpawn('tesouro'),cooldown:0};s.castleQuest=newCastleQuest();return s;}
 function near(s:ReturnType<typeof throne>,id:number){const c=ROYAL_CHESTS[id];s.castle!.active=true;s.castle!.room='tesouro';s.castle!.player={x:c.x,y:c.y+.75};s.strikeUntil=s.time+320;return s;}
+it('recovery preserves earned inventory and progression, does not mutate the save and only runs once',()=>{
+ const s=throne();s.hp=0;s.castleQuest!.reviveAt=60000;
+ s.stock.erva=7;s.stock.fruta=4;s.rareStock.seiva=2;s.xp=80;
+ s.completedRooms=[0,1];s.claimedRooms=[0];
+ const before=JSON.stringify(combatSnapshot(s));
+ expect(recoverCastlePlayer(s,59999,124)).toBe(s);
+ const revived=recoverCastlePlayer(s,60000,124);
+ expect(JSON.stringify(combatSnapshot(s))).toBe(before);
+ expect(revived.hp).toBe(124);
+ for(const key of ['stock','rareStock','xp','cards','completedRooms','claimedRooms','workshop','village'] as const)
+  expect(revived[key],key).toEqual(s[key]);
+ expect(recoverCastlePlayer(revived,60001,124)).toBe(revived);
+});
 it('opens public rooms without claiming earlier progression and survives save reload',()=>{for(const index of [30,31] as const){const s=startExplorationTestRoom(createCombatState(),index);expect(s.completedRooms).toEqual([]);expect(s.claimedRooms).toEqual([]);const r=readCombatState(combatSnapshot(s));expect(r.supported).toBe(true);if(r.supported)expect(r.state.roomIndex).toBe(index);}});
 it('every wrong chest changes the true position before teleport and persists it',()=>{let s=throne();for(let n=0;n<20;n++){const old=s.castleQuest!.order.indexOf(0),wrong=(old+1)%5;s=openRoyalChest(near(s,wrong),wrong,1000+n);expect(s.castleQuest!.order.indexOf(0)).not.toBe(old);expect([...s.castleQuest!.order].sort()).toEqual([0,1,2,3,4]);const r=readCombatState(combatSnapshot(s));expect(r.supported).toBe(true);if(r.supported){expect(r.state.castleQuest!.order).toEqual(s.castleQuest!.order);s=r.state;}}});
 it('issues treasure once per character, then scatters five guarded common-only chests',()=>{let s=throne();s=openRoyalChest(near(s,0),0);expect(s.castleQuest!.claims[s.castleQuest!.actor].issued).toBe(true);expect(visibleCastleChests(s)).toEqual([]);expect(openRoyalChest(s,0)).toBe(s);const rare={...s.rareStock},cards=[...s.cards],equipment=s.castleQuest!.claims[s.castleQuest!.actor].equipmentCards;
