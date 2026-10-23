@@ -3,45 +3,45 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "validating_1.43.0_pending_publish",
+  "status": "published_1.43.0",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "92431d4030cb1e71a371b633c22add7cf473f1dd",
+    "source_site_commit": "e483d514abf27967269a21d66dfbbc7ab939f293",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.42.1 published; GitHub implementation verified",
+    "code_commit_status": "1.43.0 published; GitHub implementation verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "699f834a959bf46c8785fb76572ea6295abd05ad",
+    "code_commit": "9ce73cf75cc55981825839663805fec9b04e05bf",
     "published_code_github_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "common-tools-travelling-named-collectors",
     "base_product_version": "1.42.1",
-    "implementation_status": "browser_validated_final_checks_pending",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-22-collectors-1430.md"
   },
   "publication": {
-    "id": "appgdep_6adab06aaaa88191a9315b14d13c783c",
+    "id": "appgdep_6adabdec5b508191922a41e26050e5d1",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bbbff91dbd808191b81a7618710a7fe6",
-    "version_number": 137,
-    "product_version": "1.42.1",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_430214bdc5948191a1d18d947d7b042c",
+    "version_number": 138,
+    "product_version": "1.43.0",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "92431d4030cb1e71a371b633c22add7cf473f1dd"
+    "source_commit": "e483d514abf27967269a21d66dfbbc7ab939f293"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "834 passed in88 files; subsequent5 targeted checks incl. full traveller save passed; final full run in packaging",
+    "offline_tests": "835 passed /88 files; Firebase staging integration excluded (credential absent)",
     "browser": "QA common axe/pickaxe with Crown+diamond equipped by player; visitor Tomás Araújo from room20 seen inroom21 walking, collecting wood, carrying cargo back to portal;844x390/390x844. No account save changes.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
-    "build": "passed; Vite18.67s; existing chunk-size warning"
+    "build": "passed; Vite18.62s; existing chunk-size warning"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
