@@ -1,3 +1,4 @@
+import ExplorationHubLab from './pages/ExplorationHubLab';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -10,6 +11,7 @@ import PlayerAccess from "./pages/PlayerAccess";
 function Router() {
   return (
     <Switch>
+      <Route path={"/qa-exploration-hub"} component={ExplorationHubLab} />
       <Route path={"/qa-exploration-lab"} component={ExplorationLab} />
       <Route path={"/"} component={PlayerAccess} />
       <Route path={"/guardian"} component={PlayerAccess} />

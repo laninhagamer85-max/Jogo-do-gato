@@ -12,6 +12,7 @@
 <main><iframe id="game" title="Meu Pet Virtual — viewport de teste" src="/qa-exploration-lab"></iframe></main>
 <script>
 const game=document.getElementById('game'),size=document.getElementById('size');
+if(new URLSearchParams(location.search).get('screen')==='hub')game.src='/qa-exploration-hub';
 const sizes={landscape:[844,390],portrait:[390,844],small:[375,667],tall:[375,812],desktop:[1366,768]};
 for(const [id,[width,height]] of Object.entries(sizes))document.getElementById(id).onclick=()=>{
  game.style.width=width+'px';game.style.height=height+'px';size.textContent=width+' × '+height;

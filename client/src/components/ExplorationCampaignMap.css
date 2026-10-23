@@ -95,3 +95,47 @@
 .exploration-campaign-map .trail-current-pet{width:38px;height:46px;left:-19px;top:-80px}
 .exploration-campaign-map .trail-room-node>span:not(.trail-stars){transform:translateY(-9px)}
 @media(max-height:500px) and (orientation:landscape){.exploration-campaign-map .trail-room-node>span:not(.trail-stars){font-size:20px;line-height:20px}.exploration-campaign-map .trail-node-kind{font-size:7px;line-height:7px}}
+
+/* The chapter trail owns the remaining viewport; optional test entry is a compact menu. */
+.forest-adventure:has(>.forest-adventure-map--trail){overflow:hidden}
+.forest-adventure>.forest-adventure-map--trail{box-sizing:border-box;display:flex;flex:1;flex-direction:column;gap:8px;min-height:0;width:100%;max-width:1600px;padding:10px 12px max(8px,env(safe-area-inset-bottom));margin:0 auto}
+.forest-adventure-map--trail .forest-adventure-intro{flex:none;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;margin:0;align-items:center}
+.forest-exploration-title{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.forest-adventure-map--trail .forest-adventure-intro h1{margin:0;font-size:clamp(20px,2.5vw,28px);line-height:1.15}
+.forest-exploration-tests{position:relative;flex:none;z-index:20}
+.forest-exploration-tests summary{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 12px;border:1px solid #b5c69b66;border-radius:12px;color:#e4eacb;background:#274a3f;cursor:pointer;list-style:none;font-size:14px;font-weight:700}
+.forest-exploration-tests summary::-webkit-details-marker{display:none}
+.forest-exploration-tests summary:focus-visible{outline:3px solid #ffe08a;outline-offset:2px}
+.forest-exploration-tests[open] summary{background:#46664a}
+.forest-exploration-tests-panel{position:absolute;right:0;top:calc(100% + 6px);display:grid;gap:7px;width:min(300px,calc(100vw - 28px));max-height:calc(100dvh - 140px);overflow:auto;box-sizing:border-box;padding:12px;border:1px solid #b3bb8588;border-radius:14px;background:#173b30f5;backdrop-filter:blur(12px);color:#fff0c9;box-shadow:0 10px 28px #001e1999}
+.forest-exploration-tests-panel button{min-height:44px;padding:8px 12px;border:1px solid #a8bc8e66;border-radius:10px;background:#2c5140;text-align:left;font-size:14px}
+.forest-exploration-tests-panel small{font-size:12px;line-height:1.4;color:#c7d7b7}
+.forest-adventure-map--trail .forest-adventure-pet-chip{box-sizing:border-box;min-width:0;width:100%;height:56px;gap:10px;padding:4px 8px}
+.forest-adventure-map--trail .forest-adventure-pet-chip img{flex:0 0 42px;width:42px;height:46px}
+.forest-adventure-map--trail .forest-adventure-pet-chip>span{flex:1;overflow:hidden}
+.forest-adventure-map--trail .forest-adventure-pet-chip strong{max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px}
+.forest-adventure-map--trail .forest-adventure-pet-chip small{display:none}
+.forest-adventure-map--trail .forest-adventure-pet-chip .forest-primary{flex:none;min-height:44px;padding:8px 14px;font-size:14px;white-space:nowrap}
+.forest-adventure-map--trail>.exploration-campaign-map{flex:1;min-height:0;gap:5px}
+.forest-adventure-map--trail .trail-map-heading{flex:none;gap:8px;min-height:24px}
+.forest-adventure-map--trail .trail-map-heading>div{gap:8px;min-width:0}
+.forest-adventure-map--trail .trail-map-heading h2{font-size:18px;white-space:nowrap}
+.forest-adventure-map--trail .trail-map-heading span{font-size:12px}
+.forest-adventure-map--trail .trail-map-heading>div>span{display:none}
+.forest-adventure-map--trail .trail-map-frame{flex:1;min-height:160px;height:auto;border-radius:18px}
+.forest-adventure-map--trail .trail-map-guide{font-size:12px}
+.forest-adventure-map--trail .trail-map-guide summary{min-height:28px;line-height:28px}
+.forest-adventure-map--trail .trail-map-guide[open]{max-height:30dvh;overflow:auto}
+@media(min-width:701px){.forest-adventure-map--trail .forest-adventure-intro{grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);gap:18px}.forest-adventure-map--trail .forest-adventure-pet-chip{height:52px}.forest-exploration-tests-panel{left:0;right:auto}}
+@media(max-height:500px) and (orientation:landscape){
+ .forest-adventure:has(>.forest-adventure-map--trail)>.forest-adventure-topbar{box-sizing:border-box;min-height:52px;padding:4px max(10px,env(safe-area-inset-right)) 4px max(10px,env(safe-area-inset-left));flex:none}
+ .forest-adventure-map--trail .forest-adventure-intro{grid-template-columns:minmax(0,1fr) minmax(280px,.85fr);gap:14px}
+ .forest-adventure>.forest-adventure-map--trail{padding-top:5px;padding-bottom:max(5px,env(safe-area-inset-bottom));gap:4px}
+ .forest-adventure-map--trail .forest-adventure-intro h1{font-size:19px}
+ .forest-adventure-map--trail .forest-adventure-pet-chip{height:48px}
+ .forest-adventure-map--trail .trail-map-frame{height:auto;min-height:160px;flex:1}
+ .forest-adventure-map--trail .trail-map-heading h2{font-size:16px}
+ .forest-adventure-map--trail .trail-map-guide{display:none}
+ .forest-exploration-tests-panel{left:0;right:auto;max-height:calc(100dvh - 118px)}
+}
+@media(max-width:380px){.forest-adventure-map--trail .forest-adventure-pet-chip{gap:6px}.forest-adventure-map--trail .forest-adventure-pet-chip .forest-primary{padding:8px 10px;font-size:13px}.forest-adventure-map--trail .trail-map-heading h2{font-size:17px}.forest-adventure-map--trail .trail-map-heading>span{font-size:11px}}
