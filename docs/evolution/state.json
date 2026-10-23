@@ -3,37 +3,37 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.42.1_pending_publish",
+  "status": "published_1.42.1",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "24855a3f90106c2e104fe5ca294b3ebbd3aca7c8",
+    "source_site_commit": "92431d4030cb1e71a371b633c22add7cf473f1dd",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.42.0 published; GitHub implementation verified",
+    "code_commit_status": "1.42.1 published; GitHub implementation verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "627cf5aa929daf7829316cd15ce70b5e50ecf1e2",
+    "code_commit": "699f834a959bf46c8785fb76572ea6295abd05ad",
     "published_code_github_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "human-intact-silhouettes-village-label-stack",
     "base_product_version": "1.42.0",
-    "implementation_status": "validated_pending_publish",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-22-human-silhouettes-1421.md"
   },
   "publication": {
-    "id": "appgdep_6adaa2d764108191aae9c483320b271f",
+    "id": "appgdep_6adab06aaaa88191a9315b14d13c783c",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_9319019a4c248191b25a125420ea0a88",
-    "version_number": 136,
-    "product_version": "1.42.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_bbbff91dbd808191b81a7618710a7fe6",
+    "version_number": 137,
+    "product_version": "1.42.1",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "24855a3f90106c2e104fe5ca294b3ebbd3aca7c8"
+    "source_commit": "92431d4030cb1e71a371b633c22add7cf473f1dd"
   },
   "verification": {
     "typescript": "passed",
@@ -41,7 +41,7 @@
     "browser": "Isolated844x390/390x844: non-overlapping news/name. Complete walking silhouettes: Lyra/Kael8 directions and12 authored humans left/right, idle/front. No physical phone/FPS measurement.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
-    "build": "passed; Vite18.38s; existing chunk-size warning"
+    "build": "passed; Vite18.67s; existing chunk-size warning"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."

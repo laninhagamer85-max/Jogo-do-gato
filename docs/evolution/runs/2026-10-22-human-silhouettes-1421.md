@@ -1,5 +1,5 @@
 # 1.42.1 — Silhuetas inteiras e identificação dos aldeões
-Estado: validado, aguardando publicação. Base1.42.0, Site136, sourcefa7e331e837b3115e79c6b17399666530d692b64. Rollback136.
+Estado: publicado. Base1.42.0, Site136, sourcefa7e331e837b3115e79c6b17399666530d692b64. Rollback136.
 
 ## Diagnóstico e mudança
 A imagem enviada mostra nome/atividade sobrepostos ao aviso de novidade acima do mesmo aldeão. A renderização anterior desenhava esses textos em baselines independentes praticamente iguais. Agora uma única pilha organiza nome, novidade e balão de fala, com espaçamento explícito. Não foi constatado que as duas linhas fossem dois corpos na imagem. Reforçada a deduplicação por ID além da aparência original; teste inclui residentes e comerciantes visitantes nas32 salas.
@@ -12,7 +12,7 @@ Adicionada uma prévia QA-only dos12 desenhos humanos originais ao laboratório 
 - TypeScript aprovado;830 testes/86 arquivos aprovados. Integração Firebase staging excluída por credencial ausente, sem alteração de autenticação.
 - Teste de desenho rejeita recortes/rotações de fragmentos; sequência lateral usa ambos quadros completos; nomes/falas não compartilham baseline; IDs, nomes e aparências deduplicados nas32 salas incluindo visitantes.
 - Navegador suportado: Lyra/Kael nas8 direções e12 humanos em esquerda/direita/parado/frente; silhuetas inteiras observadas. Partida isolada com aviso de novidade em844×390 e390×844, sem nome sobreposto. Não é teste de telefone físico, campanha completa ou medição de FPS.
-- Prova:docs/evolution/proofs/2026-10-22-1421-labels.jpg. Build oficial pendente no empacotamento.
+- Prova:docs/evolution/proofs/2026-10-22-1421-labels.jpg. Build oficial aprovado18.67s; aviso preexistente de chunks grandes.
 - Arquivo parcial de PNG não rastreado encontrado após recuperação do checkout foi preservado fora da fonte, não publicado.
 
 ## Referências técnicas consultadas2026-10-22
@@ -20,4 +20,6 @@ Adicionada uma prévia QA-only dos12 desenhos humanos originais ao laboratório 
 - https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame — ciclo de prévia com tempo, cancelamento ao desmontar; sem alterar o loop de simulação.
 
 ## Publicação
-Pendente no mesmo Site, GitHub com lease antes da publicação.
+Publicado com sucesso produto1.42.1, versão nativa137, source92431d4030cb1e71a371b633c22add7cf473f1dd. Saved appgprj_6ac40994d8d881919d46203a60801e46~appgver_bbbff91dbd808191b81a7618710a7fe6. Deployment appgdep_6adab06aaaa88191a9315b14d13c783c. URL https://meupet.aquimeusite.chatgpt.site. GitHub sincronizado com lease. Preview e aba QA encerrados. Rollback136.
+
+GitHub implementação:699f834a959bf46c8785fb76572ea6295abd05ad, ramo review/grass-option3-20261016.
