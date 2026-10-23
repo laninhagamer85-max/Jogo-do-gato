@@ -1,0 +1,13 @@
+import {useEffect,useRef,useState} from 'react';
+import {createCombatState} from '@/game/explorationCombat';
+import {tickVillage} from '@/game/explorationVillage';
+import {activeVillageDefinitions,villageSettlements} from '@/game/explorationVillageLayout';
+import {drawVillageCitizen} from '@/game/explorationVillageView';
+/** QA-only preview of every distinct original human; no account or save operations. */
+export default function VillageAnimationLab(){
+ const ref=useRef<HTMLCanvasElement>(null),[direction,setDirection]=useState('right'),[walking,setWalking]=useState(true);
+ useEffect(()=>{const ctx=ref.current?.getContext('2d');if(!ctx)return;let s=createCombatState();s.village!.growth=Object.fromEntries(villageSettlements(0).map(t=>[t.id,24]));s=tickVillage(s,0);s.player={x:1000,y:1000};const defs=activeVillageDefinitions(s.village,0),dirs={right:{x:1,y:0},left:{x:-1,y:0},front:{x:0,y:1},back:{x:0,y:-1}};let raf=0,last=0;const start=performance.now();
+ const draw=(now:number)=>{raf=requestAnimationFrame(draw);if(now-last<1000/24)return;last=now;s.time=now-start;s.village!.clock=s.time;ctx.fillStyle='#1c372d';ctx.fillRect(0,0,640,600);defs.forEach((d,i)=>{const c=s.village!.people[d.id];Object.assign(c,{x:0,y:100,task:'visit',walking,walkPhase:(s.time%700)/700,facing:dirs[direction as keyof typeof dirs]});drawVillageCitizen(ctx,s,d.id,i%4*160+80,Math.floor(i/4)*200+160,95,false,null);ctx.fillStyle='#fff4d4';ctx.textAlign='center';ctx.font='12px system-ui';ctx.fillText(`${d.name} · ${d.role}`,i%4*160+80,Math.floor(i/4)*200+184,155);});};raf=requestAnimationFrame(draw);return()=>cancelAnimationFrame(raf);
+ },[direction,walking]);
+ return <section aria-label="Prévia dos aldeões originais"><h2>Humanos · desenhos originais</h2><label>Direção <select aria-label="Direção dos aldeões" value={direction} onChange={e=>setDirection(e.target.value)}><option value="right">Direita</option><option value="left">Esquerda</option><option value="front">Frente</option><option value="back">Costas</option></select></label><label> <input type="checkbox" checked={walking} onChange={e=>setWalking(e.target.checked)}/>Caminhada dos aldeões</label><canvas ref={ref} width={640} height={600} style={{display:'block',width:'100%',maxWidth:640}} aria-label="Caminhada dos doze humanos originais"/></section>;
+}

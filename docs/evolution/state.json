@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.42.0",
+  "status": "validated_1.42.1_pending_publish",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "village-order-original-identities-next-step",
-    "base_product_version": "1.41.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-22-village-order-1420.md"
+    "id": "human-intact-silhouettes-village-label-stack",
+    "base_product_version": "1.42.0",
+    "implementation_status": "validated_pending_publish",
+    "report": "docs/evolution/runs/2026-10-22-human-silhouettes-1421.md"
   },
   "publication": {
     "id": "appgdep_6adaa2d764108191aae9c483320b271f",
@@ -37,8 +37,8 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "827 passed /85 files; Firebase staging integration excluded (credential absent)",
-    "browser": "Isolated844x390/390x844: next objective and original clothes. Observed guard escort, detention countdown and release back to routines; controlled-clock tests additionally verify exact60s and reload. No physical phone or FPS measurement.",
+    "offline_tests": "830 passed /86 files; Firebase staging integration excluded (credential absent)",
+    "browser": "Isolated844x390/390x844: non-overlapping news/name. Complete walking silhouettes: Lyra/Kael8 directions and12 authored humans left/right, idle/front. No physical phone/FPS measurement.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "build": "passed; Vite18.38s; existing chunk-size warning"
