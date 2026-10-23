@@ -24,3 +24,12 @@ Continuar visível, menu abre/recolhe com Escape, acesso à sala31 confirmado. M
 Pesquisa: MDN https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/length e https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Viewport (2026-10-23), uso de altura disponível e viewport dinâmica; sem novas bibliotecas ou assets.
 
 Build e publicação: preencher após retorno oficial.
+
+## Publicado
+Produto1.44.1 / Sites140; succeeded.
+Source 28a3d8d83538ab8056ba47fa65a96b7386c96da2
+GitHub 39ab63ee78eaf74ae25f3096dfc0f55a5e34bdfb
+Version appgprj_6ac40994d8d881919d46203a60801e46~appgver_a313b0bce4ac8191a0e6d78f32f3cab7
+Deployment appgdep_6adbaeb32fd48191bbeaaba1d7a6ad69
+URL https://meupet.aquimeusite.chatgpt.site
+Build TypeScript e produção aprovados.
