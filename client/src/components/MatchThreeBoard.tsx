@@ -1,3 +1,4 @@
+import PetSymbol from "@/components/PetSymbol";
 import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { RotateCcw, Sparkles, Target } from "lucide-react";
 import { createTreatBoard, resolveMatches, swapIfMatched, TILE_META, type TileKind } from "@/game/matchThree";
@@ -99,7 +100,7 @@ export default function MatchThreeBoard({ onWin, soundOn = true, difficulty = 1 
         {goals.map((goal) => {
           const meta = TILE_META[goal.kind];
           const value = Math.min(goal.amount, collected[goal.kind]);
-          return <div className={`match-objective objective-${meta.color}`} key={goal.kind}><span>{meta.icon}</span><div><small>{meta.label}</small><strong>{value}<i> / {goal.amount}</i></strong></div><div className="objective-track"><span style={{ width: `${(value / goal.amount) * 100}%` }} /></div></div>;
+          return <div className={`match-objective objective-${meta.color}`} key={goal.kind}><span><PetSymbol symbol={meta.icon} /></span><div><small>{meta.label}</small><strong>{value}<i> / {goal.amount}</i></strong></div><div className="objective-track"><span style={{ width: `${(value / goal.amount) * 100}%` }} /></div></div>;
         })}
       </div>
       <div className={`match-board-shell ${status !== "playing" ? "is-finished" : ""}`}>
@@ -107,10 +108,10 @@ export default function MatchThreeBoard({ onWin, soundOn = true, difficulty = 1 
           {board.map((tile, index) => {
             const kind = tile ?? "fish";
             const meta = TILE_META[kind];
-            return <button type="button" role="gridcell" key={`${index}-${tile}`} data-tile-index={index} className={`treat-tile tile-${meta.color} ${selected === index ? "selected" : ""}`} onPointerDown={() => onTilePointerDown(index)} onPointerUp={(event) => onTilePointerUp(event, index)} onPointerCancel={() => { dragOriginRef.current = null; }} onClick={() => clickTile(index)} aria-label={`${meta.label}${selected === index ? ", peça selecionada" : ""}`} aria-selected={selected === index}><span>{meta.icon}</span></button>;
+            return <button type="button" role="gridcell" key={`${index}-${tile}`} data-tile-index={index} className={`treat-tile tile-${meta.color} ${selected === index ? "selected" : ""}`} onPointerDown={() => onTilePointerDown(index)} onPointerUp={(event) => onTilePointerUp(event, index)} onPointerCancel={() => { dragOriginRef.current = null; }} onClick={() => clickTile(index)} aria-label={`${meta.label}${selected === index ? ", peça selecionada" : ""}`} aria-selected={selected === index}><span><PetSymbol symbol={meta.icon} /></span></button>;
           })}
         </div>
-        {status !== "playing" && <div className={`match-result match-result-${status}`}><span>{status === "won" ? "🎉" : "🐾"}</span><strong>{status === "won" ? "Desafio concluído!" : "Quase lá!"}</strong><p>{status === "won" ? "A turma ganhou petiscos e experiência." : "Tente outra combinação. Você não perde moedas ao tentar de novo."}{combo > 1 && status === "won" ? ` Melhor cascata: ${combo}x.` : ""}</p>{status === "lost" && <button type="button" onClick={restart}><RotateCcw size={15} /> Tentar de novo</button>}</div>}
+        {status !== "playing" && <div className={`match-result match-result-${status}`}><span><PetSymbol symbol={status === "won" ? "🎉" : "🐾"} /></span><strong>{status === "won" ? "Desafio concluído!" : "Quase lá!"}</strong><p>{status === "won" ? "A turma ganhou petiscos e experiência." : "Tente outra combinação. Você não perde moedas ao tentar de novo."}{combo > 1 && status === "won" ? ` Melhor cascata: ${combo}x.` : ""}</p>{status === "lost" && <button type="button" onClick={restart}><RotateCcw size={15} /> Tentar de novo</button>}</div>}
       </div>
       <div className="match-footer"><p aria-live="polite"><Target size={15} /> {message}</p><span>Arraste · combine 3+ · cascatas valem mais</span></div>
     </div>
