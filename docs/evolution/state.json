@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-22",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.42.1",
+  "status": "validating_1.43.0_pending_publish",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "human-intact-silhouettes-village-label-stack",
-    "base_product_version": "1.42.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-22-human-silhouettes-1421.md"
+    "id": "common-tools-travelling-named-collectors",
+    "base_product_version": "1.42.1",
+    "implementation_status": "browser_validated_final_checks_pending",
+    "report": "docs/evolution/runs/2026-10-22-collectors-1430.md"
   },
   "publication": {
     "id": "appgdep_6adab06aaaa88191a9315b14d13c783c",
@@ -37,8 +37,8 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "830 passed /86 files; Firebase staging integration excluded (credential absent)",
-    "browser": "Isolated844x390/390x844: non-overlapping news/name. Complete walking silhouettes: Lyra/Kael8 directions and12 authored humans left/right, idle/front. No physical phone/FPS measurement.",
+    "offline_tests": "834 passed in88 files; subsequent5 targeted checks incl. full traveller save passed; final full run in packaging",
+    "browser": "QA common axe/pickaxe with Crown+diamond equipped by player; visitor Tomás Araújo from room20 seen inroom21 walking, collecting wood, carrying cargo back to portal;844x390/390x844. No account save changes.",
     "physical_phone": "not_tested",
     "fps": "not_measured",
     "build": "passed; Vite18.67s; existing chunk-size warning"
