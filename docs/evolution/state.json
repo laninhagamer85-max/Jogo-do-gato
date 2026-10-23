@@ -3,45 +3,50 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-23",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.44.0_pending_publish",
+  "status": "published_1.44.0",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "e483d514abf27967269a21d66dfbbc7ab939f293",
+    "source_site_commit": "332de46020bf1c3ed14f337a30134d2e686d7738",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "code_commit_status": "1.43.0 published; GitHub implementation verified",
+    "code_commit_status": "1.44.0 published; GitHub implementation verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "9ce73cf75cc55981825839663805fec9b04e05bf",
+    "code_commit": "3792db669a155804f1418e83b94f389ac0c7ce61",
     "published_code_github_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "original-villagers-global-castle-recovery",
     "base_product_version": "1.43.0",
-    "implementation_status": "validated",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-23-villagers-recovery-1440.md"
   },
   "publication": {
-    "id": "appgdep_6adabdec5b508191922a41e26050e5d1",
+    "id": "appgdep_6adad75a9604819193c02655f33601a0",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_430214bdc5948191a1d18d947d7b042c",
-    "version_number": 138,
-    "product_version": "1.43.0",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_386db4c0745c81919b00365798dbe7f7",
+    "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "e483d514abf27967269a21d66dfbbc7ab939f293"
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-23T03:41:37.361053+00:00",
+    "product_version": "1.44.0",
+    "version_number": 139,
+    "source_commit": "332de46020bf1c3ed14f337a30134d2e686d7738"
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "835 passed /88 files; Firebase staging integration excluded (credential absent)",
-    "browser": "QA common axe/pickaxe with Crown+diamond equipped by player; visitor Tomás Araújo from room20 seen inroom21 walking, collecting wood, carrying cargo back to portal;844x390/390x844. No account save changes.",
-    "physical_phone": "not_tested",
-    "fps": "not_measured",
-    "build": "passed; Vite18.62s; existing chunk-size warning"
+    "offline_tests": "840 passed in 89 files; Firebase staging integration excluded",
+    "browser": "isolated recovery fixture horizontal and portrait; original profession animation preview"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."

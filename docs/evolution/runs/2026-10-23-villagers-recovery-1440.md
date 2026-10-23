@@ -19,3 +19,11 @@ MDN https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout (2026-10-
 - Arte gerada com ferramenta de imagens; prompt: cinco identidades medievais pintadas, cinco linhas/oito colunas, caminhada em quatro direções, fundo transparente, corpo inteiro e margens. Asset client/public/forest-adventure/village/professions-v3.webp; metadados explorationProfessionArt.json.
 
 Publicação e commits: preencher após retorno oficial. Nenhum save real usado.
+
+## Publicado
+Produto1.44.0 / Sites139, status succeeded.
+Site source 332de46020bf1c3ed14f337a30134d2e686d7738
+GitHub 3792db669a155804f1418e83b94f389ac0c7ce61
+Version appgprj_6ac40994d8d881919d46203a60801e46~appgver_386db4c0745c81919b00365798dbe7f7
+Deployment appgdep_6adad75a9604819193c02655f33601a0
+URL https://meupet.aquimeusite.chatgpt.site
