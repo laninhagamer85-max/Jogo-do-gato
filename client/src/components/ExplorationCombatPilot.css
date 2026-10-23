@@ -275,3 +275,5 @@
 .combat-status-stack .combat-next-step{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 9px}
 .combat-next-step small{font-size:9px;letter-spacing:.025em;color:#e6d99f}.combat-next-step strong{font-size:12px;font-weight:500;line-height:1.35}
 @media(orientation:landscape) and (max-height:500px){.combat-next-step strong{font-size:11px}.combat-status-stack .combat-next-step{padding:5px 7px}}
+
+.village-speech .village-alchemy{grid-template-columns:repeat(2,minmax(0,1fr))}.village-alchemy>article:first-child{grid-column:1/-1}.village-alchemy button{min-height:44px}.village-alchemy button:disabled{opacity:.55}

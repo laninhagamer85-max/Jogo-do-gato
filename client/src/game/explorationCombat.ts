@@ -3,7 +3,7 @@ import {cityBanned,safeSettlement,expelFromCity} from './explorationCivic';
 import {registerPatrolNavigation} from './explorationCampaign';
 import {newVillage,readVillage,villageSnapshot,tickVillage,villageCitizens,citizenIndoors,nearestVillager,startVillageDuel,stepVillageDuel,villageDueling,type VillageProgress} from './explorationVillage';
 import {villageHouseBlocks,villageSafeAt} from './explorationVillageLayout';
-import {newCastleQuest,readCastleQuest,castleQuestTick,openRoyalChest,nearestRoyalChest,castleDown,royalActive,royalDispersed,clearRoyalSlot,CASTLE_TEST_ACCESS,type CastleQuest} from './explorationCastleQuest';
+import {newCastleQuest,readCastleQuest,recoverCastlePlayer,castleQuestTick,openRoyalChest,nearestRoyalChest,castleDown,royalActive,royalDispersed,clearRoyalSlot,CASTLE_TEST_ACCESS,type CastleQuest} from './explorationCastleQuest';
 import {defaultBase,baseLayout,baseBlocks,insideSafeBase} from './explorationBase';
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
@@ -217,7 +217,9 @@ export function equipCombatCharm(current: CombatState): CombatState {if(villageD
 }
 function random(s: CombatState) { s.seed = (Math.imul(s.seed, 1664525) + 1013904223) >>> 0; return s.seed / 0x100000000; }
 export function stepCombat(current:CombatState,input:CombatInput,elapsedMs:number):CombatState{
- if(!Number.isFinite(elapsedMs)||elapsedMs<0||current.completed)return current;
+ if(!Number.isFinite(elapsedMs)||elapsedMs<0)return current;
+ if(castleDown(current)){const revived=recoverCastlePlayer(current,Date.now(),combatMaxHp(current.xp));if(revived!==current)return revived;return {...current,time:current.time+Math.min(50,elapsedMs),walking:false,strikeUntil:0};}
+ if(current.completed)return current;
  if(villageDueling(current))return stepVillageDuel(current,input,elapsedMs);
  const social=nearestVillager(current);
  const guard=(input.attack||input.power)&&current.time>=current.attackAt?villageCitizens(current).find(c=>{if(c.kind!=='guard'||citizenIndoors(c,c.home,c.room)||!clearPilotLine(current.player,c,current.gateOpen,current.roomIndex,current.workshop))return false;const dx=c.x-current.player.x,dy=c.y-current.player.y,d=Math.hypot(dx,dy);return d<(input.power?2.6:legendWeapon(current)?.range??1.45)&&(input.power||d===0||(dx*current.facing.x+dy*current.facing.y)/d>.25);}):undefined;if(guard)return expelFromCity(current,guard.settlement,p=>pilotWalkable(p,true,.3,current.roomIndex,current.workshop));

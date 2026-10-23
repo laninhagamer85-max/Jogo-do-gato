@@ -1,0 +1,8 @@
+import type {CombatState} from './explorationCombat';
+import type {Citizen} from './explorationVillage';
+import {activeVillageDefinitions,villagerDefinition} from './explorationVillageLayout';
+import {explorationDay,DAY_PHASE_MS} from './explorationDayCycle';
+export function villageTravelLimit(s:CombatState,room:number,settlement:number){return Math.max(0,Math.min(2,activeVillageDefinitions(s.village,room).filter(d=>d.settlement===settlement).length-2));}
+export function mayLeaveVillage(s:CombatState,id:string){const v=s.village!,d=villagerDefinition(id),c=v.people[id],day=explorationDay(v.dayClock??v.clock);if(day.phase!=='afternoon'||day.fraction>=2/3||c.travelDay===Math.floor(v.clock/(DAY_PHASE_MS*3)))return false;return Object.entries(v.people).filter(([key,p])=>{const def=villagerDefinition(key);return def?.room===d.room&&def.settlement===d.settlement&&(p.task.startsWith('caravan-')||p.room!==def.room||p.task==='outbound'||p.task==='tour');}).length<villageTravelLimit(s,d.room,d.settlement);}
+export function reserveVillageTrip(s:CombatState,c:Citizen){const v=s.village!,day=explorationDay(v.dayClock??v.clock);c.travelDay=Math.floor(v.clock/(DAY_PHASE_MS*3));c.travelHomeAt=v.clock+(1-day.fraction)*DAY_PHASE_MS-300000;}
+export function recallVillageTraveller(s:CombatState,id:string,c:Citizen){if(!c.task.startsWith('caravan-'))return;const d=villagerDefinition(id),v=s.village!;if(c.travelHomeAt!==undefined&&v.clock<c.travelHomeAt&&(s.roomIndex!==d.room||explorationDay(v.dayClock??v.clock).phase==='afternoon'))return;if(c.task==='caravan-out'&&c.room===d.room){c.task='inbound';c.destination=undefined;c.timer=0;}else if(c.room!==d.room&&c.task!=='caravan-back'){c.task='caravan-back';c.timer=45000;}c.collecting=false;c.mineral=undefined;}

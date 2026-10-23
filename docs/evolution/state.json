@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-22",
+  "updated_date": "2026-10-23",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.43.0",
+  "status": "validated_1.44.0_pending_publish",
   "active_run": "2026-10-22",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "common-tools-travelling-named-collectors",
-    "base_product_version": "1.42.1",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-22-collectors-1430.md"
+    "id": "original-villagers-global-castle-recovery",
+    "base_product_version": "1.43.0",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-23-villagers-recovery-1440.md"
   },
   "publication": {
     "id": "appgdep_6adabdec5b508191922a41e26050e5d1",
