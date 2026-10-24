@@ -11,3 +11,6 @@ export function heldAnchors(kind:EquipmentKind,variant:HeldVariant):{grip:Point;
 }
 export function heldPose(kind:EquipmentKind,variant:HeldVariant,width:number,height:number,facing:Point,swing=0){const {grip,aim}=heldAnchors(kind,variant),sourceAngle=Math.atan2((aim.y-grip.y)*height,(aim.x-grip.x)*width);return {rotation:Math.atan2(facing.y,facing.x)-sourceAngle+swing,x:-grip.x*width,y:-grip.y*height};}
 export function meleeSwing(time:number,strikeUntil:number){const phase=Math.max(0,Math.min(1,1-(strikeUntil-time)/320));return strikeUntil>time?-.7+1.4*(phase*phase*(3-2*phase)):.22;}
+
+/** Fit painted gear to a character-relative box without stretching its silhouette. */
+export function heldItemSize(kind:EquipmentKind,sourceWidth:number,sourceHeight:number,tile:number){const longest=tile*({sword:.62,dagger:.36,bow:.66,axe:.64,pickaxe:.64})[kind],scale=longest/Math.max(1,sourceWidth,sourceHeight);return {width:sourceWidth*scale,height:sourceHeight*scale};}

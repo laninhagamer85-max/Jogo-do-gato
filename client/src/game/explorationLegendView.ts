@@ -1,5 +1,5 @@
 import {drawHumanPose} from './explorationHumanGait';
-import {heldPose,meleeSwing} from './explorationHeldPose';
+import {heldPose,meleeSwing,heldItemSize} from './explorationHeldPose';
 import {royalActive,castleDown} from './explorationCastleQuest';
 import {drawRoyalHeld} from './explorationRoyalView';
 import {harvestingActive} from './explorationWorkshop';
@@ -34,13 +34,13 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  function drawItem(){if(!weapon||castleDown(state))return;if(weapon==='sword'&&royalActive(state,'sword')){drawRoyalHeld(ctx,state,'sword',hx,hy,tile);return;}const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tierSprite(weapon,tier??'wood'),tierImage=tierArt?imageFor('equipment-tiers:'+tierArt.src,tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
   ctx.save();ctx.translate(hx,hy);
   const swing=weapon==='bow'?sway:meleeSwing(state.time,state.strikeUntil)+sway;
-  const height=tile*(weapon==='sword'?.88:weapon==='dagger'?.5:.92),width=height*meta.width/meta.height;
-  if(tierArt&&tierImage?.complete&&tierImage.naturalWidth){const [sx,sy,cw,ch]=tierArtRect(tierArt,tierImage.naturalWidth,tierImage.naturalHeight),sz=height*1.25,pose=heldPose(weapon,'tier',sz,sz,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(tierImage,sx,sy,cw,ch,pose.x,pose.y,sz,sz);}else{const pose=heldPose(weapon,'base',width,height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(item,pose.x,pose.y,width,height);}ctx.restore();
+  const {width,height}=heldItemSize(weapon,meta.width,meta.height,tile);
+  if(tierArt&&tierImage?.complete&&tierImage.naturalWidth){const [sx,sy,cw,ch]=tierArtRect(tierArt,tierImage.naturalWidth,tierImage.naturalHeight),size=heldItemSize(weapon,cw,ch,tile),pose=heldPose(weapon,'tier',size.width,size.height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(tierImage,sx,sy,cw,ch,pose.x,pose.y,size.width,size.height);}else{const pose=heldPose(weapon,'base',width,height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(item,pose.x,pose.y,width,height);}ctx.restore();
   if(weapon==='bow'){
    const arrowMeta=weapons.arrow,arrow=cutout('weapon:arrow',images.get('weapons'),arrowMeta);if(!arrow)return;
    const flight=anim.attacking?Math.max(0,(phase-.36)/.64):0;
    ctx.save();ctx.translate(hx+Math.cos(a)*tile*flight*4.2,hy+Math.sin(a)*tile*flight*4.2);ctx.rotate(a);
-   const length=tile*.62,thickness=length*arrowMeta.height/arrowMeta.width;ctx.drawImage(arrow,-length*(flight>0?.25:.5),-thickness/2,length,thickness);ctx.restore();
+   const length=tile*.38,thickness=length*arrowMeta.height/arrowMeta.width;ctx.drawImage(arrow,-length*(flight>0?.25:.5),-thickness/2,length,thickness);ctx.restore();
   }
  }
  // Rear-facing equipment sits behind the body instead of cutting through the torso.
