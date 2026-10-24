@@ -13,3 +13,12 @@ Validação: TypeScript aprovado; 23 testes pertinentes aprovados (HeldPose, Wor
 Rollback: produto1.45.0 / Site141, source bb937af1a1cd0002c1559631486269b9fa915a56. GitHub base7c77f7ac4021036d7b1434dac8ce85904788dc8f.
 
 Publicação: pendente de retorno oficial.
+
+## Publicado
+Produto1.45.1 / Sites142; succeeded.
+Source ae901b6985cd26f4ea106e0dc79ceb11e55c16bf
+GitHub 54bec73e8e0938ea79f1bf55ca8b63c88bc66eb2
+Version appgprj_6ac40994d8d881919d46203a60801e46~appgver_4adcb79600408191bdebcf607ebd161f
+Deployment appgdep_6adc5ead58348191a16536460a6050c2
+URL https://meupet.aquimeusite.chatgpt.site
+TypeScript, build produção e23 testes aprovados. Visual conferido no preview isolado; publicação confirmada pela resposta oficial, sem alegar inspeção de conta de produção.
