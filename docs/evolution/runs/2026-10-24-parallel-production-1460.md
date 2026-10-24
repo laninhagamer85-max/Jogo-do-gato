@@ -17,3 +17,12 @@ Preview oficial844×390 e390×844, entrada por fixture Acampamento construído; 
 Referências técnicas2026-10-24: https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture ; https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView . Técnicas: captura até pointerup, posicionamento por clientX/Y, scroll dos ancestrais e respeito a movimento reduzido.
 
 Rollback: produto1.45.2 / Site143; source644408684fa6b7c6568f2fcef973a6af44af03dd. GitHub basee3594deba414fccfe0c29363a2d3f13e86fdf7aa. Publicação pendente.
+
+## Publicado
+Produto1.46.0 / Sites144; succeeded.
+Source 5d584ca158045a99584eea0e5ea7da1baacf804f
+GitHub d110c4916d29c0b566958c45fc09288fa66e3205 (blob de explorationCombat.ts conferido com hash local).
+Version appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6430b36c4c48191b004df266db8cafb
+Deployment appgdep_6adc68f1cd508191a0d249007816224c
+URL https://meupet.aquimeusite.chatgpt.site
+TypeScript, build de produção e845 testes aprovados. Visual e interação no preview isolado; publicação confirmada oficialmente, sem alegar visita de conta em produção.
