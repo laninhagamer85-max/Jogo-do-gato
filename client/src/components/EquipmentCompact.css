@@ -29,3 +29,23 @@
 .base-production-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;padding:7px 0;border-bottom:1px solid #b4bc8855}
 .base-production-row strong{font-size:12px}.base-production-row span{font-size:11px;grid-column:1}.base-production-row progress{grid-column:1;height:6px}.base-production-row button{grid-column:2;grid-row:1/4;font-size:11px;padding:5px;min-height:44px}
 .base-ingredient-ghost[popover]{position:fixed;inset:auto;margin:0;border:0;padding:0;background:transparent;overflow:visible;pointer-events:none}
+/* Construction workspace: one task at a time, with production moved out of recipes. */
+.combat-pilot--lens-dock .combat-dialog.combat-dialog-base{inset:8px;margin:auto;width:min(680px,calc(100% - 16px));height:min(640px,calc(100% - 16px));max-height:calc(100% - 16px);padding:10px;box-sizing:border-box}
+.combat-dialog-base .combat-dialog-heading{top:-10px;min-height:44px;padding:4px 0;margin-bottom:4px;background:#1d392ff5!important;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.combat-dialog-base .combat-dialog-heading h2{font-size:17px!important;line-height:1.2;margin:0}
+.exploration-workshop .base-workspace-tabs{display:flex;flex-wrap:nowrap;gap:4px;margin:4px 0 8px;padding:2px 0;overflow-x:auto}
+.exploration-workshop .base-workspace-tabs button{flex:1 0 auto;min-height:44px;font-size:12px;padding:5px 8px;white-space:nowrap}
+.exploration-workshop .base-workspace-tabs button[aria-pressed=true]{background:#806a38;border-color:#dbc18b}
+.base-workspace-tabs button>span{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:50%;background:#142f27;font-size:10px;margin-left:3px}
+.base-category-picker{display:flex;align-items:center;gap:7px;font-size:12px;margin:4px 0;min-width:0}
+.base-category-picker select{flex:1;min-width:0;min-height:44px;background:#254e3e;color:#fff0ce;border:1px solid #a5b18466;border-radius:9px;padding:5px;font-size:12px}
+.base-category-picker>small{font-size:10px;max-width:45px;line-height:1.15;color:#d7d4b9}
+.base-production-board{display:grid;gap:7px}.base-production-capacity{font-size:11px!important;margin:3px 0!important}
+.base-job-card{display:grid;grid-template-columns:34px minmax(0,1fr) 64px;gap:8px;align-items:center;border:1px solid #9fa77b66;border-radius:11px;padding:8px;background:#24463788;min-width:0}
+.base-job-icon{width:34px;height:34px;overflow:hidden}.base-job-icon>span[aria-hidden]{transform:scale(.7);transform-origin:top left}
+.base-job-info{display:grid;gap:3px;min-width:0}.base-job-info strong{font-size:12px;line-height:1.2;overflow-wrap:anywhere}.base-job-info small{font-size:11px}.base-job-info progress{height:6px;accent-color:#dfc17b}
+.exploration-workshop .base-job-card>button{font-size:11px;min-height:44px;padding:4px}
+.base-utilities{margin-top:10px;border-top:1px solid #b1b48b44;font-size:12px}.base-utilities summary{min-height:44px;line-height:44px;cursor:pointer}.base-utilities button{font-size:12px;min-height:44px;margin:3px;padding:6px}.base-utilities p{font-size:11px;margin:5px}
+.exploration-workshop .base-ready-link{width:100%;min-height:36px;font-size:11px;margin-bottom:5px;padding:4px}
+@media(max-height:500px) and (orientation:landscape){.combat-pilot--lens-dock .combat-dialog.combat-dialog-base{height:calc(100% - 16px);width:min(760px,calc(100% - 16px))}.base-category-picker{max-width:420px}.base-production-board{grid-template-columns:repeat(2,minmax(0,1fr))}.base-production-capacity{grid-column:1/-1}}
+.combat-pilot--lens-dock .combat-dialog.combat-dialog-base:has(.base-production-board){height:max-content}

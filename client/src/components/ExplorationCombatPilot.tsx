@@ -115,7 +115,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
 
   useEffect(() => {
     const el=dialog.current;if(!el)return;
-    if(panel&&panel!=='build'&&panel!=='village'&&!el.open)el.showModal();
+    if(panel&&panel!=='build'&&panel!=='village'){if(!el.open)el.showModal();el.scrollTop=0;}
     if((!panel||panel==='build'||panel==='village')&&el.open){el.close();pauseButton.current?.focus();}
   },[panel]);
   useEffect(()=>{const resize=()=>setViewport({width:window.innerWidth,height:window.innerHeight});window.addEventListener('resize',resize);resize();return ()=>window.removeEventListener('resize',resize);},[]);

@@ -214,7 +214,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     ctx.fillStyle = f.kind === 'damage' ? '#e9a19a' : f.kind === 'heal' ? '#b9d8b0' : f.kind === 'xp' ? '#ddd2ac' : '#fffbe7'; ctx.fillText(f.text.replace(/ HP$/, ''), p.x, y); ctx.restore();
   });
   if(overview){ctx.save();ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.strokeStyle='#20372c';ctx.lineWidth=3;ctx.fillStyle='#fff0c9';for(const c of villageSettlements(room.index)){const q=point(c),stage=settlementStage(state.village,room.index,c.slot),name=`${stage===2?'C':stage===1?'V':'P'}${c.slot+1}`;ctx.font='600 10px sans-serif';ctx.strokeText(name,q.x,q.y+t*3);ctx.fillText(name,q.x,q.y+t*3);}ctx.restore();}
-  if(!overview)drawCraftingActivity(ctx,state,point,t);
+  if(!overview&&!baseEditing)drawCraftingActivity(ctx,state,point,t,width,height);
   if(qa){const c=explorationColorCacheStats();ctx.canvas.dataset.colorPixels=String(c.pixels);ctx.canvas.dataset.colorMisses=String(c.misses);}
   trace('entitiesMs');
   if(!overview&&!baseEditing)drawExplorationDaylight(ctx,width,height,state,v);
