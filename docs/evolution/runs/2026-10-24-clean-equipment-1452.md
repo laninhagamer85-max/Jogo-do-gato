@@ -11,3 +11,12 @@ Validação: TypeScript aprovado e20 testes pertinentes aprovados (EquipmentTier
 Referência técnica consultada nesta sessão: MDN drawImage e Using images (https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage ; https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images). Técnica: separar retângulo de amostragem da silhueta de clipping, manter a razão do sprite e reutilizar os metadados entre interface e mundo.
 
 Rollback: produto1.45.1 / Site142; source ae901b6985cd26f4ea106e0dc79ceb11e55c16bf. GitHub base85a446da2ee2271e3b321226206a9356a0b57eb0. Publicação pendente.
+
+## Publicado
+Produto1.45.2 / Sites143; succeeded.
+Source 644408684fa6b7c6568f2fcef973a6af44af03dd
+GitHub 5de15fa39d8e0d9f34ba473c81deb35ae35b12d4
+Version appgprj_6ac40994d8d881919d46203a60801e46~appgver_f619b785fc988191881975d61338dbe0
+Deployment appgdep_6adc62c455a48191afe0ec1fe63158b3
+URL https://meupet.aquimeusite.chatgpt.site
+TypeScript, build produção e20 testes aprovados; visual validado no preview isolado. Publicação confirmada pelo retorno oficial, sem alegar visita em conta real.
