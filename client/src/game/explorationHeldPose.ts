@@ -1,8 +1,9 @@
 import type {EquipmentKind} from './explorationEquipmentTiers';
 type Point={x:number;y:number};
-export type HeldVariant='base'|'tier'|'royal';
+export type HeldVariant='base'|'tier'|'royal'|'signature';
 /** Authored bitmap anchors: the hand holds the handle and the blade/head points outward. */
 export function heldAnchors(kind:EquipmentKind,variant:HeldVariant):{grip:Point;aim:Point}{
+ if(variant==='signature')return kind==='bow'?{grip:{x:.4,y:.51},aim:{x:1,y:.51}}:{grip:{x:.5,y:.84},aim:{x:.5,y:.03}};
  if(variant==='royal')return kind==='sword'?{grip:{x:.76,y:.18},aim:{x:.06,y:.94}}:{grip:{x:.23,y:.79},aim:{x:kind==='axe'?.72:.60,y:.24}};
  if(variant==='tier')return kind==='bow'?{grip:{x:.49,y:.58},aim:{x:.84,y:.23}}:{grip:{x:.79,y:.80},aim:{x:.2,y:.16}};
  if(kind==='sword'||kind==='dagger')return {grip:{x:.5,y:kind==='sword'?.8:.78},aim:{x:.5,y:.03}};

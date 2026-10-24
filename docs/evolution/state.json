@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-24",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.46.1",
-  "active_run": "2026-10-24",
+  "status": "validated_1.47.0_preparing_publication",
+  "active_run": "2026-10-24-legends-1470",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
     "source_site_commit": "3738df872f105399c420e690888a6865d779da40",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "implementation_base_github_commit": "cbc5443a74b500fd55b03db8f2e26d7dcd624eee",
+    "implementation_base_github_commit": "3554e32fb254ed4e54907558852ea0406f48d7e7",
     "code_commit_status": "1.46.1 published; mobile workshop and nonoverlapping production panels",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "mobile-workshop-production-layout",
-    "base_product_version": "1.46.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-24-mobile-workshop-1461.md"
+    "id": "soren-ayla-native-kits-backpack-order",
+    "base_product_version": "1.46.1",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-24-legends-1470.md"
   },
   "publication": {
     "id": "appgdep_6adcb6c078688191b94d80249bbb3ac7",
@@ -45,21 +45,23 @@
   },
   "verification": {
     "typescript": "passed",
-    "focused_tests": "36 passed in4 files",
-    "browser": "five viewports; compact tests menu and room31 launch; no physical phone test"
+    "offline_tests": "860 passed in 93 files; Firebase Admin staging integration lacks its credential and is excluded. Final focused 13 passed after selection/visual followups.",
+    "browser": "isolated 390x844 and 844x390; Soren/Ayla unlock, native equipment, tooltip removal/reequip, attack demos, Ayla power energy use, inventory order and lens hit-target correction; no real account writes",
+    "physical_phone": "not tested",
+    "build": "passed;18.08s"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
   ],
   "next_actions": [
-    "Retomar arte de cadeiras, mesas e poses sentadas quando a geração de imagens estiver operacional.",
-    "Receber teste do usuário sobre caminhada lateral, frequência das conversas e rotina das vilas."
+    "Receber teste de David sobre movimento e proporção de Soren e Ayla.",
+    "Ajustar equilíbrio após uso real; Drake, Orion, Ember e Rowan continuam bloqueados."
   ],
   "rollback": {
-    "product_version": "1.43.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_430214bdc5948191a1d18d947d7b042c",
-    "site_commit": "e483d514abf27967269a21d66dfbbc7ab939f293",
-    "instructions": "Before rollback verify no newer publication exists; preserve saves."
+    "product_version": "1.46.1",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_deb794a343288191a864f0aabe7171df",
+    "site_commit": "3738df872f105399c420e690888a6865d779da40",
+    "instructions": "Prefer forward fixes: old clients refuse campaignVersion16, retaining saves. Redeploy only if no newer publication exists; never erase player data."
   },
   "latest_report": "docs/evolution/runs/2026-10-23.md",
   "source_reconciliation": {
@@ -713,5 +715,33 @@
     "new_deploy": false,
     "real_player_data_modified": false,
     "real_online_phases_completed": 0
+  },
+  "legend_pair_1470": {
+    "ready": [
+      "soren",
+      "ayla"
+    ],
+    "unlock_level": 12,
+    "required_completed_room": 10,
+    "starter_required": {
+      "soren": "kael",
+      "ayla": "lyra"
+    },
+    "cost": {
+      "shared": {
+        "fibra": 80,
+        "ambar": 40,
+        "cristal": 1
+      },
+      "soren": {
+        "perola": 2
+      },
+      "ayla": {
+        "escama": 2
+      }
+    },
+    "art": "2 original 32-pose atlases;4 original equipment silhouettes;full body crops and source scale;no waist segmentation",
+    "save": "campaignVersion 16 protects new identities from older clients; previous unlocks retained",
+    "limits": "four future heroes remain previews; no physical phone acceptance"
   }
 }

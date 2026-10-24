@@ -18,7 +18,7 @@ it.each(EXPLORATION_ROOMS)('room $index: UI, minimap and live-NPC renderer use t
 });
 it('shows rare collection slots and quantities from the same raster atlas in the backpack',()=>{
  const s=createCombatState();s.rareStock.seiva=3;s.rareBag.cristal=1;
- const markup=renderToStaticMarkup(React.createElement(CombatInventory,{game:s,onUse:()=>{},onEquip:()=>{}}));
+ const markup=renderToStaticMarkup(React.createElement(CombatInventory,{game:s,initialTab:'all',onUse:()=>{},onEquip:()=>{}}));
  expect(markup).toContain('Seiva luminosa, 3');expect(markup).toContain('Cristal do bosque, 1');expect(markup).toContain('/forest-adventure/forest-rare-items-v1.webp');
 });
 

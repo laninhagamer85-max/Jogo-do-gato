@@ -1,3 +1,4 @@
+import {signatureActive,signatureArt,type KitLegend} from './explorationLegendKits';
 import {drawHumanPose} from './explorationHumanGait';
 import {heldPose,meleeSwing,heldItemSize} from './explorationHeldPose';
 import {royalActive,castleDown} from './explorationCastleQuest';
@@ -13,7 +14,7 @@ const images=new Map<string,HTMLImageElement>();
 const cutouts=new Map<string,HTMLCanvasElement>();let pixels=0;
 const CACHE_PIXELS=6_000_000;
 function imageFor(key:string,src:string){let image=images.get(key);if(!image&&typeof Image!=='undefined'){image=new Image();image.src=src;images.set(key,image);}return image;}
-export function preloadLegend(id:LegendId){imageFor(id,`/forest-adventure/legends/${id}-v1.png`);imageFor('weapons','/forest-adventure/legends/weapons-v1.png');}
+export function preloadLegend(id:LegendId){imageFor(id,`/forest-adventure/legends/${id}-v1.png`);imageFor('weapons','/forest-adventure/legends/weapons-v1.png');if(id==='soren'||id==='ayla')imageFor('signature','/forest-adventure/legends/signature-v1.png');}
 /** Prepare an isolated alpha silhouette once. Original bitmaps remain unchanged. */
 function cutout(key:string,image:HTMLImageElement|undefined,r:{x:number;y:number;width:number;height:number;path:string}){
  const hit=cutouts.get(key);if(hit)return hit;
@@ -27,15 +28,15 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
  const id=state.legends?.active;if(!id)return false;preloadLegend(id);
  const anim=legendAnimation(state.facing.x,state.facing.y,state.walking,state.walkPhase,state.time,state.strikeUntil,reduced);
  const pose=legendPose(id,anim.row,anim.frame),rect=pose.rect,sprite=cutout(pose.key,images.get(id),rect);if(!sprite)return false;
- const dh=tile*1.12,dw=dh*rect.width/rect.height,hand=legendHand(id,pose.sourceRow,pose.sourceFrame);
+ const dh=tile*1.12*((id==='soren'||id==='ayla')?rect.height/legendPose(id,0,0).rect.height:1),dw=dh*rect.width/rect.height,hand=legendHand(id,pose.sourceRow,pose.sourceFrame);
  const hx=x+(pose.mirror?-1:1)*(hand.x-.5)*dw,hy=y-dh+hand.y*dh;
  const harvesting=harvestingActive(state),weapon=harvesting||state.village?.duel?null:state.legends?.weapon,phase=anim.attacking?Math.max(0,Math.min(1,1-(state.strikeUntil-state.time)/320)):0;
  const a=Math.atan2(state.facing.y,state.facing.x),sway=state.walking&&!reduced?Math.sin(state.walkPhase*Math.PI*2)*.065:0;
- function drawItem(){if(!weapon||castleDown(state))return;if(weapon==='sword'&&royalActive(state,'sword')){drawRoyalHeld(ctx,state,'sword',hx,hy,tile);return;}const meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tierSprite(weapon,tier??'wood'),tierImage=tierArt?imageFor('equipment-tiers:'+tierArt.src,tierArt.src):null,item=cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
+ function drawItem(){if(!weapon||castleDown(state))return;if(weapon==='sword'&&royalActive(state,'sword')){drawRoyalHeld(ctx,state,'sword',hx,hy,tile);return;}const exclusive=signatureActive(state,'weapon'),signature=exclusive?signatureArt(id as KitLegend,'weapon'):null,meta=weapons[weapon],tier=state.workshop?.equipmentTiers[weapon],tierArt=tierSprite(weapon,tier??'wood'),tierImage=tierArt?imageFor('equipment-tiers:'+tierArt.src,tierArt.src):null,item=signature?cutout(`signature:${id}:weapon`,images.get('signature'),signature):cutout(`weapon:${weapon}`,images.get('weapons'),meta);if(!item)return;
   ctx.save();ctx.translate(hx,hy);
   const swing=weapon==='bow'?sway:meleeSwing(state.time,state.strikeUntil)+sway;
-  const {width,height}=heldItemSize(weapon,meta.width,meta.height,tile);
-  if(tierArt&&tierImage?.complete&&tierImage.naturalWidth){const [sx,sy,cw,ch]=tierArtRect(tierArt,tierImage.naturalWidth,tierImage.naturalHeight),size=heldItemSize(weapon,cw,ch,tile),pose=heldPose(weapon,'tier',size.width,size.height,state.facing,swing);ctx.rotate(pose.rotation);drawTierItem(ctx,tierImage,tierArt,[sx,sy,cw,ch],pose.x,pose.y,size.width,size.height);}else{const pose=heldPose(weapon,'base',width,height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(item,pose.x,pose.y,width,height);}ctx.restore();
+  const {width,height}=heldItemSize(weapon,signature?.width??meta.width,signature?.height??meta.height,tile);
+  if(!signature&&tierArt&&tierImage?.complete&&tierImage.naturalWidth){const [sx,sy,cw,ch]=tierArtRect(tierArt,tierImage.naturalWidth,tierImage.naturalHeight),size=heldItemSize(weapon,cw,ch,tile),pose=heldPose(weapon,'tier',size.width,size.height,state.facing,swing);ctx.rotate(pose.rotation);drawTierItem(ctx,tierImage,tierArt,[sx,sy,cw,ch],pose.x,pose.y,size.width,size.height);}else{const pose=heldPose(weapon,signature?'signature':'base',width,height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(item,pose.x,pose.y,width,height);}ctx.restore();
   if(weapon==='bow'){
    const arrowMeta=weapons.arrow,arrow=cutout('weapon:arrow',images.get('weapons'),arrowMeta);if(!arrow)return;
    const flight=anim.attacking?Math.max(0,(phase-.36)/.64):0;

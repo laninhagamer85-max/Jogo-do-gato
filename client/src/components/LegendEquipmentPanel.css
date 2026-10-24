@@ -47,3 +47,5 @@
 }
 
 .combat-inventory-tabs,.combat-dialog-inventory{scrollbar-width:thin;scrollbar-color:#b5a16c #193c30}
+
+.legend-native-kit{display:flex;gap:12px;flex-wrap:wrap}.legend-native-kit>span{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}.legend-native-kit svg{flex:none}
