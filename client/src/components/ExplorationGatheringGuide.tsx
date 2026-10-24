@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {WorkshopItemArt} from './ExplorationWorkshop';
 const steps=[
- {title:'Você já tem suas ferramentas',item:'axe',text:'Seu machadinho e sua picareta iniciais já estão disponíveis. Não precisa equipá-los: o personagem escolhe a ferramenta certa ao coletar.'},
+ {title:'Você já tem suas ferramentas',item:'axe',text:'Seu machadinho e sua picareta iniciais já estão disponíveis. Eles começam equipados. Ao coletar, o personagem usa a ferramenta certa. Na mochila, aba Equipar, você pode trocar o material ou retirar a ferramenta.'},
  {title:'Primeira madeira',item:'wood',text:'Nas salas 1 a 32, caminhe até uma árvore coletável. Ao se aproximar, ela mostra “5/5 · Machado Nv 1”. Toque no botão “Cortar madeira” (ou F no teclado). O personagem golpeia a árvore e recebe 1 madeira por vez. A maioria das árvores espalhadas pelo bioma também pode ser cortada. Procure a indicação do machado ao se aproximar; algumas árvores permanecem decorativas.'},
  {title:'Primeira pedra e minério',item:'pickaxe',text:'Aproxime-se de uma rocha coletável até aparecer o nome da picareta. Toque em “Minerar” ou aperte F. Pedra e cobre aceitam a ferramenta inicial; ferro exige picareta Nv 2. São até 5 unidades por ponto; depois ele se renova em 30 minutos. As salas 31 e 32 também têm pontos para testes. O interior do castelo ainda não tem coleta.'},
  {title:'Volte à casa e construa',item:'stone',text:'Entre na área segura e abra “Casa e construções”. Escolha a bancada da oficina ou a fornalha. Confira o nível exigido e os materiais da receita; madeira e pedra vêm da coleta, fibras também vêm dos desafios da sala. Arraste cada ingrediente para o quadro central ou toque no ingrediente e depois no quadro.'},

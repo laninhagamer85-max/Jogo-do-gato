@@ -2,13 +2,13 @@ import {baseArtRect} from '@/game/explorationBaseArt';
 import React,{useEffect,useState,useRef} from 'react';
 import type {CombatState} from '@/game/explorationCombat';
 import {FACILITIES,MATERIALS,newWorkshop,atWorkshop,recipeProblem,workshopRecipes,workshopStock,upgradeChance,type WorkshopAction,type Material,type Recipe} from '@/game/explorationWorkshop';
-import {equipmentTier,tierSprite,type EquipmentKind,type EquipmentTier} from '@/game/explorationEquipmentTiers';
+import {equipmentTier,tierSprite,type GearGrade,type EquipmentKind,type EquipmentTier} from '@/game/explorationEquipmentTiers';
 import {BASE_ATLAS,BASE_BUILDINGS,BASE_NAMES,baseBuilt,safeBaseRadius,type BaseBuilding} from '@/game/explorationBase';
 import ExplorationItemIcon from './ExplorationItemIcon';
-export function TierItemArt({kind,tier,size=60}:{kind:EquipmentKind;tier:EquipmentTier;size?:number}){const s=tierSprite(kind,tier);return <span aria-hidden="true" style={{display:'inline-block',flexShrink:0,width:size,height:size,backgroundImage:`url(${s.src})`,backgroundSize:'500% 300%',backgroundPosition:`${s.column*25}% ${s.row*50}%`}}/>;}
+export function TierItemArt({kind,tier,size=60}:{kind:EquipmentKind;tier:GearGrade;size?:number}){const s=tierSprite(kind,tier);if(!s.rect)return <span aria-hidden="true" style={{display:'inline-block',flexShrink:0,width:size,height:size,backgroundImage:`url(${s.src})`,backgroundSize:`${s.columns*100}% ${s.rows*100}%`,backgroundPosition:`${s.column*100/(s.columns-1)}% ${s.row*100/(s.rows-1)}%`}}/>;const [x,y,w,h]=s.rect,scale=size/Math.max(w,h),dw=w*scale,dh=h*scale;return <span aria-hidden="true" style={{display:'inline-block',position:'relative',width:size,height:size,flexShrink:0}}><span style={{position:'absolute',left:(size-dw)/2,top:(size-dh)/2,width:dw,height:dh,backgroundImage:`url(${s.src})`,backgroundSize:`${s.width/w*100}% ${s.height/h*100}%`,backgroundPosition:`${x/(s.width-w)*100}% ${y/(s.height-h)*100}%`}}/></span>;}
 export const WORKSHOP_NAMES:Record<string,string>={...MATERIALS,...FACILITIES,axe:'Machadinho',pickaxe:'Picareta',sword:'Espada',dagger:'Faca',bow:'Arco',fibra:'Fibra',ambar:'Âmbar',erva:'Erva',fruta:'Fruta',seiva:'Seiva',cristal:'Cristal',perola:'Pérola',escama:'Escama','weapon:sword':'Espada','weapon:dagger':'Faca','weapon:bow':'Arco'};
 export function WorkshopItemArt({item,size=44}:{item:string;size?:number}){
- if(item.startsWith('weapon:')||['sword','dagger','bow'].includes(item))return <TierItemArt kind={item.replace('weapon:','') as EquipmentKind} tier="metal" size={size}/>;
+ if(item.startsWith('weapon:')||['sword','dagger','bow'].includes(item))return <TierItemArt kind={item.replace('weapon:','') as EquipmentKind} tier="wood" size={size}/>;
  if(['axe','pickaxe'].includes(item))return <span aria-hidden="true" style={{display:'inline-block',width:size,height:size,backgroundImage:'url(/forest-adventure/items/harvesting-atlas-v1.webp)',backgroundSize:'400% 200%',backgroundPosition:`${item==='axe'?0:100/3}% 0%`}}/>;
  if(item==='diamond')return <ExplorationItemIcon item="cristal" size={size}/>;
  if(!(item in MATERIALS))return <ExplorationItemIcon item={item as 'fibra'} size={size}/>;

@@ -43,7 +43,7 @@ export type CombatState = {
  workshop?:Workshop;
  castle?:CastleProgress;
   roomVisits?:Record<string,RoomMemory>;portalTarget?:number;portalCooldownUntil?:number;openWorldCells?:string[];
-  worldLayoutVersion?:1;levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;castleQuest?:CastleQuest;campaignVersion:2|3|4|5|6|7|8|9|10|11|12|13;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  worldLayoutVersion?:1;levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;castleQuest?:CastleQuest;campaignVersion:2|3|4|5|6|7|8|9|10|11|12|13|14;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -67,7 +67,7 @@ type CombatShared=Pick<CombatState,'village'|'workshop'|'castleQuest'|'legends'>
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101):CombatState{return createCombatStateShared(roomIndex,encounterSeed);}
 function createCombatStateShared(roomIndex:number,encounterSeed:number,shared?:CombatShared): CombatState {
   const room=campaignRoom(roomIndex);
-  return {village:shared?.village??newVillage(),castleQuest:shared?.castleQuest??newCastleQuest(),workshop:shared?.workshop??newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:13,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {village:shared?.village??newVillage(),castleQuest:shared?.castleQuest??newCastleQuest(),workshop:shared?.workshop??newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:14,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
@@ -105,7 +105,7 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 export function readCombatState(value:unknown):CombatRead{return readCombatStateShared(value);}
 function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
   const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>13) return { supported: false, version };
+  if (version > 4 || Number(raw.campaignVersion??1)>14) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
   const index=CASTLE_TEST_ACCESS&&(raw.roomIndex===30||raw.roomIndex===31)?raw.roomIndex:Math.floor(number(raw.roomIndex,0,0,unlocked));
@@ -234,7 +234,7 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   if(current.castle?.active&&castleDown(current)){const down=clone(current);down.time+=Math.min(50,elapsedMs);return castleQuestTick(down,current.castle.room,Date.now(),combatMaxHp(down.xp));}
   if(current.castle?.active){
    const s=clone(current),dt=Math.min(50,elapsedMs),old=current.castle,p=old.player,dx=clamp(input.dx||0,-1,1),dy=clamp(input.dy||0,-1,1),length=Math.hypot(dx,dy);
-   s.time+=dt;s.revision++;s.campaignVersion=13;s.castle=stepCastle(old,dx,dy,dt,royalDispersed(s));s.energy=Math.min(100,s.energy+dt*.004);s.feedback=s.feedback.filter(f=>f.until>s.time);
+   s.time+=dt;s.revision++;s.campaignVersion=14;s.castle=stepCastle(old,dx,dy,dt,royalDispersed(s));s.energy=Math.min(100,s.energy+dt*.004);s.feedback=s.feedback.filter(f=>f.until>s.time);
    const d=distance(p,s.castle.player);s.walking=s.castle.room===old.room&&d>.00001;s.walkPhase=s.walking?(s.walkPhase+d/.72)%1:0;if(length)s.facing={x:dx/length,y:dy/length};
    let royalDamage=0;
    if((input.attack||input.power)&&s.time>=s.attackAt&&(!input.power||s.energy>=25)){if(input.power){s.energy-=25;s.powerFx={power:s.activePower??'burst',...s.castle.player,startedAt:s.time,until:s.time+800};}s.attackAt=s.time+(input.power?1000:500);s.strikeUntil=s.time+320;royalDamage=Math.round(combatAttack(s)*(input.power?(royalActive(s,'power')?3.2:1.6):1));}
@@ -253,7 +253,7 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   if(cityBanned(s,s.player))s.player=previous;
   s.exploredCells = revealMinimap(s.exploredCells,s.player);
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
-  if(s.roomIndex===31&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=13;s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
+  if(s.roomIndex===31&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=14;s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) {s.energy -= 25;s.powerFx={power:s.activePower??'burst',x:s.player.x,y:s.player.y,startedAt:s.time,until:s.time+800};}
     if(power&&(hasCombatCard(s,'tide')||s.activePower==='tide')){const heal=Math.min(15,combatMaxHp(s.xp)-s.hp);s.hp+=heal;if(heal)feedback(s,s.player,`+${heal} HP`,'heal');}
@@ -507,7 +507,7 @@ export function travelCombatPortal(current:CombatState,visitedRoom?:number):Comb
  if(memory)Object.assign(next,memory);
  else if(current.completedRooms.includes(target)){const r=campaignRoom(target);next.gateOpen=true;next.collectedNodes=r.nodes.map(n=>n.id);next.switchStep=r.switches.length;next.roomCollectedFibers=r.fibers;next.hasRoomKey=true;next.bridgeCrossed=true;next.bridgeEntered=true;next.consumablesUsed=1;next.defeatedEnemyIds=r.enemies.map(e=>e.id);next.enemies=next.enemies.map(e=>({...e,hp:0,respawnAt:current.time+insectRespawnMs(campaignEnemies(target,next.encounterSeed).find(d=>d.id===e.id)!)}));}
  if(current.completedRooms.includes(target)||(CASTLE_TEST_ACCESS&&target>=30))next.gateOpen=true;
- next.revision=current.revision+1;next.campaignVersion=13;next.completed=false;next.portalTarget=undefined;next.portalElapsed=0;next.portalCooldownUntil=current.time+500;next.completionRewardClaimed=current.claimedRooms.includes(target);next.walking=false;next.feedback=[];next.openWorldCells=memory?.openWorldCells??[];
+ next.revision=current.revision+1;next.campaignVersion=14;next.completed=false;next.portalTarget=undefined;next.portalElapsed=0;next.portalCooldownUntil=current.time+500;next.completionRewardClaimed=current.claimedRooms.includes(target);next.walking=false;next.feedback=[];next.openWorldCells=memory?.openWorldCells??[];
  const arrival=target>current.roomIndex?returnPortal(target):campaignRoom(target).exit;
  next.player=nearestPilotPoint({x:arrival.x+(target>current.roomIndex?2:-1.7),y:arrival.y+(target>=30?.4:0)},next.gateOpen,target,next.workshop);next.invulnerableUntil=current.time+2500;next.message=`${campaignRoom(target).title}. Passagens já liberadas permanecem abertas.`;return next;
 }

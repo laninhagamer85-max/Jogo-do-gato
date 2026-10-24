@@ -10,8 +10,8 @@ describe('material equipment progression',()=>{
   expect(equipmentTierRequirement('axe','diamond','gold',30,true)).toBe('');
   expect(equipmentTierRequirement('axe','metal',null,NaN,true)).not.toBe('');
  });
- it('gives all 15 variants a distinct atlas cell and progressively stronger modest effects',()=>{
-  const cells=new Set();for(const kind of EQUIPMENT_KINDS)for(const tier of EQUIPMENT_TIERS){const s=tierSprite(kind,tier.id);cells.add(`${s.column}:${s.row}`);expect(s.column).toBeGreaterThanOrEqual(0);expect(s.row).toBeGreaterThanOrEqual(0);}
-  expect(cells.size).toBe(15);let damage=6,delay=650;for(const t of EQUIPMENT_TIERS){const stats=tierWeaponStats({bonus:6,range:1.6},t.id);expect(stats.bonus).toBeGreaterThan(damage);expect(stats.range).toBe(1.6);expect(tierHarvestDelay(t.id)).toBeLessThan(delay);damage=stats.bonus;delay=tierHarvestDelay(t.id);}
+ it('gives all 30 variants a distinct atlas cell and progressively stronger modest effects',()=>{
+  const cells=new Set();for(const kind of EQUIPMENT_KINDS)for(const tier of EQUIPMENT_TIERS){const s=tierSprite(kind,tier.id);cells.add(`${s.src}:${s.column}:${s.row}`);expect(s.column).toBeGreaterThanOrEqual(0);expect(s.row).toBeGreaterThanOrEqual(0);}
+  expect(cells.size).toBe(30);let damage=6,delay=650;for(const t of EQUIPMENT_TIERS){const stats=tierWeaponStats({bonus:6,range:1.6},t.id);expect(stats.bonus).toBeGreaterThan(damage);expect(stats.range).toBe(1.6);expect(tierHarvestDelay(t.id)).toBeLessThan(delay);damage=stats.bonus;delay=tierHarvestDelay(t.id);}
  });
 });

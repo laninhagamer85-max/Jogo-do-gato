@@ -1,0 +1,10 @@
+import {createPortal} from 'react-dom';
+import {useEffect,useLayoutEffect,useRef,useState,type ReactNode} from 'react';
+import './ItemDetailBubble.css';
+/** Touch-first nonmodal item details. Escape and outside presses close only these details. */
+export default function ItemDetailBubble({title,anchor,onClose,children}:{title:string;anchor?:HTMLElement|null;onClose:()=>void;children:ReactNode}){
+ const ref=useRef<HTMLElement>(null),[position,setPosition]=useState({left:12,top:70});
+ useLayoutEffect(()=>{const place=()=>{const el=ref.current;if(!el)return;if(el.showPopover&&!el.matches(':popover-open'))el.showPopover();const v=window.visualViewport,w=v?.width??innerWidth,h=v?.height??innerHeight,r=anchor?.getBoundingClientRect(),b=el.getBoundingClientRect();setPosition({left:Math.max(12,Math.min(w-b.width-12,r?r.left+r.width/2-b.width/2:(w-b.width)/2)),top:Math.max(12,Math.min(h-b.height-12,r?(r.bottom+b.height+12<h?r.bottom+8:r.top-b.height-8):(h-b.height)/2))});};place();window.addEventListener('resize',place);return()=>window.removeEventListener('resize',place);},[anchor,title]);
+ useEffect(()=>{const outside=(e:globalThis.PointerEvent)=>{if(!ref.current?.contains(e.target as Node)&&!anchor?.contains(e.target as Node))onClose();};const keys=(e:KeyboardEvent)=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();onClose();anchor?.focus({preventScroll:true});}};window.addEventListener('pointerdown',outside,true);window.addEventListener('keydown',keys,true);return()=>{window.removeEventListener('pointerdown',outside,true);window.removeEventListener('keydown',keys,true);};},[anchor,onClose]);
+ return createPortal(<section ref={ref} popover="manual" role="dialog" aria-label={`Detalhes: ${title}`} className="item-detail-bubble" style={position}><header><strong>{title}</strong><button aria-label="Fechar detalhes do item" onClick={()=>{onClose();anchor?.focus({preventScroll:true});}}>×</button></header><div className="item-detail-bubble-body">{children}</div></section>,anchor?.closest('dialog[open]')??document.querySelector('dialog[open]')??document.body);
+}

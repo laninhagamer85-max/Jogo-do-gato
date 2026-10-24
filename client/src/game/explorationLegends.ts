@@ -16,7 +16,7 @@ export const LEGENDS=[
 ] as const;
 export const LEGEND_WEAPONS={
  dagger:{name:'Adaga de trilha',bonus:3,range:1.25,fibra:12,ambar:6,rare:null,description:'+3 de ataque; golpe curto e frontal.'},
- sword:{name:'Espada de cristal',bonus:6,range:1.6,fibra:24,ambar:12,rare:'cristal',description:'+6 de ataque; alcance de 1,6 passos.'},
+ sword:{name:'Espada de trilha',bonus:6,range:1.6,fibra:24,ambar:12,rare:'cristal',description:'+6 de ataque; alcance de 1,6 passos.'},
  bow:{name:'Arco do bosque',bonus:2,range:5,fibra:18,ambar:8,rare:'seiva',description:'+2 de ataque; dispara uma flecha à frente até 5 passos. Obstáculos bloqueiam.'},
 } as const;
 export function readLegendProgress(value:unknown):LegendProgress{
