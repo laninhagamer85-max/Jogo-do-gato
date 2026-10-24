@@ -1,4 +1,4 @@
-import {craftStation} from './explorationWorkshop';
+import {craftStation,craftJobs} from './explorationWorkshop';
 import {nascentesBlocked} from './explorationChapter4';
 import {openWorldBlocked} from './explorationOpenWorld';
 import {campaignRoom,campaignWaterBlocks} from './explorationCampaign';
@@ -33,6 +33,6 @@ export function placeBaseBuilding(s:CombatState,k:BaseBuilding,target:CombatPoin
 export function baseView(w:number,h:number,s:Pick<CombatState,'workshop'|'roomIndex'>){const c=baseLayout(s).home,tile=Math.min(w/20,h/19);return{tile,left:w/2-c.x*tile,top:h*.49-c.y*tile};}
 
 /** Pending construction shares the final world footprint, without granting its service early. */
-export function pendingBaseBuilding(s:Pick<CombatState,'workshop'>):Exclude<BaseBuilding,'home'>|undefined{const id=s.workshop?.job?.recipe?.replace(/^upgrade-/,'');return id==='chest'?'chest':id==='bench'||id==='refinery'?'workshop':id==='healing'?'potions':undefined;}
-export function baseVisible(s:Pick<CombatState,'workshop'>,k:BaseBuilding){return baseBuilt(s,k)||pendingBaseBuilding(s)===k;}
-export function constructionProgress(s:Pick<CombatState,'workshop'>,now=Date.now()){const j=s.workshop?.job,kind=j?craftStation(j.recipe):undefined;if(!kind||!j)return;const progress=Math.max(0,Math.min(1,(now-j.startedAt)/(j.finishAt-j.startedAt)));return {kind,site:j.site,room:j.room,progress,seconds:Math.max(0,Math.ceil((j.finishAt-now)/1000)),ready:now>=j.finishAt};}
+export function pendingBaseBuilding(s:Pick<CombatState,'workshop'>,only?:BaseBuilding):Exclude<BaseBuilding,'home'>|undefined{for(const j of craftJobs(s.workshop)){const id=j.recipe.replace(/^upgrade-/,''),kind=id==='chest'?'chest':id==='bench'||id==='refinery'?'workshop':id==='healing'?'potions':undefined;if(kind&&(!only||only===kind))return kind;}return undefined;}
+export function baseVisible(s:Pick<CombatState,'workshop'>,k:BaseBuilding){return baseBuilt(s,k)||pendingBaseBuilding(s,k)===k;}
+export function constructionProgress(s:Pick<CombatState,'workshop'>,now=Date.now(),only?:BaseBuilding,constructionOnly=false){const jobs=craftJobs(s.workshop).filter(j=>(!only||craftStation(j.recipe)===only)&&(!constructionOnly||['chest','bench','refinery','healing'].includes(j.recipe.replace(/^upgrade-/,'')))),j=jobs[0],kind=j?craftStation(j.recipe):undefined;if(!kind||!j)return;const progress=Math.max(0,Math.min(1,(now-j.startedAt)/(j.finishAt-j.startedAt)));return {kind,count:jobs.length,site:j.site,room:j.room,progress,seconds:Math.max(0,Math.ceil((j.finishAt-now)/1000)),ready:now>=j.finishAt};}

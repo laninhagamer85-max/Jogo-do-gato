@@ -3,7 +3,7 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-24",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.45.2",
+  "status": "validated_1.46.0_pending_publish",
   "active_run": "2026-10-24",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "clean-equipment-clips-compact-workshop",
-    "base_product_version": "1.45.1",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-24-clean-equipment-1452.md"
+    "id": "ordered-recipes-and-parallel-production",
+    "base_product_version": "1.45.2",
+    "implementation_status": "validated_pending_publish",
+    "report": "docs/evolution/runs/2026-10-24-parallel-production-1460.md"
   },
   "publication": {
     "id": "appgdep_6adc62c455a48191afe0ec1fe63158b3",

@@ -19,7 +19,7 @@ it('prepares body and illustrated weapon once and reuses native images, without 
  class FakeImage{complete=true;naturalWidth=1254;src='';}
  class FakePath{constructor(_p:string){paths++;}}
  vi.stubGlobal('Image',FakeImage);vi.stubGlobal('Path2D',FakePath);vi.stubGlobal('document',{createElement:()=>{prepared++;return {width:0,height:0,getContext:()=>({fill:vi.fn(),stroke:vi.fn(),drawImage:vi.fn()})};}});
- const ctx={save:vi.fn(),restore:vi.fn(),translate:vi.fn(),rotate:vi.fn(),scale:vi.fn(),drawImage:(...args:unknown[])=>draws.push(args)} as unknown as CanvasRenderingContext2D;
+ const ctx={beginPath:vi.fn(),moveTo:vi.fn(),lineTo:vi.fn(),closePath:vi.fn(),clip:vi.fn(),save:vi.fn(),restore:vi.fn(),translate:vi.fn(),rotate:vi.fn(),scale:vi.fn(),drawImage:(...args:unknown[])=>draws.push(args)} as unknown as CanvasRenderingContext2D;
  const s=createCombatState();s.legends={unlocked:['kael'],active:'kael',weapons:['sword'],weapon:'sword'};s.facing={x:-1,y:0};s.time=160;s.strikeUntil=320;
  expect(drawExplorationLegend(ctx,s,100,150,80,false)).toBe(true);expect(prepared).toBe(2);expect(paths).toBe(2);expect(draws).toHaveLength(2);
  expect(drawExplorationLegend(ctx,s,100,150,80,false)).toBe(true);expect(prepared).toBe(2);expect(paths).toBe(2);expect(draws).toHaveLength(4);
@@ -32,7 +32,7 @@ it('shows future names and information while concealing their portrait art',()=>
 it('swaps the illustrated weapon for a harvesting tool and restores it without changing equipment',()=>{
  class HarvestImage{complete=true;naturalWidth=1254;src='';}
  vi.stubGlobal('Image',HarvestImage);vi.stubGlobal('Path2D',class{constructor(_p:string){}});vi.stubGlobal('document',{createElement:()=>({width:0,height:0,getContext:()=>({fill:vi.fn(),stroke:vi.fn(),drawImage:vi.fn()})})});
- const draws:unknown[][]=[],ctx={save:vi.fn(),restore:vi.fn(),translate:vi.fn(),rotate:vi.fn(),scale:vi.fn(),drawImage:(...a:unknown[])=>draws.push(a)} as unknown as CanvasRenderingContext2D;
+ const draws:unknown[][]=[],ctx={beginPath:vi.fn(),moveTo:vi.fn(),lineTo:vi.fn(),closePath:vi.fn(),clip:vi.fn(),save:vi.fn(),restore:vi.fn(),translate:vi.fn(),rotate:vi.fn(),scale:vi.fn(),drawImage:(...a:unknown[])=>draws.push(a)} as unknown as CanvasRenderingContext2D;
  const s=createCombatState();s.legends={unlocked:['kael'],active:'kael',weapons:['sword'],weapon:'sword'};s.time=100;s.strikeUntil=320;s.workshop.fx={tool:'axe',node:'r0:0',started:0,until:500};
  expect(drawExplorationLegend(ctx,s,100,150,80,false)).toBe(true);expect(draws).toHaveLength(2);expect((draws[1][0] as {src:string}).src).toContain('harvesting-atlas');expect(s.legends.weapon).toBe('sword');
  draws.length=0;s.time=501;expect(drawExplorationLegend(ctx,s,100,150,80,false)).toBe(true);expect(draws).toHaveLength(2);expect((draws[1][0] as {src?:string}).src??'').not.toContain('harvesting-atlas');expect(s.legends.weapon).toBe('sword');
