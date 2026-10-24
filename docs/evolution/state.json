@@ -3,33 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-24",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.46.0",
+  "status": "published_1.46.1",
   "active_run": "2026-10-24",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "5d584ca158045a99584eea0e5ea7da1baacf804f",
+    "source_site_commit": "3738df872f105399c420e690888a6865d779da40",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "cbc5443a74b500fd55b03db8f2e26d7dcd624eee",
-    "code_commit_status": "1.46.0 published; ordered recipes, direct ingredients and parallel production",
+    "code_commit_status": "1.46.1 published; mobile workshop and nonoverlapping production panels",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "d110c4916d29c0b566958c45fc09288fa66e3205",
+    "code_commit": "09bbecf11b9eef8885f31b26e96cb53c2e9e69ab",
     "published_code_github_commit": "068f0f300d46b4c0688061a24411347948d8b3a3",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "ordered-recipes-and-parallel-production",
-    "base_product_version": "1.45.2",
+    "id": "mobile-workshop-production-layout",
+    "base_product_version": "1.46.0",
     "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-24-parallel-production-1460.md"
+    "report": "docs/evolution/runs/2026-10-24-mobile-workshop-1461.md"
   },
   "publication": {
-    "id": "appgdep_6adc68f1cd508191a0d249007816224c",
+    "id": "appgdep_6adcb6c078688191b94d80249bbb3ac7",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b6430b36c4c48191b004df266db8cafb",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_deb794a343288191a864f0aabe7171df",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -38,10 +38,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-23T19:00:43.773686+00:00",
-    "product_version": "1.46.0",
-    "version_number": 144,
-    "source_commit": "28a3d8d83538ab8056ba47fa65a96b7386c96da2"
+    "updated_at": "2026-10-24T13:47:06.980081+00:00",
+    "product_version": "1.46.1",
+    "version_number": 145,
+    "source_commit": "3738df872f105399c420e690888a6865d779da40"
   },
   "verification": {
     "typescript": "passed",

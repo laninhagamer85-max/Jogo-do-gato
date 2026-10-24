@@ -8,4 +8,7 @@ Validação: TypeScript aprovado; suíte completa de 846 testes aprovada antes d
 
 Referências: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-columns
 
-Publicação: em preparação.
+Publicação: 1.46.1, Sites 145, succeeded. https://meupet.aquimeusite.chatgpt.site
+Source: 3738df872f105399c420e690888a6865d779da40
+GitHub: 09bbecf11b9eef8885f31b26e96cb53c2e9e69ab
+Deployment: appgdep_6adcb6c078688191b94d80249bbb3ac7
