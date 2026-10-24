@@ -4,7 +4,7 @@ import {royalActive,castleDown} from './explorationCastleQuest';
 import {drawRoyalHeld} from './explorationRoyalView';
 import {harvestingActive} from './explorationWorkshop';
 import {drawHarvestTool} from './explorationWorkshopView';
-import {tierSprite,tierArtRect} from './explorationEquipmentTiers';
+import {tierSprite,tierArtRect,drawTierItem} from './explorationEquipmentTiers';
 import weapons from './explorationWeaponArt.json';
 import {legendPose,legendHand} from './explorationLegendPose';
 import {legendAnimation,type LegendId} from './explorationLegends';
@@ -35,7 +35,7 @@ export function drawExplorationLegend(ctx:CanvasRenderingContext2D,state:CombatS
   ctx.save();ctx.translate(hx,hy);
   const swing=weapon==='bow'?sway:meleeSwing(state.time,state.strikeUntil)+sway;
   const {width,height}=heldItemSize(weapon,meta.width,meta.height,tile);
-  if(tierArt&&tierImage?.complete&&tierImage.naturalWidth){const [sx,sy,cw,ch]=tierArtRect(tierArt,tierImage.naturalWidth,tierImage.naturalHeight),size=heldItemSize(weapon,cw,ch,tile),pose=heldPose(weapon,'tier',size.width,size.height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(tierImage,sx,sy,cw,ch,pose.x,pose.y,size.width,size.height);}else{const pose=heldPose(weapon,'base',width,height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(item,pose.x,pose.y,width,height);}ctx.restore();
+  if(tierArt&&tierImage?.complete&&tierImage.naturalWidth){const [sx,sy,cw,ch]=tierArtRect(tierArt,tierImage.naturalWidth,tierImage.naturalHeight),size=heldItemSize(weapon,cw,ch,tile),pose=heldPose(weapon,'tier',size.width,size.height,state.facing,swing);ctx.rotate(pose.rotation);drawTierItem(ctx,tierImage,tierArt,[sx,sy,cw,ch],pose.x,pose.y,size.width,size.height);}else{const pose=heldPose(weapon,'base',width,height,state.facing,swing);ctx.rotate(pose.rotation);ctx.drawImage(item,pose.x,pose.y,width,height);}ctx.restore();
   if(weapon==='bow'){
    const arrowMeta=weapons.arrow,arrow=cutout('weapon:arrow',images.get('weapons'),arrowMeta);if(!arrow)return;
    const flight=anim.attacking?Math.max(0,(phase-.36)/.64):0;

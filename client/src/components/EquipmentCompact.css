@@ -1,0 +1,21 @@
+/* Required character level stays distinct from enhancement level and item quantity. */
+.base-recipe-catalog>button,.legend-bag-item{position:relative}
+.equipment-level-badge{position:absolute!important;top:4px;right:4px;display:flex!important;align-items:center;justify-content:center;box-sizing:border-box;width:25px!important;height:25px!important;min-width:25px;flex:none;border-radius:50%;border:1px solid #e9d48b;background:#703e91!important;color:#fff9e6!important;font:800 11px/1 system-ui!important;box-shadow:0 2px 4px #0005;z-index:1;pointer-events:none}
+.exploration-workshop>p{font-size:12px;line-height:1.3;margin:5px 0}
+.exploration-workshop>button{font-size:12px;padding:6px 9px;min-height:44px}
+.exploration-workshop .base-recipe-catalog{gap:6px;margin:7px 0;padding:3px;align-items:stretch}
+.exploration-workshop .base-recipe-catalog>button{flex:0 0 92px;gap:3px;padding:8px 5px 6px;justify-content:flex-start;font-size:12px;line-height:1.2;min-height:96px}
+.exploration-workshop .base-recipe-catalog>button>span:not([aria-hidden]):not(.equipment-level-badge){font-size:12px;line-height:1.2}
+.exploration-workshop .base-recipe-details>h4{font-size:14px;line-height:1.2;margin:7px 0 3px}
+.exploration-workshop .base-recipe-details>p{font-size:12px;line-height:1.3;margin:4px 0}
+.exploration-workshop .base-craft-drop{min-height:125px;gap:4px;margin:8px auto;padding:8px;max-width:300px}
+.exploration-workshop .base-craft-drop>strong{font-size:12px;line-height:1.2}
+.exploration-workshop .base-craft-drop>small{font-size:11px;line-height:1.2}
+.exploration-workshop .base-ingredient-tray{gap:5px}
+.exploration-workshop .base-ingredient-tray button{gap:2px;font-size:12px;padding:6px;max-width:86px;min-height:44px}
+.exploration-workshop .base-ingredient-tray small{font-size:11px;line-height:1.2}
+@media(max-height:500px) and (orientation:landscape){.exploration-workshop .base-recipe-catalog>button{flex-basis:86px;min-height:86px}.exploration-workshop .base-recipe-details>.base-craft-drop{min-height:112px;margin:0}.exploration-workshop .base-recipe-details{gap:5px}}
+.combat-pilot .combat-dialog-inventory .combat-dialog-heading{background:#1d392ff5!important;backdrop-filter:blur(10px);padding:5px 0;min-height:44px}
+.exploration-workshop .base-recipe-catalog>button{height:104px;max-height:104px;overflow:hidden}
+.exploration-workshop .base-recipe-catalog>button>span:not([aria-hidden]):not(.equipment-level-badge){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;max-height:29px}
+@media(max-height:500px) and (orientation:landscape){.exploration-workshop .base-recipe-catalog>button{height:96px;max-height:96px}}
