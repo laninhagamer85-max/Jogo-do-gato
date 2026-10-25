@@ -49,3 +49,5 @@
 .exploration-workshop .base-ready-link{width:100%;min-height:36px;font-size:11px;margin-bottom:5px;padding:4px}
 @media(max-height:500px) and (orientation:landscape){.combat-pilot--lens-dock .combat-dialog.combat-dialog-base{height:calc(100% - 16px);width:min(760px,calc(100% - 16px))}.base-category-picker{max-width:420px}.base-production-board{grid-template-columns:repeat(2,minmax(0,1fr))}.base-production-capacity{grid-column:1/-1}}
 .combat-pilot--lens-dock .combat-dialog.combat-dialog-base:has(.base-production-board){height:max-content}
+
+.base-job-card .base-production-space{grid-column:1/-1;margin:3px 0;font-size:12px;line-height:1.4;color:#ffe7a3;overflow-wrap:anywhere}

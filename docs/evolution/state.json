@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-24",
+  "updated_date": "2026-10-25",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.47.1",
-  "active_run": "2026-10-24-bow-orientation-1471",
+  "status": "validated_1.47.2_pending_publication",
+  "active_run": "2026-10-25",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "bow-curved-front-orientation",
-    "base_product_version": "1.47.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-24-bow-orientation-1471.md"
+    "id": "preserve-ready-crafting-batches-at-capacity",
+    "base_product_version": "1.47.1",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-25.md"
   },
   "publication": {
     "id": "appgdep_6add6a6caf108191a34917c083b706dc",
@@ -63,7 +63,7 @@
     "site_commit": "fa715a1d7318e57a927458785e2014c55a719ac2",
     "instructions": "Redeploy only if no newer publication exists; no save or gameplay schema changes in this patch."
   },
-  "latest_report": "docs/evolution/runs/2026-10-23.md",
+  "latest_report": "docs/evolution/runs/2026-10-25.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -757,5 +757,14 @@
       "skills, combat values, saves and chapter progress"
     ],
     "qa": "Legend animation preview now supports the actual exclusive equipment variant"
+  },
+  "craft_capacity_review": {
+    "date": "2026-10-25",
+    "product_version": "1.47.2",
+    "typescript": "passed",
+    "build": "passed",
+    "offline_tests": "871 passed in 93 files; Firebase staging excluded",
+    "browser": "isolated workshop flow and five viewports; no physical phone or campaign playthrough",
+    "real_player_data_modified": false
   }
 }
