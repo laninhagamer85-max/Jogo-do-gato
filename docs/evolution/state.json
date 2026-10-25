@@ -3,33 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-25",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.47.2_pending_publication",
+  "status": "published_1.47.2",
   "active_run": "2026-10-25",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c",
+    "source_site_commit": "0ff0c5d62a2d677964a0a1cb4b58b0604dda15a2",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "01db862166ca69240ee145e152b05ab28e16004f",
-    "code_commit_status": "1.47.1 published; painted bow front corrected and Ayla verified",
+    "code_commit_status": "1.47.2 published; six edited files compared with GitHub base",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "cfd0b65403344f92e8e453f1afc5aeea894327c1",
+    "code_commit": "e27a9bf4cadf5c14b8233df1116d5c5bf365571c",
     "published_code_github_commit": "cfd0b65403344f92e8e453f1afc5aeea894327c1",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "preserve-ready-crafting-batches-at-capacity",
     "base_product_version": "1.47.1",
-    "implementation_status": "validated",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-25.md"
   },
   "publication": {
-    "id": "appgdep_6add6a6caf108191a34917c083b706dc",
+    "id": "appgdep_6adde7ad341081918b748b4506a4496e",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0c805536a7708191b9616d370b70b725",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_08c89bd3d4f081918f16a26e38be1cbd",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -38,10 +38,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-25T02:33:40.989915+00:00",
-    "product_version": "1.47.1",
-    "version_number": 147,
-    "source_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c"
+    "updated_at": "2026-10-25T11:27:53.384426+00:00",
+    "product_version": "1.47.2",
+    "version_number": 148,
+    "source_commit": "0ff0c5d62a2d677964a0a1cb4b58b0604dda15a2"
   },
   "verification": {
     "typescript": "passed",
@@ -58,10 +58,10 @@
     "Ajustar equilíbrio após uso real; Drake, Orion, Ember e Rowan continuam bloqueados."
   ],
   "rollback": {
-    "product_version": "1.47.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_4e75133a069881918ad5ffb98cec78b6",
-    "site_commit": "fa715a1d7318e57a927458785e2014c55a719ac2",
-    "instructions": "Redeploy only if no newer publication exists; no save or gameplay schema changes in this patch."
+    "product_version": "1.47.1",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0c805536a7708191b9616d370b70b725",
+    "site_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c",
+    "instructions": "Only rollback if no newer publication exists; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-25.md",
   "source_reconciliation": {
@@ -765,6 +765,8 @@
     "build": "passed",
     "offline_tests": "871 passed in 93 files; Firebase staging excluded",
     "browser": "isolated workshop flow and five viewports; no physical phone or campaign playthrough",
-    "real_player_data_modified": false
+    "real_player_data_modified": false,
+    "publication": "succeeded",
+    "github_code_commit": "e27a9bf4cadf5c14b8233df1116d5c5bf365571c"
   }
 }
