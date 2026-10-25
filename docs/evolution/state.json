@@ -3,15 +3,15 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-24",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.47.0",
-  "active_run": "2026-10-24-legends-1470",
+  "status": "validated_1.47.1_preparing_publication",
+  "active_run": "2026-10-24-bow-orientation-1471",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
     "source_site_commit": "fa715a1d7318e57a927458785e2014c55a719ac2",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "implementation_base_github_commit": "3554e32fb254ed4e54907558852ea0406f48d7e7",
+    "implementation_base_github_commit": "01db862166ca69240ee145e152b05ab28e16004f",
     "code_commit_status": "1.47.0 published; Soren/Ayla kits, unlock gates and backpack order",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "soren-ayla-native-kits-backpack-order",
-    "base_product_version": "1.46.1",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-24-legends-1470.md"
+    "id": "bow-curved-front-orientation",
+    "base_product_version": "1.47.0",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-24-bow-orientation-1471.md"
   },
   "publication": {
     "id": "appgdep_6add465669d481919a79fbadf71dc1b9",
@@ -45,10 +45,10 @@
   },
   "verification": {
     "typescript": "passed",
-    "offline_tests": "860 passed in 93 files; Firebase Admin staging integration lacks its credential and is excluded. Final focused 13 passed after selection/visual followups.",
-    "browser": "isolated 390x844 and 844x390; Soren/Ayla unlock, native equipment, tooltip removal/reequip, attack demos, Ayla power energy use, inventory order and lens hit-target correction; no real account writes",
-    "physical_phone": "not tested",
-    "build": "passed;18.08s"
+    "focused_tests": "36 passed in4files; grip/outward direction, painted bow landmarks, Ayla sword, native kits, harvesting pose and renderer checks",
+    "build": "passed;18.26s",
+    "browser": "isolated renderer preview: Soren signature bow walk/attack in8directions, Ayla signature sword walk/attack and gold bow walking; no player account or save writes",
+    "limits": "not tested on a physical phone; no full campaign run in this visual-only patch"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
@@ -58,10 +58,10 @@
     "Ajustar equilíbrio após uso real; Drake, Orion, Ember e Rowan continuam bloqueados."
   ],
   "rollback": {
-    "product_version": "1.46.1",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_deb794a343288191a864f0aabe7171df",
-    "site_commit": "3738df872f105399c420e690888a6865d779da40",
-    "instructions": "Prefer forward fixes: old clients refuse campaignVersion16, retaining saves. Redeploy only if no newer publication exists; never erase player data."
+    "product_version": "1.47.0",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_4e75133a069881918ad5ffb98cec78b6",
+    "site_commit": "fa715a1d7318e57a927458785e2014c55a719ac2",
+    "instructions": "Redeploy only if no newer publication exists; no save or gameplay schema changes in this patch."
   },
   "latest_report": "docs/evolution/runs/2026-10-23.md",
   "source_reconciliation": {
@@ -743,5 +743,19 @@
     "art": "2 original 32-pose atlases;4 original equipment silhouettes;full body crops and source scale;no waist segmentation",
     "save": "campaignVersion 16 protects new identities from older clients; previous unlocks retained",
     "limits": "four future heroes remain previews; no physical phone acceptance"
+  },
+  "bow_orientation_1471": {
+    "status": "validated",
+    "changed": [
+      "signature bow front points left in source artwork",
+      "tier bow front points diagonally down-left in source artwork"
+    ],
+    "preserved": [
+      "original wood bow native orientation",
+      "Ayla sword orientation",
+      "equipment ownership and levels",
+      "skills, combat values, saves and chapter progress"
+    ],
+    "qa": "Legend animation preview now supports the actual exclusive equipment variant"
   }
 }
