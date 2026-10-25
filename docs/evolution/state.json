@@ -3,33 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-24",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.47.1_preparing_publication",
+  "status": "published_1.47.1",
   "active_run": "2026-10-24-bow-orientation-1471",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "fa715a1d7318e57a927458785e2014c55a719ac2",
+    "source_site_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "01db862166ca69240ee145e152b05ab28e16004f",
-    "code_commit_status": "1.47.0 published; Soren/Ayla kits, unlock gates and backpack order",
+    "code_commit_status": "1.47.1 published; painted bow front corrected and Ayla verified",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "99c469a85167a90c212ecf1189a0cacaa42a10f2",
-    "published_code_github_commit": "99c469a85167a90c212ecf1189a0cacaa42a10f2",
+    "code_commit": "cfd0b65403344f92e8e453f1afc5aeea894327c1",
+    "published_code_github_commit": "cfd0b65403344f92e8e453f1afc5aeea894327c1",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "bow-curved-front-orientation",
     "base_product_version": "1.47.0",
-    "implementation_status": "validated",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-24-bow-orientation-1471.md"
   },
   "publication": {
-    "id": "appgdep_6add465669d481919a79fbadf71dc1b9",
+    "id": "appgdep_6add6a6caf108191a34917c083b706dc",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_4e75133a069881918ad5ffb98cec78b6",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0c805536a7708191b9616d370b70b725",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -38,10 +38,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-24T23:59:40.151182+00:00",
-    "product_version": "1.47.0",
-    "version_number": 146,
-    "source_commit": "fa715a1d7318e57a927458785e2014c55a719ac2"
+    "updated_at": "2026-10-25T02:33:40.989915+00:00",
+    "product_version": "1.47.1",
+    "version_number": 147,
+    "source_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c"
   },
   "verification": {
     "typescript": "passed",
@@ -745,7 +745,7 @@
     "limits": "four future heroes remain previews; no physical phone acceptance"
   },
   "bow_orientation_1471": {
-    "status": "validated",
+    "status": "published",
     "changed": [
       "signature bow front points left in source artwork",
       "tier bow front points diagonally down-left in source artwork"

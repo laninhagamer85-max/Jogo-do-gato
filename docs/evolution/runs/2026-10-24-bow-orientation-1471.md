@@ -1,6 +1,6 @@
 # 1.47.1 — Orientação de arcos em movimento
 
-Estado:validado; build aprovado; preparando publicação. Data do usuário:24/10/2026,America/Sao_Paulo.
+Estado:publicado com sucesso. Data do usuário:24/10/2026,America/Sao_Paulo.
 
 Pedido:Arco de Soren invertido ao andar; conferir Ayla.
 
@@ -30,4 +30,12 @@ https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/transf
 
 ## Publicação e rollback
 
-Pendente dos IDs finais. Publicar uma única revisão validada. Rollback possível para1.47.0/Sites146 apenas na ausência de publicação posterior; nenhuma mudança de esquema nesta correção. Atualizar registro após sucesso, sem novo deploy documental.
+Publicação confirmada:produto1.47.1,Sites147,status succeeded. URL:https://meupet.aquimeusite.chatgpt.site
+
+Versão:appgprj_6ac40994d8d881919d46203a60801e46~appgver_0c805536a7708191b9616d370b70b725
+
+Deployment:appgdep_6add6a6caf108191a34917c083b706dc
+
+Fonte Sites:d66b2e9f3b5ca3d3dc3ade009614c503fa87886c. Registro posterior apenas documental, sem novo deploy. Rollback possível para1.47.0/Sites146 apenas na ausência de publicação posterior; nenhuma mudança de esquema nesta correção. Atualizar registro após sucesso, sem novo deploy documental.
+
+GitHub: cfd0b65403344f92e8e453f1afc5aeea894327c1, sincronizado no ramo de colaboração com lease.
