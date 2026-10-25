@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-23",
+  "updated_date": "2026-10-25",
   "timezone": "America/Sao_Paulo",
   "status": "published_1.29.1_for_user_test",
-  "active_run": "2026-10-21",
+  "active_run": "2026-10-25",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
@@ -63,7 +63,7 @@
     "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_033aab4b87908191b94aeff2df2f711e",
     "instructions": "Reimplantar 1.9.15 se necessário, preservando saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-23.md",
+  "latest_report": "docs/evolution/runs/2026-10-25.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -252,21 +252,20 @@
     }
   },
   "independent_review": {
-    "date": "2026-10-23",
-    "status": "passed_published_1440_recovery_review",
-    "report": "docs/evolution/runs/2026-10-23.md",
-    "runtime_modified": false,
-    "regression_test_added": true,
-    "source_published": "332de46020bf1c3ed14f337a30134d2e686d7738",
-    "source_reviewed": "b40514963b7f0708b25714cc85647025feb42651",
+    "date": "2026-10-25",
+    "product_version": "1.47.2",
     "typescript": "passed",
     "build": "passed",
-    "offline_suite": "840/840 in 89 files before added regression",
-    "added_regression_file": "9/9 after added regression",
-    "browser": "isolated final8s recovery horizontal844x390 and portrait390x844; HP0->304; notice removed; movement enabled",
-    "new_deploy": false,
+    "offline_tests": "871 passed in 93 files; Firebase staging excluded",
+    "browser": "isolated workshop flow and five viewports; no physical phone or campaign playthrough",
     "real_player_data_modified": false,
-    "real_online_phases_completed": 0,
-    "implementation_commit": "75d9b53f1c8b6bdc1440a52f09473118a1a07477"
+    "publication": "succeeded",
+    "github_code_commit": "e27a9bf4cadf5c14b8233df1116d5c5bf365571c",
+    "report": "docs/evolution/runs/2026-10-25.md",
+    "implementation_branch": "review/grass-option3-20261016",
+    "documentation_commit": "47ba9eafb85ae3e543bf81dc7a08e6716f730b25",
+    "source_commit": "0ff0c5d62a2d677964a0a1cb4b58b0604dda15a2",
+    "site_version": 148,
+    "coordination_only": true
   }
 }
