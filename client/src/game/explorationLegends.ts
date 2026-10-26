@@ -44,6 +44,13 @@ export function legendUnlockRequirements(game:CombatState,id:LegendId='lyra'){
  return {level,firstRoom,chapterComplete,starterReady,rule,materials,ready:!game.completed&&chapterComplete&&starterReady&&level>=rule.level&&materials.every(m=>m.owned>=m.required)};
 }
 export function compatibleLegend(id:LegendId,gender:LegendGender){return LEGENDS.some(h=>h.id===id&&h.ready&&h.gender===gender);}
+/** Resume any owned, compatible hero; the starter is not the only valid selection. */
+export function resumeLegendSelection(game:CombatState,gender:LegendGender):CombatState{
+ const legends=readLegendProgress(game.legends);
+ return game.legends?.active&&(!legends.active||!compatibleLegend(legends.active,gender))
+  ?{...game,legends:{...legends,active:null}}
+  :game;
+}
 export function eligibleLegend(gender:LegendGender){return gender==='menina'?'lyra':'kael';}
 export function legendWeapon(game:Pick<CombatState,'legends'|'workshop'>&Partial<Pick<CombatState,'castleQuest'>>){const l=game.legends;if(!l?.active||!l.weapon||!l.weapons.includes(l.weapon)&&!signatureActive(game,'weapon'))return null;const base=LEGEND_WEAPONS[l.weapon],kit=legendKit(game);if(kit&&signatureActive(game,'weapon'))return {...base,name:kit.weaponName,bonus:kit.bonus,range:kit.range,description:kit.weaponDescription};return {...base,...tierWeaponStats(base,game.workshop?.equipmentTiers[l.weapon]??null)};}
 export function legendName(game:Pick<CombatState,'legends'>){return LEGENDS.find(l=>l.id===game.legends?.active)?.name;}

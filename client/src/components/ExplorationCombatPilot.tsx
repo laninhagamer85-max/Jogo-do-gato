@@ -29,7 +29,7 @@ import {normalizeQuickItems,setCombatQuickItem,quickItemCount,canUseQuickItem,us
 import {RARE_ITEMS} from '@/game/explorationCampaign';
 import PowerSymbol from './PowerSymbol';
 import {preloadLegend} from '@/game/explorationLegendView';
-import {changeLegend,eligibleLegend,legendName,readLegendProgress} from '@/game/explorationLegends';
+import {changeLegend,resumeLegendSelection,legendName,readLegendProgress} from '@/game/explorationLegends';
 import {shouldRunExplorationFrame,shouldDrawExplorationFrame} from '@/game/explorationFramePolicy';
 import {ExplorationAudio,loadExplorationAudio} from '@/game/explorationAudio';
 import {campaignRoom,EXPLORATION_ROOMS,chapterName,chapterNumber,roomInChapter} from '@/game/explorationCampaign';
@@ -57,7 +57,7 @@ type Props = { replayMode?:boolean; soundOn: boolean; onToggleSound: () => void;
 type Panel = ExplorationPanel;
 export default function ExplorationCombatPilot({ profile, progress, onSave, onBack, soundOn, onToggleSound,replayMode=false }: Props) {
   const [initial] = useState(() => readCombatState(progress));
-  const [game, setGame] = useState<CombatState>(() => (()=>{const s=initial.supported?initial.state:createCombatState();if(s.legends?.active&&s.legends.active!==eligibleLegend(profile?.gender??'menino'))return {...s,legends:{...readLegendProgress(s.legends),active:null}};return bindCastleActor(s,profile?.characterId??'menino-preto');})());
+  const [game, setGame] = useState<CombatState>(() => (()=>{const s=initial.supported?initial.state:createCombatState();return bindCastleActor(resumeLegendSelection(s,profile?.gender??'menino'),profile?.characterId??'menino-preto');})());
   const [cardNotice,setCardNotice]=useState<ReturnType<typeof bossCardForRoom>|null>(null);
   const notifiedBosses=useRef(new Set(game.defeatedEnemyIds));
   useEffect(()=>{const boss=campaignRoom(game.roomIndex).bossId;if(boss&&game.defeatedEnemyIds.includes(boss)&&!notifiedBosses.current.has(boss)){notifiedBosses.current.add(boss);setCardNotice(bossCardForRoom(game.roomIndex));}},[game.roomIndex,game.defeatedEnemyIds]);
