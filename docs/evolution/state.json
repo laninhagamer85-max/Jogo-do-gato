@@ -3,33 +3,33 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-26",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.47.3_pending_publication",
+  "status": "published_1.47.3",
   "active_run": "2026-10-26",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
-    "source_site_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c",
+    "source_site_commit": "ce14bdbd04df232c636c93514874b0a37b477856",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "01db862166ca69240ee145e152b05ab28e16004f",
-    "code_commit_status": "1.47.1 published; painted bow front corrected and Ayla verified",
+    "code_commit_status": "1.47.3 published; edited existing files compared with GitHub base",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "cfd0b65403344f92e8e453f1afc5aeea894327c1",
+    "code_commit": "38f063559045e1852215440d6f477ec8318d77e0",
     "published_code_github_commit": "cfd0b65403344f92e8e453f1afc5aeea894327c1",
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
     "id": "resume-owned-compatible-legend-selection",
     "base_product_version": "1.47.2",
-    "implementation_status": "validated",
+    "implementation_status": "published",
     "report": "docs/evolution/runs/2026-10-26.md"
   },
   "publication": {
-    "id": "appgdep_6add6a6caf108191a34917c083b706dc",
+    "id": "appgdep_6adf38f1be8881918558761ffe55b4b5",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_0c805536a7708191b9616d370b70b725",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a04c33f164988191a79bb8571d8bf370",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -38,10 +38,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-25T02:33:40.989915+00:00",
-    "product_version": "1.47.1",
-    "version_number": 147,
-    "source_commit": "d66b2e9f3b5ca3d3dc3ade009614c503fa87886c"
+    "updated_at": "2026-10-26T11:26:52.643073+00:00",
+    "product_version": "1.47.3",
+    "version_number": 149,
+    "source_commit": "ce14bdbd04df232c636c93514874b0a37b477856"
   },
   "verification": {
     "typescript": "passed",
@@ -58,10 +58,10 @@
     "Ajustar equilíbrio após uso real; Drake, Orion, Ember e Rowan continuam bloqueados."
   ],
   "rollback": {
-    "product_version": "1.47.0",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_4e75133a069881918ad5ffb98cec78b6",
-    "site_commit": "fa715a1d7318e57a927458785e2014c55a719ac2",
-    "instructions": "Redeploy only if no newer publication exists; no save or gameplay schema changes in this patch."
+    "product_version": "1.47.2",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_08c89bd3d4f081918f16a26e38be1cbd",
+    "site_commit": "0ff0c5d62a2d677964a0a1cb4b58b0604dda15a2",
+    "instructions": "Only rollback if no newer publication exists; preserve saves."
   },
   "latest_report": "docs/evolution/runs/2026-10-26.md",
   "source_reconciliation": {
@@ -774,6 +774,8 @@
     "build": "passed",
     "offline_tests": "878 passed in 94 files; Firebase staging excluded",
     "browser": "isolated save/back/reenter Soren horizontal and Ayla portrait; no real account or forced phone-app restart",
-    "real_player_data_modified": false
+    "real_player_data_modified": false,
+    "publication": "succeeded",
+    "github_code_commit": "38f063559045e1852215440d6f477ec8318d77e0"
   }
 }
