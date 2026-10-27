@@ -3,34 +3,35 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-27",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.49.0",
+  "status": "published_1.49.0",
   "active_run": "2026-10-27-chapter4-layout",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "eb5a1cdab709a675dacfd2f41edaacdb2d260e0f",
-    "source_site_commit": "19159d32c24671f5177e982bdf4d39ab69986244",
+    "source_site_commit": "24c1cb4f7261fb132341284cde7a470ae49a6ac1",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "c12a5005bebb7add3f9ed37907951eb291d336cb",
-    "code_commit_status": "published_1.48.2",
+    "code_commit_status": "published_1.49.0",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "5a8aa2884319f6596feb0d3337aa564358e45641",
-    "published_code_github_commit": "5a8aa2884319f6596feb0d3337aa564358e45641",
+    "code_commit": "ac5d0e6a2bec6ed4c92469f7022480697a256d1b",
+    "published_code_github_commit": "ac5d0e6a2bec6ed4c92469f7022480697a256d1b",
     "publication_record_site_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
   },
   "current_improvement": {
     "id": "chapter4-portals-platforms-and-medieval-castle-bridge",
     "base_product_version": "1.48.2",
     "product_version": "1.49.0",
-    "implementation_status": "validated",
-    "report": "docs/evolution/runs/2026-10-27-chapter4-layout.md"
+    "implementation_status": "published",
+    "report": "docs/evolution/runs/2026-10-27-chapter4-layout.md",
+    "github_code_commit": "ac5d0e6a2bec6ed4c92469f7022480697a256d1b"
   },
   "publication": {
-    "id": "appgdep_6ae0915d812881918c7da9881f962db4",
+    "id": "appgdep_6ae0af91f05081919413ecd4e0e19230",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b2c1020640408191a30068da8e8b6357",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a47db3f3cf288191adc06bc52fa778f9",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,10 +40,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-27T11:56:45.757458+00:00",
-    "product_version": "1.48.2",
-    "version_number": 152,
-    "source_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
+    "updated_at": "2026-10-27T14:05:29.734213+00:00",
+    "product_version": "1.49.0",
+    "version_number": 153,
+    "source_commit": "24c1cb4f7261fb132341284cde7a470ae49a6ac1"
   },
   "verification": {
     "typescript": "passed",
@@ -51,14 +52,14 @@
     "routes": "100/100 settlements;63827 gameplay movement/collision steps; bridge round trip separately passed",
     "browser": "All10 rooms viewed; bridge at both ends and overview; 5 iframe dimensions checked; castle entered and sound enabled without observed app error",
     "limits": "No physical phone, full campaign, audio listening acceptance or FPS claim. Routes are isolated engine simulation, not continuous manual walking.",
-    "real_player_data_modified": false
+    "real_player_data_modified": false,
+    "public": "Public153:100/100 village audits passed; bridge terrace and castle seams visually verified and final overview saved."
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
   ],
   "next_actions": [
-    "Publish validated1.49.0 and check public bridge/portals.",
-    "David reviews scenery before animals/insects/master."
+    "David reviews published scenery and ambience before new animals/insects/master."
   ],
   "rollback": {
     "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
@@ -78,7 +79,7 @@
     "version_number": 151,
     "source_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4"
   },
-  "latest_report": "docs/evolution/runs/2026-10-27.md",
+  "latest_report": "docs/evolution/runs/2026-10-27-chapter4-layout.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",

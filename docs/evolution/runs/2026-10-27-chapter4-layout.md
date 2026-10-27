@@ -36,4 +36,6 @@ Consultada27/10/2026:
 
 ## Publicação
 
-Validado; aguardando registrar IDs finais da1.49.0 e conferência pública. Rollback somente se não houver publicação posterior:1.48.2/Sites152, mantendo campaignVersion17 e dados dos jogadores.
+Publicado1.49.0/Sites153. Versão salva: appgprj_6ac40994d8d881919d46203a60801e46~appgver_a47db3f3cf288191adc06bc52fa778f9. Deployment appgdep_6ae0af91f05081919413ecd4e0e19230, succeeded em27/10/2026 11:05 America/Sao_Paulo. Fonte Sites24c1cb4f7261fb132341284cde7a470ae49a6ac1; código GitHubac5d0e6a2bec6ed4c92469f7022480697a256d1b.
+
+Conferência pública final: salas31–40 com100/100 auditorias aprovadas; junção ponte/terraço e ponte/escada do castelo vistas em close, sem os pontos de coleta sobrepostos. Visão geral confirma direção e portais separados. Evidências: chapter4-public-1490-audits.json e public-1490-bridge-castle/bridge-terrace/room40.jpg. Documentação posterior não exige nova publicação. Rollback somente se não houver publicação posterior:1.48.2/Sites152, mantendo campaignVersion17 e dados dos jogadores.
