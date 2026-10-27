@@ -3,34 +3,35 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-27",
   "timezone": "America/Sao_Paulo",
-  "status": "validated_1.48.2_pending_publication",
+  "status": "published_1.48.2",
   "active_run": "2026-10-27",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
     "base_commit": "eb5a1cdab709a675dacfd2f41edaacdb2d260e0f",
-    "source_site_commit": "ce14bdbd04df232c636c93514874b0a37b477856",
+    "source_site_commit": "19159d32c24671f5177e982bdf4d39ab69986244",
     "coordination_branch": "recovery/mobile-review-20261009",
-    "implementation_base_github_commit": "01db862166ca69240ee145e152b05ab28e16004f",
-    "code_commit_status": "published and public room review passed",
+    "implementation_base_github_commit": "c12a5005bebb7add3f9ed37907951eb291d336cb",
+    "code_commit_status": "published_1.48.2",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
-    "code_commit": "38f063559045e1852215440d6f477ec8318d77e0",
-    "published_code_github_commit": "07ce15e918cb8797bb2b4d8e63144d37f1b05d02",
-    "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
+    "code_commit": "5a8aa2884319f6596feb0d3337aa564358e45641",
+    "published_code_github_commit": "5a8aa2884319f6596feb0d3337aa564358e45641",
+    "publication_record_site_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
   },
   "current_improvement": {
     "id": "chapter4-news-and-collector-room-bounds",
     "base_product_version": "1.48.1",
     "product_version": "1.48.2",
-    "implementation_status": "validated_pending_publication",
-    "report": "docs/evolution/runs/2026-10-27.md"
+    "implementation_status": "published",
+    "report": "docs/evolution/runs/2026-10-27.md",
+    "github_code_commit": "5a8aa2884319f6596feb0d3337aa564358e45641"
   },
   "publication": {
-    "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
+    "id": "appgdep_6ae0915d812881918c7da9881f962db4",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b2c1020640408191a30068da8e8b6357",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,10 +40,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-27T09:24:07.103545+00:00",
-    "product_version": "1.48.1",
-    "version_number": 151,
-    "source_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4"
+    "updated_at": "2026-10-27T11:56:45.757458+00:00",
+    "product_version": "1.48.2",
+    "version_number": 152,
+    "source_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
   },
   "verification": {
     "typescript": "passed",
