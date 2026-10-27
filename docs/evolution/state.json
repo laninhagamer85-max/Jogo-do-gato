@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-27",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.48.1",
-  "active_run": "2026-10-27-chapter4-expansion",
+  "status": "validated_1.48.2_pending_publication",
+  "active_run": "2026-10-27",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -20,10 +20,11 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "chapter4-ten-authored-review-rooms",
-    "base_product_version": "1.47.3",
-    "implementation_status": "validated",
-    "report": "docs/evolution/runs/2026-10-27-chapter4-expansion.md"
+    "id": "chapter4-news-and-collector-room-bounds",
+    "base_product_version": "1.48.1",
+    "product_version": "1.48.2",
+    "implementation_status": "validated_pending_publication",
+    "report": "docs/evolution/runs/2026-10-27.md"
   },
   "publication": {
     "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
@@ -45,25 +46,29 @@
   },
   "verification": {
     "typescript": "passed",
-    "game_tests": "892 unique game cases passed: batch 891/892 plus isolated trails file 41/41 after a timeout under parallel build/test load; no assertion failures outstanding",
-    "routes": "100 settlements, 60262 gameplay movement/collision steps, all home entrances and elevated building footprints; zero failures",
-    "build": "passed; 35.94s",
-    "browser": "Public rooms31–40 opened and inspected;100/100 public UI engine audits passed again on1.48.1; overview35/37 confirms corrected lake paths",
-    "limits": "No physical phone or full campaign. Traversal is engine simulation, not continuous manual walking."
+    "build": "passed;36.37s",
+    "offline_tests": "930/930 in95files;Firebase integration excluded",
+    "focused_tests": "27/27 in3files",
+    "browser": "isolated room40 844x390;opened/closed guard conversation",
+    "limits": "No news acknowledgement UI playthrough or full collector trip;no physical phone;no full campaign;no repeated five viewport audit;no layout changes",
+    "real_player_data_modified": false,
+    "online_phases_completed": 0
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
   ],
   "next_actions": [
-    "David revisa as composições antes de criar animais, insetos e Mestre do capítulo4."
+    "Isolated playtest of news acknowledgement and complete collector trips in rooms33–40.",
+    "David reviews chapter4 compositions before new animals/insects/master."
   ],
   "rollback": {
-    "product_version": "1.47.3",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a04c33f164988191a79bb8571d8bf370",
-    "site_commit": "ce14bdbd04df232c636c93514874b0a37b477856",
-    "instructions": "Only rollback if no newer publication exists. Older clients reject campaignVersion17 and preserve saves; do not downgrade or erase player data."
+    "product_version": "1.48.1",
+    "version_number": 151,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
+    "site_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4",
+    "instructions": "Only if no newer publication; preserve campaignVersion17 and player data."
   },
-  "latest_report": "docs/evolution/runs/2026-10-27-chapter4-expansion.md",
+  "latest_report": "docs/evolution/runs/2026-10-27.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -635,7 +640,7 @@
     "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
     "art": "2originalPNGatlases;noPNGpixelediting"
   },
-  "previous_report": "docs/evolution/runs/2026-10-21-open-world-castle-refinement.md",
+  "previous_report": "docs/evolution/runs/2026-10-27-chapter4-expansion.md",
   "minimap_discovery_optimization": {
     "status": "source_only_not_published",
     "before_distance_tests": 720,
@@ -671,7 +676,7 @@
     "fps": "not_measured",
     "status": "published_for_user_test"
   },
-  "current_report": "docs/evolution/runs/2026-10-21.md",
+  "current_report": "docs/evolution/runs/2026-10-27.md",
   "approved_concept": {
     "product_version": "1.25.0",
     "native_art": "1672x941",
@@ -690,10 +695,10 @@
   },
   "next_action": "David tests chapter4 gathering and construction on physical phone.",
   "previous_publication": {
-    "id": "appgdep_6adf38f1be8881918558761ffe55b4b5",
+    "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a04c33f164988191a79bb8571d8bf370",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -702,10 +707,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-26T11:26:52.643073+00:00",
-    "product_version": "1.47.3",
-    "version_number": 149,
-    "source_commit": "ce14bdbd04df232c636c93514874b0a37b477856"
+    "updated_at": "2026-10-27T09:24:07.103545+00:00",
+    "product_version": "1.48.1",
+    "version_number": 151,
+    "source_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4"
   },
   "independent_review": {
     "date": "2026-10-23",

@@ -1,3 +1,4 @@
+import {EXPLORATION_ROOM_COUNT} from './explorationNascentesLayout';
 import type {CombatState,CombatPoint} from './explorationCombat';
 import type {Citizen} from './explorationVillage';
 import {connectedPortal} from './explorationChapter4';
@@ -5,7 +6,7 @@ import {resourceNodes,resourceState,RESOURCE_RENEW_MS,type Material} from './exp
 import {villagerDefinition,villageSettlements} from './explorationVillageLayout';
 export const isVillageCollector=(d:ReturnType<typeof villagerDefinition>)=>d.kind==='worker'&&!d.warrior&&d.work>=0&&(d.art<4||d.art===7);
 /** NPC travel is independent of player campaign unlocks; only existing adjacent portals. */
-export function collectorDestination(home:number,cycle:number){const options=[home-1,home+1].filter(r=>r>=0&&r<32&&connectedPortal(home,r));return options[cycle%Math.max(1,options.length)];}
+export function collectorDestination(home:number,cycle:number){const options=[home-1,home+1].filter(r=>r>=0&&r<EXPLORATION_ROOM_COUNT&&connectedPortal(home,r));return options[cycle%Math.max(1,options.length)];}
 export function finishCollector(s:CombatState,id:string,c:Citizen){const d=villagerDefinition(id);if(c.cargoMaterial){const town=villageSettlements(d.room)[d.settlement];s.village!.growth={...s.village!.growth,[town.id]:Math.min(24,(s.village!.growth?.[town.id]??0)+1)};c.stock=Math.min(8,c.stock+1);}c.cargoMaterial=undefined;c.cargo=undefined;c.destination=undefined;c.mineral=undefined;c.collecting=false;c.task='inbound';c.timer=0;}
 export function collectVisit(s:CombatState,id:string,c:Citizen,dt:number,now:number,travel:(c:Citizen,id:string,target:CombatPoint,dt:number)=>boolean){
  const active=c.room===s.roomIndex;if(active)c.timer=Math.max(0,c.timer-dt);
