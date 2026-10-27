@@ -78,7 +78,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const [audioMix]=useState(loadExplorationAudio);
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
-  useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed,chapterNumber(game.roomIndex));},[audioMix,soundOn,panel,overview,assetStatus,game.completed,game.roomIndex,game.castle?.active]);
+  useEffect(()=>{audio.current?.configure(audioMix,soundOn&&!panel&&!overview&&assetStatus==='ready'&&!game.completed,chapterNumber(game.roomIndex),!!game.castle?.active);},[audioMix,soundOn,panel,overview,assetStatus,game.completed,game.roomIndex,game.castle?.active]);
   const [noticeVisible,setNoticeVisible]=useState(true);
   useEffect(()=>{setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),4500);return ()=>clearTimeout(timer);},[game.message,game.roomIndex]);
   const protectedAtHome=insideSafeBase(game)&&!game.castle?.active;
@@ -174,7 +174,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
         const urgent = pending.current.attack || pending.current.power || pending.current.interact;
         let before = current.current;if(before.workshop?.job&&[before.workshop.job,...before.workshop.jobs??[]].some(j=>Date.now()>=j.finishAt)){const finished=workshopCommand(before,{type:'claim'});if(finished!==before){change(finished);before=finished;}}
         current.current = panelRef.current==='village'?tickVillage(before,dt):stepCombat(before, { dx, dy, ...pending.current }, dt);
-        audio.current?.configure(mixRef.current,soundRef.current,chapterNumber(current.current.roomIndex));audio.current?.tick();
+        audio.current?.configure(mixRef.current,soundRef.current,chapterNumber(current.current.roomIndex),!!current.current.castle?.active);audio.current?.tick();
         if (soundRef.current) {
           if(current.current.enemies.some((e,i)=>(e.windupUntil??0)>(before.enemies[i]?.windupUntil??0)||e.attackAt>(before.enemies[i]?.attackAt??0)))audio.current?.cue(current.current.enemies.some(e=>(e.windupUntil??0)>current.current.time));
           if (current.current.strikeUntil !== before.strikeUntil && current.current.strikeUntil > current.current.time) audio.current?.action(pending.current.power?'power':'paw');

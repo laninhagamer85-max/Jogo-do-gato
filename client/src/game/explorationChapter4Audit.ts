@@ -19,7 +19,7 @@ export function auditChapter4Villages(index:number):VillageAudit[]{
    const route=pilotRoute(player,goal,true,index,state.workshop);
    if(!route.length&&Math.hypot(player.x-goal.x,player.y-goal.y)>.05){errors.push('Sem caminho para '+JSON.stringify(goal));continue;}
    for(const point of route){
-    let remaining=200;
+    let remaining=Math.ceil(Math.hypot(player.x-point.x,player.y-point.y)/.15)+20;
     while(Math.hypot(player.x-point.x,player.y-point.y)>.025&&remaining-->0){
      const distance=Math.hypot(point.x-player.x,point.y-player.y),step=Math.min(.15,distance);
      const next=moveCombatPoint(player,(point.x-player.x)/distance*step,(point.y-player.y)/distance*step,true,.22,index,state.workshop);

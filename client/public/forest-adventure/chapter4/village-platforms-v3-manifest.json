@@ -1,0 +1,110 @@
+{
+  "source": "Original built-in imagegen, reference based on existing game plateau. Whole RGBA conversion only, no pixel edits.",
+  "assets": [
+    {
+      "file": "plateau-courtyard-v3.webp",
+      "source": "exec-21dbd90d-d387-4eaa-a9cf-038718f6fe2b.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "b28d938e5820969d3b0e10103c2bfa8b948cb134989026c39758e56c39325941"
+    },
+    {
+      "file": "stairs-broad-v2.webp",
+      "source": "exec-dccc52f4-d9ee-4757-a630-b02d40ab6766.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "131535f37a5f5ec2f20249d8502596bd4bb8309f9cb3a1416191bd7b9d3cc907"
+    },
+    {
+      "file": "plateau-grass-v3.webp",
+      "source": "exec-53e28adb-0ffd-4176-8fd3-b6aaa1395e14.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "31a0af786ea7a7c8b897bab6cb436e0ddaa5a2489b2db2b1ba443e0c2bf3ebf4"
+    },
+    {
+      "file": "plateau-medieval-v1.webp",
+      "source": "exec-2c737260-2f7a-48d0-b8b6-7b99591e7377.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "77439ccd03770473546cdd88f4d6fec9a078ebdc317cd551772e32776aae71e5"
+    },
+    {
+      "file": "castle-bridge-medieval-v2.webp",
+      "source": "exec-a6fa74b2-3d7c-4f82-84af-be9f573aa3e2.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "24a0c94d939e221b32e55c6bacae85abe0b0465bdab2492b7e68f372c554fa39"
+    }
+  ],
+  "stair_anchors": {
+    "upper": [
+      627,
+      300
+    ],
+    "lower": [
+      627,
+      1000
+    ],
+    "walking_polygon": [
+      [
+        390,
+        200
+      ],
+      [
+        864,
+        200
+      ],
+      [
+        912,
+        1090
+      ],
+      [
+        340,
+        1090
+      ]
+    ],
+    "constant_world_run": 5.524
+  },
+  "prompts": [
+    "Broad empty limestone and moss plateau based on the original reference; uninterrupted crisp pale stone courtyard, no blur/cut patches, no buildings/stairs/people/UI, transparent alpha.",
+    "Preserve stone plateau silhouette and replace only courtyard with crisp short mossy lawn; no buildings/stairs/people/UI, transparent alpha.",
+    "Single independent six shallow broad limestone treads with low cheek walls; high overhead oblique view; vertical walking axis; no scenery, transparent alpha.",
+    "Style reference: approved broad limestone staircase. Geometry reference: original plateau. Medieval ashlar retaining face, low buttresses, broad uninterrupted paved courtyard and low parapet only on north rim; open southwest stair attachment; no Roman columns, buildings, baked stairs, people, portals or UI. Transparent alpha.",
+    "Long elevated medieval limestone bridge, low parapets and three piers descending vertically; southwest near end to northeast far end, matching original stonework and overhead camera. Both ends open. No terrain/castle/people/UI; transparent alpha."
+  ],
+  "bridge": {
+    "direction": "southwest terrace to northeast castle front door",
+    "anchors_source": [
+      [
+        150,
+        930
+      ],
+      [
+        1090,
+        285
+      ]
+    ],
+    "half_walk_width_source": 45,
+    "transform": "one uniform similarity transform shared by rendering, deck and routes",
+    "old_direction_rejected": "initial northwest-to-southeast approach hit castle side, never published"
+  }
+}

@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-27",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.48.2",
-  "active_run": "2026-10-27",
+  "status": "validated_1.49.0",
+  "active_run": "2026-10-27-chapter4-layout",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -20,12 +20,11 @@
     "publication_record_site_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
   },
   "current_improvement": {
-    "id": "chapter4-news-and-collector-room-bounds",
-    "base_product_version": "1.48.1",
-    "product_version": "1.48.2",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-27.md",
-    "github_code_commit": "5a8aa2884319f6596feb0d3337aa564358e45641"
+    "id": "chapter4-portals-platforms-and-medieval-castle-bridge",
+    "base_product_version": "1.48.2",
+    "product_version": "1.49.0",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-27-chapter4-layout.md"
   },
   "publication": {
     "id": "appgdep_6ae0915d812881918c7da9881f962db4",
@@ -47,27 +46,37 @@
   },
   "verification": {
     "typescript": "passed",
-    "build": "passed;36.37s",
-    "offline_tests": "930/930 in95files;Firebase integration excluded",
-    "focused_tests": "27/27 in3files",
-    "browser": "isolated room40 844x390;opened/closed guard conversation",
-    "limits": "No news acknowledgement UI playthrough or full collector trip;no physical phone;no full campaign;no repeated five viewport audit;no layout changes",
-    "real_player_data_modified": false,
-    "online_phases_completed": 0
+    "game_tests": "915/915 game tests;49 focused final tests after collection-point/vegetation clearance refinements",
+    "build": "passed24.61s",
+    "routes": "100/100 settlements;63827 gameplay movement/collision steps; bridge round trip separately passed",
+    "browser": "All10 rooms viewed; bridge at both ends and overview; 5 iframe dimensions checked; castle entered and sound enabled without observed app error",
+    "limits": "No physical phone, full campaign, audio listening acceptance or FPS claim. Routes are isolated engine simulation, not continuous manual walking.",
+    "real_player_data_modified": false
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
   ],
   "next_actions": [
-    "Isolated playtest of news acknowledgement and complete collector trips in rooms33–40.",
-    "David reviews chapter4 compositions before new animals/insects/master."
+    "Publish validated1.49.0 and check public bridge/portals.",
+    "David reviews scenery before animals/insects/master."
   ],
   "rollback": {
+    "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-27T09:24:07.103545+00:00",
     "product_version": "1.48.1",
     "version_number": 151,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
-    "site_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4",
-    "instructions": "Only if no newer publication; preserve campaignVersion17 and player data."
+    "source_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4"
   },
   "latest_report": "docs/evolution/runs/2026-10-27.md",
   "source_reconciliation": {
@@ -696,10 +705,10 @@
   },
   "next_action": "David tests chapter4 gathering and construction on physical phone.",
   "previous_publication": {
-    "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
+    "id": "appgdep_6ae0915d812881918c7da9881f962db4",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b2c1020640408191a30068da8e8b6357",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -708,10 +717,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-27T09:24:07.103545+00:00",
-    "product_version": "1.48.1",
-    "version_number": 151,
-    "source_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4"
+    "updated_at": "2026-10-27T11:56:45.757458+00:00",
+    "product_version": "1.48.2",
+    "version_number": 152,
+    "source_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
   },
   "independent_review": {
     "date": "2026-10-23",

@@ -1,3 +1,5 @@
+import {onCastleLanding} from './explorationCastleApproach';
+import {onCastleBridge,castleBridgeStart,castleBridgeEnd} from './explorationCastleBridge';
 import {insideRegion} from './biomeComposition';
 import {migrateChapter4Expansion} from './explorationChapter4Migration';
 import {chapter4Review,CHAPTER4_END,plateauPoint} from './explorationNascentesLayout';
@@ -12,7 +14,7 @@ import {defaultBase,baseLayout,baseBlocks,insideSafeBase} from './explorationBas
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
 import {CASTLE_GATE,enterCastle,readCastle,stepCastle,castleRoom,type CastleProgress} from './explorationCastle';
-import {castleStairBase,castleStairTop,nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesElevations,nascentesGeometry,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
+import {plateauStairBase,plateauStairTop,castleStairBase,castleStairTop,nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesElevations,nascentesGeometry,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
 import {readLegendProgress,legendWeapon,type LegendProgress} from './explorationLegends';
 import {hazardPhase} from './explorationHazards';
 import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
@@ -489,20 +491,32 @@ export function useCombatQuickItem(s:CombatState,item:CombatQuickItem){return it
 
 /** Half-unit route graph follows the diagonal stair and the actual painted courtyard. */
 function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=30,workshop?:Workshop,viaStairs=true):CombatPoint[]{
- if(Math.hypot(to.x-from.x,to.y-from.y)>80||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===CHAPTER4_END&&to.x>12)))return [];
+ if(Math.hypot(to.x-from.x,to.y-from.y)>200||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===CHAPTER4_END&&to.x>12)))return [];
  if(!pilotWalkable(to,open,.22,roomIndex,workshop))return [];
- if(roomIndex===CHAPTER4_END&&to.x>13.5&&to.x<17&&to.y<-7.3&&from.y>-7){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop);if(approach.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop)&&clearPilotWalkLine(castleStairTop,to,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},to];}
+ if(roomIndex===CHAPTER4_END&&viaStairs){
+  const floor=nascentesGeometry(39)[1].floor,castle=(p:CombatPoint)=>onCastleLanding(p)||Math.hypot(p.x-castleBridgeEnd.x,p.y-castleBridgeEnd.y)<.35,fromTerrace=insideRegion(from,floor),toTerrace=insideRegion(to,floor),fromBridge=onCastleBridge(from),toBridge=onCastleBridge(to);
+  if(fromBridge&&toBridge&&clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
+  if((fromTerrace&&(toBridge||castle(to)))||(toTerrace&&(fromBridge||castle(from)))||(fromBridge&&castle(to))||(toBridge&&castle(from))){
+   const stops:CombatPoint[]=fromTerrace?[castleBridgeStart(),...(toBridge?[to]:[castleBridgeEnd,to])]:toTerrace?[...(fromBridge?[]:[castleBridgeEnd]),castleBridgeStart(),to]:[castleBridgeEnd,to];
+   let current=from;const route:CombatPoint[]=[];
+   for(const stop of stops){if(Math.hypot(stop.x-current.x,stop.y-current.y)<.025)continue;const leg=nascentesRoute(current,stop,open,roomIndex,workshop,false);if(!leg.length)return [];route.push(...leg);current=stop;}return route;
+  }
+ }
+ if(roomIndex===CHAPTER4_END&&onCastleLanding(to)&&nascentesHeight(from,roomIndex)<.01){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop);if(approach.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop)&&clearPilotWalkLine(castleStairTop,to,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},to];}
  if(viaStairs&&roomIndex>=30){
   const geometry=nascentesGeometry(roomIndex),source=geometry.find(g=>insideRegion(from,g.floor)),destination=geometry.find(g=>insideRegion(to,g.floor));
   if(source!==destination&&(source||destination)){
    const stops:CombatPoint[]=[];
-   if(source)stops.push(plateauPoint(.34,.715,source.e),plateauPoint(.32,.845,source.e));
-   if(destination)stops.push(plateauPoint(.32,.845,destination.e),plateauPoint(.34,.715,destination.e));
+   if(source)stops.push(plateauStairTop(source.e),plateauStairBase(source.e));
+   if(destination)stops.push(plateauStairBase(destination.e),plateauStairTop(destination.e));
    stops.push(to);const route:CombatPoint[]=[];let current=from;
    for(const stop of stops){if(Math.hypot(stop.x-current.x,stop.y-current.y)<.02)continue;const leg=nascentesRoute(current,stop,open,roomIndex,workshop,false);if(!leg.length)return [];route.push(...leg);current=stop;}return route;
   }
  }
  if(clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
+ // Long inter-village trips use bounded legs instead of exhausting one local grid.
+ const span=Math.hypot(to.x-from.x,to.y-from.y);
+ if(span>55){for(const offset of [0,6,-6,12,-12]){const mid={x:(from.x+to.x)/2-(to.y-from.y)/span*offset,y:(from.y+to.y)/2+(to.x-from.x)/span*offset};if(!pilotWalkable(mid,open,.22,roomIndex,workshop)||(roomIndex>=30&&nascentesHeight(mid,roomIndex)>.01))continue;const a=nascentesRoute(from,mid,open,roomIndex,workshop),b=a.length?nascentesRoute(mid,to,open,roomIndex,workshop):[];if(a.length&&b.length)return [...a,...b];}return [];}
  const elevations=roomIndex>=30?nascentesElevations(roomIndex):[{left:-8,top:-7,size:30}],bounds={left:Math.min(from.x,to.x,...elevations.map(e=>e.left))-4,right:Math.max(from.x,to.x,...elevations.map(e=>e.left+e.size))+4,top:Math.min(from.y,to.y,...elevations.map(e=>e.top))-4,bottom:Math.max(from.y,to.y,...elevations.map(e=>e.top+e.size))+4};
  const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},previous=new Map<string,CombatPoint|null>([[key(start),null]]),cost=new Map([[key(start),0]]);
  type Entry={p:CombatPoint;g:number;f:number};const heap:Entry[]=[];
