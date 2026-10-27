@@ -1,0 +1,47 @@
+{
+  "version": "1.48.0",
+  "url": "https://meupet.aquimeusite.chatgpt.site/qa-exploration-lab?chapter4=1",
+  "scope": "Public isolated fixture; routes simulated with gameplay movement/collision; screenshots and map inspection by room",
+  "rooms": [
+    {
+      "room": 31,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Chão · Sem bloqueios · 441 passos\nVila 2 · Platô · Sem bloqueios · 633 passos\nVila 3 · Chão · Sem bloqueios · 676 passos\nVila 4 · Chão · Sem bloqueios · 586 passos\nVila 5 · Chão · Sem bloqueios · 422 passos\nVila 6 · Chão · Sem bloqueios · 550 passos\nVila 7 · Chão · Sem bloqueios · 461 passos\nVila 8 · Chão · Sem bloqueios · 758 passos\nVila 9 · Chão · Sem bloqueios · 648 passos\nVila 10 · Chão · Sem bloqueios · 641 passos"
+    },
+    {
+      "room": 32,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Chão · Sem bloqueios · 418 passos\nVila 2 · Chão · Sem bloqueios · 606 passos\nVila 3 · Chão · Sem bloqueios · 676 passos\nVila 4 · Chão · Sem bloqueios · 586 passos\nVila 5 · Chão · Sem bloqueios · 422 passos\nVila 6 · Chão · Sem bloqueios · 551 passos\nVila 7 · Chão · Sem bloqueios · 461 passos\nVila 8 · Chão · Sem bloqueios · 757 passos\nVila 9 · Chão · Sem bloqueios · 615 passos\nVila 10 · Chão · Sem bloqueios · 640 passos"
+    },
+    {
+      "room": 33,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Platô · Sem bloqueios · 508 passos\nVila 2 · Chão · Sem bloqueios · 756 passos\nVila 3 · Chão · Sem bloqueios · 676 passos\nVila 4 · Chão · Sem bloqueios · 586 passos\nVila 5 · Chão · Sem bloqueios · 422 passos\nVila 6 · Chão · Sem bloqueios · 550 passos\nVila 7 · Chão · Sem bloqueios · 461 passos\nVila 8 · Chão · Sem bloqueios · 758 passos\nVila 9 · Chão · Sem bloqueios · 614 passos\nVila 10 · Chão · Sem bloqueios · 640 passos"
+    },
+    {
+      "room": 34,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Chão · Sem bloqueios · 444 passos\nVila 2 · Platô · Sem bloqueios · 599 passos\nVila 3 · Chão · Sem bloqueios · 680 passos\nVila 4 · Chão · Sem bloqueios · 586 passos\nVila 5 · Chão · Sem bloqueios · 422 passos\nVila 6 · Chão · Sem bloqueios · 550 passos\nVila 7 · Chão · Sem bloqueios · 461 passos\nVila 8 · Chão · Sem bloqueios · 757 passos\nVila 9 · Chão · Sem bloqueios · 710 passos\nVila 10 · Chão · Sem bloqueios · 640 passos"
+    },
+    {
+      "room": 35,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Platô · Sem bloqueios · 620 passos\nVila 2 · Chão · Sem bloqueios · 406 passos\nVila 3 · Platô · Sem bloqueios · 886 passos\nVila 4 · Chão · Sem bloqueios · 620 passos\nVila 5 · Chão · Sem bloqueios · 578 passos\nVila 6 · Chão · Sem bloqueios · 633 passos\nVila 7 · Chão · Sem bloqueios · 624 passos\nVila 8 · Chão · Sem bloqueios · 593 passos\nVila 9 · Chão · Sem bloqueios · 740 passos\nVila 10 · Chão · Sem bloqueios · 710 passos"
+    },
+    {
+      "room": 36,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Chão · Sem bloqueios · 455 passos\nVila 2 · Chão · Sem bloqueios · 538 passos\nVila 3 · Chão · Sem bloqueios · 676 passos\nVila 4 · Chão · Sem bloqueios · 586 passos\nVila 5 · Chão · Sem bloqueios · 422 passos\nVila 6 · Chão · Sem bloqueios · 552 passos\nVila 7 · Chão · Sem bloqueios · 461 passos\nVila 8 · Chão · Sem bloqueios · 757 passos\nVila 9 · Chão · Sem bloqueios · 611 passos\nVila 10 · Chão · Sem bloqueios · 640 passos"
+    },
+    {
+      "room": 37,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Platô · Sem bloqueios · 538 passos\nVila 2 · Chão · Sem bloqueios · 406 passos\nVila 3 · Platô · Sem bloqueios · 890 passos\nVila 4 · Chão · Sem bloqueios · 608 passos\nVila 5 · Chão · Sem bloqueios · 810 passos\nVila 6 · Chão · Sem bloqueios · 633 passos\nVila 7 · Chão · Sem bloqueios · 626 passos\nVila 8 · Chão · Sem bloqueios · 593 passos\nVila 9 · Chão · Sem bloqueios · 740 passos\nVila 10 · Chão · Sem bloqueios · 710 passos"
+    },
+    {
+      "room": 38,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Chão · Sem bloqueios · 446 passos\nVila 2 · Platô · Sem bloqueios · 601 passos\nVila 3 · Chão · Sem bloqueios · 678 passos\nVila 4 · Chão · Sem bloqueios · 586 passos\nVila 5 · Chão · Sem bloqueios · 424 passos\nVila 6 · Chão · Sem bloqueios · 551 passos\nVila 7 · Chão · Sem bloqueios · 462 passos\nVila 8 · Chão · Sem bloqueios · 757 passos\nVila 9 · Chão · Sem bloqueios · 676 passos\nVila 10 · Chão · Sem bloqueios · 641 passos"
+    },
+    {
+      "room": 39,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Platô · Sem bloqueios · 599 passos\nVila 2 · Chão · Sem bloqueios · 406 passos\nVila 3 · Platô · Sem bloqueios · 892 passos\nVila 4 · Chão · Sem bloqueios · 647 passos\nVila 5 · Chão · Sem bloqueios · 574 passos\nVila 6 · Chão · Sem bloqueios · 633 passos\nVila 7 · Chão · Sem bloqueios · 624 passos\nVila 8 · Chão · Sem bloqueios · 593 passos\nVila 9 · Chão · Sem bloqueios · 740 passos\nVila 10 · Chão · Sem bloqueios · 710 passos"
+    },
+    {
+      "room": 40,
+      "result": "10/10 vilas com percursos válidos\n\nSimulação isolada do movimento e colisão usados no jogo; não é uma partida na sua conta.\n\nVila 1 · Chão · Sem bloqueios · 603 passos\nVila 2 · Platô · Sem bloqueios · 647 passos\nVila 3 · Chão · Sem bloqueios · 677 passos\nVila 4 · Chão · Sem bloqueios · 588 passos\nVila 5 · Chão · Sem bloqueios · 422 passos\nVila 6 · Chão · Sem bloqueios · 550 passos\nVila 7 · Chão · Sem bloqueios · 461 passos\nVila 8 · Chão · Sem bloqueios · 757 passos\nVila 9 · Chão · Sem bloqueios · 647 passos\nVila 10 · Chão · Sem bloqueios · 640 passos"
+    }
+  ]
+}

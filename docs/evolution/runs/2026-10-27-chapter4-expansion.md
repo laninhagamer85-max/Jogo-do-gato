@@ -53,4 +53,8 @@ Consultada em27/10/2026:
 
 ## Publicação e revisão posterior
 
-Aguardando publicação. Completar IDs e observações por sala após revisar a versão pública.
+Publicado 1.48.0, Sites150, deployment appgdep_6ae0694110988191a2c7514c74fdda2e (succeeded). Fonte Sites00121ff95cbff3b175045f7f1987e83b5faf55eb; GitHub80ae3dfdb2d51cd7d9bce6ca92da68d64a047160.
+
+Todas as salas31–40 foram abertas no teste público isolado, com inspeção visual de vilas e mapas. Os dez percursos de cada sala passaram:100/100 povoados sem bloqueio, incluindo portas e apoio das construções elevadas. Evidências: chapter4-public-audits-20261027.json e imagens public-room31 até40.
+
+Encontrada faixa decorativa de terra cruzando o lago nas salas35/37; a navegação já contornava a água. Correção1.48.1 remove o polígono redundante e preserva apenas trilhas calculadas pela navegação. Composiçãov6 invalida cache. TypeScript,25 testes focados e build36,96s passaram. Prévia visual da35 confirma lago livre de faixa indevida. Aguardando publicação da correção e conferência pública final.

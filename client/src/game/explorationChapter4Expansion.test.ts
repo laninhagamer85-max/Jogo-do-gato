@@ -1,3 +1,4 @@
+import {insideRegion} from './biomeComposition';
 import {describe,it,expect} from 'vitest';
 import {EXPLORATION_ROOMS,campaignRoom,campaignEnemies} from './explorationCampaign';
 import {nascentesElevations,plateauPoint} from './explorationNascentesLayout';
@@ -95,3 +96,5 @@ describe('old room 32 becomes room 40 exactly once',()=>{
   const future=readCombatState({version:4,campaignVersion:18});expect(future.supported).toBe(false);
  });
 });
+
+it('does not paint an independent decorative road through blocked lake water',()=>{for(const room of EXPLORATION_ROOMS.slice(30)){const water=room.composition!.regions.filter(r=>r.material==='water');for(const soil of room.composition!.regions.filter(r=>r.material==='soil')){const minX=Math.min(...soil.polygon.map(p=>p.x)),maxX=Math.max(...soil.polygon.map(p=>p.x)),minY=Math.min(...soil.polygon.map(p=>p.y)),maxY=Math.max(...soil.polygon.map(p=>p.y));for(let x=minX;x<=maxX;x+=.125)for(let y=minY;y<=maxY;y+=.125){const p={x,y};if(insideRegion(p,soil.polygon))expect(water.some(w=>insideRegion(p,w.polygon)),'painted path in lake, room '+(room.index+1)).toBe(false);}}}});
