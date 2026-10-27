@@ -13,7 +13,7 @@ it('automatically teleports through30 consecutive portals, preserving all perman
   const before=s;for(let i=0;i<16;i++)s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index);
   s=tickCombatPortal(s,50);expect(s.roomIndex).toBe(index+1);expect(s.xp).toBe(1200);expect(s.stock.erva).toBe(7);expect(s.rareEquipped).toBe('cristal');expect(s.activeCard).toBe('roots');expect(s.revision).toBeGreaterThan(before.revision);expect(s.completed).toBe(false);expect(pilotWalkable(s.player,s.gateOpen,.22,index+1)).toBe(true);expect(Math.hypot(s.player.x-returnPortal(index+1).x,s.player.y-returnPortal(index+1).y)).toBeGreaterThan(.7);expect(read(s).roomIndex).toBe(index+1);
  }
- const last=fixture(31);last.completed=true;expect(tickCombatPortal(last,5000)).toBe(last);
+ const last=fixture(39);last.completed=true;expect(tickCombatPortal(last,5000)).toBe(last);
 });
 it('reload during the teleport resumes without replay, extra rewards or free supplies',()=>{
  let s=fixture(9);s.completed=true;s.portalElapsed=600;s.rareStock.seiva=3;s.stock.erva=0;

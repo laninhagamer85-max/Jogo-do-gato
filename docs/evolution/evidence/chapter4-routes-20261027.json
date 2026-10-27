@@ -1,0 +1,857 @@
+{
+  "date": "2026-10-27",
+  "product": "1.48.0",
+  "scope": "Isolated simulation of gameplay movement/collision, every village door and elevated building footprint; browser visual inspection recorded separately",
+  "rooms": [
+    {
+      "room": 31,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": false,
+          "steps": 441,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": true,
+          "steps": 633,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 676,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 586,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 422,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 550,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 461,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 758,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 648,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 641,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 32,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": false,
+          "steps": 418,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": false,
+          "steps": 606,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 676,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 586,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 422,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 551,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 461,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 757,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 615,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 640,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 33,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": true,
+          "steps": 508,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": false,
+          "steps": 756,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 676,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 586,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 422,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 550,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 461,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 758,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 614,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 640,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 34,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": false,
+          "steps": 444,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": true,
+          "steps": 599,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 680,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 586,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 422,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 550,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 461,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 757,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 710,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 640,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 35,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": true,
+          "steps": 620,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": false,
+          "steps": 406,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": true,
+          "steps": 886,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 620,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 578,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 633,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 624,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 593,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 740,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 710,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 36,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": false,
+          "steps": 455,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": false,
+          "steps": 538,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 676,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 586,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 422,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 552,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 461,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 757,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 611,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 640,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 37,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": true,
+          "steps": 538,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": false,
+          "steps": 406,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": true,
+          "steps": 890,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 608,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 810,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 633,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 626,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 593,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 740,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 710,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 38,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": false,
+          "steps": 446,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": true,
+          "steps": 601,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 678,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 586,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 424,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 551,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 462,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 757,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 676,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 641,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 39,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": true,
+          "steps": 599,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": false,
+          "steps": 406,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": true,
+          "steps": 892,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 647,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 574,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 633,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 624,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 593,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 740,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 710,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "room": 40,
+      "results": [
+        {
+          "slot": 0,
+          "name": "Vila das Fontes · Centro",
+          "elevated": false,
+          "steps": 603,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 1,
+          "name": "Vila das Fontes · Núcleo 2",
+          "elevated": true,
+          "steps": 647,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 2,
+          "name": "Vila das Fontes · Núcleo 3",
+          "elevated": false,
+          "steps": 677,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 3,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 588,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 4,
+          "name": "Vila das Fontes · Núcleo 5",
+          "elevated": false,
+          "steps": 422,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 5,
+          "name": "Vila das Fontes · Núcleo 6",
+          "elevated": false,
+          "steps": 550,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 6,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 461,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 7,
+          "name": "Vila das Fontes · Núcleo 8",
+          "elevated": false,
+          "steps": 757,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 8,
+          "name": "Vila das Fontes · Núcleo 9",
+          "elevated": false,
+          "steps": 647,
+          "ok": true,
+          "errors": []
+        },
+        {
+          "slot": 9,
+          "name": "Vila das Fontes · Praça",
+          "elevated": false,
+          "steps": 640,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    }
+  ]
+}

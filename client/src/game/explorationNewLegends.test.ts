@@ -13,7 +13,7 @@ describe('Soren and Ayla, distinct playable kits',()=>{
    const old=ready();old.legends={unlocked:[starter],active:null,weapons:[],weapon:null};
    expect(legendUnlockRequirements(old,id).ready).toBe(true);
    for(const denied of [{...old,xp:4000},{...old,completedRooms:[0]},{...old,legends:undefined},{...old,rareStock:{...old.rareStock,[rare]:1}}])expect(changeLegend(denied,gender,{type:'unlock',id})).toBe(denied);
-   const next=changeLegend(old,gender,{type:'unlock',id});expect(next.legends?.unlocked).toEqual([starter,id]);expect(next.stock.fibra).toBe(100);expect(next.stock.ambar).toBe(20);expect(next.rareStock[rare]).toBe(0);expect(next.rareStock.cristal).toBe(0);expect(next.campaignVersion).toBe(16);expect(old.legends?.unlocked).toEqual([starter]);
+   const next=changeLegend(old,gender,{type:'unlock',id});expect(next.legends?.unlocked).toEqual([starter,id]);expect(next.stock.fibra).toBe(100);expect(next.stock.ambar).toBe(20);expect(next.rareStock[rare]).toBe(0);expect(next.rareStock.cristal).toBe(0);expect(next.campaignVersion).toBe(17);expect(old.legends?.unlocked).toEqual([starter]);
    expect(changeLegend(old,gender==='menino'?'menina':'menino',{type:'unlock',id})).toBe(old);expect(changeLegend(next,gender,{type:'unlock',id})).toBe(next);
   }
  });
@@ -21,7 +21,7 @@ describe('Soren and Ayla, distinct playable kits',()=>{
   const s=createCombatState();s.completedRooms=[0];s.xp=1000;s.stock.fibra=60;s.stock.ambar=20;const n=changeLegend(s,'menina',{type:'unlock',id:'lyra'});expect(n.stock.fibra).toBe(0);expect(n.stock.ambar).toBe(0);expect(changeLegend(s,'menina',{type:'select',id:'ayla'})).toBe(s);expect(readLegendProgress({unlocked:['drake','ayla'],active:'drake'}).active).toBeNull();
  });
  it('persists the exclusive items and selection on snapshot and portal without granting ordinary crafted weapons',()=>{
-  for(const id of ['soren','ayla'] as const){const s=hero(id),r=readCombatState(combatSnapshot(s));expect(r.supported).toBe(true);if(!r.supported)return;expect(r.state.legends).toEqual(s.legends);expect(r.state.campaignVersion).toBe(16);expect(r.state.legends!.weapons).toEqual([]);expect(signatureActive(r.state,'weapon')).toBe(true);s.completed=true;expect(advanceCombatRoom(s).legends).toEqual(s.legends);expect(advanceCombatRoom(s).campaignVersion).toBe(16);}
+  for(const id of ['soren','ayla'] as const){const s=hero(id),r=readCombatState(combatSnapshot(s));expect(r.supported).toBe(true);if(!r.supported)return;expect(r.state.legends).toEqual(s.legends);expect(r.state.campaignVersion).toBe(17);expect(r.state.legends!.weapons).toEqual([]);expect(signatureActive(r.state,'weapon')).toBe(true);s.completed=true;expect(advanceCombatRoom(s).legends).toEqual(s.legends);expect(advanceCombatRoom(s).campaignVersion).toBe(17);}
  });
  it('equips and removes exclusive weapons and tools atomically; ordinary equipment replaces the exclusive slot',()=>{
   let s=hero('ayla');expect(legendWeapon(s)?.name).toBe('Espada Rubra');expect(gearEquipped(s,'sword','wood')).toBe(false);

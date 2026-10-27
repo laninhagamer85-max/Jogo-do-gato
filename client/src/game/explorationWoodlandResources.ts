@@ -18,4 +18,4 @@ export function woodlandResourcesNear(index:number,p:{x:number;y:number}){
  if(cache.size>=256)cache.delete(cache.keys().next().value!);cache.set(key,nodes);return nodes;
 }
 export function resourceOnPlayerFloor(index:number,p:{x:number;y:number},n:{x:number;y:number}){return index<30||Math.abs(nascentesHeight(p,index)-nascentesHeight(n,index))<.25;}
-export function validResourceSaveId(id:string){return /^m(?:[0-9]|[12][0-9]|3[01]):[0-9]:[0-5]$/.test(id)||/^r(?:[0-9]|[12][0-9]|3[01]):[0-3]$/.test(id)||/^g(?:[0-9]|[12][0-9]|3[01]):-?\d{1,8}:-?\d{1,8}$/.test(id);}
+export function validResourceSaveId(id:string){return /^m(?:[0-9]|[12][0-9]|3[0-9]):[0-9]:[0-5]$/.test(id)||/^r(?:[0-9]|[12][0-9]|3[0-9]):[0-3]$/.test(id)||/^g(?:[0-9]|[12][0-9]|3[0-9]):-?\d{1,8}:-?\d{1,8}$/.test(id);}

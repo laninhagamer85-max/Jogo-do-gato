@@ -1,3 +1,6 @@
+import {insideRegion} from './biomeComposition';
+import {migrateChapter4Expansion} from './explorationChapter4Migration';
+import {chapter4Review,CHAPTER4_END,plateauPoint} from './explorationNascentesLayout';
 import {legendKit} from './explorationLegendKits';
 import {ensureWilderness,worldEnemyDefinitions,syncWildernessEnemies,saveRoamingMaster,masterWanderGoal} from './explorationWilderness';
 import {cityBanned,safeSettlement,expelFromCity} from './explorationCivic';
@@ -9,7 +12,7 @@ import {defaultBase,baseLayout,baseBlocks,insideSafeBase} from './explorationBas
 import {newWorkshop,readWorkshop,harvestResource,nearestResource,resourceNodes,awardWorkshopMaterial,type Workshop} from './explorationWorkshop';
 import {openWorldBlocked} from './explorationOpenWorld';
 import {CASTLE_GATE,enterCastle,readCastle,stepCastle,castleRoom,type CastleProgress} from './explorationCastle';
-import {castleStairBase,castleStairTop,nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
+import {castleStairBase,castleStairTop,nascentesBlocked,nascentesTraverse,returnPortal,connectedPortal,portalDestination,nascentesElevation,nascentesElevations,nascentesGeometry,nascentesHeight,NASCENTES_SCENE} from './explorationChapter4';
 import {readLegendProgress,legendWeapon,type LegendProgress} from './explorationLegends';
 import {hazardPhase} from './explorationHazards';
 import {campaignRoom,campaignWaterBlocks,campaignEnemies,rareDropChance,rareDropKind,type RareItem,RARE_ITEMS,EXPLORATION_ROOMS} from './explorationCampaign';
@@ -44,7 +47,7 @@ export type CombatState = {
  workshop?:Workshop;
  castle?:CastleProgress;
   roomVisits?:Record<string,RoomMemory>;portalTarget?:number;portalCooldownUntil?:number;openWorldCells?:string[];
-  worldLayoutVersion?:1;levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;castleQuest?:CastleQuest;campaignVersion:2|3|4|5|6|7|8|9|10|11|12|13|14|15|16;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
+  worldLayoutVersion?:1;levelUpUntil?:number;npcBalanceVersion?:1;quickItems?:CombatQuickItem[];chapter3BalanceVersion?:2;powerFx?:{power:CombatPower;x:number;y:number;startedAt:number;until:number};roomStars:Record<string,number>;roomPerformance:{damage:number;defeats:number}|null;nascentesSceneVersion?:4;castleQuest?:CastleQuest;campaignVersion:2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17;legends?:LegendProgress;roomAttempts:Record<string,string>;cards:CombatCard[];activeCard:CombatCard|null;secondaryCard?:CombatCard|null;activePower?:CombatPower;rareEquipped:RareItem|null;defeatedEnemyIds:string[];portalElapsed:number;encounterSeed:number;rareStock:Record<RareItem,number>;rareBag:Record<RareItem,number>;roomIndex:number;completedRooms:number[];claimedRooms:number[];roomCollectedFibers:number;switchStep:number;hasRoomKey:boolean;bridgeEntered:boolean;bridgeCrossed:boolean;consumablesUsed:number;
   exploredCells: number[]; minimapVersion: 3;
   version: 4; revision: number; time: number; xp: number; hp: number; energy: number;
   player: CombatPoint; facing: CombatPoint; walkPhase: number; walking: boolean;
@@ -68,11 +71,11 @@ type CombatShared=Pick<CombatState,'village'|'workshop'|'castleQuest'|'legends'>
 export function createCombatState(roomIndex=0,encounterSeed=290519+roomIndex*101):CombatState{return createCombatStateShared(roomIndex,encounterSeed);}
 function createCombatStateShared(roomIndex:number,encounterSeed:number,shared?:CombatShared): CombatState {
   const room=campaignRoom(roomIndex);
-  return {village:shared?.village??newVillage(),castleQuest:shared?.castleQuest??newCastleQuest(),workshop:shared?.workshop??newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:15,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
+  return {village:shared?.village??newVillage(),castleQuest:shared?.castleQuest??newCastleQuest(),workshop:shared?.workshop??newWorkshop(),worldLayoutVersion:1,nascentesSceneVersion:room.index>=30?4:undefined,npcBalanceVersion:1,quickItems:normalizeQuickItems(undefined),chapter3BalanceVersion:2,roomStars:{},roomPerformance:{damage:0,defeats:0},campaignVersion:17,roomAttempts:{},cards:[],activeCard:null,rareEquipped:null,defeatedEnemyIds:[],portalElapsed:0,encounterSeed:encounterSeed>>>0,rareStock:{seiva:0,cristal:0,perola:0,escama:0},rareBag:{seiva:0,cristal:0,perola:0,escama:0},roomIndex:room.index,completedRooms:[],claimedRooms:[],roomCollectedFibers:0,switchStep:0,hasRoomKey:false,bridgeEntered:false,bridgeCrossed:false,consumablesUsed:0, minimapVersion: 3, exploredCells: readMinimap([],room.camp), version: 4, revision: 0, time: 0, xp: 0, hp: 100, energy: 100,
     player: { ...room.camp }, facing: { x: 1, y: 0 }, walkPhase: 0, walking: false,
     stock: { ...emptyItems(), erva: 2, fruta: 1 }, bag: emptyItems(),
     enemies: campaignEnemies(room.index,encounterSeed).map(e => ({ id: e.id, x: e.x, y: e.y, hp: e.hp, generation: 0, attackAt: 1500, respawnAt: 0 })),
-    loot: [], collectedNodes: [], defeated: 0, deaths: 0, gateOpen: false, completed: false, completionRewardClaimed: false,
+    loot: [], collectedNodes: [], defeated: 0, deaths: 0, gateOpen: chapter4Review(room.index), completed: false, completionRewardClaimed: false,
     equipmentOwned: false, equipmentOn: false, seed: 290519,
     attackAt: 0, strikeUntil: 0, invulnerableUntil: 0, feedback: [],
     message: room.hint };
@@ -97,7 +100,7 @@ export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean,roomIndex=0,wor
   const candidates=Array.from({length:PILOT_SIZE.width*PILOT_SIZE.height},(_,i)=>({x:PILOT_SIZE.left+.5+i%PILOT_SIZE.width,y:PILOT_SIZE.top+.5+Math.floor(i/PILOT_SIZE.width)})).filter(q=>pilotWalkable(q,gateOpen,.22,roomIndex,workshop));
   candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...room.camp};
 }
-function move(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22,roomIndex=0,workshop?:Workshop): CombatPoint {
+export function moveCombatPoint(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22,roomIndex=0,workshop?:Workshop): CombatPoint {
   const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen, radius,roomIndex,workshop) && (roomIndex<30||nascentesTraverse(p,{x:p.x+dx,y:p.y},roomIndex)) ? p.x + dx : p.x;
   return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen, radius,roomIndex,workshop) && (roomIndex<30||nascentesTraverse({x,y:p.y},{x,y:p.y+dy},roomIndex)) ? p.y + dy : p.y };
 }
@@ -105,11 +108,11 @@ function object(v: unknown): Record<string, unknown> { return v && typeof v === 
 /** Forward-version saves are never replaced; known fields are bounded on read. */
 export function readCombatState(value:unknown):CombatRead{return readCombatStateShared(value);}
 function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
-  const raw = object(value); const version = number(Number(raw.version ?? 1), 1);
-  if (version > 4 || Number(raw.campaignVersion??1)>16) return { supported: false, version };
+  const raw = migrateChapter4Expansion(object(value)); const version = number(Number(raw.version ?? 1), 1);
+  if (version > 4 || Number(raw.campaignVersion??1)>17) return { supported: false, version };
   const completedRooms=Array.isArray(raw.completedRooms)?[...new Set(raw.completedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:raw.completed===true?[0]:[];
   let unlocked=0;while(completedRooms.includes(unlocked)&&unlocked<EXPLORATION_ROOMS.length-1)unlocked++;
-  const index=CASTLE_TEST_ACCESS&&(raw.roomIndex===30||raw.roomIndex===31)?raw.roomIndex:Math.floor(number(raw.roomIndex,0,0,unlocked));
+  const index=typeof raw.roomIndex==='number'&&Number.isInteger(raw.roomIndex)&&chapter4Review(raw.roomIndex)?raw.roomIndex:Math.floor(number(raw.roomIndex,0,0,unlocked));
   const room=campaignRoom(index),s = createCombatStateShared(index,number(raw.encounterSeed,290519+index*101,0,0xffffffff),shared);
   let definitions=campaignEnemies(index,s.encounterSeed);
   for(const group of ['rareStock','rareBag'] as const)for(const item of Object.keys(RARE_ITEMS) as RareItem[])s[group][item]=Math.floor(number(object(raw[group])[item],0,0,9999));
@@ -117,11 +120,11 @@ function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
   if(raw.legends){s.legends=shared?.legends??readLegendProgress(raw.legends);s.campaignVersion=Math.max(s.legends?.unlocked.some(id=>id==='soren'||id==='ayla')?16:4,s.campaignVersion) as CombatState['campaignVersion'];}
   s.village=shared?.village??readVillage(raw.village);s.workshop=shared?.workshop??readWorkshop(raw.workshop);s.completedRooms=completedRooms;s.claimedRooms=Array.isArray(raw.claimedRooms)?[...new Set(raw.claimedRooms.filter((v):v is number=>Number.isInteger(v)&&v>=0&&v<EXPLORATION_ROOMS.length))]:completedRooms.slice();
   definitions=worldEnemyDefinitions(s);
-  s.castleQuest=shared?.castleQuest??readCastleQuest(raw.castleQuest);s.castle=readCastle(raw.castle,royalDispersed(s));if(s.castle&&index!==31)s.castle={...s.castle,active:false};
+  s.castleQuest=shared?.castleQuest??readCastleQuest(raw.castleQuest);s.castle=readCastle(raw.castle,royalDispersed(s));if(s.castle&&index!==CHAPTER4_END)s.castle={...s.castle,active:false};
   s.portalCooldownUntil=number(raw.portalCooldownUntil,0,0,1e9);
   if(Number.isInteger(raw.portalTarget)&&connectedPortal(index,raw.portalTarget as number))s.portalTarget=raw.portalTarget as number;
   s.openWorldCells=Array.isArray(raw.openWorldCells)?[...new Set(raw.openWorldCells.filter((v):v is string=>typeof v==='string'&&/^-?\d{1,6},-?\d{1,6}$/.test(v)))].slice(-12000):[];
-  s.campaignVersion=Math.max(s.campaignVersion,number(raw.campaignVersion,s.campaignVersion,2,9)) as CombatState['campaignVersion'];
+  s.campaignVersion=Math.max(s.campaignVersion,number(raw.campaignVersion,s.campaignVersion,2,17)) as CombatState['campaignVersion'];
   s.roomVisits={};
   for(const [key,memory] of Object.entries(object(raw.roomVisits))){
    const ri=Number(key);if(!Number.isInteger(ri)||ri<0||ri>=EXPLORATION_ROOMS.length||!memory||typeof memory!=='object')continue;
@@ -134,7 +137,7 @@ function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
   s.xp = Math.floor(number(raw.xp, 0, 0, 2e6)); s.hp = number(raw.hp, combatMaxHp(s.xp), 0, combatMaxHp(s.xp));
   s.time = number(raw.time, 0); s.revision = Math.floor(number(raw.revision, 0)); s.energy = number(raw.energy, 100, 0, 100);
   s.gateOpen = raw.gateOpen === true; s.completed = raw.completed === true;
-  const earnedCompletion=s.completed&&(s.portalTarget===undefined||s.gateOpen&&raw.completionRewardClaimed===true);
+  const earnedCompletion=!chapter4Review(index)&&s.completed&&(s.portalTarget===undefined||s.gateOpen&&raw.completionRewardClaimed===true);
   s.completionRewardClaimed = raw.completionRewardClaimed === true || s.claimedRooms.includes(index) || earnedCompletion;
   if(earnedCompletion&&!s.completedRooms.includes(index))s.completedRooms.push(index);
   if(s.completionRewardClaimed&&!s.claimedRooms.includes(index))s.claimedRooms.push(index);
@@ -250,11 +253,11 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   s.feedback = s.feedback.filter(f => f.until > s.time); s.energy = Math.min(100, s.energy + dt * .004);
   const dx = clamp(input.dx || 0, -1, 1), dy = clamp(input.dy || 0, -1, 1), length = Math.hypot(dx, dy);
   const previous = s.player;
-  if (length) { s.facing = { x: dx / length, y: dy / length }; s.player = move(s.player, s.facing.x * Math.min(1, length) * dt * .003*(s.legends?.active==='soren'?1.1:1), s.facing.y * Math.min(1, length) * dt * .003*(s.legends?.active==='soren'?1.1:1), s.gateOpen,.22,s.roomIndex,s.workshop); }
+  if (length) { s.facing = { x: dx / length, y: dy / length }; s.player = moveCombatPoint(s.player, s.facing.x * Math.min(1, length) * dt * .003*(s.legends?.active==='soren'?1.1:1), s.facing.y * Math.min(1, length) * dt * .003*(s.legends?.active==='soren'?1.1:1), s.gateOpen,.22,s.roomIndex,s.workshop); }
   if(cityBanned(s,s.player))s.player=previous;
   s.exploredCells = revealMinimap(s.exploredCells,s.player);
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
-  if(s.roomIndex===31&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=Math.max(s.campaignVersion,15) as CombatState['campaignVersion'];s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
+  if(s.roomIndex===CHAPTER4_END&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=Math.max(s.campaignVersion,15) as CombatState['campaignVersion'];s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) {s.energy -= 25;s.powerFx={power:s.activePower??'burst',x:s.player.x,y:s.player.y,startedAt:s.time,until:s.time+800};}
     if(power&&s.legends?.active==='soren')s.invulnerableUntil=Math.max(s.invulnerableUntil,s.time+750);
@@ -301,9 +304,9 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
     const priorEnemy={x:enemy.x,y:enemy.y};
     const range = distance(s.player, enemy), safe = insideSafeBase(s)||safeSettlement(s);
     if (!safe && range < (def.detection??4) && distance(s.player,def)<(def.leash??99) && range > (def.art? .62:PILOT_INSECT.stopDistance)) {
-      Object.assign(enemy, move(enemy, (s.player.x - enemy.x) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), (s.player.y - enemy.y) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex,s.workshop));
+      Object.assign(enemy, moveCombatPoint(enemy, (s.player.x - enemy.x) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), (s.player.y - enemy.y) / range * dt * (def.speed??.00085)*(s.time<(enemy.slowUntil??0)?.45:1), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex,s.workshop));
     } else if (safe || range > (def.detection??4) || distance(s.player,def)>=(def.leash??99)) {
-      const goal=enemy.id.startsWith('roaming-master:')?masterWanderGoal(s,def):def,home = distance(enemy, goal); if (home > .1) Object.assign(enemy, move(enemy, (goal.x - enemy.x) / home * dt * (def.boss?.0012:.0006), (goal.y - enemy.y) / home * dt * (def.boss?.0012:.0006), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex,s.workshop));
+      const goal=enemy.id.startsWith('roaming-master:')?masterWanderGoal(s,def):def,home = distance(enemy, goal); if (home > .1) Object.assign(enemy, moveCombatPoint(enemy, (goal.x - enemy.x) / home * dt * (def.boss?.0012:.0006), (goal.y - enemy.y) / home * dt * (def.boss?.0012:.0006), s.gateOpen, def.radius??PILOT_INSECT.radius,s.roomIndex,s.workshop));
     }
     if(villageSafeAt(s.roomIndex,enemy))Object.assign(enemy,priorEnemy);
     if(def.boss&&!safe&&range<3.2&&s.time>=(enemy.specialAt??3000)&&!enemy.windupUntil){enemy.windupUntil=s.time+900;enemy.specialAt=s.time+5500;feedback(s,enemy,'Afaste-se: golpe do mestre!','info');}
@@ -341,7 +344,12 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
     }
   }
   if(room.index>=30&&s.switchStep>=room.switches.length&&s.roomCollectedFibers>=room.fibers&&!s.gateOpen){s.gateOpen=true;s.message='Passagem liberada! Suba pela escadaria de pedra até o portal no platô.';}
-  if(room.index>0&&(s.completedRooms.includes(room.index-1)||(CASTLE_TEST_ACCESS&&room.index===31))&&s.time>=(s.portalCooldownUntil??0)&&distance(s.player,returnPortal(room.index))<.7){s.completed=true;s.portalElapsed=0;s.portalTarget=portalDestination(room.index,'return');s.walking=false;s.message='Atravessando o portal de retorno…';return s;}
+  if(room.index>0&&(s.completedRooms.includes(room.index-1)||chapter4Review(room.index))&&s.time>=(s.portalCooldownUntil??0)&&distance(s.player,returnPortal(room.index))<.7){s.completed=true;s.portalElapsed=0;s.portalTarget=portalDestination(room.index,'return');s.walking=false;s.message='Atravessando o portal de retorno…';return s;}
+  if(chapter4Review(room.index)&&s.gateOpen&&s.time>=(s.portalCooldownUntil??0)&&distance(s.player,room.exit)<.7){
+    const target=portalDestination(room.index,'exit');
+    if(target===undefined){s.message='Portal do capítulo 5 em preparação. Explore as outras salas ou visite o Castelo Bônus pela escadaria leste.';return s;}
+    s.completed=true;s.portalElapsed=0;s.portalTarget=target;s.walking=false;s.message='Visitando a sala '+(target+1)+' · revisão dos cenários.';return s;
+  }
   if (s.gateOpen && s.time>=(s.portalCooldownUntil??0)&&distance(s.player, room.exit) < .7) {
     s.portalTarget=portalDestination(room.index,'exit');
     for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) { s.stock[item] += s.bag[item]; s.bag[item] = 0; }
@@ -480,12 +488,22 @@ export function canUseQuickItem(s:CombatState,item:CombatQuickItem){return !s.co
 export function useCombatQuickItem(s:CombatState,item:CombatQuickItem){return item==='erva'||item==='fruta'?consumeCombatItem(s,item):useRareCombatItem(s,item);}
 
 /** Half-unit route graph follows the diagonal stair and the actual painted courtyard. */
-function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=30,workshop?:Workshop):CombatPoint[]{
- if(Math.hypot(to.x-from.x,to.y-from.y)>80||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===31&&to.x>12)))return [];
+function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=30,workshop?:Workshop,viaStairs=true):CombatPoint[]{
+ if(Math.hypot(to.x-from.x,to.y-from.y)>80||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===CHAPTER4_END&&to.x>12)))return [];
  if(!pilotWalkable(to,open,.22,roomIndex,workshop))return [];
- if(roomIndex===31&&to.x>13.5&&to.x<17&&to.y<-7.3&&from.y>-7){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop);if(approach.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop)&&clearPilotWalkLine(castleStairTop,to,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},to];}
+ if(roomIndex===CHAPTER4_END&&to.x>13.5&&to.x<17&&to.y<-7.3&&from.y>-7){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop);if(approach.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop)&&clearPilotWalkLine(castleStairTop,to,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},to];}
+ if(viaStairs&&roomIndex>=30){
+  const geometry=nascentesGeometry(roomIndex),source=geometry.find(g=>insideRegion(from,g.floor)),destination=geometry.find(g=>insideRegion(to,g.floor));
+  if(source!==destination&&(source||destination)){
+   const stops:CombatPoint[]=[];
+   if(source)stops.push(plateauPoint(.34,.715,source.e),plateauPoint(.32,.845,source.e));
+   if(destination)stops.push(plateauPoint(.32,.845,destination.e),plateauPoint(.34,.715,destination.e));
+   stops.push(to);const route:CombatPoint[]=[];let current=from;
+   for(const stop of stops){if(Math.hypot(stop.x-current.x,stop.y-current.y)<.02)continue;const leg=nascentesRoute(current,stop,open,roomIndex,workshop,false);if(!leg.length)return [];route.push(...leg);current=stop;}return route;
+  }
+ }
  if(clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
- const e=roomIndex>=30?nascentesElevation(roomIndex):{left:-8,top:-7,size:30},bounds={left:Math.min(from.x,to.x,e.left)-4,right:Math.max(from.x,to.x,e.left+e.size)+4,top:Math.min(from.y,to.y,e.top)-4,bottom:Math.max(from.y,to.y,e.top+e.size)+4};
+ const elevations=roomIndex>=30?nascentesElevations(roomIndex):[{left:-8,top:-7,size:30}],bounds={left:Math.min(from.x,to.x,...elevations.map(e=>e.left))-4,right:Math.max(from.x,to.x,...elevations.map(e=>e.left+e.size))+4,top:Math.min(from.y,to.y,...elevations.map(e=>e.top))-4,bottom:Math.max(from.y,to.y,...elevations.map(e=>e.top+e.size))+4};
  const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},previous=new Map<string,CombatPoint|null>([[key(start),null]]),cost=new Map([[key(start),0]]);
  type Entry={p:CombatPoint;g:number;f:number};const heap:Entry[]=[];
  const push=(a:Entry)=>{heap.push(a);let i=heap.length-1;while(i){const parent=(i-1)>>1;if(heap[parent].f<=a.f)break;heap[i]=heap[parent];i=parent;}heap[i]=a;};
@@ -500,7 +518,7 @@ function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=3
 export function rememberCombatRoom(s:CombatState):RoomMemory{return{worldLayoutVersion:1,collectedNodes:[...s.collectedNodes],defeatedEnemyIds:[...s.defeatedEnemyIds],roomCollectedFibers:s.roomCollectedFibers,switchStep:s.switchStep,hasRoomKey:s.hasRoomKey,bridgeEntered:s.bridgeEntered,bridgeCrossed:s.bridgeCrossed,consumablesUsed:s.consumablesUsed,gateOpen:s.gateOpen,enemies:s.enemies.map(e=>({...e})),loot:s.loot.map(l=>({...l})),exploredCells:[...s.exploredCells],roomPerformance:s.roomPerformance?{...s.roomPerformance}:null,encounterSeed:s.encounterSeed,openWorldCells:[...s.openWorldCells??[]]};}
 /** Room-local memories never contain inventory/XP/HP; cooldown and offset prevent ping-pong. */
 export function travelCombatPortal(current:CombatState,visitedRoom?:number):CombatState{
- const menuVisit=visitedRoom!==undefined&&visitedRoom>=0&&visitedRoom<EXPLORATION_ROOMS.length&&current.completedRooms.includes(visitedRoom);
+ const menuVisit=visitedRoom!==undefined&&visitedRoom>=0&&visitedRoom<EXPLORATION_ROOMS.length&&(current.completedRooms.includes(visitedRoom)||chapter4Review(visitedRoom));
  const target=menuVisit?visitedRoom:current.portalTarget;if(target===undefined||(!menuVisit&&!connectedPortal(current.roomIndex,target)))return current;
  if(!menuVisit&&target>current.roomIndex&&!current.completedRooms.includes(current.roomIndex)&&!(CASTLE_TEST_ACCESS&&current.roomIndex>=30&&target>=30))return current;
  if(!menuVisit&&target<current.roomIndex&&!current.completedRooms.includes(target)&&!(CASTLE_TEST_ACCESS&&current.roomIndex>=30&&target>=30))return current;

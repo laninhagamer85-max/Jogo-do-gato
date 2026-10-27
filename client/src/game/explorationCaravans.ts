@@ -5,7 +5,7 @@ import {returnPortal,connectedPortal} from './explorationChapter4';
 import {villagerDefinition,villageDoor,villageSettlements} from './explorationVillageLayout';
 import type {Citizen,VillageProgress} from './explorationVillage';
 export type ImportStock=Record<string,Partial<Record<RareItem,number>>>;
-export function caravanDestination(s:CombatState,home:number,cycle:number){const accessible=(room:number)=>room===s.roomIndex||s.completedRooms.includes(room)||s.completedRooms.includes(room-1)||room>=30;const options=[home-1,home+1].filter(r=>r>=0&&r<32&&connectedPortal(home,r)&&accessible(r));return options[cycle%Math.max(1,options.length)];}
+export function caravanDestination(s:CombatState,home:number,cycle:number){const accessible=(room:number)=>room===s.roomIndex||s.completedRooms.includes(room)||s.completedRooms.includes(room-1)||room>=30;const options=[home-1,home+1].filter(r=>r>=0&&r<40&&connectedPortal(home,r)&&accessible(r));return options[cycle%Math.max(1,options.length)];}
 export function caravanDoor(room:number,target:number){return target>room?campaignRoom(room).exit:returnPortal(room);}
 export function caravanArrival(room:number,from:number){const q=from<room?returnPortal(room):campaignRoom(room).exit;return{x:q.x+1.3,y:q.y+1};}
 export function caravanRare(room:number):RareItem{return room>=20?'cristal':room>=10?'escama':'seiva';}

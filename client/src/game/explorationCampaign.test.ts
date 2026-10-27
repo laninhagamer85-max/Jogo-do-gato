@@ -12,8 +12,8 @@ const walk=(s:CombatState,target:{x:number;y:number})=>{
 };
 describe('ten authored chapter-one rooms',()=>{
  it('contains ten distinct playable layouts and varied challenges',()=>{
-  expect(EXPLORATION_ROOMS).toHaveLength(32);
-  expect(new Set(EXPLORATION_ROOMS.map(r=>JSON.stringify([r.walls,r.nodes,r.marker,r.exit]))).size).toBe(32);
+  expect(EXPLORATION_ROOMS).toHaveLength(40);
+  expect(new Set(EXPLORATION_ROOMS.map(r=>JSON.stringify([r.walls,r.nodes,r.marker,r.exit]))).size).toBe(40);
   expect(EXPLORATION_ROOMS.slice(0,10).filter(r=>r.switches.length).length).toBe(2);
   expect(EXPLORATION_ROOMS.slice(0,10).filter(r=>r.key).length).toBe(2);
  });

@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-26",
+  "updated_date": "2026-10-27",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.47.3",
-  "active_run": "2026-10-26",
+  "status": "validated_1.48.0",
+  "active_run": "2026-10-27-chapter4-expansion",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
-    "base_commit": "a90c91228f6453d500d79c2b2a1f80cd6aae2ff4",
+    "base_commit": "eb5a1cdab709a675dacfd2f41edaacdb2d260e0f",
     "source_site_commit": "ce14bdbd04df232c636c93514874b0a37b477856",
     "coordination_branch": "recovery/mobile-review-20261009",
     "implementation_base_github_commit": "01db862166ca69240ee145e152b05ab28e16004f",
-    "code_commit_status": "1.47.3 published; edited existing files compared with GitHub base",
+    "code_commit_status": "validated, awaiting commit and publication",
     "previous_code_commit": "d0175bb0828272e80f753d97081fc12fcefc79be",
     "review_source_commit": "8bb0d365c6a29aae86cd40fca5e9c2a546c4ad69",
     "code_commit": "38f063559045e1852215440d6f477ec8318d77e0",
@@ -20,10 +20,10 @@
     "publication_record_site_commit": "9fe9abc4b1142a52a7a516809d6b3ee3309a36b6"
   },
   "current_improvement": {
-    "id": "resume-owned-compatible-legend-selection",
-    "base_product_version": "1.47.2",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-26.md"
+    "id": "chapter4-ten-authored-review-rooms",
+    "base_product_version": "1.47.3",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-27-chapter4-expansion.md"
   },
   "publication": {
     "id": "appgdep_6adf38f1be8881918558761ffe55b4b5",
@@ -45,25 +45,26 @@
   },
   "verification": {
     "typescript": "passed",
-    "focused_tests": "36 passed in4files; grip/outward direction, painted bow landmarks, Ayla sword, native kits, harvesting pose and renderer checks",
-    "build": "passed;18.26s",
-    "browser": "isolated renderer preview: Soren signature bow walk/attack in8directions, Ayla signature sword walk/attack and gold bow walking; no player account or save writes",
-    "limits": "not tested on a physical phone; no full campaign run in this visual-only patch"
+    "game_tests": "892 unique game cases passed: batch 891/892 plus isolated trails file 41/41 after a timeout under parallel build/test load; no assertion failures outstanding",
+    "routes": "100 settlements, 60262 gameplay movement/collision steps, all home entrances and elevated building footprints; zero failures",
+    "build": "passed; 35.94s",
+    "browser": "preview: elevated villages33/35, human NPCs, houses/services, overview, iframe formats375x667/375x812/390x844/844x390/1363x768",
+    "limits": "No physical phone or full campaign. 100-village traversal is isolated engine simulation, not manual continuous browser walking. Public per-room review follows publication."
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
   ],
   "next_actions": [
-    "Receber teste de David sobre movimento e proporção de Soren e Ayla.",
-    "Ajustar equilíbrio após uso real; Drake, Orion, Ember e Rowan continuam bloqueados."
+    "Inspecionar dez salas e100 percursos na versão publicada.",
+    "David revisa as composições antes de criar animais, insetos e Mestre do capítulo4."
   ],
   "rollback": {
-    "product_version": "1.47.2",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_08c89bd3d4f081918f16a26e38be1cbd",
-    "site_commit": "0ff0c5d62a2d677964a0a1cb4b58b0604dda15a2",
-    "instructions": "Only rollback if no newer publication exists; preserve saves."
+    "product_version": "1.47.3",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a04c33f164988191a79bb8571d8bf370",
+    "site_commit": "ce14bdbd04df232c636c93514874b0a37b477856",
+    "instructions": "Only rollback if no newer publication exists. Older clients reject campaignVersion17 and preserve saves; do not downgrade or erase player data."
   },
-  "latest_report": "docs/evolution/runs/2026-10-26.md",
+  "latest_report": "docs/evolution/runs/2026-10-27-chapter4-expansion.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -690,14 +691,22 @@
   },
   "next_action": "David tests chapter4 gathering and construction on physical phone.",
   "previous_publication": {
-    "id": "appgdep_6ada8d4b91cc8191b5d8c1a0984a3d1d",
+    "id": "appgdep_6adf38f1be8881918558761ffe55b4b5",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_660df25169c88191a960cd2d1f79739d",
-    "version_number": 134,
-    "product_version": "1.40.1",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a04c33f164988191a79bb8571d8bf370",
+    "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
-    "source_commit": "a5b86c3bffb83df51e2cba9d4e104dbe9b0c8b7d"
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-26T11:26:52.643073+00:00",
+    "product_version": "1.47.3",
+    "version_number": 149,
+    "source_commit": "ce14bdbd04df232c636c93514874b0a37b477856"
   },
   "independent_review": {
     "date": "2026-10-23",
@@ -777,5 +786,27 @@
     "real_player_data_modified": false,
     "publication": "succeeded",
     "github_code_commit": "38f063559045e1852215440d6f477ec8318d77e0"
+  },
+  "chapter4_expansion_1480": {
+    "status": "validated",
+    "rooms": [
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40
+    ],
+    "old_room32_moves_to": 40,
+    "review_portals": "two-way31–40 without challenge completion, stars or automatic rewards",
+    "castle": "optional bonus branch in40",
+    "chapter5": "exit reserved, no chapter5 outdoor content authored",
+    "hostiles": "no animals, insects, escorts or roaming master until scenery approval",
+    "save": "campaignVersion17; one-time migration of old32 checkpoint/visits/stars/residents/depletion/layout/crafting to40",
+    "art": "original approved existing Nascentes ground/plateaus/stairs/trees/village/human sprites; no new bitmaps"
   }
 }

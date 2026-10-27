@@ -2,6 +2,7 @@ import type {CombatState} from './explorationCombat';
 import {campaignRoom} from './explorationCampaign';
 /** Exactly one actionable objective, ordered like the room's real unlock checks. */
 export function explorationNextStep(s:CombatState){const r=campaignRoom(s.roomIndex),steps:Array<{text:string;done:boolean;progress?:string}>=[];
+ if(s.roomIndex>=30)return {text:s.roomIndex===39?'Visite o Castelo Bônus ou retorne pela passagem da sala 39.':'Explore a vila e use os portais para visitar as outras salas.',progress:'Visitação livre · cenários em revisão',step:1,total:1};
  if(s.gateOpen)return {text:s.roomIndex>=30?'Suba a escadaria e entre no portal.':'Entre no portal luminoso para a próxima sala.',progress:'Passagem liberada',step:1,total:1};
  const fibers=s.roomIndex===0?s.stock.fibra+s.bag.fibra:s.roomCollectedFibers,encounters=s.roomIndex===0?s.defeated:s.defeatedEnemyIds.length;
  if(r.fibers)steps.push({text:'Recolha fibras nos pontos de coleta do cenário.',done:fibers>=r.fibers,progress:`${Math.min(fibers,r.fibers)}/${r.fibers} fibras`});

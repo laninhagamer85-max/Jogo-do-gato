@@ -5,7 +5,7 @@ import {ROYAL_CHESTS,castleArmors,COMMON_CHEST_ROOMS,scatteredCastleChest} from 
 import {openRoyalChest,newCastleQuest,bindCastleActor,castleQuestTick,visibleCastleChests} from './explorationCastleQuest';
 import {startExplorationTestRoom} from './explorationSelection';
 import {recoverCastlePlayer} from './explorationCastleQuest';
-function throne(){const s=startExplorationTestRoom(createCombatState(),31);s.castle={...enterCastle(),room:'tesouro',player:castleSpawn('tesouro'),cooldown:0};s.castleQuest=newCastleQuest();return s;}
+function throne(){const s=startExplorationTestRoom(createCombatState(),39);s.castle={...enterCastle(),room:'tesouro',player:castleSpawn('tesouro'),cooldown:0};s.castleQuest=newCastleQuest();return s;}
 function near(s:ReturnType<typeof throne>,id:number){const c=ROYAL_CHESTS[id];s.castle!.active=true;s.castle!.room='tesouro';s.castle!.player={x:c.x,y:c.y+.75};s.strikeUntil=s.time+320;return s;}
 it('recovery preserves earned inventory and progression, does not mutate the save and only runs once',()=>{
  const s=throne();s.hp=0;s.castleQuest!.reviveAt=60000;
