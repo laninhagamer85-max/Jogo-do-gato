@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública confirmada em28/10/2026: **1.51.0** (Sites155), entrada do castelo conectada à ponte, passeio externo navegável, correção das árvores e fonte ilustrada sem símbolo vetorial. Publicação `succeeded`, fonte Sites `0408aeebba5521f1200937b4d403ed2229f9728c`. Consulte `docs/evolution/state.json` e `docs/evolution/runs/2026-10-28-castle-access.md`. A revisão independente de saves da1.50.0 e seus testes foram preservados.
+Versão pública confirmada em 28/10/2026: **1.52.0** (Sites156). Ponte com passagem inferior no chão e colisão nas colunas; travessia superior apenas pelos acessos elevados. Castelo com recorte suavizado e primeiro degrau lateral baixo. Publicação succeeded, fonte Sites 581206b5866e6e6f7952810955b39306cba1433c. Consulte docs/evolution/runs/2026-10-28-bridge-layers.md. Revisões anteriores preservadas.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 
