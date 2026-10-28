@@ -1,4 +1,4 @@
-import {drawCityPlaza} from './explorationCityView';
+import {drawCastleForeground} from './explorationChapter4View';
 import {worldEnemyDefinitions} from './explorationWilderness';
 import {drawExplorationDaylight} from './explorationDaylightView';
 import {villageLayout,villageSettlements,settlementStage} from './explorationVillageLayout';
@@ -14,7 +14,7 @@ import {drawCraftingActivity,drawResource,drawResourceLabel,drawHarvestTool,draw
 import {drawPaintedItem,type PaintedItem} from './explorationPaintedItems';
 import {drawBiomeShelter,drawBiomeTree} from './explorationBiomeArt';
 import {explorationGroves,openWorldPlants} from './explorationOpenWorld';
-import {returnPortal} from './explorationChapter4';
+import {returnPortal,nascentesHeight} from './explorationChapter4';
 import {drawCastleWorld} from './explorationCastleView';
 import {drawOverviewLocation} from './explorationOverviewLocation';
 import {nascentesTrees} from './explorationChapter4';
@@ -61,7 +61,6 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   trace('terrainMs');
-  if(room.biome==='nascentes'){ctx.save();ctx.translate(v.left,v.top);ctx.scale(t,t);for(const town of villageSettlements(room.index))if(settlementStage(state.village,room.index,town.slot)===2)drawCityPlaza(ctx,town.x,town.y+1);ctx.restore();}
   if(room.biome!=='nascentes')drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil,state.encounterSeed,villageSettlements(room.index).map(c=>settlementStage(state.village,room.index,c.slot)));
   trace('trailsMs');
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);
@@ -129,7 +128,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
     const p = point(entity.p);
     if(entity.type==='enemy'&&(p.x<-t*3||p.x>width+t*3||p.y<-t*3||p.y>height+t*3))continue;
     if((entity.type.startsWith('village-')||entity.type==='citizen'||entity.type==='resource')&&(p.x<-t*5||p.x>width+t*5||p.y<-t*2||p.y>height+t*5))continue;
-    if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t,!overview);continue;}
+    if(entity.type==='village-market'){drawVillageMarket(ctx,entity.p,p.x,p.y,t,!overview,state);continue;}
     if(entity.type==='village-home'){drawVillageHouse(ctx,entity.p,p.x,p.y,t,state,!overview);continue;}
     if(entity.type==='village-resource'){drawVillageResource(ctx,entity.p.kind,p.x,p.y,t);continue;}
     if(entity.type==='citizen'){drawVillageCitizen(ctx,state,entity.id,p.x,p.y,t,reducedMotion,focusedCitizen);continue;}
@@ -218,6 +217,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(overview){ctx.save();ctx.font='600 11px sans-serif';ctx.textAlign='center';ctx.strokeStyle='#20372c';ctx.lineWidth=3;ctx.fillStyle='#fff0c9';for(const c of villageSettlements(room.index)){const q=point(c),stage=settlementStage(state.village,room.index,c.slot),name=`${stage===2?'C':stage===1?'V':'P'}${c.slot+1}`;ctx.font='600 10px sans-serif';ctx.strokeText(name,q.x,q.y+t*3);ctx.fillText(name,q.x,q.y+t*3);}ctx.restore();}
   if(!overview&&!baseEditing)drawCraftingActivity(ctx,state,point,t,width,height);
   if(qa){const c=explorationColorCacheStats();ctx.canvas.dataset.colorPixels=String(c.pixels);ctx.canvas.dataset.colorMisses=String(c.misses);}
+  if(room.index===39&&nascentesHeight(state.player,39)<.01)drawCastleForeground(ctx,state.player,v.left,v.top,t);
   trace('entitiesMs');
   if(!overview&&!baseEditing)drawExplorationDaylight(ctx,width,height,state,v);
   if(overview)drawOverviewLocation(ctx,width,height,point(state.player));

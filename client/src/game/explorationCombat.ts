@@ -502,7 +502,10 @@ function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=3
    for(const stop of stops){if(Math.hypot(stop.x-current.x,stop.y-current.y)<.025)continue;const leg=nascentesRoute(current,stop,open,roomIndex,workshop,false);if(!leg.length)return [];route.push(...leg);current=stop;}return route;
   }
  }
- if(roomIndex===CHAPTER4_END&&onCastleLanding(to)&&nascentesHeight(from,roomIndex)<.01){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop);if(approach.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop)&&clearPilotWalkLine(castleStairTop,to,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},to];}
+ if(viaStairs&&roomIndex===CHAPTER4_END){
+  if(onCastleLanding(to)&&nascentesHeight(from,roomIndex)<.01){const approach=nascentesRoute(from,castleStairBase,open,roomIndex,workshop,false),upper=nascentesRoute(castleStairTop,to,open,roomIndex,workshop,false);if(approach.length&&upper.length&&clearPilotWalkLine(castleStairBase,castleStairTop,open,.22,roomIndex,workshop))return [...approach,{...castleStairTop},...upper];}
+  if(onCastleLanding(from)&&nascentesHeight(to,roomIndex)<.01){const upper=nascentesRoute(from,castleStairTop,open,roomIndex,workshop,false),ground=nascentesRoute(castleStairBase,to,open,roomIndex,workshop,false);if(upper.length&&ground.length&&clearPilotWalkLine(castleStairTop,castleStairBase,open,.22,roomIndex,workshop))return [...upper,{...castleStairBase},...ground];}
+ }
  if(viaStairs&&roomIndex>=30){
   const geometry=nascentesGeometry(roomIndex),source=geometry.find(g=>insideRegion(from,g.floor)),destination=geometry.find(g=>insideRegion(to,g.floor));
   if(source!==destination&&(source||destination)){

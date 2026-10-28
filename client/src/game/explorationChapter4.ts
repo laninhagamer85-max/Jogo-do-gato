@@ -1,4 +1,4 @@
-import {castleApproachBase,castleApproachTop,castleDoor,onCastleLanding,nearCastleApproach,insideCastleFootprint,castleLowerAccess} from './explorationCastleApproach';
+import {castleGroundBase,castleGroundTop,castleDoor,onCastleLanding,nearCastleApproach,insideCastleFootprint,castleSceneryClearance,CASTLE_GROUND_STAIRS,castleStairHeight} from './explorationCastleApproach';
 import {CASTLE_BRIDGE_FLOOR,onCastleBridge,castleBridgeHeight,castleBridgeStart,castleBridgeEnd} from './explorationCastleBridge';
 import {villageClearings} from './explorationVillageLayout';
 import {nascentesLayout,nascentesElevations,plateauPoint,CHAPTER4_END,EXPLORATION_ROOM_COUNT,type NascentesElevation} from './explorationNascentesLayout';
@@ -13,7 +13,7 @@ export const nascentesElevation=(index=30)=>nascentesElevations(index)[0];
 export const elevationPoint=(u:number,v:number,index=30)=>{const e=nascentesElevation(index);return{x:e.left+u*e.size,y:e.top+v*e.size};};
 export const nascentesPoint=(u:number,v:number)=>({x:NASCENTES_SCENE.left+u*NASCENTES_SCENE.width,y:NASCENTES_SCENE.top+v*NASCENTES_SCENE.height});
 const floorUV=[[.075,.555],[.195,.475],[.335,.410],[.430,.330],[.535,.325],[.650,.375],[.785,.390],[.885,.460],[.945,.555],[.920,.605],[.825,.655],[.720,.725],[.620,.775],[.520,.805],[.415,.755],[.390,.74316],[.385,.78566],[.285,.73321],[.290,.69071],[.250,.665],[.165,.650],[.090,.610]];
-export const castleStairBase=castleApproachBase,castleStairTop=castleApproachTop,castleGatePoint=castleDoor;
+export const castleStairBase=castleGroundBase,castleStairTop=castleGroundTop,castleGatePoint=castleDoor;
 export const broadStairArt={anchors_pixel:{lowerFoot:[627,1000],upperFoot:[627,300]},walkablePolygon_pixel:[[390,200],[864,200],[912,1090],[340,1090]]};
 export const plateauStairArt=(e:NascentesElevation)=>e.stairModel==='broad'?broadStairArt:stairArt;
 export function stairPlacementPoint(x:number,y:number,a:GroundPoint,b:GroundPoint,art=stairArt as {anchors_pixel:{lowerFoot:number[];upperFoot:number[]}}){const [lx,ly]=art.anchors_pixel.lowerFoot,[ux,uy]=art.anchors_pixel.upperFoot,sx=ux-lx,sy=uy-ly,wx=b.x-a.x,wy=b.y-a.y,den=sx*sx+sy*sy,c=(wx*sx+wy*sy)/den,d=(wy*sx-wx*sy)/den;return{x:a.x+c*(x-lx)-d*(y-ly),y:a.y+d*(x-lx)+c*(y-ly)};}
@@ -25,7 +25,7 @@ export function plateauStairPoint(x:number,y:number,e:NascentesElevation){return
 export function stairSourcePoint(x:number,y:number,index=30){return plateauStairPoint(x,y,nascentesElevation(index));}
 export const castleStairPoint=(x:number,y:number)=>stairPlacementPoint(x,y,castleStairBase,castleStairTop);
 // The rendered sprite and collision use the same uniformly transformed walking polygon.
-const castleStairFloor=stairArt.walkablePolygon_pixel.map(([x,y])=>castleStairPoint(x,y));
+const castleStairFloor=CASTLE_GROUND_STAIRS;
 const castleLanding=onCastleLanding;
 const stairProgress=(p:GroundPoint,a:GroundPoint,b:GroundPoint)=>Math.max(0,Math.min(1,((p.x-a.x)*(b.x-a.x)+(p.y-a.y)*(b.y-a.y))/((b.x-a.x)**2+(b.y-a.y)**2)));
 
@@ -37,9 +37,9 @@ const geo=(index:number)=>nascentesGeometry(index)[0];
 export const NASCENTES_PLATEAU=geo(30).floor,NASCENTES_STAIRS=geo(30).stairs;
 export const stairBase=(index=30)=>plateauStairBase(nascentesElevation(index)),stairTop=(index=30)=>plateauStairTop(nascentesElevation(index));
 export const NASCENTES_STAIR_BASE=stairBase(),NASCENTES_STAIR_TOP=stairTop();
-export function nascentesHeight(p:GroundPoint,index=30){if(index===CHAPTER4_END){if(insideRegion(p,castleStairFloor))return stairProgress(p,castleStairBase,castleStairTop);if(onCastleBridge(p))return castleBridgeHeight(p);if(castleLanding(p))return 1;}for(const g of nascentesGeometry(index)){if(insideRegion(p,g.stairs))return stairProgress(p,plateauStairBase(g.e),plateauStairTop(g.e));if(insideRegion(p,g.floor))return 1;}return 0;}
+export function nascentesHeight(p:GroundPoint,index=30){if(index===CHAPTER4_END){if(insideRegion(p,castleStairFloor))return castleStairHeight(p);if(onCastleBridge(p))return castleBridgeHeight(p);if(castleLanding(p))return 1;}for(const g of nascentesGeometry(index)){if(insideRegion(p,g.stairs))return stairProgress(p,plateauStairBase(g.e),plateauStairTop(g.e));if(insideRegion(p,g.floor))return 1;}return 0;}
 export const nascentesTraverse=(a:GroundPoint,b:GroundPoint,index=30)=>{const near=nearCastleApproach;const castle=index===CHAPTER4_END&&(near(a)||near(b))&&(insideRegion(a,castleStairFloor)||insideRegion(b,castleStairFloor)||castleLanding(a)||castleLanding(b));return Math.abs(nascentesHeight(a,index)-nascentesHeight(b,index))<=Math.hypot(a.x-b.x,a.y-b.y)*(castle?1:.65)+.025;};
-export function nascentesBlocked(p:GroundPoint,radius:number,open:boolean,index=30,ignoreShelter=false){if(!Number.isFinite(p.x)||!Number.isFinite(p.y))return true;const all=nascentesGeometry(index);if(index===CHAPTER4_END&&touchesRegion(p,radius,CASTLE_BRIDGE_FLOOR)&&[p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>onCastleBridge(q)||insideRegion(q,all[1].floor)||insideRegion(q,castleStairFloor)||castleLanding(q)||castleLowerAccess(q)))return false;if(index===CHAPTER4_END&&insideCastleFootprint(p,radius)&&!([p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>insideRegion(q,castleStairFloor)||castleLanding(q)||castleLowerAccess(q))))return true;if(!open&&all.some(g=>touchesRegion(p,radius,g.stairs)))return true;if(nascentesCollisionTrees(p,index).some(t=>Math.hypot(t.x-p.x,t.y-p.y)<radius+t.radius))return true;
+export function nascentesBlocked(p:GroundPoint,radius:number,open:boolean,index=30,ignoreShelter=false){if(!Number.isFinite(p.x)||!Number.isFinite(p.y))return true;const all=nascentesGeometry(index);if(index===CHAPTER4_END&&touchesRegion(p,radius,CASTLE_BRIDGE_FLOOR)&&[p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>onCastleBridge(q)||insideRegion(q,all[1].floor)||insideRegion(q,castleStairFloor)||castleLanding(q)))return false;if(index===CHAPTER4_END&&insideCastleFootprint(p,radius)&&!([p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(q=>!insideCastleFootprint(q,0)||insideRegion(q,castleStairFloor)||castleLanding(q))))return true;if(!open&&all.some(g=>touchesRegion(p,radius,g.stairs)))return true;if(nascentesCollisionTrees(p,index).some(t=>Math.hypot(t.x-p.x,t.y-p.y)<radius+t.radius))return true;
  const camp=nascentesLayout(index).camp;if(!ignoreShelter&&Math.abs(p.x-(camp.x-.8))<.65+radius&&Math.abs(p.y-(camp.y-.5))<.22+radius)return true;
  if(nascentesShoreProps(index).some(q=>Math.hypot(p.x-q.x,p.y-q.y)<radius+.25))return true;
  const ground=(q:GroundPoint)=>all.every(({footprint,floor,stairs})=>!insideRegion(q,footprint)||insideRegion(q,floor)||insideRegion(q,stairs));if(![p,{x:p.x-radius,y:p.y},{x:p.x+radius,y:p.y},{x:p.x,y:p.y-radius},{x:p.x,y:p.y+radius}].every(ground))return true;return false;}
@@ -66,7 +66,7 @@ export function nascentesTrees(bounds:{left:number;top:number;width:number;heigh
   if(x>-23&&x<29&&y>-18&&y<20)continue;
   for(let i=0;i<2+n%2;i++){const angle=i*2.399+(n%11)*.3,spread=i?1.2+((n>>>16)%10)/10:0;trees.push({x:x+Math.cos(angle)*spread,y:y+Math.sin(angle)*spread,variant:(n+i)%4,width:1.7+((n>>>(4+i))%12)/10,radius:.28});}
  }
- const layout=nascentesLayout(index),goals=[...nascentesRoom(index).nodes,...nascentesRoom(index).switches,...(index===39?[castleBridgeStart(),castleBridgeEnd]:[]),layout.camp,returnPortal(index),layout.exitGround??elevationPoint(.77,.55,index),...nascentesElevations(index).flatMap(e=>[plateauStairBase(e),plateauStairTop(e)])];return trees.filter(t=>index!==39||!touchesRegion(t,2,CASTLE_BRIDGE_FLOOR)).filter(t=>!goals.some(c=>Math.hypot(c.x-t.x,c.y-t.y)<4)&&!nascentesComposition(index).regions.some(r=>r.material==='water'&&touchesRegion(t,.5,r.polygon))).filter(t=>!villageClearings(index).some(c=>Math.hypot(c.x-t.x,c.y-t.y)<3.4)).filter(t=>t.x>=bounds.left-3&&t.x<=bounds.left+bounds.width+3&&t.y>=bounds.top-3&&t.y<=bounds.top+bounds.height+6);
+ const layout=nascentesLayout(index),goals=[...nascentesRoom(index).nodes,...nascentesRoom(index).switches,...(index===39?[castleBridgeStart(),castleBridgeEnd]:[]),layout.camp,returnPortal(index),layout.exitGround??elevationPoint(.77,.55,index),...nascentesElevations(index).flatMap(e=>[plateauStairBase(e),plateauStairTop(e)])];return trees.filter(t=>index!==39||!castleSceneryClearance(t,t.width*.6)&&!touchesRegion(t,2,CASTLE_BRIDGE_FLOOR)).filter(t=>!goals.some(c=>Math.hypot(c.x-t.x,c.y-t.y)<4)&&!nascentesComposition(index).regions.some(r=>r.material==='water'&&touchesRegion(t,.5,r.polygon))).filter(t=>!villageClearings(index).some(c=>Math.hypot(c.x-t.x,c.y-t.y)<3.4)).filter(t=>t.x>=bounds.left-3&&t.x<=bounds.left+bounds.width+3&&t.y>=bounds.top-3&&t.y<=bounds.top+bounds.height+6);
 }
 
 /** Explicit graph: adding an area adds its authored content and links, not a fake room counter. */

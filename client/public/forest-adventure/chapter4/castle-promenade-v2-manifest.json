@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "source": "Original built-in imagegen. Castle edit of original game asset; fountain original text brief. No external artwork.",
+  "conversion": "RGBA PNG to WebP quality94 method6; dimensions/alpha preserved; no pixel edits.",
+  "assets": [
+    {
+      "kind": "castle",
+      "file": "castle-gate-v2.webp",
+      "source_png": "exec-dc66a157-4957-4f18-9e08-ecc7e0bb4bef.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "3b56ebdad792c3ceb028c477c27f92b20e98512b585f62494f06e0c13412f3bb",
+      "bytes": 340184
+    },
+    {
+      "kind": "fountain",
+      "file": "civic-fountain-v1.webp",
+      "source_png": "exec-21cfc160-abe5-4f10-8069-d1c9ac907b5f.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "7a08495b39a2bfb0a730127d07c6b24a3174d9e37fc5aebc941d0da8d0948348",
+      "bytes": 399174
+    }
+  ],
+  "castle_world_size": 30,
+  "castle_bridge_landing_world": [
+    13.44,
+    -5.91
+  ],
+  "castle_bridge_anchor_uv": [
+    0.17,
+    0.76
+  ],
+  "door_uv": [
+    0.315,
+    0.655
+  ],
+  "east_stair_top_uv": [
+    0.89,
+    0.628
+  ],
+  "east_stair_base_uv": [
+    0.955,
+    0.695
+  ],
+  "geometry": "explorationCastleApproach.ts: CASTLE_PROMENADE, CASTLE_FOOTPRINT, CASTLE_GROUND_STAIRS. Distinct playable polygons, not the alpha/bounding rectangle.",
+  "fountain_world_size": 3.6,
+  "fountain_root_uv": [
+    0.5,
+    0.9
+  ],
+  "fountain_collision": "Existing well market footprint, stable ID. Centered in Chapter4 settlements.",
+  "castle_prompt_summary": "Preserve painted castle; replace vertical entrance rock pillar with supported flat bridge apron, continuous paved exterior promenade, east four-step stair; remove all baked trees.",
+  "fountain_prompt_summary": "Original isolated medieval limestone fountain, spout and blue water, painterly volume; no UI, runes, star or vector symbol."
+}

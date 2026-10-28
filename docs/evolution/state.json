@@ -3,8 +3,8 @@
   "project": "Meu Pet Virtual",
   "updated_date": "2026-10-28",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.50.0",
-  "active_run": "2026-10-28",
+  "status": "validated_1.51.0",
+  "active_run": "2026-10-28-castle-access",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -20,12 +20,11 @@
     "publication_record_site_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
   },
   "current_improvement": {
-    "id": "chapter4-compact-stairs-castle-scale-city-centers",
-    "base_product_version": "1.49.0",
-    "product_version": "1.50.0",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-28-city-scale.md",
-    "github_code_commit": "f4c755a876f8d4e5aad4df11257f1b898ab1253f"
+    "id": "castle-bridge-apron-promenade-painted-fountain",
+    "base_product_version": "1.50.0",
+    "product_version": "1.51.0",
+    "implementation_status": "validated",
+    "report": "docs/evolution/runs/2026-10-28-castle-access.md"
   },
   "publication": {
     "id": "appgdep_6ae17fb86384819182a66cab54c704d3",
@@ -47,10 +46,11 @@
   },
   "verification": {
     "typescript": "passed",
-    "game_tests": "916/916 full game suite;84 focused after final refinements",
-    "villages": "100/100;63927 movement steps",
-    "browser": "Chrome isolated fixtures;five viewport sizes;no physical phone",
-    "publication": "public bridge/castle and city captured;100/100 village audits repeated in deployed browser UI;no application console errors observed"
+    "game_tests": "925/925 full suite;44 focused after final geometry refinements",
+    "villages": "100/100;individual results in evidence/2026-10-28-castle/village-audits.json",
+    "browser": "Chrome supported;bridge apron,outer promenade,rear ground,fountain;actual joystick movement observed;five viewport sizes",
+    "limits": "no physical phone;no FPS or full campaign measurement",
+    "publication": "pending"
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."

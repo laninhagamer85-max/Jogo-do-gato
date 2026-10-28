@@ -11,4 +11,5 @@ const sourceDeck=(()=>{const {from:a,to:b,halfWidth:w}=BRIDGE_SOURCE,d=Math.hypo
 export const CASTLE_BRIDGE_FLOOR=sourceDeck.map(p=>castleBridgePoint(p.x,p.y));
 export const onCastleBridge=(p:GroundPoint)=>insideRegion(p,CASTLE_BRIDGE_FLOOR);
 
-export function castleBridgeHeight(p:GroundPoint){const a=castleBridgeStart(),b=castleBridgeEnd,t=Math.max(0,Math.min(1,((p.x-a.x)*(b.x-a.x)+(p.y-a.y)*(b.y-a.y))/((b.x-a.x)**2+(b.y-a.y)**2)));return 1-t;}
+/** Bridge and entrance apron share one raised level; no artificial dip into the cliff. */
+export function castleBridgeHeight(_p:GroundPoint){return 1;}
