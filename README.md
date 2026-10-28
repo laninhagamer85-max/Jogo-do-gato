@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública confirmada em 23/10/2026: **1.44.0** (Sites 139), com cinco aldeões originais e recuperação do personagem após os 60 segundos mesmo fora do castelo. Publicação com status `succeeded`, fonte Sites `332de46020bf1c3ed14f337a30134d2e686d7738`. Consulte `docs/evolution/state.json` e `docs/evolution/runs/2026-10-23.md` para a verificação independente e seus limites. Os registros de v7/v8 abaixo são históricos.
+Versão pública confirmada em 28/10/2026: **1.50.0** (Sites154), com escadas proporcionais, castelo ampliado e centros de cidade do capítulo4. Publicação com status `succeeded`, fonte Sites `c29de72245189a24cbc61e1c9fc6cab82db2018a`. Consulte `docs/evolution/state.json`, `docs/evolution/runs/2026-10-28-city-scale.md` e `docs/evolution/runs/2026-10-28.md` para a entrega visual e a revisão independente de saves. Essa revisão acrescentou testes, sem outro deploy. Os registros de v7/v8 abaixo são históricos.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 

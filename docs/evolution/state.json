@@ -4,7 +4,7 @@
   "updated_date": "2026-10-28",
   "timezone": "America/Sao_Paulo",
   "status": "published_1.50.0",
-  "active_run": "2026-10-28-city-scale",
+  "active_run": "2026-10-28",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -59,24 +59,13 @@
     "David reviews published scenery and ambience before new animals/insects/master."
   ],
   "rollback": {
-    "id": "appgdep_6ae06da2992481919c02fec300ede0f3",
-    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
-    "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_053d6a3d58988191ba4f92231df7ab81",
-    "type": "publish",
-    "status": "succeeded",
-    "url": "https://meupet.aquimeusite.chatgpt.site",
-    "has_mcp": false,
-    "screenshot_asset_pointer": null,
-    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
-    "failure_message": null,
-    "env_set_revision": 0,
-    "updated_at": "2026-10-27T09:24:07.103545+00:00",
-    "product_version": "1.48.1",
-    "version_number": 151,
-    "source_commit": "deebb046c5d34e784ca418573832c0b4e52ca3e4"
+    "product_version": "1.49.0",
+    "version_number": 153,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a47db3f3cf288191adc06bc52fa778f9",
+    "source_commit": "24c1cb4f7261fb132341284cde7a470ae49a6ac1",
+    "instructions": "No rollback performed;verify no newer publication first;preserve campaignVersion17 and player saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-27-chapter4-layout.md",
+  "latest_report": "docs/evolution/runs/2026-10-28.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -648,7 +637,7 @@
     "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
     "art": "2originalPNGatlases;noPNGpixelediting"
   },
-  "previous_report": "docs/evolution/runs/2026-10-27-chapter4-expansion.md",
+  "previous_report": "docs/evolution/runs/2026-10-28-city-scale.md",
   "minimap_discovery_optimization": {
     "status": "source_only_not_published",
     "before_distance_tests": 720,
@@ -684,7 +673,7 @@
     "fps": "not_measured",
     "status": "published_for_user_test"
   },
-  "current_report": "docs/evolution/runs/2026-10-27.md",
+  "current_report": "docs/evolution/runs/2026-10-28.md",
   "approved_concept": {
     "product_version": "1.25.0",
     "native_art": "1672x941",
@@ -701,7 +690,7 @@
     "scope": "authored connected sector; continuous ground/forest beyond; not infinite generated missions or network streaming",
     "save": "campaignVersion7; per-room local memory; no resource reset on visits"
   },
-  "next_action": "David tests chapter4 gathering and construction on physical phone.",
+  "next_action": "David reviews the1.50.0 scenery on phone;isolated news acknowledgement and full collector-trip playtest remain.",
   "previous_publication": {
     "id": "appgdep_6ae0915d812881918c7da9881f962db4",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
@@ -820,5 +809,21 @@
     "hostiles": "no animals, insects, escorts or roaming master until scenery approval",
     "save": "campaignVersion17; one-time migration of old32 checkpoint/visits/stars/residents/depletion/layout/crafting to40",
     "art": "original approved existing Nascentes ground/plateaus/stairs/trees/village/human sprites; no new bitmaps"
+  },
+  "independent_save_review": {
+    "date": "2026-10-28",
+    "status": "passed_tests_only_no_new_deploy",
+    "product_version": "1.50.0",
+    "source_published": "c29de72245189a24cbc61e1c9fc6cab82db2018a",
+    "source_reviewed": "6b9f533f56bdc55c60d707e49a775cb5017f77a9",
+    "github_test_commit": "84fef25a0e25647ced0e452d8a2e8e73bb9f4719",
+    "typescript": "passed",
+    "build": "passed;18.91s",
+    "focused_tests": "29/29 in4files",
+    "offline_suite": "953/953 in98files;Firebase integration excluded",
+    "added_tests": 2,
+    "browser": "not_run_this_cycle;no runtime/visual/physics changes",
+    "real_player_data_modified": false,
+    "online_phases_completed": 0
   }
 }
