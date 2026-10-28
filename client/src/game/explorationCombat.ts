@@ -1,6 +1,6 @@
 import {bridgeStepPoint} from './explorationCastleBridge';
 import {onCastleLanding} from './explorationCastleApproach';
-import {onCastleBridge,castleBridgeStart,castleBridgeEnd} from './explorationCastleBridge';
+import {onCastleBridge,onLegacyCastleBridge,castleBridgeStart,castleBridgeEnd} from './explorationCastleBridge';
 import {insideRegion} from './biomeComposition';
 import {migrateChapter4Expansion} from './explorationChapter4Migration';
 import {chapter4Review,CHAPTER4_END,plateauPoint} from './explorationNascentesLayout';
@@ -158,6 +158,7 @@ function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   s.roomCollectedFibers=Math.floor(number(raw.roomCollectedFibers,index===0?s.stock.fibra+s.bag.fibra:0,0,9999));
   const point = object(raw.player); const p:CombatPoint = { x: number(point.x, room.camp.x, -1e5, 1e5), y: number(point.y, room.camp.y, -1e5, 1e5),...(index===39&&onCastleBridge({x:number(point.x,room.camp.x,-1e5,1e5),y:number(point.y,room.camp.y,-1e5,1e5)})&&(point.bridgeLevel===0||point.bridgeLevel===1)?{bridgeLevel:point.bridgeLevel}:{}) };
+  if(index===39&&onCastleBridge(p)&&p.bridgeLevel===undefined)p.bridgeLevel=onLegacyCastleBridge(p)||insideRegion(p,nascentesGeometry(39)[1].floor)||onCastleLanding(p)?1:0;
   s.player = nearestPilotPoint(room.index>=30&&raw.nascentesSceneVersion!==4?room.camp:p, s.gateOpen,s.roomIndex,s.workshop);
   s.exploredCells = readMinimap(room.index>=30&&raw.nascentesSceneVersion!==4?[]:raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);

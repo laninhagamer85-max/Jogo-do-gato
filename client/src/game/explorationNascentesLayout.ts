@@ -3,7 +3,7 @@ export const CHAPTER4_START=30,CHAPTER4_END=39,EXPLORATION_ROOM_COUNT=40;
 export const CHAPTER4_REVIEW_ACCESS=true;
 export const chapter4Review=(index:number)=>CHAPTER4_REVIEW_ACCESS&&index>=CHAPTER4_START&&index<=CHAPTER4_END;
 export type NascentesPoint={x:number;y:number};
-export type NascentesElevation={left:number;top:number;size:number;style:'stone'|'grass'|'medieval';stairModel?:'broad'|'slim';villageSlot?:number};
+export type NascentesElevation={left:number;top:number;size:number;style:'stone'|'grass'|'medieval';stairModel?:'broad'|'slim'|'isometric';villageSlot?:number};
 type NascentesLayout={title:string;description:string;camp:NascentesPoint;lake:NascentesPoint;lakeScale:number;elevations:NascentesElevation[];exitGround?:NascentesPoint;groundVillage:NascentesPoint};
 export const NASCENTES_LAYOUTS:readonly NascentesLayout[]=[
  {title:'Jardim das Nascentes',description:'O jardim original, com lago, escadaria e mirante. Uma vila ocupa o terraço a noroeste.',camp:{x:-12,y:8},lake:{x:-6,y:1},lakeScale:1,elevations:[{left:0,top:-14,size:23,style:'stone'},{left:-63,top:-44,size:42,style:'grass',villageSlot:1}],groundVillage:{x:-28,y:8}},
@@ -19,7 +19,7 @@ export const NASCENTES_LAYOUTS:readonly NascentesLayout[]=[
 ];
 // Portal clearings are authored separately from building footprints and roof silhouettes.
 const portalClearings=[[27,16],[18,17],[23,19],[22,18],[20,20],[28,18],[24,19],[25,17],[24,19],[5,18]];
-NASCENTES_LAYOUTS.forEach((layout,i)=>{layout.exitGround={x:portalClearings[i][0],y:portalClearings[i][1]};layout.elevations.forEach((e,j)=>{if((i===3&&j===1)||(i===4&&j===0)||(i===8&&j===0)||(i===9&&j===1))e.style='medieval';e.stairModel=(i+j)%2?'slim':'broad';});});
+NASCENTES_LAYOUTS.forEach((layout,i)=>{layout.exitGround={x:portalClearings[i][0],y:portalClearings[i][1]};layout.elevations.forEach((e,j)=>{if((i===3&&j===1)||(i===4&&j===0)||(i===8&&j===0)||(i===9&&j===1))e.style='medieval';e.stairModel=i===9&&j===1?'isometric':(i+j)%2?'slim':'broad';});});
 export const nascentesLayout=(index=30)=>NASCENTES_LAYOUTS[Math.max(0,Math.min(9,index-30))];
 export const nascentesElevations=(index=30)=>nascentesLayout(index).elevations;
 export const plateauPoint=(u:number,v:number,e:NascentesElevation)=>({x:e.left+u*e.size,y:e.top+v*e.size});

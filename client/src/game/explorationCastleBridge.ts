@@ -7,8 +7,11 @@ export const BRIDGE_SOURCE={from:{x:150,y:930},to:{x:1090,y:285},halfWidth:45};
 export const castleBridgeStart=()=>plateauPoint(.87,.56,nascentesElevations(39)[1]);
 export const castleBridgeEnd=castleApproachBase;
 export function castleBridgePoint(x:number,y:number):GroundPoint{const a=castleBridgeStart(),b=castleBridgeEnd,s=BRIDGE_SOURCE,dx=s.to.x-s.from.x,dy=s.to.y-s.from.y,den=dx*dx+dy*dy,c=((b.x-a.x)*dx+(b.y-a.y)*dy)/den,d=((b.y-a.y)*dx-(b.x-a.x)*dy)/den;return{x:a.x+c*(x-s.from.x)-d*(y-s.from.y),y:a.y+d*(x-s.from.x)+c*(y-s.from.y)};}
-const sourceDeck=(()=>{const {from:a,to:b,halfWidth:w}=BRIDGE_SOURCE,d=Math.hypot(b.x-a.x,b.y-a.y),ux=(b.x-a.x)/d,uy=(b.y-a.y)/d;return [[-20,-w],[-20,w],[d+30,w],[d+30,-w]].map(([along,across])=>({x:a.x+ux*along-uy*across,y:a.y+uy*along+ux*across}));})();
-export const CASTLE_BRIDGE_FLOOR=sourceDeck.map(p=>castleBridgePoint(p.x,p.y));
+/** Traced interior paving, including both broad end landings; excludes parapets. */
+export const BRIDGE_WALK_SOURCE=[[58,911],[179,994],[1180,307],[1061,229]];
+export const CASTLE_BRIDGE_FLOOR=BRIDGE_WALK_SOURCE.map(([x,y])=>castleBridgePoint(x,y));
+const legacyFloor=(()=>{const {from:a,to:b,halfWidth:w}=BRIDGE_SOURCE,d=Math.hypot(b.x-a.x,b.y-a.y),ux=(b.x-a.x)/d,uy=(b.y-a.y)/d;return [[-20,-w],[-20,w],[d+30,w],[d+30,-w]].map(([along,across])=>castleBridgePoint(a.x+ux*along-uy*across,a.y+uy*along+ux*across));})();
+export const onLegacyCastleBridge=(p:GroundPoint)=>insideRegion(p,legacyFloor);
 export const onCastleBridge=(p:GroundPoint)=>insideRegion(p,CASTLE_BRIDGE_FLOOR);
 
 /** Bridge and entrance apron share one raised level; no artificial dip into the cliff. */
@@ -34,3 +37,7 @@ export function bridgeStepPoint(from:GroundPoint,to:GroundPoint,height:number):G
  const entrance=Math.min(Math.hypot(from.x-castleBridgeStart().x,from.y-castleBridgeStart().y),Math.hypot(from.x-castleBridgeEnd.x,from.y-castleBridgeEnd.y))<1.8;
  return {...next,bridgeLevel:onCastleBridge(from)?from.bridgeLevel??1:height>.9&&entrance?1:0};
 }
+
+/** Deck redraw is below every raised actor, including the connecting terrace/apron. */
+export const castleBridgeRenderRank=(type:string,height:number)=>type==='bridge-deck'?1:type==='bridge-pillar'?0:height>.9?2:0;
+export const BRIDGE_STONE_FILTER='sepia(.08) saturate(.65) hue-rotate(-18deg) brightness(1.03)';

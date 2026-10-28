@@ -1,0 +1,57 @@
+{
+  "file": "stairs-isometric-v1.webp",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "anchors_pixel": {
+    "lowerFoot": [
+      346,
+      980
+    ],
+    "upperFoot": [
+      948,
+      300
+    ]
+  },
+  "walkablePolygon_pixel": [
+    [
+      174,
+      933
+    ],
+    [
+      370,
+      1069
+    ],
+    [
+      1095,
+      345
+    ],
+    [
+      924,
+      192
+    ]
+  ],
+  "upperLanding_pixel": [
+    [
+      788,
+      287
+    ],
+    [
+      930,
+      192
+    ],
+    [
+      1095,
+      310
+    ],
+    [
+      961,
+      413
+    ]
+  ],
+  "source": "Original built-in imagegen, terrace style reference, isolated transparent masonry stair; WebP94/method6 without pixel edits.",
+  "source_png": "exec-005c63a8-6147-44dc-8163-94b580a1b53b.png",
+  "sha256": "79c350c8997cbe959654161e25b7f9c67bb09393dda1fa301a563842b0376ddf",
+  "prompt": "Use case: stylized-concept. Asset type: ORIGINAL transparent 2D isometric medieval staircase sprite for an existing game. Reference image is STYLE AND CAMERA reference only: its softly painted warm greige limestone, irregular stone slabs, moss in seams, upper-left lighting and isometric diamond paving. Create ONLY one compact solid masonry staircase, no platform, no landscape, no ground sheet, no people, no text. TRUE isometric 3/4 high overhead view, same camera as reference. Stair runs diagonally FROM LOWER LEFT (bottom landing) TO UPPER RIGHT (top landing). The long ascending center axis must run up-right at about 34 degrees above horizontal; the cross-width tread edges run down-right at about 34 degrees below horizontal, matching the two diamond paving axes. Show 6–7 shallow broad steps, short paved rectangular landings at both ends, low stone side parapets (not tall columns). Sturdy wedge of stone under steps. Width about half the overall walking length, compact and usable, not a long ladder. All tread edges parallel; no twisted stairs, no vertical/front-facing staircase. Neutral pale warm gray-beige limestone matching reference, not golden or orange. Small moss only in joints. Clean natural alpha silhouette, no glow/halo, no black outline, genuinely transparent background. Composition whole isolated stair centered with breathing room, both landings visible and unobstructed. No unrelated architecture."
+}

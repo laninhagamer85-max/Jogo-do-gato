@@ -1,5 +1,6 @@
+import {villageLayout} from './explorationVillageLayout';
 import {expect,it} from 'vitest';
-import {castleBridgePoint,castleBridgeStart,castleBridgeEnd,castleBridgeHeight,bridgeGroundBlocked,onCastleBridge,CASTLE_BRIDGE_PILLARS} from './explorationCastleBridge';
+import {castleBridgePoint,castleBridgeStart,castleBridgeEnd,castleBridgeHeight,castleBridgeRenderRank,bridgeGroundBlocked,onCastleBridge,CASTLE_BRIDGE_PILLARS} from './explorationCastleBridge';
 import {createCombatState,moveCombatPoint,pilotWalkable,pilotRoute,combatSnapshot,readCombatState,clearPilotWalkLine,type CombatPoint} from './explorationCombat';
 import {nascentesHeight,castleGatePoint,stairBase,stairTop} from './explorationChapter4';
 import {nascentesElevations,plateauPoint} from './explorationNascentesLayout';
@@ -10,3 +11,20 @@ it('blocks all three masonry footings on the ground and allows the terrain on ei
 it('uses only the connected upper approaches, crosses above the columns, and cannot leave sideways',()=>{const e=nascentesElevations(39)[1],floor=plateauPoint(.83,.56,e);let p:CombatPoint=floor;p=walk(p,castleBridgeStart());p=walk(p,castleBridgeEnd,1);expect(p.bridgeLevel).toBe(1);let middle:CombatPoint={...castleBridgePoint(520,675),bridgeLevel:1};for(let n=0;n<100;n++)middle=moveCombatPoint(middle,0,.05,true,.22,39);expect(nascentesHeight(middle,39)).toBe(1);expect(middle.y).toBeLessThan(castleBridgePoint(520,820).y);});
 it('retains the chosen bridge level and Soren across full save/reload for both passages',()=>{for(const level of [0,1] as const){const s=createCombatState(39);s.player={...castleBridgePoint(520,675),bridgeLevel:level};s.xp=4000;s.bag.fibra=17;s.legends={unlocked:['soren'],active:'soren',weapons:[],weapon:'bow'};const r=readCombatState(combatSnapshot(s));if(!r.supported)throw Error();expect(r.state.player.bridgeLevel).toBe(level);expect(nascentesHeight(r.state.player,39)).toBe(level);expect(r.state.xp).toBe(4000);expect(r.state.bag.fibra).toBe(17);expect(r.state.legends?.active).toBe('soren');}});
 it('plans a ground crossing around a footing without changing to the upper path',()=>{let p:CombatPoint=castleBridgePoint(540,805);const to=castleBridgePoint(830,805),route=pilotRoute(p,to,true,39);expect(route.length).toBeGreaterThan(1);for(const q of route)p=walk(p,q,0);expect(nascentesHeight(p,39)).toBe(0);});
+
+it('keeps all three paved walking lanes above the bridge from terrace to castle and back',()=>{
+ const lanes=[.25,.5,.75];
+ for(const side of lanes){const source=(t:number)=>{const left={x:58+(1061-58)*t,y:911+(229-911)*t},right={x:179+(1180-179)*t,y:994+(307-994)*t};return castleBridgePoint(left.x+(right.x-left.x)*side,left.y+(right.y-left.y)*side);};
+  let p:CombatPoint={...source(.08),bridgeLevel:1};const far={...source(.92),bridgeLevel:1 as const};expect(clearPilotWalkLine(p,far,true,.22,39)).toBe(true);p=walk(p,far,1);p=walk(p,{...source(.08),bridgeLevel:1},1);expect(p.bridgeLevel).toBe(1);
+ }
+});
+it('does not lift an old ground save into the newly traced wider bridge floor',()=>{
+ const s=createCombatState(39);s.player=castleBridgePoint(520,745);const r=readCombatState(combatSnapshot(s));if(!r.supported)throw Error();expect(r.state.player.bridgeLevel).toBe(0);expect(nascentesHeight(r.state.player,39)).toBe(0);
+});
+
+it('draws the raised terrace and castle apron above the bridge overlay and clears the Emporio roof',()=>{
+ const e=nascentesElevations(39)[1],entry=plateauPoint(.83,.56,e),m=villageLayout(39).markets.find(m=>m.settlement===1&&m.art===3)!;
+ for(const p of [entry,castleBridgeEnd])for(const type of ['pet','citizen','village-market'])expect(castleBridgeRenderRank(type,nascentesHeight(p,39))).toBeGreaterThan(castleBridgeRenderRank('bridge-deck',0));
+ expect(castleBridgeRenderRank('pet',0)).toBeLessThan(castleBridgeRenderRank('bridge-deck',0));expect(Math.abs(entry.x-m.x)).toBeGreaterThan(4);
+ for(const dx of [-1.45,1.45])for(const dy of [-2.05,.12])expect(nascentesHeight({x:m.x+dx,y:m.y+dy},39)).toBe(1);
+});

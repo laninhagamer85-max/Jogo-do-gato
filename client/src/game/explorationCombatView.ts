@@ -1,4 +1,4 @@
-import {castleBridgePillarBase,onCastleBridge} from './explorationCastleBridge';
+import {castleBridgePillarBase,onCastleBridge,castleBridgeRenderRank} from './explorationCastleBridge';
 import {drawCastleForeground,drawBridgePiece} from './explorationChapter4View';
 import {worldEnemyDefinitions} from './explorationWilderness';
 import {drawExplorationDaylight} from './explorationDaylightView';
@@ -124,7 +124,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   drawBaseProtection(ctx,state,point,t);
   trace('itemsMs');
   const citizens=villageCitizens(state),focusedCitizen=nearestVillager(state)?.id??null;
-  const bridgeRank=(e:{type:string;p:CombatPoint})=>e.type==='bridge-deck'?1:room.index===39&&onCastleBridge(e.p)&&nascentesHeight(e.p,39)>.9?2:0;
+  const bridgeRank=(e:{type:string;p:CombatPoint})=>room.index===39?castleBridgeRenderRank(e.type,nascentesHeight(e.p,39)):0;
   const entities = [...(room.index===39?[{type:'bridge-deck' as const,p:{x:0,y:0}},...Array.from({length:3},(_,i)=>({type:'bridge-pillar' as const,i,p:castleBridgePillarBase(i)}))]:[]),...(villageLayout(room.index).markets.map(m=>({type:'village-market' as const,p:m}))),...(villageLayout(room.index).homes.map(h=>({type:'village-home' as const,p:h}))),...(villageLayout(room.index).work.map(w=>({type:'village-resource' as const,p:w}))),...citizens.map(c=>({type:'citizen' as const,id:c.id,p:state.village?.duel?.id===c.id?state.village.duel.npc:c})),...resourceNodes(room.index).map(n=>({type:'resource' as const,p:n})),...(room.index>=30?nascentesTrees({left:-v.left/t,top:-v.top/t,width:width/t,height:height/t},room.index).map(tree=>({type:'nascentes-tree' as const,p:tree})):[]),...scenery.map(prop=>({type:'prop' as const,p:prop})), ...BASE_BUILDINGS.filter(k=>k!=='home'&&baseVisible(state,k)).map(k=>({type:'base' as const,k:k as 'chest'|'workshop'|'potions',p:baseLayout(state)[k]})),{type:'shelter' as const,p:baseLayout(state).home},...(room.index>=30?[]:[{type:'portal' as const,p:room.exit}]), ...state.enemies.filter(e => e.hp > 0&&(!overview||!definitions.find(d=>d.id===e.id)?.boss)).map(e => ({ type: 'enemy' as const, p: e })), { type: 'pet' as const, p: state.player }].sort((a, b) => bridgeRank(a)-bridgeRank(b)||a.p.y-b.p.y);
   for (const entity of entities) {
     if(entity.type==='bridge-deck'){drawBridgePiece(ctx,v.left,v.top,t);continue;}

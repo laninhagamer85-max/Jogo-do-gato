@@ -20,7 +20,7 @@ for(let room=30;room<40;room++)it(`room${room+1}: portals have clear sightlines 
  }
 });
 it('sizes compact staircases to each platform and offers two models',()=>{
- const models=new Set();for(let room=30;room<40;room++)for(const e of nascentesElevations(room)){const a=plateauStairBase(e),b=plateauStairTop(e);expect(Math.hypot(a.x-b.x,a.y-b.y)).toBeCloseTo(e.size*Math.hypot(.015,.0975),5);models.add(e.stairModel);}expect(models.size).toBe(2);
+ const models=new Set();for(let room=30;room<40;room++)for(const e of nascentesElevations(room)){const a=plateauStairBase(e),b=plateauStairTop(e);expect(Math.hypot(a.x-b.x,a.y-b.y)).toBeCloseTo(e.size*(e.stairModel==='isometric'?Math.hypot(.10,.1025):Math.hypot(.015,.0975)),5);models.add(e.stairModel);}expect(models.size).toBe(3);
 });
 for(const room of [32,34,36,38])it(`room${room+1}: residents finish visits and work instead of rejecting long clear segments`,()=>{
  let s=createCombatState(room,42);s.village!.growth=Object.fromEntries(villageSettlements(room).map(t=>[t.id,24]));const town=villageSettlements(room)[0];s.player={x:town.x,y:town.y+2};s=tickVillage(s,0,1000);const defs=activeVillageDefinitions(s.village,room).filter(d=>d.settlement===0);expect(defs.length).toBeGreaterThan(0);const before=new Map(defs.map(d=>[d.id,{...s.village!.people[d.id]}]));

@@ -3,6 +3,7 @@ import {CASTLE_BRIDGE_FLOOR,onCastleBridge,castleBridgeHeight,castleBridgeStart,
 import {villageClearings} from './explorationVillageLayout';
 import {nascentesLayout,nascentesElevations,plateauPoint,CHAPTER4_END,EXPLORATION_ROOM_COUNT,type NascentesElevation} from './explorationNascentesLayout';
 export {nascentesElevations} from './explorationNascentesLayout';
+import isometricStairArt from '../../public/forest-adventure/chapter4/stairs-isometric-v1-manifest.json';
 import stairArt from '../../public/forest-adventure/biome-shelters/compact-stairs-manifest.json';
 import {insideRegion,touchesRegion,organicOutline,type GroundPoint,type BiomeComposition} from './biomeComposition';
 import type {CampaignRoom} from './explorationCampaign';
@@ -15,12 +16,12 @@ export const nascentesPoint=(u:number,v:number)=>({x:NASCENTES_SCENE.left+u*NASC
 const floorUV=[[.075,.555],[.195,.475],[.335,.410],[.430,.330],[.535,.325],[.650,.375],[.785,.390],[.885,.460],[.945,.555],[.920,.605],[.825,.655],[.720,.725],[.620,.775],[.520,.805],[.415,.755],[.390,.74316],[.385,.78566],[.285,.73321],[.290,.69071],[.250,.665],[.165,.650],[.090,.610]];
 export const castleStairBase=castleGroundBase,castleStairTop=castleGroundTop,castleGatePoint=castleDoor;
 export const broadStairArt={anchors_pixel:{lowerFoot:[627,1000],upperFoot:[627,300]},walkablePolygon_pixel:[[390,200],[864,200],[912,1090],[340,1090]]};
-export const plateauStairArt=(e:NascentesElevation)=>e.stairModel==='broad'?broadStairArt:stairArt;
+export const plateauStairArt=(e:NascentesElevation)=>e.stairModel==='isometric'?isometricStairArt:e.stairModel==='broad'?broadStairArt:stairArt;
 export function stairPlacementPoint(x:number,y:number,a:GroundPoint,b:GroundPoint,art=stairArt as {anchors_pixel:{lowerFoot:number[];upperFoot:number[]}}){const [lx,ly]=art.anchors_pixel.lowerFoot,[ux,uy]=art.anchors_pixel.upperFoot,sx=ux-lx,sy=uy-ly,wx=b.x-a.x,wy=b.y-a.y,den=sx*sx+sy*sy,c=(wx*sx+wy*sy)/den,d=(wy*sx-wx*sy)/den;return{x:a.x+c*(x-lx)-d*(y-ly),y:a.y+d*(x-lx)+c*(y-ly)};}
 /** A supported upper landing lets a smaller staircase meet the same ground/cliff seam. */
-export const plateauStairLanding=(e:NascentesElevation)=>[[.390,.74316],[.385,.78566],[.285,.73321],[.290,.69071]].map(([u,v])=>plateauPoint(u,v,e));
+export const plateauStairLanding=(e:NascentesElevation)=>e.stairModel==='isometric'?isometricStairArt.upperLanding_pixel.map(([x,y])=>plateauStairPoint(x,y,e)):[[.390,.74316],[.385,.78566],[.285,.73321],[.290,.69071]].map(([u,v])=>plateauPoint(u,v,e));
 export const plateauStairTop=(e:NascentesElevation)=>plateauPoint(.335,.7475,e);
-export const plateauStairBase=(e:NascentesElevation)=>plateauPoint(.32,.845,e);
+export const plateauStairBase=(e:NascentesElevation)=>plateauPoint(e.stairModel==='isometric'?.235:.32,e.stairModel==='isometric'?.85:.845,e);
 export function plateauStairPoint(x:number,y:number,e:NascentesElevation){return stairPlacementPoint(x,y,plateauStairBase(e),plateauStairTop(e),plateauStairArt(e));}
 export function stairSourcePoint(x:number,y:number,index=30){return plateauStairPoint(x,y,nascentesElevation(index));}
 export const castleStairPoint=(x:number,y:number)=>stairPlacementPoint(x,y,castleStairBase,castleStairTop);

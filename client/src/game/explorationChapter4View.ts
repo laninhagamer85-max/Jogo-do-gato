@@ -1,5 +1,5 @@
 import {CASTLE_ART,CASTLE_ASSET,castleSceneryClearance,castleOccludesGround} from './explorationCastleApproach';
-import {CASTLE_BRIDGE_ASSET,castleBridgePoint,BRIDGE_DECK_SOURCE,BRIDGE_PILLAR_SOURCE} from './explorationCastleBridge';
+import {CASTLE_BRIDGE_ASSET,BRIDGE_STONE_FILTER,castleBridgePoint,BRIDGE_DECK_SOURCE,BRIDGE_PILLAR_SOURCE} from './explorationCastleBridge';
 import {nascentesElevations,CHAPTER4_END} from './explorationNascentesLayout';
 import {NASCENTES_ASSETS,stairSourcePoint,plateauStairPoint,plateauStairLanding,nascentesGeometry,castleGatePoint} from './explorationChapter4';
 import {drawTerrainTexture,type TerrainBounds} from './terrainTexture';
@@ -36,11 +36,11 @@ export function drawNascentesTerrain(ctx:CanvasRenderingContext2D,width:number,h
  // Roads on upper floors share the same clipping polygons as collision.
  if(drawGroundPaths){ctx.save();ctx.beginPath();for(const g of nascentesGeometry(index).filter(g=>g.e.style==='grass')){g.floor.forEach((q,i)=>{const a=p(q);if(i)ctx.lineTo(a.x,a.y);else ctx.moveTo(a.x,a.y);});ctx.closePath();}ctx.clip();drawGroundPaths();ctx.restore();}
  for(const raised of nascentesElevations(index)){const art=plateauImage(raised.style,plateau);if(ready(art))drawStairLanding(ctx,plateauStairLanding(raised).map(p),raised.size*tile,art!,left+raised.left*tile,top+raised.top*tile);}
- if(typeof Image!=='undefined')for(const raised of nascentesElevations(index)){const model=raised.stairModel??'slim';let im=stairImages.get(model);if(!im){im=new Image();im.onload=()=>{loadedRevision++;};im.src=model==='broad'?'/forest-adventure/chapter4/stairs-broad-v2.webp':NASCENTES_ASSETS.stairs;stairImages.set(model,im);}if(ready(im))drawStoneStair(ctx,p,(x,y)=>plateauStairPoint(x,y,raised),index,open,im);}
+ if(typeof Image!=='undefined')for(const raised of nascentesElevations(index)){const model=raised.stairModel??'slim';let im=stairImages.get(model);if(!im){im=new Image();im.onload=()=>{loadedRevision++;};im.src=model==='isometric'?'/forest-adventure/chapter4/stairs-isometric-v1.webp':model==='broad'?'/forest-adventure/chapter4/stairs-broad-v2.webp':NASCENTES_ASSETS.stairs;stairImages.set(model,im);}if(ready(im))drawStoneStair(ctx,p,(x,y)=>plateauStairPoint(x,y,raised),index,open,im);}
 
  if(treesInTerrain)for(const tree of nascentesTrees({left:-left/tile,top:-top/tile,width:width/tile,height:height/tile},index).sort((a,b)=>a.y-b.y)){const q=p(tree);drawNascentesTree(ctx,_stairs,tree,q.x,q.y,tile);}
  if(index===CHAPTER4_END&&typeof Image!=='undefined'){if(!castleArt){castleArt=new Image();castleArt.onload=()=>{loadedRevision++;};castleArt.src=CASTLE_ASSET;}if(ready(castleArt)){ctx.drawImage(castleArt!,left+CASTLE_ART.left*tile,top+CASTLE_ART.top*tile,CASTLE_ART.size*tile,CASTLE_ART.size*tile);/* Painted promenade and flat apron use the shared castle geometry. */const gate=p(castleGatePoint);drawPortalEnergy(ctx,gate.x,gate.y,tile,time,true,reduced);if(tile>20){ctx.font=`600 ${Math.max(9,Math.min(12,tile*.18))}px sans-serif`;ctx.fillStyle='#fff5cf';ctx.textAlign='center';ctx.fillText('Castelo Bônus · acesso opcional',gate.x,gate.y+tile*.45);}}}
- if(index===39&&typeof Image!=='undefined'){if(!bridgeArt){bridgeArt=new Image();bridgeArt.onload=()=>{loadedRevision++;};bridgeArt.src=CASTLE_BRIDGE_ASSET;}if(ready(bridgeArt)){const a=p(castleBridgePoint(0,0)),b=p(castleBridgePoint(1,0));ctx.save();ctx.transform(b.x-a.x,b.y-a.y,-(b.y-a.y),b.x-a.x,a.x,a.y);ctx.drawImage(bridgeArt!,0,0);ctx.restore();}}
+ if(index===39&&typeof Image!=='undefined'){if(!bridgeArt){bridgeArt=new Image();bridgeArt.onload=()=>{loadedRevision++;};bridgeArt.src=CASTLE_BRIDGE_ASSET;}if(ready(bridgeArt)){const a=p(castleBridgePoint(0,0)),b=p(castleBridgePoint(1,0));ctx.save();ctx.transform(b.x-a.x,b.y-a.y,-(b.y-a.y),b.x-a.x,a.x,a.y);ctx.filter=BRIDGE_STONE_FILTER;ctx.drawImage(bridgeArt!,0,0);ctx.restore();}}
  if(ready(shelter)){const a=p({x:room.camp.x-.8,y:room.camp.y-.5}),w=tile*2,h=w*shelter!.naturalHeight/shelter!.naturalWidth;ctx.drawImage(shelter!,a.x-w/2,a.y-h,w,h);}
  for(const [q,active,label] of [[room.exit,open,index===CHAPTER4_END?'Capítulo 5 · em preparação':'Sala '+(index+2)],[returnPortal(index),true,index===30?'Retorno ao bosque':'Sala '+index+' · voltar']] as const){const a=p(q),portalTile=Math.max(tile,9);drawPortalEnergy(ctx,a.x,a.y,portalTile,time,active,reduced);drawPortalArch(ctx,portal,a.x,a.y,portalTile);if(tile>0){ctx.save();ctx.font=`600 ${Math.max(10,Math.min(12,tile*.2))}px sans-serif`;ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#263724';ctx.strokeText(label,a.x,a.y+tile*.35);ctx.fillStyle='#f8f4d3';ctx.fillText(label,a.x,a.y+tile*.35);ctx.restore();}}
 }
@@ -82,5 +82,5 @@ export function drawBridgePiece(ctx:CanvasRenderingContext2D,left:number,top:num
  ctx.save();ctx.transform(c,d,-d,c,left+a.x*tile,top+a.y*tile);ctx.beginPath();
  if(pillar===undefined){BRIDGE_DECK_SOURCE.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();}
  else{const [x,y,w,h]=BRIDGE_PILLAR_SOURCE[pillar].clip;ctx.rect(x,y,w,h);}
- ctx.clip();ctx.drawImage(bridgeArt!,0,0);ctx.restore();
+ ctx.clip();ctx.filter=BRIDGE_STONE_FILTER;ctx.drawImage(bridgeArt!,0,0);ctx.restore();
 }
