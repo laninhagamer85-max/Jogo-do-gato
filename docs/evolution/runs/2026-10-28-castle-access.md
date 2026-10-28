@@ -1,6 +1,6 @@
 # Castelo: entrada ligada à ponte, passeio externo e fonte ilustrada
 
-28/10/2026 · America/Sao_Paulo · produto1.51.0 · Estado: validado, preparando publicação.
+28/10/2026 · America/Sao_Paulo · produto1.51.0 · Estado: publicado, Sites155, status succeeded.
 
 ## Evidência e causa
 
@@ -34,3 +34,16 @@ Consultada28/10/2026: https://developer.mozilla.org/en-US/docs/Games/Techniques/
 ## Publicação/rollback
 
 Mesmo projeto appgprj_6ac40994d8d881919d46203a60801e46 e público existente. Rollback conhecido:Sites154, fontec29de72245189a24cbc61e1c9fc6cab82db2018a, versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_afaaccf8348081919fbe96f17c2e2132. IDs finais serão registrados após sucesso; sem segunda implantação por documentação.
+
+
+## Resultado publicado
+
+- GitHub código: 74df49ac7d301be361b0cfe724fd622fddac2701.
+- Fonte Sites: 0408aeebba5521f1200937b4d403ed2229f9728c.
+- Versão Sites155: appgprj_6ac40994d8d881919d46203a60801e46~appgver_3ed219df85908191bf5bd28bf82aa64b.
+- Deployment: appgdep_6ae20bd95e98819181feb3f791b971af — succeeded.
+- URL: https://meupet.aquimeusite.chatgpt.site
+- Typecheck final aprovado; build oficial final23,04s.
+- Repetidas100 auditorias pela interface pública:10/10 em cada sala31–40; evidência public-audits.json.
+- Capturas reais da publicação em ../evidence/2026-10-28-castle/castle-public.jpg e fountain-public.jpg. Sem erros do aplicativo no console observado.
+- Documentação/evidências salvas após sucesso, sem nova implantação.
