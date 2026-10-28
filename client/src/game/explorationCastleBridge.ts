@@ -22,7 +22,11 @@ export const BRIDGE_PILLAR_SOURCE=[
 ];
 export const CASTLE_BRIDGE_PILLARS=BRIDGE_PILLAR_SOURCE.map(s=>s.foot.map(([x,y])=>castleBridgePoint(x,y)));
 export const castleBridgePillarBase=(i:number)=>{const points=CASTLE_BRIDGE_PILLARS[i];return{x:points.reduce((n,p)=>n+p.x,0)/4,y:Math.max(...points.map(p=>p.y))};};
-export function bridgeGroundBlocked(p:GroundPoint,radius:number){return CASTLE_BRIDGE_PILLARS.some(poly=>touchesRegion(p,radius,poly));}
+/** Ground actors have height above their foot anchor. Sweep their body toward the
+ * footing as well: feet outside the diamond must not bury the torso in its front face. */
+export function bridgeGroundBlocked(p:GroundPoint,radius:number){
+ return CASTLE_BRIDGE_PILLARS.some(poly=>[0,.2,.4,.6,.8].some(up=>touchesRegion({x:p.x,y:p.y-up},radius+.18,poly)));
+}
 /** The deck/beam occludes ground actors, while each column is sorted at its own footing. */
 export const BRIDGE_DECK_SOURCE=[[10,850],[1036,145],[1082,160],[1235,260],[1228,354],[235,1050],[176,1052],[12,940]];
 export function bridgeStepPoint(from:GroundPoint,to:GroundPoint,height:number):GroundPoint{

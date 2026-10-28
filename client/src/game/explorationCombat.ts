@@ -86,6 +86,7 @@ function createCombatStateShared(roomIndex:number,encounterSeed:number,shared?:C
 export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22,roomIndex=0,workshop?:Workshop,ignoreBase=false): boolean {
   const room=campaignRoom(roomIndex);
   if(villageHouseBlocks(p,radius,roomIndex))return false;
+  if(room.index>=30&&resourceNodes(roomIndex).some(n=>Math.hypot(n.x-p.x,n.y-.25-p.y)<radius+(n.kind==='tree'?.25:.43)&&Math.abs(nascentesHeight(p,roomIndex)-nascentesHeight(n,roomIndex))<.25))return false;
   if(room.index>=30)return !nascentesBlocked(p,radius,gateOpen,room.index,Boolean(workshop)||ignoreBase)&&!campaignWaterBlocks(p,radius,room)&&(ignoreBase||!baseBlocks(p,radius,roomIndex,workshop));
   if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||campaignWaterBlocks(p,radius,room)||openWorldBlocked(p,radius,roomIndex))return false;
   if(resourceNodes(roomIndex).some(n=>Math.hypot(n.x-p.x,n.y-p.y)<radius+.24))return false;
@@ -99,6 +100,13 @@ export function pilotWalkable(p: CombatPoint, gateOpen: boolean, radius = .22,ro
 export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean,roomIndex=0,workshop?:Workshop):CombatPoint {
   const room=campaignRoom(roomIndex);
   if(pilotWalkable(p,gateOpen,.22,roomIndex,workshop))return {...p};
+  if(roomIndex>=30&&Number.isFinite(p.x)&&Number.isFinite(p.y)){
+    const height=nascentesHeight(p,roomIndex);
+    for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){
+      const raw={x:p.x+Math.cos(i*Math.PI/16)*r,y:p.y+Math.sin(i*Math.PI/16)*r},q=roomIndex===39?bridgeStepPoint(p,raw,height):raw;
+      if(Math.abs(nascentesHeight(q,roomIndex)-height)<.25&&pilotWalkable(q,gateOpen,.22,roomIndex,workshop))return q;
+    }
+  }
   if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||!insideExploration(p))return {...room.camp};
   const candidates=Array.from({length:PILOT_SIZE.width*PILOT_SIZE.height},(_,i)=>({x:PILOT_SIZE.left+.5+i%PILOT_SIZE.width,y:PILOT_SIZE.top+.5+Math.floor(i/PILOT_SIZE.width)})).filter(q=>pilotWalkable(q,gateOpen,.22,roomIndex,workshop));
   candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...room.camp};
