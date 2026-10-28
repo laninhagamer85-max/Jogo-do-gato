@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública confirmada em 28/10/2026: **1.52.0** (Sites156). Ponte com passagem inferior no chão e colisão nas colunas; travessia superior apenas pelos acessos elevados. Castelo com recorte suavizado e primeiro degrau lateral baixo. Publicação succeeded, fonte Sites 581206b5866e6e6f7952810955b39306cba1433c. Consulte docs/evolution/runs/2026-10-28-bridge-layers.md. Revisões anteriores preservadas.
+Versão pública em28/10/2026: **1.52.2** (Sites158). Sala40: piso da ponte traçado nas três faixas, camadas superiores contínuas, Empório afastado da entrada, escada isométrica e pedra harmonizada. Inclui colisão de colunas e minérios da1.52.1. Fonte Sites 9773136628a96bc8409c29b71e59b4e5971fbac8. Consulte docs/evolution/runs/2026-10-28-junctions.md.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 
