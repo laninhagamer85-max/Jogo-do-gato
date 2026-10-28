@@ -2,7 +2,7 @@ import {insideRegion,touchesRegion,type GroundPoint} from './biomeComposition';
 /** One uniform placement for artwork, paved promenade, masonry and access anchors. */
 const bridgeLanding={x:13.44,y:-5.91},size=30;
 export const CASTLE_ART={left:bridgeLanding.x-.17*size,top:bridgeLanding.y-.76*size,size};
-export const CASTLE_ASSET='/forest-adventure/chapter4/castle-gate-v2.webp';
+export const CASTLE_ASSET='/forest-adventure/chapter4/castle-gate-v4.webp';
 export const castleArtPoint=(u:number,v:number)=>({x:CASTLE_ART.left+u*size,y:CASTLE_ART.top+v*size});
 const polygon=(uv:readonly (readonly number[])[])=>uv.map(([u,v])=>castleArtPoint(u,v));
 /** Ground-contact footprint, excluding transparent PNG margins and the projected towers. */

@@ -1,5 +1,5 @@
 /** Layered, world-space terrain data. No game state, rewards or viewport coordinates. */
-export type GroundPoint = Readonly<{x:number;y:number}>;
+export type GroundPoint = Readonly<{x:number;y:number;bridgeLevel?:0|1}>;
 export type GroundRegion = Readonly<{id:string;material:'soil'|'sand'|'water';seed:number;polygon:readonly GroundPoint[]}>;
 export type BiomeProp=Readonly<{x:number;y:number;index:number;width:number;height:number;blocking:false}>;
 export type BiomeComposition = Readonly<{id:string;regions:readonly GroundRegion[];props?:readonly BiomeProp[]}>;

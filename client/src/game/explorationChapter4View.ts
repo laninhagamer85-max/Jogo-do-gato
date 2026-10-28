@@ -1,5 +1,5 @@
 import {CASTLE_ART,CASTLE_ASSET,castleSceneryClearance,castleOccludesGround} from './explorationCastleApproach';
-import {CASTLE_BRIDGE_ASSET,castleBridgePoint} from './explorationCastleBridge';
+import {CASTLE_BRIDGE_ASSET,castleBridgePoint,BRIDGE_DECK_SOURCE,BRIDGE_PILLAR_SOURCE} from './explorationCastleBridge';
 import {nascentesElevations,CHAPTER4_END} from './explorationNascentesLayout';
 import {NASCENTES_ASSETS,stairSourcePoint,plateauStairPoint,plateauStairLanding,nascentesGeometry,castleGatePoint} from './explorationChapter4';
 import {drawTerrainTexture,type TerrainBounds} from './terrainTexture';
@@ -75,3 +75,12 @@ function drawStairLanding(ctx:CanvasRenderingContext2D,q:GroundPoint[],size:numb
 
 /** Only opaque castle pixels cover ground actors behind towers; transparent margins remain free. */
 export function drawCastleForeground(ctx:CanvasRenderingContext2D,player:GroundPoint,left:number,top:number,tile:number){if(castleOccludesGround(player)&&ready(castleArt))ctx.drawImage(castleArt!,left+CASTLE_ART.left*tile,top+CASTLE_ART.top*tile,CASTLE_ART.size*tile,CASTLE_ART.size*tile);}
+
+/** Reuse the original alpha art; no opaque cover or vector drawing in the world. */
+export function drawBridgePiece(ctx:CanvasRenderingContext2D,left:number,top:number,tile:number,pillar?:number){
+ if(!ready(bridgeArt))return;const a=castleBridgePoint(0,0),b=castleBridgePoint(1,0),c=(b.x-a.x)*tile,d=(b.y-a.y)*tile;
+ ctx.save();ctx.transform(c,d,-d,c,left+a.x*tile,top+a.y*tile);ctx.beginPath();
+ if(pillar===undefined){BRIDGE_DECK_SOURCE.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();}
+ else{const [x,y,w,h]=BRIDGE_PILLAR_SOURCE[pillar].clip;ctx.rect(x,y,w,h);}
+ ctx.clip();ctx.drawImage(bridgeArt!,0,0);ctx.restore();
+}

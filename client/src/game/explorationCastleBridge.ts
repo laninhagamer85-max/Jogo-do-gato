@@ -1,6 +1,6 @@
 import {castleApproachBase} from './explorationCastleApproach';
 import {nascentesElevations,plateauPoint} from './explorationNascentesLayout';
-import {insideRegion,type GroundPoint} from './biomeComposition';
+import {insideRegion,touchesRegion,type GroundPoint} from './biomeComposition';
 export const CASTLE_BRIDGE_ASSET='/forest-adventure/chapter4/castle-bridge-medieval-v2.webp';
 /** Hand-traced deck anchors; one similarity transform preserves width, paving and direction. */
 export const BRIDGE_SOURCE={from:{x:150,y:930},to:{x:1090,y:285},halfWidth:45};
@@ -12,4 +12,21 @@ export const CASTLE_BRIDGE_FLOOR=sourceDeck.map(p=>castleBridgePoint(p.x,p.y));
 export const onCastleBridge=(p:GroundPoint)=>insideRegion(p,CASTLE_BRIDGE_FLOOR);
 
 /** Bridge and entrance apron share one raised level; no artificial dip into the cliff. */
-export function castleBridgeHeight(_p:GroundPoint){return 1;}
+export function castleBridgeHeight(p:GroundPoint){return p.bridgeLevel===0?0:1;}
+
+/** Ground contact diamonds traced on the three painted masonry footings. */
+export const BRIDGE_PILLAR_SOURCE=[
+ {foot:[[252,1041],[350,991],[451,1043],[350,1121]],clip:[230,875,240,260]},
+ {foot:[[607,790],[701,741],[796,800],[702,865]],clip:[580,620,235,260]},
+ {foot:[[941,548],[1047,499],[1130,560],[1044,631]],clip:[925,402,220,245]},
+];
+export const CASTLE_BRIDGE_PILLARS=BRIDGE_PILLAR_SOURCE.map(s=>s.foot.map(([x,y])=>castleBridgePoint(x,y)));
+export const castleBridgePillarBase=(i:number)=>{const points=CASTLE_BRIDGE_PILLARS[i];return{x:points.reduce((n,p)=>n+p.x,0)/4,y:Math.max(...points.map(p=>p.y))};};
+export function bridgeGroundBlocked(p:GroundPoint,radius:number){return CASTLE_BRIDGE_PILLARS.some(poly=>touchesRegion(p,radius,poly));}
+/** The deck/beam occludes ground actors, while each column is sorted at its own footing. */
+export const BRIDGE_DECK_SOURCE=[[10,850],[1036,145],[1082,160],[1235,260],[1228,354],[235,1050],[176,1052],[12,940]];
+export function bridgeStepPoint(from:GroundPoint,to:GroundPoint,height:number):GroundPoint{
+ const next={x:to.x,y:to.y};if(!onCastleBridge(next))return next;
+ const entrance=Math.min(Math.hypot(from.x-castleBridgeStart().x,from.y-castleBridgeStart().y),Math.hypot(from.x-castleBridgeEnd.x,from.y-castleBridgeEnd.y))<1.8;
+ return {...next,bridgeLevel:onCastleBridge(from)?from.bridgeLevel??1:height>.9&&entrance?1:0};
+}

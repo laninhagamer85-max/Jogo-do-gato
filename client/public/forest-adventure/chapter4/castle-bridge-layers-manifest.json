@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "castle_file": "castle-gate-v4.webp",
+  "source_png": "exec-a06aa12e-45b8-4fa6-9e94-e5f36b051551.png",
+  "source": "Original built-in imagegen precise edit of castle v2: clean colored alpha perimeter, no dark cutout outline; low bottom riser on east stair. Main architecture and anchors preserved.",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "alpha": [
+    0,
+    255
+  ],
+  "sha256": "a144fad0b1ba66f70d15ea222fea95ecd0443e663c787a8c9697e0ddd5cd17f9",
+  "conversion": "RGBA PNG to WebP quality94/method6, no pixel edits or resizing",
+  "bridge_art": "castle-bridge-medieval-v2.webp, unchanged",
+  "bridge_geometry": "explorationCastleBridge.ts: separate deck,three ground footings,deck occlusion polygon,pillar source rectangles. All share original uniform transform.",
+  "level_state": "player.bridgeLevel 0=under,1=over while inside bridge; entered from ground remains under,upper entrances only from connected raised landings. Saved through player position.",
+  "finalCastleAsset": "castle-gate-v4.webp",
+  "finalCastleSha256": "a144fad0b1ba66f70d15ea222fea95ecd0443e663c787a8c9697e0ddd5cd17f9",
+  "finalEdit": "Lower only the bottom/front riser of the right stair to a thin slab close to terrain; preserve upper landing, geometry, castle and clean transparent edges.",
+  "finalSource": "exec-a06aa12e-45b8-4fa6-9e94-e5f36b051551.png"
+}

@@ -1,3 +1,4 @@
+import {bridgeStepPoint} from './explorationCastleBridge';
 import {onCastleLanding} from './explorationCastleApproach';
 import {onCastleBridge,castleBridgeStart,castleBridgeEnd} from './explorationCastleBridge';
 import {insideRegion} from './biomeComposition';
@@ -22,7 +23,7 @@ import {EXPLORATION_WORLD,insideExploration} from './explorationWorld';
 import {readMinimap,revealMinimap} from './explorationMinimap';
 import { ROOM_WALLS, PILOT_SHELTER, hitsEdgeScenery } from "./explorationRoom";
 /** Isolated first-room pilot. No house XP, coins or adventure rewards are touched. */
-export type CombatPoint = { x: number; y: number };
+export type CombatPoint = { x: number; y: number; bridgeLevel?:0|1 };
 export const PILOT_SIZE = EXPLORATION_WORLD;
 export const PILOT_CAMP = { x: 1.5, y: 1.5 };
 export const PILOT_MARKER = { x: 8.5, y: 4.5 };
@@ -103,8 +104,8 @@ export function nearestPilotPoint(p:CombatPoint,gateOpen:boolean,roomIndex=0,wor
   candidates.sort((a,b)=>distance(a,p)-distance(b,p));return candidates[0]??{...room.camp};
 }
 export function moveCombatPoint(p: CombatPoint, dx: number, dy: number, gateOpen: boolean, radius=.22,roomIndex=0,workshop?:Workshop): CombatPoint {
-  const x = pilotWalkable({ x: p.x + dx, y: p.y }, gateOpen, radius,roomIndex,workshop) && (roomIndex<30||nascentesTraverse(p,{x:p.x+dx,y:p.y},roomIndex)) ? p.x + dx : p.x;
-  return { x, y: pilotWalkable({ x, y: p.y + dy }, gateOpen, radius,roomIndex,workshop) && (roomIndex<30||nascentesTraverse({x,y:p.y},{x,y:p.y+dy},roomIndex)) ? p.y + dy : p.y };
+  const candidate=(a:CombatPoint,b:CombatPoint):CombatPoint=>roomIndex===39?bridgeStepPoint(a,b,nascentesHeight(a,39)):b;
+  let current={...p};for(const [x,y] of [[dx,0],[0,dy]]){const q=candidate(current,{x:current.x+x,y:current.y+y});if(pilotWalkable(q,gateOpen,radius,roomIndex,workshop)&&(roomIndex<30||nascentesTraverse(current,q,roomIndex)))current=q;}return current;
 }
 function object(v: unknown): Record<string, unknown> { return v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : {}; }
 /** Forward-version saves are never replaced; known fields are bounded on read. */
@@ -148,7 +149,7 @@ function readCombatStateShared(value:unknown,shared?:CombatShared):CombatRead{
   s.equipmentOwned = raw.equipmentOwned === true; s.equipmentOn = s.equipmentOwned && raw.equipmentOn === true;
   for (const group of ['stock', 'bag'] as const) for (const item of Object.keys(COMBAT_ITEMS) as CombatItem[]) s[group][item] = Math.floor(number(object(raw[group])[item], s[group][item], 0, 9999));
   s.roomCollectedFibers=Math.floor(number(raw.roomCollectedFibers,index===0?s.stock.fibra+s.bag.fibra:0,0,9999));
-  const point = object(raw.player); const p = { x: number(point.x, room.camp.x, -1e5, 1e5), y: number(point.y, room.camp.y, -1e5, 1e5) };
+  const point = object(raw.player); const p:CombatPoint = { x: number(point.x, room.camp.x, -1e5, 1e5), y: number(point.y, room.camp.y, -1e5, 1e5),...(index===39&&onCastleBridge({x:number(point.x,room.camp.x,-1e5,1e5),y:number(point.y,room.camp.y,-1e5,1e5)})&&(point.bridgeLevel===0||point.bridgeLevel===1)?{bridgeLevel:point.bridgeLevel}:{}) };
   s.player = nearestPilotPoint(room.index>=30&&raw.nascentesSceneVersion!==4?room.camp:p, s.gateOpen,s.roomIndex,s.workshop);
   s.exploredCells = readMinimap(room.index>=30&&raw.nascentesSceneVersion!==4?[]:raw.exploredCells,s.player,raw.minimapVersion===3?3:raw.minimapVersion===2?2:1);
   const f = object(raw.facing), fx = number(f.x, 1, -1, 1), fy = number(f.y, 0, -1, 1), length = Math.hypot(fx, fy);
@@ -259,7 +260,7 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
   if(cityBanned(s,s.player))s.player=previous;
   s.exploredCells = revealMinimap(s.exploredCells,s.player);
   const travel = distance(previous, s.player); s.walking = travel > .00001; s.walkPhase = s.walking ? (s.walkPhase + travel / .72) % 1 : 0;
-  if(s.roomIndex===CHAPTER4_END&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=Math.max(s.campaignVersion,15) as CombatState['campaignVersion'];s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
+  if(s.roomIndex===CHAPTER4_END&&nascentesHeight(s.player,39)>.9&&distance(s.player,CASTLE_GATE)<.8&&s.time>(s.portalCooldownUntil??0)){s.castle=enterCastle(s.castle);s.campaignVersion=Math.max(s.campaignVersion,15) as CombatState['campaignVersion'];s.message='Interior do Castelo · Caminhe até o brilho de uma porta para atravessar.';return s;}
   if ((input.attack || input.power) && s.time >= s.attackAt && (!input.power || s.energy >= 25)) {
     const power = Boolean(input.power); if (power) {s.energy -= 25;s.powerFx={power:s.activePower??'burst',x:s.player.x,y:s.player.y,startedAt:s.time,until:s.time+800};}
     if(power&&s.legends?.active==='soren')s.invulnerableUntil=Math.max(s.invulnerableUntil,s.time+750);
@@ -373,8 +374,8 @@ export function clearPilotLine(from: CombatPoint, to: CombatPoint, gateOpen: boo
 /** Shared edge check prevents touch paths from cutting across a curved shore. */
 export function clearPilotWalkLine(from:CombatPoint,to:CombatPoint,gateOpen:boolean,radius=.22,roomIndex=0,workshop?:Workshop){
   const steps = Math.max(1, Math.ceil(distance(from, to) / .1));
-  for (let i = 0; i <= steps; i++){const p={x:from.x+(to.x-from.x)*i/steps,y:from.y+(to.y-from.y)*i/steps},prev={x:from.x+(to.x-from.x)*Math.max(0,i-1)/steps,y:from.y+(to.y-from.y)*Math.max(0,i-1)/steps};if(!pilotWalkable(p,gateOpen,radius,roomIndex,workshop)||(roomIndex>=30&&!nascentesTraverse(prev,p,roomIndex)))return false;}
-  return true;
+  let previous={...from};for(let i=0;i<=steps;i++){const raw={x:from.x+(to.x-from.x)*i/steps,y:from.y+(to.y-from.y)*i/steps},p=roomIndex===39?bridgeStepPoint(previous,raw,nascentesHeight(previous,39)):raw;if(!pilotWalkable(p,gateOpen,radius,roomIndex,workshop)||(roomIndex>=30&&!nascentesTraverse(previous,p,roomIndex)))return false;previous=p;}
+  return !(roomIndex===39&&onCastleBridge(to)&&to.bridgeLevel!==undefined&&previous.bridgeLevel!==to.bridgeLevel);
 }
 // Static grid edges are shared by villagers. Movable player buildings bypass this cache.
 const routeEdges=new Map<string,boolean>();
@@ -494,8 +495,8 @@ function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=3
  if(Math.hypot(to.x-from.x,to.y-from.y)>200||(roomIndex>=30&&!open&&nascentesHeight(to,roomIndex)>.1&&!(roomIndex===CHAPTER4_END&&to.x>12)))return [];
  if(!pilotWalkable(to,open,.22,roomIndex,workshop))return [];
  if(roomIndex===CHAPTER4_END&&viaStairs){
-  const floor=nascentesGeometry(39)[1].floor,castle=(p:CombatPoint)=>onCastleLanding(p)||Math.hypot(p.x-castleBridgeEnd.x,p.y-castleBridgeEnd.y)<.35,fromTerrace=insideRegion(from,floor),toTerrace=insideRegion(to,floor),fromBridge=onCastleBridge(from),toBridge=onCastleBridge(to);
-  if(fromBridge&&toBridge&&clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
+  const floor=nascentesGeometry(39)[1].floor,castle=(p:CombatPoint)=>p.bridgeLevel!==0&&(onCastleLanding(p)||Math.hypot(p.x-castleBridgeEnd.x,p.y-castleBridgeEnd.y)<.35),fromTerrace=insideRegion(from,floor),toTerrace=insideRegion(to,floor),fromBridge=onCastleBridge(from)&&from.bridgeLevel!==0,toBridge=onCastleBridge(to)&&to.bridgeLevel!==0;
+  if(fromBridge&&toBridge&&clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [roomIndex===39?bridgeStepPoint(from,to,nascentesHeight(from,39)):to];
   if((fromTerrace&&(toBridge||castle(to)))||(toTerrace&&(fromBridge||castle(from)))||(fromBridge&&castle(to))||(toBridge&&castle(from))){
    const stops:CombatPoint[]=fromTerrace?[castleBridgeStart(),...(toBridge?[to]:[castleBridgeEnd,to])]:toTerrace?[...(fromBridge?[]:[castleBridgeEnd]),castleBridgeStart(),to]:[castleBridgeEnd,to];
    let current=from;const route:CombatPoint[]=[];
@@ -516,19 +517,19 @@ function nascentesRoute(from:CombatPoint,to:CombatPoint,open:boolean,roomIndex=3
    for(const stop of stops){if(Math.hypot(stop.x-current.x,stop.y-current.y)<.02)continue;const leg=nascentesRoute(current,stop,open,roomIndex,workshop,false);if(!leg.length)return [];route.push(...leg);current=stop;}return route;
   }
  }
- if(clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [to];
+ if(clearPilotWalkLine(from,to,open,.22,roomIndex,workshop))return [roomIndex===39?bridgeStepPoint(from,to,nascentesHeight(from,39)):to];
  // Long inter-village trips use bounded legs instead of exhausting one local grid.
  const span=Math.hypot(to.x-from.x,to.y-from.y);
  if(span>55){for(const offset of [0,6,-6,12,-12]){const mid={x:(from.x+to.x)/2-(to.y-from.y)/span*offset,y:(from.y+to.y)/2+(to.x-from.x)/span*offset};if(!pilotWalkable(mid,open,.22,roomIndex,workshop)||(roomIndex>=30&&nascentesHeight(mid,roomIndex)>.01))continue;const a=nascentesRoute(from,mid,open,roomIndex,workshop),b=a.length?nascentesRoute(mid,to,open,roomIndex,workshop):[];if(a.length&&b.length)return [...a,...b];}return [];}
  const elevations=roomIndex>=30?nascentesElevations(roomIndex):[{left:-8,top:-7,size:30}],bounds={left:Math.min(from.x,to.x,...elevations.map(e=>e.left))-4,right:Math.max(from.x,to.x,...elevations.map(e=>e.left+e.size))+4,top:Math.min(from.y,to.y,...elevations.map(e=>e.top))-4,bottom:Math.max(from.y,to.y,...elevations.map(e=>e.top+e.size))+4};
- const key=(p:CombatPoint)=>`${p.x},${p.y}`,start={x:Math.round(from.x*2),y:Math.round(from.y*2)},previous=new Map<string,CombatPoint|null>([[key(start),null]]),cost=new Map([[key(start),0]]);
+ const key=(p:CombatPoint)=>`${p.x},${p.y}:${p.bridgeLevel??''}`,start:CombatPoint={x:Math.round(from.x*2),y:Math.round(from.y*2),...(roomIndex===39&&onCastleBridge(from)?{bridgeLevel:from.bridgeLevel??1}:{})},previous=new Map<string,CombatPoint|null>([[key(start),null]]),cost=new Map([[key(start),0]]);
  type Entry={p:CombatPoint;g:number;f:number};const heap:Entry[]=[];
  const push=(a:Entry)=>{heap.push(a);let i=heap.length-1;while(i){const parent=(i-1)>>1;if(heap[parent].f<=a.f)break;heap[i]=heap[parent];i=parent;}heap[i]=a;};
  const pop=()=>{const first=heap[0],last=heap.pop()!;if(heap.length){let i=0;while(i*2+1<heap.length){let child=i*2+1;if(child+1<heap.length&&heap[child+1].f<heap[child].f)child++;if(heap[child].f>=last.f)break;heap[i]=heap[child];i=child;}heap[i]=last;}return first;};
  push({p:start,g:0,f:Math.hypot(start.x-to.x*2,start.y-to.y*2)});let visited=0;
- while(heap.length&&visited++<12000){const entry=pop(),p=entry.p;if(entry.g!==cost.get(key(p)))continue;const actual=key(p)===key(start)?from:{x:p.x/2,y:p.y/2};
- if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,roomIndex,workshop)){const route:CombatPoint[]=[to];let current:CombatPoint|null=p;while(current&&key(current)!==key(start)){route.unshift({x:current.x/2,y:current.y/2});current=previous.get(key(current))??null;}return route;}
- for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const n={x:p.x+dx,y:p.y+dy},g=entry.g+Math.hypot(dx,dy);if(n.x<bounds.left*2||n.x>bounds.right*2||n.y<bounds.top*2||n.y>bounds.bottom*2||g>=(cost.get(key(n))??Infinity))continue;if(clearPilotWalkLine(actual,{x:n.x/2,y:n.y/2},open,.22,roomIndex,workshop)){cost.set(key(n),g);previous.set(key(n),p);push({p:n,g,f:g+Math.hypot(n.x-to.x*2,n.y-to.y*2)});}}
+ while(heap.length&&visited++<12000){const entry=pop(),p=entry.p;if(entry.g!==cost.get(key(p)))continue;const actual=key(p)===key(start)?from:{x:p.x/2,y:p.y/2,...(p.bridgeLevel!==undefined?{bridgeLevel:p.bridgeLevel}:{})};
+ if(Math.hypot(actual.x-to.x,actual.y-to.y)<.65&&clearPilotWalkLine(actual,to,open,.22,roomIndex,workshop)){const route:CombatPoint[]=[roomIndex===39?bridgeStepPoint(actual,to,nascentesHeight(actual,39)):to];let current:CombatPoint|null=p;while(current&&key(current)!==key(start)){route.unshift({x:current.x/2,y:current.y/2,...(current.bridgeLevel!==undefined?{bridgeLevel:current.bridgeLevel}:{})});current=previous.get(key(current))??null;}return route;}
+ for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const target={x:(p.x+dx)/2,y:(p.y+dy)/2},surface:CombatPoint=roomIndex===39?bridgeStepPoint(actual,target,nascentesHeight(actual,39)):target,n:CombatPoint={x:p.x+dx,y:p.y+dy,...(surface.bridgeLevel!==undefined?{bridgeLevel:surface.bridgeLevel}:{})},g=entry.g+Math.hypot(dx,dy);if(n.x<bounds.left*2||n.x>bounds.right*2||n.y<bounds.top*2||n.y>bounds.bottom*2||g>=(cost.get(key(n))??Infinity))continue;if(clearPilotWalkLine(actual,surface,open,.22,roomIndex,workshop)){cost.set(key(n),g);previous.set(key(n),p);push({p:n,g,f:g+Math.hypot(n.x-to.x*2,n.y-to.y*2)});}}
  }return [];
 }
 
