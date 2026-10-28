@@ -1,3 +1,4 @@
+import {drawCityPlaza} from './explorationCityView';
 import {worldEnemyDefinitions} from './explorationWilderness';
 import {drawExplorationDaylight} from './explorationDaylightView';
 import {villageLayout,villageSettlements,settlementStage} from './explorationVillageLayout';
@@ -60,6 +61,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
   if(room.index<30&&room.composition)drawBiomeWater(ctx,room.composition,v.left,v.top,t,state.time,reducedMotion,waterTexture);
   if(room.index<30)drawCampaignShore(ctx,room,v.left,v.top,t,propsAtlas,gardenAtlas,riverProps);
   trace('terrainMs');
+  if(room.biome==='nascentes'){ctx.save();ctx.translate(v.left,v.top);ctx.scale(t,t);for(const town of villageSettlements(room.index))if(settlementStage(state.village,room.index,town.slot)===2)drawCityPlaza(ctx,town.x,town.y+1);ctx.restore();}
   if(room.biome!=='nascentes')drawExplorationTrails(ctx,room.index,v.left,v.top,t,chapter4Soil,state.encounterSeed,villageSettlements(room.index).map(c=>settlementStage(state.village,room.index,c.slot)));
   trace('trailsMs');
   drawCampaignBridge(ctx,bridgeAtlas,room,v.left,v.top,t);

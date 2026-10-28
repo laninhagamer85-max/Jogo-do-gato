@@ -1,7 +1,7 @@
 import {CASTLE_ART} from './explorationCastleApproach';
 import {CASTLE_BRIDGE_ASSET,castleBridgePoint} from './explorationCastleBridge';
 import {nascentesElevations,CHAPTER4_END} from './explorationNascentesLayout';
-import {NASCENTES_ASSETS,stairSourcePoint,plateauStairPoint,nascentesGeometry,castleGatePoint} from './explorationChapter4';
+import {NASCENTES_ASSETS,stairSourcePoint,plateauStairPoint,plateauStairLanding,nascentesGeometry,castleGatePoint} from './explorationChapter4';
 import {drawTerrainTexture,type TerrainBounds} from './terrainTexture';
 import {NASCENTES_SCENE,nascentesElevation,nascentesRoom,returnPortal,nascentesTrees,nascentesShoreProps,type NascentesTree} from './explorationChapter4';
 import {drawExplorationGround,drawWoodlandProp,FOREST_GROUND,FOREST_GRASS_MATERIAL} from './explorationScenery';
@@ -35,6 +35,7 @@ export function drawNascentesTerrain(ctx:CanvasRenderingContext2D,width:number,h
  if(index===39&&typeof Image!=='undefined'){if(!bridgeArt){bridgeArt=new Image();bridgeArt.onload=()=>{loadedRevision++;};bridgeArt.src=CASTLE_BRIDGE_ASSET;}if(ready(bridgeArt)){const a=p(castleBridgePoint(0,0)),b=p(castleBridgePoint(1,0));ctx.save();ctx.transform(b.x-a.x,b.y-a.y,-(b.y-a.y),b.x-a.x,a.x,a.y);ctx.drawImage(bridgeArt!,0,0);ctx.restore();}}
  // Roads on upper floors share the same clipping polygons as collision.
  if(drawGroundPaths){ctx.save();ctx.beginPath();for(const g of nascentesGeometry(index).filter(g=>g.e.style==='grass')){g.floor.forEach((q,i)=>{const a=p(q);if(i)ctx.lineTo(a.x,a.y);else ctx.moveTo(a.x,a.y);});ctx.closePath();}ctx.clip();drawGroundPaths();ctx.restore();}
+ for(const raised of nascentesElevations(index)){const art=plateauImage(raised.style,plateau);if(ready(art))drawStairLanding(ctx,plateauStairLanding(raised).map(p),raised.size*tile,art!,left+raised.left*tile,top+raised.top*tile);}
  if(typeof Image!=='undefined')for(const raised of nascentesElevations(index)){const model=raised.stairModel??'slim';let im=stairImages.get(model);if(!im){im=new Image();im.onload=()=>{loadedRevision++;};im.src=model==='broad'?'/forest-adventure/chapter4/stairs-broad-v2.webp':NASCENTES_ASSETS.stairs;stairImages.set(model,im);}if(ready(im))drawStoneStair(ctx,p,(x,y)=>plateauStairPoint(x,y,raised),index,open,im);}
 
  if(treesInTerrain)for(const tree of nascentesTrees({left:-left/tile,top:-top/tile,width:width/tile,height:height/tile},index).sort((a,b)=>a.y-b.y)){const q=p(tree);drawNascentesTree(ctx,_stairs,tree,q.x,q.y,tile);}
@@ -62,3 +63,11 @@ function drawNascentesGround(ctx:CanvasRenderingContext2D,w:number,h:number,gras
 }
 
 function drawStoneStair(ctx:CanvasRenderingContext2D,p:(q:GroundPoint)=>GroundPoint,project:(x:number,y:number,index:number)=>GroundPoint,index:number,open:boolean,art:HTMLImageElement){const a=p(project(0,0,index)),b=p(project(1,0,index));ctx.save();ctx.transform(b.x-a.x,b.y-a.y,-(b.y-a.y),b.x-a.x,a.x,a.y);ctx.globalAlpha=open?1:.65;ctx.drawImage(art,0,0);ctx.restore();}
+
+/** Extend the matching upper-floor material over its existing supporting rock face.
+ * Reuse the original artwork at identical scale: no blurred/stretched vector patch.
+ */
+function drawStairLanding(ctx:CanvasRenderingContext2D,q:GroundPoint[],size:number,art:HTMLImageElement,x:number,y:number){
+ ctx.save();ctx.beginPath();q.forEach((v,i)=>i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.closePath();ctx.clip();
+ ctx.drawImage(art,x-size*.005,y+size*.05,size,size);ctx.restore();
+}

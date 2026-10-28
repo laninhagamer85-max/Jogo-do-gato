@@ -1,9 +1,12 @@
 import type {GroundPoint} from './biomeComposition';
-/** One uniform placement for the castle artwork, doorway, landing and short stair. */
-export const CASTLE_ART={left:9.48,top:-20.04,size:18};
-export const castleArtPoint=(u:number,v:number)=>({x:CASTLE_ART.left+u*CASTLE_ART.size,y:CASTLE_ART.top+v*CASTLE_ART.size});
-export const castleApproachBase=castleArtPoint(.22,.785),castleApproachTop=castleArtPoint(.265,.70),castleDoor=castleArtPoint(.315,.655);
-export const onCastleLanding=(p:GroundPoint)=>p.x>13.71&&p.x<16.23&&p.y>-9.24&&p.y<-6.99;
-export const nearCastleApproach=(p:GroundPoint)=>p.x>12.6&&p.x<17&&p.y>-10&&p.y<-5;
-export const insideCastleFootprint=(p:GroundPoint,r:number)=>p.x>10.2-r&&p.x<26.58+r&&p.y>-15.9-r&&p.y<-2.58+r;
-export const castleLowerAccess=(p:GroundPoint)=>p.x>12.7&&p.x<14.5&&p.y>castleApproachBase.y;
+/** Grow uniformly around the approved bridge landing, rather than moving its endpoint. */
+const bridgeLanding={x:13.44,y:-5.91};
+const size=30;
+export const CASTLE_ART={left:bridgeLanding.x-.22*size,top:bridgeLanding.y-.785*size,size};
+export const castleArtPoint=(u:number,v:number)=>({x:CASTLE_ART.left+u*size,y:CASTLE_ART.top+v*size});
+const castleUV=(p:GroundPoint)=>({u:(p.x-CASTLE_ART.left)/size,v:(p.y-CASTLE_ART.top)/size});
+export const castleApproachBase=bridgeLanding,castleApproachTop=castleArtPoint(.265,.70),castleDoor=castleArtPoint(.315,.655);
+export const onCastleLanding=(p:GroundPoint)=>{const {u,v}=castleUV(p);return u>.235&&u<.375&&v>.60&&v<.725;};
+export const nearCastleApproach=(p:GroundPoint)=>{const {u,v}=castleUV(p);return u>.173&&u<.418&&v>.557&&v<.836;};
+export const insideCastleFootprint=(p:GroundPoint,r:number)=>{const {u,v}=castleUV(p),pad=r/size;return u>.04-pad&&u<.95+pad&&v>.23-pad&&v<.97+pad;};
+export const castleLowerAccess=(p:GroundPoint)=>{const {u,v}=castleUV(p);return u>.179&&u<.279&&v>.785;};
