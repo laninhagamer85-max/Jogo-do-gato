@@ -1,7 +1,7 @@
 # Capítulo 4 — proporção dos acessos e centros medievais
 
 Data: 28/10/2026 · America/Sao_Paulo · versão de produto 1.50.0
-Estado: validado, preparando publicação no mesmo Site.
+Estado: publicado — versão1.50.0, Sites154, status succeeded.
 Base: produto 1.49.0; Sites153; fonte Sites73eb48808125160593015c111519e7acc0b9dc42; GitHub b788090c760153f42b2439d67023facb3b865ca2.
 
 ## Problema e alteração
@@ -47,3 +47,16 @@ Consultadas em28/10/2026:
 
 Publicar no mesmo projeto appgprj_6ac40994d8d881919d46203a60801e46, público. Registrar IDs finais após sucesso, sem segunda publicação para documentação.
 Rollback conhecido: Sites153, versão appgprj_6ac40994d8d881919d46203a60801e46~appgver_a47db3f3cf288191adc06bc52fa778f9, fonte24c1cb4f7261fb132341284cde7a470ae49a6ac1. Não reverter alterações posteriores de colaboradores.
+
+
+## Resultado publicado
+
+- GitHub código: f4c755a876f8d4e5aad4df11257f1b898ab1253f.
+- Fonte Sites: c29de72245189a24cbc61e1c9fc6cab82db2018a.
+- Sites154: appgprj_6ac40994d8d881919d46203a60801e46~appgver_afaaccf8348081919fbe96f17c2e2132.
+- Deployment: appgdep_6ae17fb86384819182a66cab54c704d3 — succeeded.
+- URL: https://meupet.aquimeusite.chatgpt.site
+- Build final oficial: aprovado21,40s; typecheck final aprovado. Aviso preexistente de tamanho de bundle permanece.
+- Repetida auditoria das dez vilas de cada sala31–40 pela interface do site publicado:100/100 aprovadas. Saída textual integral em ../evidence/2026-10-28/public-audits.json.
+- Capturas públicas reais: ../evidence/2026-10-28/castle-public.jpg e city-public.jpg. Confirmadas proporções e junção da ponte com a escadaria curta do castelo; praça central visível no platô medieval39. Sem erros do aplicativo no console observado; mensagens da extensão do navegador não são do jogo.
+- Documentação e evidências registradas após publicação, sem nova implantação.
