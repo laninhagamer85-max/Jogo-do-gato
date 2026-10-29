@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-28",
+  "updated_date": "2026-10-29",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.52.2",
-  "active_run": "2026-10-28-junctions",
+  "status": "validated_1.52.3_pending_publication",
+  "active_run": "2026-10-29",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "review/grass-option3-20261016",
@@ -19,12 +19,11 @@
     "published_code_github_commit": "1fd31badecde26ac1e587fa0ff08d9c26c1765a8"
   },
   "current_improvement": {
-    "id": "room40-bridge-floor-render-stair",
-    "base_product_version": "1.52.1",
-    "product_version": "1.52.2",
-    "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-28-junctions.md",
-    "github_code_commit": "1fd31badecde26ac1e587fa0ff08d9c26c1765a8"
+    "id": "dismiss-gathering-guide-on-resume",
+    "base_product_version": "1.52.2",
+    "product_version": "1.52.3",
+    "implementation_status": "validated_pending_publication",
+    "report": "docs/evolution/runs/2026-10-29.md"
   },
   "publication": {
     "id": "appgdep_6ae2810f8b4881918e394a4991ba8334",
@@ -45,29 +44,30 @@
     "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8"
   },
   "verification": {
-    "typescript": "passed",
-    "game_tests": "944/944 client suite;9 bridge tests after additional render assertion",
-    "villages": "100/100;63,425 simulated steps",
-    "browser": "Chrome preview and public isolated fixtures; upper crossing to castle,return to terrace,stair and ground passage",
-    "limits": "no physical phone;no FPS or full campaign measurement",
-    "publication": "succeeded;public bridge/apron and painted fountain captured;100/100 village audits repeated in deployed browser UI;no app errors observed",
-    "limitations": "Full route uses stepCombat fixture,not continuous manual playthrough; no physical phone; unchanged UI prior viewport checks retained.",
-    "build": "passed18.07s"
+    "typescript": "passed final",
+    "build": "passed final;20.73s",
+    "offline_suite": "972/972 in101files before final Escape refinement;Firebase staging excluded",
+    "focused_final": "20/20 in3files after final refinement",
+    "browser": "isolated844x390/390x844;X/Retomar/Escape/reentry/manual reopening/first presentation of another profile/6-step completion",
+    "limits": "No physical phone,full bridge traversal,100-phase run,FPS or repeated five-viewport audit",
+    "real_player_data_modified": false,
+    "online_phases_completed": 0
   },
   "blockers": [
     "Image generation unavailable: requested guard sprite atlas returned400 Unknown parameter reasoning. New seated furniture/poses pending; existing painted humans reused for patrols."
   ],
   "next_actions": [
-    "David reviews published scenery and ambience before new animals/insects/master."
+    "David tests guide dismissal/reentry and reviews bridge scenery on phone.",
+    "Continue isolated full collector-trip playtest;new chapter4hostiles await scenery review."
   ],
   "rollback": {
-    "product_version": "1.49.0",
-    "version_number": 153,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a47db3f3cf288191adc06bc52fa778f9",
-    "source_commit": "24c1cb4f7261fb132341284cde7a470ae49a6ac1",
-    "instructions": "No rollback performed;verify no newer publication first;preserve campaignVersion17 and player saves."
+    "product_version": "1.52.2",
+    "version_number": 158,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f474160d009c819180ed51c747c906be",
+    "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8",
+    "instructions": "Only if no newer publication;preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-28.md",
+  "latest_report": "docs/evolution/runs/2026-10-29.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -639,7 +639,7 @@
     "migration": "remainingHP ratio retained,dead0notrevived,once-onlyversion2",
     "art": "2originalPNGatlases;noPNGpixelediting"
   },
-  "previous_report": "docs/evolution/runs/2026-10-28-city-scale.md",
+  "previous_report": "docs/evolution/runs/2026-10-28-junctions.md",
   "minimap_discovery_optimization": {
     "status": "source_only_not_published",
     "before_distance_tests": 720,
@@ -675,7 +675,7 @@
     "fps": "not_measured",
     "status": "published_for_user_test"
   },
-  "current_report": "docs/evolution/runs/2026-10-28.md",
+  "current_report": "docs/evolution/runs/2026-10-29.md",
   "approved_concept": {
     "product_version": "1.25.0",
     "native_art": "1672x941",
@@ -692,12 +692,12 @@
     "scope": "authored connected sector; continuous ground/forest beyond; not infinite generated missions or network streaming",
     "save": "campaignVersion7; per-room local memory; no resource reset on visits"
   },
-  "next_action": "David reviews the1.50.0 scenery on phone;isolated news acknowledgement and full collector-trip playtest remain.",
+  "next_action": "David tests guide dismissal/reentry and reviews bridge scenery on phone.",
   "previous_publication": {
-    "id": "appgdep_6ae0915d812881918c7da9881f962db4",
+    "id": "appgdep_6ae2810f8b4881918e394a4991ba8334",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_b2c1020640408191a30068da8e8b6357",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f474160d009c819180ed51c747c906be",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -706,10 +706,10 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-27T11:56:45.757458+00:00",
-    "product_version": "1.48.2",
-    "version_number": 152,
-    "source_commit": "058283b5eb42669432c63e246e1931cce02e9e9c"
+    "updated_at": "2026-10-28T23:11:34.252126+00:00",
+    "version_number": 158,
+    "product_version": "1.52.2",
+    "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8"
   },
   "independent_review": {
     "date": "2026-10-23",

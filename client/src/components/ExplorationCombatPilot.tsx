@@ -74,7 +74,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   const tutorialKey=`meupet-gathering-guide-v1:${profile?.name??'visitante'}:${profile?.characterId??'pet'}`;
   const tutorialStarted=useRef(false);
   useEffect(()=>{if(assetStatus!=='ready'||tutorialStarted.current)return;tutorialStarted.current=true;let seen=false;try{seen=localStorage.getItem(tutorialKey)==='done';}catch{}if(!seen)openPanel('guide');},[assetStatus,tutorialKey]);
-  function finishGuide(){try{localStorage.setItem(tutorialKey,'done');}catch{}openPanel(null);}
+  function finishGuide(){openPanel(null);}
   const [audioMix]=useState(loadExplorationAudio);
   const audio=useRef<ExplorationAudio|null>(null),mixRef=useRef(audioMix);mixRef.current=audioMix;
   useEffect(()=>{const controller=new ExplorationAudio();audio.current=controller;return()=>{controller.dispose();audio.current=null;};},[]);
@@ -102,7 +102,8 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   saveRef.current = onSave; zoomRef.current = zoom;
   function clear() { pendingBuilding.current=null;stick.current = { x: 0, y: 0, pointer: -1 }; controls.current.clear(); route.current = []; pending.current = { attack: false, power: false, interact: false }; for (const id of accessibleTimers.current) window.clearTimeout(id); accessibleTimers.current.clear(); }
   function persist() { const started=performance.now();if (!initial.supported) return; const revision=current.current.revision;if(revision!==lastSaved.current){const snapshot=combatSnapshot(current.current);lastSaved.current=revision;saveRef.current(snapshot);} if(window.location.pathname==='/qa-exploration-lab'&&canvas.current){canvas.current.dataset.saveMs=(performance.now()-started).toFixed(2);} }
-  function openPanel(value: Panel) {if(value!=='village'&&current.current.village?.conversation){current.current={...current.current,village:{...current.current.village,conversation:undefined}};setGame(current.current);} if(villageDueling(current.current)&&value&&!['pause','exit'].includes(value))return; clear(); persist(); overviewRef.current=false;setOverview(false);panelRef.current = value; setPanel(value); }
+  function rememberGuideDismissal(value:Panel){if(panelRef.current==='guide'&&value===null){try{localStorage.setItem(tutorialKey,'done');}catch{}}}
+  function openPanel(value: Panel) {if(value!=='village'&&current.current.village?.conversation){current.current={...current.current,village:{...current.current.village,conversation:undefined}};setGame(current.current);} if(villageDueling(current.current)&&value&&!['pause','exit'].includes(value))return; rememberGuideDismissal(value); clear(); persist(); overviewRef.current=false;setOverview(false);panelRef.current = value; setPanel(value); }
   function renewConversation(id=selectedVillager){const s=current.current;if(!s.village)return;current.current={...s,village:{...s.village,conversation:{id,until:s.village.clock+20000}}};setGame(current.current);}
   function talkTo(id:VillagerId){setSelectedVillager(id);openPanel('village');renewConversation(id);}
   useEffect(()=>{if(panel==='village'&&game.village?.conversation&&game.village.clock>=game.village.conversation.until)openPanel(null);},[panel,game.village?.clock]);
@@ -112,7 +113,7 @@ export default function ExplorationCombatPilot({ profile, progress, onSave, onBa
   function dockAction(action:'pause'|'inventory'|'map'){
     if(villageDueling(current.current)&&action!=='pause')return;
     const next=lensDockAction(panelRef.current,overviewRef.current,action);
-    if(next.overview){setMapScale(1);setMapPan({x:0,y:0});}clear();persist();overviewRef.current=next.overview;setOverview(next.overview);panelRef.current=next.panel;setPanel(next.panel);
+    rememberGuideDismissal(next.panel);if(next.overview){setMapScale(1);setMapPan({x:0,y:0});}clear();persist();overviewRef.current=next.overview;setOverview(next.overview);panelRef.current=next.panel;setPanel(next.panel);
   }
   function viewRoom(){dockAction('map');}
 
