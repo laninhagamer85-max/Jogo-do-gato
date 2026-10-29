@@ -1,36 +1,36 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-28",
+  "updated_date": "2026-10-29",
   "timezone": "America/Sao_Paulo",
-  "status": "published_1.50.0",
-  "active_run": "2026-10-28",
+  "status": "published_1.52.3",
+  "active_run": "2026-10-29",
   "collaboration": {
     "repository": "laninhagamer85-max/Jogo-do-gato",
     "branch": "feat/exploration-combat-pilot-20261015",
     "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
-    "source_site_commit": "6b9f533f56bdc55c60d707e49a775cb5017f77a9",
+    "source_site_commit": "62e350982efa4858dfff2231c118c30c47bfa736",
     "coordination_branch": "recovery/mobile-review-20261009",
     "code_commit": "aa5c551be28c086dac383bb1609291b98b7b10d0",
     "implementation_branch": "review/grass-option3-20261016",
-    "implementation_code_commit": "5a8aa2884319f6596feb0d3337aa564358e45641",
-    "implementation_docs_commit": "d513011c029d1434b824f3c227dd399018058827",
+    "implementation_code_commit": "253873c8cfdaf9e8a2d889aabdcaa5e21e935c2b",
+    "implementation_docs_commit": "5bd9be31b901e7b40feb251a1c21c52a86dc6017",
     "coordination_only": true,
     "implementation_test_commit": "84fef25a0e25647ced0e452d8a2e8e73bb9f4719"
   },
   "current_improvement": {
-    "id": "chapter4-compact-stairs-castle-scale-city-centers",
-    "base_product_version": "1.49.0",
-    "product_version": "1.50.0",
+    "id": "dismiss-gathering-guide-on-resume",
+    "base_product_version": "1.52.2",
+    "product_version": "1.52.3",
     "implementation_status": "published",
-    "report": "docs/evolution/runs/2026-10-28-city-scale.md",
-    "github_code_commit": "f4c755a876f8d4e5aad4df11257f1b898ab1253f"
+    "report": "docs/evolution/runs/2026-10-29.md",
+    "github_code_commit": "253873c8cfdaf9e8a2d889aabdcaa5e21e935c2b"
   },
   "publication": {
-    "id": "appgdep_6ae17fb86384819182a66cab54c704d3",
+    "id": "appgdep_6ae330a1e79481918e38f5e97d8f4e35",
     "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
     "title": "Meu Pet Virtual",
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_afaaccf8348081919fbe96f17c2e2132",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f21b7c358e348191b742edeeff269b04",
     "type": "publish",
     "status": "succeeded",
     "url": "https://meupet.aquimeusite.chatgpt.site",
@@ -39,33 +39,34 @@
     "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
     "failure_message": null,
     "env_set_revision": 0,
-    "updated_at": "2026-10-28T04:53:37.794623+00:00",
-    "product_version": "1.50.0",
-    "version_number": 154,
-    "source_commit": "c29de72245189a24cbc61e1c9fc6cab82db2018a"
+    "updated_at": "2026-10-29T11:40:37.938927+00:00",
+    "product_version": "1.52.3",
+    "version_number": 159,
+    "source_commit": "62e350982efa4858dfff2231c118c30c47bfa736"
   },
   "verification": {
-    "typescript": "passed",
-    "build": "passed;36.37s",
-    "offline_tests": "930/930 in95files;Firebase integration excluded",
-    "focused_tests": "27/27 in3files",
-    "browser": "isolated room40 844x390;opened/closed guard conversation",
-    "limits": "No news acknowledgement UI playthrough or full collector trip;no physical phone;no full campaign;no repeated five viewport audit;no layout changes",
+    "typescript": "passed final",
+    "build": "passed final;20.73s",
+    "offline_suite": "972/972 in101files before final Escape refinement;Firebase staging excluded",
+    "focused_final": "20/20 in3files after final refinement",
+    "browser": "isolated844x390/390x844;X/Retomar/Escape/reentry/manual reopening/first presentation of another profile/6-step completion",
+    "limits": "No physical phone,full bridge traversal,100-phase run,FPS or repeated five-viewport audit",
     "real_player_data_modified": false,
     "online_phases_completed": 0
   },
   "blockers": [],
   "next_actions": [
-    "David reviews published scenery and ambience before new animals/insects/master."
+    "David tests guide dismissal/reentry and reviews bridge scenery on phone.",
+    "Continue isolated full collector-trip playtest;new chapter4hostiles await scenery review."
   ],
   "rollback": {
-    "product_version": "1.49.0",
-    "version_number": 153,
-    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_a47db3f3cf288191adc06bc52fa778f9",
-    "source_commit": "24c1cb4f7261fb132341284cde7a470ae49a6ac1",
-    "instructions": "No rollback performed;verify no newer publication first;preserve campaignVersion17 and player saves."
+    "product_version": "1.52.2",
+    "version_number": 158,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f474160d009c819180ed51c747c906be",
+    "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8",
+    "instructions": "Only if no newer publication;preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-28.md",
+  "latest_report": "docs/evolution/runs/2026-10-29.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -270,7 +271,7 @@
     "site_version": 149,
     "coordination_only": true
   },
-  "current_report": "docs/evolution/runs/2026-10-28.md",
+  "current_report": "docs/evolution/runs/2026-10-29.md",
   "independent_save_review": {
     "date": "2026-10-28",
     "status": "passed_tests_only_no_new_deploy",
@@ -287,6 +288,24 @@
     "real_player_data_modified": false,
     "online_phases_completed": 0
   },
-  "next_action": "David reviews the1.50.0 scenery on phone;isolated news acknowledgement and full collector-trip playtest remain.",
-  "previous_report": "docs/evolution/runs/2026-10-28-city-scale.md"
+  "next_action": "David tests guide dismissal/reentry and reviews bridge scenery on phone.",
+  "previous_report": "docs/evolution/runs/2026-10-28-junctions.md",
+  "previous_publication": {
+    "id": "appgdep_6ae2810f8b4881918e394a4991ba8334",
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f474160d009c819180ed51c747c906be",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-28T23:11:34.252126+00:00",
+    "version_number": 158,
+    "product_version": "1.52.2",
+    "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8"
+  }
 }
