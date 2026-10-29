@@ -2,7 +2,7 @@
 
 ## Estado atual da fonte
 
-Versão pública em28/10/2026: **1.52.2** (Sites158). Sala40: piso da ponte traçado nas três faixas, camadas superiores contínuas, Empório afastado da entrada, escada isométrica e pedra harmonizada. Inclui colisão de colunas e minérios da1.52.1. Fonte Sites 9773136628a96bc8409c29b71e59b4e5971fbac8. Consulte docs/evolution/runs/2026-10-28-junctions.md.
+Versão pública confirmada em29/10/2026: **1.52.3** (Sites159), fonte Sites `62e350982efa4858dfff2231c118c30c47bfa736`. Fechar o guia por X, Retomar ou Escape agora dispensa a abertura automática ao reentrar; ele continua disponível na pausa/oficina. Preservadas as correções de ponte, colunas e junções da1.52.2. Consulte `docs/evolution/runs/2026-10-29.md` e `docs/evolution/runs/2026-10-28-junctions.md`.
 
 Use `node scripts/build-sites-release.mjs` (ou `pnpm build`): restaura e confere os atlas dos amigos pelo manifesto SHA256, executa Vite e prepara `out/`, preservando os recursos públicos recuperados. As credenciais de servidor não pertencem à configuração pública do cliente. Não trocar o projeto/domínio nem substituir a configuração de autenticação para ajustar animação.
 
