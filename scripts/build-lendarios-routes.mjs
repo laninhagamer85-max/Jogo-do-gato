@@ -4,3 +4,6 @@ for(const route of ['entrar','jogar','cadastro','game']){await mkdir(`dist/publi
 for(const name of ['qa-exploration-viewport.html','qa-map-viewport.html'])await rm(`dist/public/${name}`,{force:true});
 
 await cp('apps/lendarios-do-rei/public','dist/public',{recursive:true});
+
+await rm('out',{recursive:true,force:true});
+await cp('dist/public','out',{recursive:true});

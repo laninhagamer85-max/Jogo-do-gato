@@ -2,7 +2,7 @@
 
 Site de apresentação medieval e acesso exclusivo ao motor Exploração. Entrada própria em client/lendarios.html e client/src/lendariosMain.tsx. App.tsx, login, publicação e saves do Meu Pet não são alterados por esta aplicação.
 
-Build no repositório compartilhado: node node_modules/vite/bin/vite.js build --config vite.lendarios.config.ts && node scripts/build-lendarios-routes.mjs. Saída dist/public. A publicação do novo Site usa seu próprio manifest; nunca substituir o project_id do Meu Pet no manifest raiz ao mesclar esta entrega.
+Build no repositório compartilhado: node node_modules/vite/bin/vite.js build --config vite.lendarios.config.ts && node scripts/build-lendarios-routes.mjs. Saída dist/public, copiada para out/ para a hospedagem Sites. A publicação do novo Site usa seu próprio manifest; nunca substituir o project_id do Meu Pet no manifest raiz ao mesclar esta entrega.
 
 Fonte recuperada do Site atual, commit e2e72a3998ad543916d73735ef27bad61e224ce1, motor 1.52.2. Base GitHub review/grass-option3-20261016. Novos módulos reutilizam Firebase e ExplorationCombatPilot. Não há cópia de dados de usuários ou credenciais de servidor.
 
