@@ -1,3 +1,4 @@
+import './scripts/export-lendarios-codex';
 import {mergeConfig} from 'vite';
 import path from 'node:path';
 import base from './vite.config';
