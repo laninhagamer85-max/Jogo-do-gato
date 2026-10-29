@@ -1,3 +1,7 @@
+# Meu Pet Virtual — projeto separado
+
+Versão1.52.4: a Exploração passou exclusivamente para Lendários do Rei. Meu Pet mantém cuidados, casas, minijogos e Aventura de100fases; menus e rotas de Exploração removidos. Save anterior preservado e exportável nas configurações. Leia AGENTS.md e docs/project-separation.json.
+
 # Meu Pet Virtual — Web Agência AD
 
 ## Estado atual da fonte

@@ -835,5 +835,11 @@
     "source_commit": "7f9396934931b89cd0379ef62334a6cda483a3a2",
     "deployment_id": "appgdep_6ae23a1e357c8191b6e2b7a405514016",
     "tests": "942/942;100villages63,376steps"
+  },
+  "exploration_routing": {
+    "canonical_project_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
+    "canonical_url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
+    "status": "transferred_legacy_source_retained_for_export",
+    "date": "2026-10-29"
   }
 }
