@@ -8,7 +8,7 @@ import { forestStickDirection } from "@/game/combatPresentation";
 import ExplorationCombatPilot from "./ExplorationCombatPilot";
 import { forestTapPath, forestRouteInput } from "@/game/forestTapNavigation";
 import { petWalkAtlas, drawWalkFrame } from "@/game/petWalkAtlas";
-import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, CircleHelp, Compass, DoorOpen, Home, KeyRound, Pause, Play, RotateCcw, Trees, Settings2, Volume2, VolumeX } from "lucide-react";
 import { GAME_ASSETS } from "@/game/assets";
 import { playPlatformSfx } from "@/game/platformerAudio";
@@ -26,6 +26,8 @@ import { forestView, forestActionLabel } from "@/game/forestView";
 type Overlay = "pause" | "room" | "chapter" | null;
 type Held = Record<ForestDirection, boolean>;
 type Props = {
+  standalone?: boolean;
+  avatar?: ReactNode;
   profile: PetProfile | null;
   savedProgress: Record<string, unknown>;
   combatProgress: Record<string, unknown>;
@@ -200,7 +202,7 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
   }
 }
 
-export default function ForestPuzzleAdventure({ profile, savedProgress, combatProgress, onSaveCombatProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
+export default function ForestPuzzleAdventure({ standalone=false, avatar, profile, savedProgress, combatProgress, onSaveCombatProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
   const characterId = profile?.characterId ?? "menino-prata";
   const petName = profile?.name ?? "Seu pet";
   const progressRead = useMemo(() => normalizeForestProgress(savedProgress), [savedProgress]);
@@ -443,28 +445,28 @@ export default function ForestPuzzleAdventure({ profile, savedProgress, combatPr
     "data-qa-bridges": game?.placedBridges.join(","),
   } : {};
 
-  if (combatEntry) return <ExplorationCombatPilot replayMode={combatEntry.replay} soundOn={soundOn} onToggleSound={onToggleSound} profile={profile} progress={combatEntry.progress} onSave={saveCombatEntry} onBack={() => setCombatEntry(null)} />;
+  if (combatEntry) return <ExplorationCombatPilot playerLabel={standalone?petName:undefined} replayMode={combatEntry.replay} soundOn={soundOn} onToggleSound={onToggleSound} profile={profile} progress={combatEntry.progress} onSave={saveCombatEntry} onBack={() => setCombatEntry(null)} />;
 
   const parsedCampaign=readCombatState(combatProgress);const combatCampaign=parsedCampaign.supported?{...parsedCampaign,state:recoverExplorationCheckpoint(parsedCampaign.state)}:parsedCampaign;
   const combatRoomNumber=combatCampaign.supported?combatCampaign.state.roomIndex+1:1;
 
-  return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label="Bosque dos Caminhos, modo de exploração">
+  return <div className={`forest-adventure ${game ? "is-playing" : ""}`} role="application" aria-label={standalone?"Lendários do Rei, capítulos e salas":"Bosque dos Caminhos, modo de exploração"}>
     <header className="forest-adventure-topbar">
-      <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>Meu Pet Virtual</strong><small>EXPLORAÇÃO</small></div></div>
+      <div className="forest-adventure-brand"><span><Trees size={21} /></span><div><strong>{standalone?"Lendários do Rei":"Meu Pet Virtual"}</strong><small>EXPLORAÇÃO</small></div></div>
       <div className="forest-adventure-top-actions">
         {!game&&<button type="button" aria-label="Configurações da exploração" onClick={()=>setShowExplorationSettings(true)}><Settings2 size={18}/></button>}
         <button type="button" onClick={onToggleSound} aria-label={soundOn ? "Silenciar efeitos" : "Ativar efeitos"} aria-pressed={soundOn} title={soundOn ? "Silenciar efeitos" : "Ativar efeitos"}>{soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}</button>
-        {!game && <><button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
-        <button type="button" onClick={onGoToHouse}><Home size={16} /> Minha Casa</button></>}
+        {!game && (standalone?<button type="button" onClick={onBack}><ArrowLeft size={16}/> Minha jornada</button>:<><button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
+        <button type="button" onClick={onGoToHouse}><Home size={16} /> Minha Casa</button></>)}
       </div>
     </header>
     {showExplorationSettings&&combatCampaign.supported&&<ExplorationSettings game={combatCampaign.state} soundOn={soundOn} onToggleSound={onToggleSound} onClose={()=>setShowExplorationSettings(false)}/>}
     {!game ? <main className="forest-adventure-map forest-adventure-map--trail">
-      <section className="forest-adventure-intro"><div className="forest-exploration-title"><h1>Explore com seu pet</h1><details className="forest-exploration-tests" onKeyDown={event=>{if(event.key==='Escape')event.currentTarget.open=false;}}><summary><Settings2 size={16} aria-hidden="true"/>Testes</summary><div className="forest-exploration-tests-panel"><strong>Área de testes</strong><button type="button" onClick={enterVillage}>Visitar vilas desta sala</button>{Array.from({length:10},(_,i)=><button key={i} type="button" onClick={()=>enterTest(30+i)}>{i===9?'Sala 40 e Castelo Bônus':'Visitar sala '+(31+i)}</button>)}<small>Seu progresso da campanha é preservado.</small></div></details></div>
-        <div className="forest-adventure-pet-chip"><img src={petImage} alt="" /><span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>
+      <section className="forest-adventure-intro"><div className="forest-exploration-title"><h1>{standalone?"Sua trilha pelo reino":"Explore com seu pet"}</h1>{!standalone&&<details className="forest-exploration-tests" onKeyDown={event=>{if(event.key==='Escape')event.currentTarget.open=false;}}><summary><Settings2 size={16} aria-hidden="true"/>Testes</summary><div className="forest-exploration-tests-panel"><strong>Área de testes</strong><button type="button" onClick={enterVillage}>Visitar vilas desta sala</button>{Array.from({length:10},(_,i)=><button key={i} type="button" onClick={()=>enterTest(30+i)}>{i===9?'Sala 40 e Castelo Bônus':'Visitar sala '+(31+i)}</button>)}<small>Seu progresso da campanha é preservado.</small></div></details>}</div>
+        <div className="forest-adventure-pet-chip">{avatar?<span className="ldr-trail-avatar">{avatar}</span>:<img src={petImage} alt="" />}<span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
-      {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay} onReview={enterTest} petImage={petImage} petName={petName}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
+      {combatCampaign.supported?<ExplorationCampaignMap state={combatCampaign.state} onContinue={enterCampaign} onReplay={enterReplay} onReview={enterTest} petImage={petImage} petName={petName} avatar={avatar}/>:<p role="status">Atualize o jogo para abrir o progresso desta campanha.</p>}
       <p className="trail-page-description">Explore biomas, supere desafios e encontre itens raros. Cada portal abre o próximo trecho da sua jornada.</p>
     </main> : <main className="forest-adventure-game">
       <section className="forest-game-heading"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> CAPÍTULO {game.chapter} · SALA {game.room} DE 2</span><h1>{currentSpec?.title}</h1><p>{currentSpec?.objective}</p></div>

@@ -6,3 +6,7 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
 .lr-soren,.lr-ayla{background-size:800% 400%}
+
+.ldr-trail-avatar{display:inline-block;width:45px;height:45px;overflow:hidden;flex-shrink:0}.ldr-trail-avatar svg,.trail-current-pet svg{display:block;width:100%;height:100%}
+
+.forest-adventure-map--trail .forest-adventure-pet-chip>.ldr-trail-avatar{flex:0 0 45px;width:45px;height:45px;overflow:hidden}.ldr-trail-avatar svg,.trail-current-pet svg{overflow:hidden}

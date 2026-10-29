@@ -5,15 +5,15 @@ import TrailSeams from "./TrailSeams";
 import TrailScenery from "./TrailScenery";
 import NaturalTrail from "./NaturalTrail";
 import {explorationMobFrame} from '@/game/explorationMobArt';
-import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
+import {useEffect,useMemo,useRef,useState,type ReactNode,type CSSProperties} from 'react';
 import {Check,LockKeyhole,Play,RotateCcw,LocateFixed,Crown,ArrowUp,ArrowRight,Star,Info,X} from 'lucide-react';
 import {EXPLORATION_ROOMS,chapterName,roomInChapter,chapterNumber} from '@/game/explorationCampaign';
 import {explorationRoomStatus} from '@/game/explorationSelection';
 import {explorationTrailLayout,trailScrollTarget,trailViewedChapter} from '@/game/explorationTrail';
 import {COMBAT_CARDS,bossCardForRoom,type CombatState} from '@/game/explorationCombat';
 import './ExplorationCampaignMap.css';
-type Props={state:CombatState;onContinue:()=>void;onReplay:(index:number)=>void;onReview?:(index:number)=>void;petImage?:string;petName?:string};
-export default function ExplorationCampaignMap({state,onContinue,onReplay,onReview,petImage,petName='Seu pet'}:Props){
+type Props={avatar?:ReactNode;state:CombatState;onContinue:()=>void;onReplay:(index:number)=>void;onReview?:(index:number)=>void;petImage?:string;petName?:string};
+export default function ExplorationCampaignMap({avatar,state,onContinue,onReplay,onReview,petImage,petName='Seu pet'}:Props){
  const currentIndex=state.completed?Math.min(EXPLORATION_ROOMS.length-1,state.roomIndex+1):state.roomIndex;
  const [selected,setSelected]=useState(currentIndex),[viewedChapter,setViewedChapter]=useState(Math.floor(currentIndex/10));
  const [size,setSize]=useState({width:390,height:600,vertical:true}),viewport=useRef<HTMLDivElement>(null),drag=useRef<{id:number;x:number;y:number;left:number;top:number}|null>(null);
@@ -49,7 +49,7 @@ export default function ExplorationCampaignMap({state,onContinue,onReplay,onRevi
       <span className="trail-room-caption" style={captions[room.index]} aria-hidden="true">{info.label}{info.reward&&<small>Carta rara</small>}</span>
       {status==='completed'&&<span className="trail-sr-only">{state.roomStars?.[room.index]?`${state.roomStars[room.index]} de 3 estrelas`:'Sem avaliação. Jogue novamente para ganhar estrelas.'}</span>}
       {active&&<span className="trail-current-halo" aria-hidden="true"/>}
-      {active&&petImage&&<img className="trail-current-pet" src={petImage} alt={`${petName}, sua etapa atual`} draggable={false}/>}
+      {active&&avatar?<span className="trail-current-pet" role="img" aria-label={`${petName}, sua etapa atual`}>{avatar}</span>:active&&petImage&&<img className="trail-current-pet" src={petImage} alt={`${petName}, sua etapa atual`} draggable={false}/>}
       {room.bossId&&<span className="trail-master-caption">Carta rara</span>}
      </div>;})}
 
