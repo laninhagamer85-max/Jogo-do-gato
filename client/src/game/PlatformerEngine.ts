@@ -1,3 +1,5 @@
+import { drawPilotTerrain, drawPilotDepth, usesPilotTerrain } from "./pilotTerrain";
+import { drawPetSymbol } from "./drawPetSymbol";
 import { GAME_ASSETS } from "./assets";
 import { createPlatformLayout, getPlatformStage, type PlatformLayout, type PlatformStage, type PlatformSurface, type PlatformWorldItem } from "./platformerLevels";
 import type { PetProfile } from "./PetGame";
@@ -458,14 +460,18 @@ export class PlatformerEngine {
     ctx.fillRect(x, surface.y, width, height);
 
     if (this.terrainImage.complete && this.terrainImage.naturalWidth > 0) {
-      const tileWidth = 260;
-      const firstTile = Math.floor(surface.x / tileWidth) * tileWidth;
-      const grassHeight = Math.min(38, height);
-      for (let tileX = firstTile; tileX < surface.x + width; tileX += tileWidth) {
-        const screenX = tileX - this.cameraX;
-        ctx.drawImage(this.terrainImage, 0, 0, 1024, 190, screenX, surface.y, tileWidth + 1, grassHeight);
-        if (height > grassHeight) {
-          ctx.drawImage(this.terrainImage, 0, 165, 1024, 520, screenX, surface.y + grassHeight - 2, tileWidth + 1, height - grassHeight + 2);
+      if (usesPilotTerrain(this.stage.id)) {
+        drawPilotTerrain(ctx, this.terrainImage, surface, this.cameraX, this.width);
+      } else {
+        const tileWidth = 260;
+        const firstTile = Math.floor(surface.x / tileWidth) * tileWidth;
+        const grassHeight = Math.min(38, height);
+        for (let tileX = firstTile; tileX < surface.x + width; tileX += tileWidth) {
+          const screenX = tileX - this.cameraX;
+          ctx.drawImage(this.terrainImage, 0, 0, 1024, 190, screenX, surface.y, tileWidth + 1, grassHeight);
+          if (height > grassHeight) {
+            ctx.drawImage(this.terrainImage, 0, 165, 1024, 520, screenX, surface.y + grassHeight - 2, tileWidth + 1, height - grassHeight + 2);
+          }
         }
       }
     } else if (this.platformImage.complete && this.platformImage.naturalWidth > 0) {
@@ -477,6 +483,7 @@ export class PlatformerEngine {
     ctx.fillRect(x, surface.y, width, height);
     ctx.globalAlpha = 1;
     this.drawThemedTerrainTop(ctx, x, surface.y, width, height);
+    if (usesPilotTerrain(this.stage.id)) drawPilotDepth(ctx, surface, this.cameraX);
     ctx.restore();
   }
 
@@ -594,8 +601,7 @@ export class PlatformerEngine {
     ctx.shadowBlur = 0;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = '17px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
-    ctx.fillText(this.stage.mascot.collectibleIcon, x, item.y + bob + 1);
+    drawPetSymbol(ctx, this.stage.mascot.collectibleIcon, x, item.y + bob, 21);
     ctx.restore();
   }
 
@@ -677,8 +683,7 @@ export class PlatformerEngine {
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.font = '15px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
-    ctx.fillText(this.stage.mascot.hazardIcon, x + hazard.width / 2, hazard.y - 1);
+    drawPetSymbol(ctx, this.stage.mascot.hazardIcon, x + hazard.width / 2, hazard.y - 10, 19);
     ctx.fillStyle = "#e95671";
     ctx.strokeStyle = "#a8375d";
     ctx.lineWidth = 2;

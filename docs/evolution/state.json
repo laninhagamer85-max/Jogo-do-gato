@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "project": "Meu Pet Virtual",
+  "updated_date": "2026-10-29",
+  "timezone": "America/Sao_Paulo",
+  "status": "published_1.52.3",
+  "active_run": "2026-10-29",
+  "collaboration": {
+    "repository": "laninhagamer85-max/Jogo-do-gato",
+    "branch": "feat/exploration-combat-pilot-20261015",
+    "base_commit": "19bf33b518de28763e5f83a77c3a732afe42ecd9",
+    "source_site_commit": "62e350982efa4858dfff2231c118c30c47bfa736",
+    "coordination_branch": "recovery/mobile-review-20261009",
+    "code_commit": "aa5c551be28c086dac383bb1609291b98b7b10d0",
+    "implementation_branch": "review/grass-option3-20261016",
+    "implementation_code_commit": "253873c8cfdaf9e8a2d889aabdcaa5e21e935c2b",
+    "implementation_docs_commit": "5bd9be31b901e7b40feb251a1c21c52a86dc6017",
+    "coordination_only": true,
+    "implementation_test_commit": "84fef25a0e25647ced0e452d8a2e8e73bb9f4719"
+  },
+  "current_improvement": {
+    "id": "dismiss-gathering-guide-on-resume",
+    "base_product_version": "1.52.2",
+    "product_version": "1.52.3",
+    "implementation_status": "published",
+    "report": "docs/evolution/runs/2026-10-29.md",
+    "github_code_commit": "253873c8cfdaf9e8a2d889aabdcaa5e21e935c2b"
+  },
+  "publication": {
+    "id": "appgdep_6ae330a1e79481918e38f5e97d8f4e35",
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f21b7c358e348191b742edeeff269b04",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-29T11:40:37.938927+00:00",
+    "product_version": "1.52.3",
+    "version_number": 159,
+    "source_commit": "62e350982efa4858dfff2231c118c30c47bfa736"
+  },
+  "verification": {
+    "typescript": "passed final",
+    "build": "passed final;20.73s",
+    "offline_suite": "972/972 in101files before final Escape refinement;Firebase staging excluded",
+    "focused_final": "20/20 in3files after final refinement",
+    "browser": "isolated844x390/390x844;X/Retomar/Escape/reentry/manual reopening/first presentation of another profile/6-step completion",
+    "limits": "No physical phone,full bridge traversal,100-phase run,FPS or repeated five-viewport audit",
+    "real_player_data_modified": false,
+    "online_phases_completed": 0
+  },
+  "blockers": [],
+  "next_actions": [
+    "David tests guide dismissal/reentry and reviews bridge scenery on phone.",
+    "Continue isolated full collector-trip playtest;new chapter4hostiles await scenery review."
+  ],
+  "rollback": {
+    "product_version": "1.52.2",
+    "version_number": 158,
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f474160d009c819180ed51c747c906be",
+    "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8",
+    "instructions": "Only if no newer publication;preserve saves."
+  },
+  "latest_report": "docs/evolution/runs/2026-10-29.md",
+  "source_reconciliation": {
+    "status": "implemented_pending_browser_and_isolated_auth_validation",
+    "account_dialog": "restored_in_source",
+    "icon_atlas": "49_regions_67_symbol_mappings_restored",
+    "real_account_actions_performed": false
+  },
+  "pilot_review": {
+    "status": "preparing_v18_pet_only_scale",
+    "variant": [
+      "menino-prata",
+      "menino-preto",
+      "menino-laranja",
+      "menina-creme",
+      "menina-calico",
+      "menina-azul"
+    ],
+    "scope": "silver walk across three modes, camera safe region, inspection input guards",
+    "publication": "v16_succeeded",
+    "offline_tests": 102,
+    "branch": "fix/pet-walk-camera-20261014",
+    "pull_request": 9,
+    "github_commit": "726777ced125823f38a18f37785814bfb166d98f",
+    "user_acceptance": "v16_black_kitten_adventure_approved_only"
+  },
+  "companion_roaming": {
+    "status": "publishing_for_user_review",
+    "product_version": "1.9",
+    "offline_tests": 109,
+    "typescript": "passed",
+    "build": "passed_before_release_label_change_rebuilding",
+    "browser": "unavailable",
+    "paw_animation": "not_implemented_static_companion_art",
+    "github_branch": "fix/companion-room-roaming-20261015",
+    "github_code_commit": "f462070cd2653105dacacb499399ac9a1e46948f",
+    "authorization": "David explicitly requested publishing on 2026-10-15 to inspect on his phone and report back, after being told paws and browser validation remain pending."
+  },
+  "sol_walk": {
+    "product_version": "1.9.1",
+    "status": "preparing_publication",
+    "offline_tests": 116,
+    "typescript": "passed_before_final_packaging",
+    "browser": "not_run_control_browser_unavailable",
+    "art": "original_generated_16_frames_4_directions_alpha",
+    "speed_world_units_per_second": 0.8,
+    "pause_ms": [
+      4000,
+      8000
+    ],
+    "collision": "visibility_graph_around_main_pet_footprint",
+    "rollout": "Sol_house4_only"
+  },
+  "sol_anticipation": {
+    "product_version": "1.9.2",
+    "hold_ms": 1000,
+    "offline_tests": 122,
+    "status": "preparing_publication",
+    "browser": "not_run_control_browser_unavailable",
+    "decoration_depth": "shared_floor_contact_sorting"
+  },
+  "mimo_walk": {
+    "product_version": "1.9.3",
+    "status": "published_for_user_review",
+    "art": "original_generated_16_frames_4_directions_rgba",
+    "asset_sha256": "58359efee8528fac19c9614bfc7d6ab60fdd95745c9ebaf5145a80a7407607d6",
+    "rollout": "Mimo_house1; Sol_house4_preserved",
+    "load_safety": "wait_for_own_walk_texture_before_roaming",
+    "visual_validation": "static_atlas_inspected_only; gameplay_pending",
+    "acceptance": "David approved movement on 2026-10-15 after 1.9.3 publication"
+  },
+  "all_companions_walk": {
+    "product_version": "1.9.4",
+    "status": "published_for_user_batch_review",
+    "companions": 12,
+    "new_atlases": 10,
+    "frames_per_atlas": 16,
+    "total_frames": 192,
+    "manifest": "recovery/companion-atlases/manifest.json",
+    "new_png_bytes": 20956694,
+    "load_policy": "only_active_companion; remain_still_until_own_atlas_ready",
+    "accepted_pilot": "1.9.3 movement approved by David; not acceptance of ten new animations",
+    "authorization": "David explicitly requested applying to all friends and testing afterwards on 2026-10-15.",
+    "browser_gameplay": "pending_user_review; not observed in this environment",
+    "github_code_commit": "210d69b7e06baccdba1bd37aea6ca4728c79d46b"
+  },
+  "exploration_expansion": {
+    "status": "one_combat_pilot_implemented_pending_browser",
+    "chapters": 6,
+    "rooms_per_chapter": 10,
+    "total_rooms": 60,
+    "combat_progression": "separate_from_house_level",
+    "defeat": "last_safe_point_preserve_permanent_items_partial_current_room_common_material_loss",
+    "initial_loss_rule": {
+      "fraction": 0.1,
+      "rounding": "floor",
+      "scope": "current_room_attempt_common_materials_only",
+      "status": "initial_default_not_user_specified_percentage"
+    },
+    "decoration_cards": "permanent_exploration_unlocks_visible_elsewhere_not_sold",
+    "feedback": "damage_negative_red_on_target_healing_positive_green_xp_separate",
+    "specification": "docs/evolution/exploration-product-rules.md",
+    "product_decisions_pending": [],
+    "balance_pending": [
+      "HP/attack/defense curves",
+      "level-up HP restoration",
+      "respawn intervals and rare-drop rates",
+      "safe-point HP restoration"
+    ],
+    "implemented_rooms": 1,
+    "rollout_plan": "docs/evolution/exploration-campaign-plan.json",
+    "rollout_rules": "docs/evolution/exploration-campaign-rollout.md"
+  },
+  "user_review_authorization": {
+    "date": "2026-10-15",
+    "text": "Publique, eu vou digitar e passar um relatório.",
+    "scope": "publish combat pilot for user playtest; no browser validation claim"
+  },
+  "pilot_user_acceptance": {
+    "version": "1.9.5",
+    "date": "2026-10-15",
+    "result": "David completed and approved pilot playtest; requested visual refinements and simpler item use."
+  },
+  "daily_review_20261016": {
+    "product": "1.9.26",
+    "site_version": 45,
+    "source_site_commit": "eb56883dc7661a15b8712aa8c1e285777adfc798",
+    "review_branch": "feat/exploration-combat-pilot-20261015",
+    "code_commit": "6b8283c87808f9c53cf841416b3e8fbd5d2827d4",
+    "status": "saved_awaiting_supported_browser",
+    "published_in_cycle": false,
+    "tests": "TypeScript/build/230 offline tests passed",
+    "report": "docs/evolution/runs/2026-10-16.md"
+  },
+  "daily_review_20261018": {
+    "date": "2026-10-18",
+    "timezone": "America/Sao_Paulo",
+    "published_product": "1.14.6",
+    "published_site_version": 72,
+    "saved_review_product": "1.14.7",
+    "saved_site_version": 73,
+    "saved_review_source": "1aa3ed665eb20b4ee27f38b7e1c86fe383afd303",
+    "code_branch": "review/grass-option3-20261016",
+    "code_commit": "aedc11d282f6f62e699b813fecf42973609a882f",
+    "documentation_commit": "a0e4e19bbf32396cbd43ff09548ca42a2ab8e66b",
+    "status": "source_followup_saved_awaiting_supported_browser",
+    "new_wheel_followup_in_sites73": false,
+    "published_this_cycle": false,
+    "tests": "TypeScript/build/456 offline tests in44 files passed; Firebase staging excluded",
+    "report": "docs/evolution/runs/2026-10-18.md"
+  },
+  "daily_review_20261019": {
+    "date": "2026-10-19",
+    "timezone": "America/Sao_Paulo",
+    "published_product": "1.21.2",
+    "site_version": 102,
+    "published_source": "cb25690396ede399bc776cb99beab4b42b4cc28a",
+    "code_branch": "review/grass-option3-20261016",
+    "code_commit": "4ab9e12a21efb63d7ae98aa78e7982cdd2ba21e1",
+    "documentation_commit": "45c07091aa6d60bf1c1bfbc96261694bb940916e",
+    "status": "minimap_scan_optimization_saved_awaiting_runtime_validation",
+    "published_in_cycle": false,
+    "checks": "TypeScript/build/537 offline tests in53 files passed; staging integration excluded",
+    "measured_fps": null,
+    "report": "docs/evolution/runs/2026-10-19.md"
+  },
+  "latest_cycle_coordination": {
+    "date": "2026-10-21",
+    "branch": "review/grass-option3-20261016",
+    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
+    "report_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
+    "scope": "1.29.1 precise short taps; castle/elevation preserved",
+    "verification": {
+      "typescript": "passed",
+      "offline_tests": "603/603 in61 files; Firebase Admin staging integration excluded (no staging credential)",
+      "build": "passed17.34s; existing >500kB chunk warning",
+      "browser": "Real pointer clicks in isolated room21 at five iframe sizes: 0.2-unit diagonal targets within same cell reached within0.06; pause/resume after resize. Not device playthrough.",
+      "viewports": {
+        "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
+        "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",
+        "390x844": "pointer move 1.7,1.7 ->1.5233,1.5233",
+        "844x390": "pointer move 1.5,1.5 ->1.7,1.7",
+        "1366x768": "pointer move 1.5233,1.5233 ->1.7,1.7"
+      },
+      "physical_phone": "not_tested",
+      "fps": "not_measured",
+      "real_online_phases_completed_in_cycle": 0
+    }
+  },
+  "independent_review": {
+    "date": "2026-10-26",
+    "product_version": "1.47.3",
+    "typescript": "passed",
+    "build": "passed",
+    "offline_tests": "878 passed in 94 files; Firebase staging excluded",
+    "browser": "isolated save/back/reenter Soren horizontal and Ayla portrait; no real account or forced phone-app restart",
+    "real_player_data_modified": false,
+    "publication": "succeeded",
+    "github_code_commit": "38f063559045e1852215440d6f477ec8318d77e0",
+    "report": "docs/evolution/runs/2026-10-26.md",
+    "implementation_branch": "review/grass-option3-20261016",
+    "documentation_commit": "eb5a1cdab709a675dacfd2f41edaacdb2d260e0f",
+    "source_commit": "ce14bdbd04df232c636c93514874b0a37b477856",
+    "site_version": 149,
+    "coordination_only": true
+  },
+  "current_report": "docs/evolution/runs/2026-10-29.md",
+  "independent_save_review": {
+    "date": "2026-10-28",
+    "status": "passed_tests_only_no_new_deploy",
+    "product_version": "1.50.0",
+    "source_published": "c29de72245189a24cbc61e1c9fc6cab82db2018a",
+    "source_reviewed": "6b9f533f56bdc55c60d707e49a775cb5017f77a9",
+    "github_test_commit": "84fef25a0e25647ced0e452d8a2e8e73bb9f4719",
+    "typescript": "passed",
+    "build": "passed;18.91s",
+    "focused_tests": "29/29 in4files",
+    "offline_suite": "953/953 in98files;Firebase integration excluded",
+    "added_tests": 2,
+    "browser": "not_run_this_cycle;no runtime/visual/physics changes",
+    "real_player_data_modified": false,
+    "online_phases_completed": 0
+  },
+  "next_action": "David tests guide dismissal/reentry and reviews bridge scenery on phone.",
+  "previous_report": "docs/evolution/runs/2026-10-28-junctions.md",
+  "previous_publication": {
+    "id": "appgdep_6ae2810f8b4881918e394a4991ba8334",
+    "project_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+    "title": "Meu Pet Virtual",
+    "version_id": "appgprj_6ac40994d8d881919d46203a60801e46~appgver_f474160d009c819180ed51c747c906be",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://meupet.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6ac40994d8d881919d46203a60801e46",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-28T23:11:34.252126+00:00",
+    "version_number": 158,
+    "product_version": "1.52.2",
+    "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8"
+  }
+}
