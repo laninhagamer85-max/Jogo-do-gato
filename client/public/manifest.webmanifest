@@ -1,14 +1,18 @@
 {
-  "name": "Meu Pet Virtual — Uma Casa de Cada Vez",
-  "short_name": "Meu Pet",
-  "description": "Cuide do seu gatinho, decore casas, complete missões e explore dez capítulos.",
+  "name": "Lendários do Rei",
+  "short_name": "Lendários",
+  "description": "Seu legado começa além dos portais.",
   "lang": "pt-BR",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#091630",
-  "theme_color": "#091630",
+  "background_color": "#0c1820",
+  "theme_color": "#0c1820",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "/lendarios-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }

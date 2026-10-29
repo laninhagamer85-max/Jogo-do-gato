@@ -1,11 +1,11 @@
 /** Biome-independent terrain material: fixed world density, overlapping aperiodic patches. */
-export type TerrainMaterial={id:string;seed:number;span:number;step:number;jitter:number;feather:number;atlasColumns?:number;atlasRows?:number};
+export type TerrainMaterial={id:string;seed:number;span:number;step:number;jitter:number;feather:number;atlasColumns?:number;atlasRows?:number;upright?:boolean};
 export const GRASS_MATERIAL:TerrainMaterial={id:'grass-block-v1',seed:5102026,span:2,step:.9,jitter:.08,feather:.18};
 export type TerrainBounds={left:number;top:number;width:number;height:number};
 export function terrainPatch(x:number,y:number,material=GRASS_MATERIAL){
  let n=(Math.imul(x,73856093)^Math.imul(y,19349663)^material.seed)>>>0;
  const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
- return {x:(x+.5)*material.step+(random()-.5)*material.jitter*2,y:(y+.5)*material.step+(random()-.5)*material.jitter*2,span:material.span*(.94+random()*.12),turn:Math.floor(random()*4),mirror:random()>.5,variant:Math.floor(random()*(material.atlasColumns??1)*(material.atlasRows??1))};
+ return {x:(x+.5)*material.step+(random()-.5)*material.jitter*2,y:(y+.5)*material.step+(random()-.5)*material.jitter*2,span:material.span*(.94+random()*.12),turn:Math.floor(random()*4)*(material.upright?0:1),mirror:random()>.5&&!material.upright,variant:Math.floor(random()*(material.atlasColumns??1)*(material.atlasRows??1))};
 }
 export function terrainPatches(bounds:TerrainBounds,material=GRASS_MATERIAL){
  const patches=[];const pad=material.span*1.1;
@@ -50,7 +50,7 @@ export function drawTerrainTexture(ctx:CanvasRenderingContext2D,width:number,hei
   if(!image.complete||!image.naturalWidth||!image.naturalHeight||tile<=0)return false;
   const dpr=Math.max(.1,Math.abs(ctx.getTransform().a)||1),layout=terrainChunkLayout(width,height,tile,dpr);
   const {density,size,span}=layout;
-  const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,material.atlasColumns??1,material.atlasRows??1,composition?.id??'',density].join(':');
+  const key=[material.id,material.seed,material.span,material.step,material.jitter,material.feather,material.atlasColumns??1,material.atlasRows??1,composition?.id??'',material.upright??false,density].join(':');
   let cache=chunkCaches.get(ctx);
   if(!cache||cache.image!==image||cache.key!==key){
     cache={key,image,chunks:new Map(),pixels:0,built:0,hits:0};chunkCaches.set(ctx,cache);

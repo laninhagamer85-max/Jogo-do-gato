@@ -1,0 +1,13 @@
+{
+  "project": "Lend\u00e1rios do Rei",
+  "date": "2026-10-29",
+  "status": "validated",
+  "release": "1.0.9",
+  "run": "runs/2026-10-29-canonical-exploration.md",
+  "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
+  "rollback_version": 7,
+  "canonical_exploration": true,
+  "inherited_engine": "1.52.3",
+  "retained_identical_assets": 189,
+  "former_site_id": "appgprj_6ac40994d8d881919d46203a60801e46"
+}

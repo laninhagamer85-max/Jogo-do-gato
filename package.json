@@ -1,11 +1,11 @@
 {
-  "name": "meu-pet-virtual",
-  "version": "1.0.0",
+  "name": "lendarios-do-rei",
+  "version": "1.0.9",
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "node scripts/build-sites-release.mjs",
+    "dev": "",
+    "build": "vite build --config vite.lendarios.config.ts && node scripts/build-lendarios-routes.mjs",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",

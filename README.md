@@ -1,3 +1,7 @@
+# Lendários do Rei — Web Agência AD
+
+Projeto canônico da Exploração desde29/10/2026. Versão de produto1.0.9; base herdada compatível com1.52.3. Leia [instruções atuais](apps/lendarios-do-rei/README.md) e docs/lendarios/state.json. A documentação antiga abaixo é histórico, não o destino de publicação.
+
 # Meu Pet Virtual — Web Agência AD
 
 ## Estado atual da fonte

@@ -66,10 +66,27 @@ export const villageSafeAt=(room:number,p:{x:number;y:number})=>villageSettlemen
 
 /** Original painted identities: no palette swaps, one occurrence per outdoor room. */
 export function villagerAppearance(d:typeof WORLD_VILLAGERS[number]){return d.art>=4?`profession:${d.art-4}`:d.kind==='worker'||d.kind==='guard'?`people:${d.art}`:d.kind==='child'?`family:${d.variant}`:d.kind==='elder'?`family:${2+d.variant}`:d.kind==='merchant'?`citizen:${2+d.variant}`:`citizen:${d.variant}`;}
+/** One named identity per painted appearance and chapter. Placement IDs remain
+ * unchanged so saved visits, gifts, stocks and conversations keep resolving. */
+export const chapterVillagerKey=(d:VillagePerson)=>`${Math.floor(d.room/10)+1}:${villagerAppearance(d)}`;
+export const CHAPTER_VILLAGERS=new Map<string,VillagePerson>();
+for(const d of WORLD_VILLAGERS){
+ const key=chapterVillagerKey(d);
+ if(!CHAPTER_VILLAGERS.has(key))CHAPTER_VILLAGERS.set(key,{...d});
+}
+export const chapterVillagerIdentity=(d:VillagePerson)=>CHAPTER_VILLAGERS.get(chapterVillagerKey(d))!;
+for(const d of WORLD_VILLAGERS)d.name=chapterVillagerIdentity(d).name;
+
 const rosterCache=new Map<string,typeof WORLD_VILLAGERS>();
 export function activeVillageDefinitions(v:{growth?:Record<string,number>}|undefined,room:number){
  const key=room+':'+villageSettlements(room).map(t=>settlementStage(v,room,t.slot)).join('');const cached=rosterCache.get(key);if(cached)return cached;
  const selected=new Map<string,typeof WORLD_VILLAGERS[number]>();
- for(const d of roomVillagers(room)){if(d.birthStage>settlementStage(v,room,d.settlement))continue;const look=villagerAppearance(d),prev=selected.get(look);if(!prev||d.kind==='guard'&&prev.kind!=='guard')selected.set(look,d);}
+ for(const d of roomVillagers(room)){
+  if(d.birthStage>settlementStage(v,room,d.settlement))continue;
+  const look=villagerAppearance(d),prev=selected.get(look);
+  const preferred=[...CHAPTER_VILLAGERS.keys()].filter(k=>k.startsWith(`${Math.floor(room/10)+1}:`)).indexOf(chapterVillagerKey(d))%10;
+  const rank=(p:VillagePerson)=>(p.id===chapterVillagerIdentity(p).id&&room===0?-100:0)+(p.kind==='guard'?-20:0)+(p.settlement-preferred+10)%10;
+  if(!prev||rank(d)<rank(prev))selected.set(look,d);
+ }
  const result=[...selected.values()];if(rosterCache.size>128)rosterCache.clear();rosterCache.set(key,result);return result;
 }

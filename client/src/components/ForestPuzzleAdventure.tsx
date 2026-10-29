@@ -27,6 +27,7 @@ type Overlay = "pause" | "room" | "chapter" | null;
 type Held = Record<ForestDirection, boolean>;
 type Props = {
   standalone?: boolean;
+  onOpenAccount?:()=>void;
   avatar?: ReactNode;
   profile: PetProfile | null;
   savedProgress: Record<string, unknown>;
@@ -202,9 +203,9 @@ function drawRoom(ctx: CanvasRenderingContext2D, width: number, height: number, 
   }
 }
 
-export default function ForestPuzzleAdventure({ standalone=false, avatar, profile, savedProgress, combatProgress, onSaveCombatProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
+export default function ForestPuzzleAdventure({ standalone=false, onOpenAccount, avatar, profile, savedProgress, combatProgress, onSaveCombatProgress, soundOn, onToggleSound, onCompleteChapter, onBack, onGoToHouse }: Props) {
   const characterId = profile?.characterId ?? "menino-prata";
-  const petName = profile?.name ?? "Seu pet";
+  const petName = profile?.name ?? "Seu lendário";
   const progressRead = useMemo(() => normalizeForestProgress(savedProgress), [savedProgress]);
   const supported = progressRead.supported;
   const progress = supported ? progressRead.progress : null;
@@ -456,13 +457,13 @@ export default function ForestPuzzleAdventure({ standalone=false, avatar, profil
       <div className="forest-adventure-top-actions">
         {!game&&<button type="button" aria-label="Configurações da exploração" onClick={()=>setShowExplorationSettings(true)}><Settings2 size={18}/></button>}
         <button type="button" onClick={onToggleSound} aria-label={soundOn ? "Silenciar efeitos" : "Ativar efeitos"} aria-pressed={soundOn} title={soundOn ? "Silenciar efeitos" : "Ativar efeitos"}>{soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}</button>
-        {!game && (standalone?<button type="button" onClick={onBack}><ArrowLeft size={16}/> Minha jornada</button>:<><button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
-        <button type="button" onClick={onGoToHouse}><Home size={16} /> Minha Casa</button></>)}
+        {!game && (standalone?<button type="button" onClick={onOpenAccount??onBack}><ArrowLeft size={16}/> Minha conta</button>:<><button type="button" onClick={onBack}><ArrowLeft size={16} /> Aventura</button>
+        <button type="button" onClick={standalone&&onOpenAccount?onOpenAccount:onGoToHouse}><Home size={16} /> Minha Casa</button></>)}
       </div>
     </header>
     {showExplorationSettings&&combatCampaign.supported&&<ExplorationSettings game={combatCampaign.state} soundOn={soundOn} onToggleSound={onToggleSound} onClose={()=>setShowExplorationSettings(false)}/>}
     {!game ? <main className="forest-adventure-map forest-adventure-map--trail">
-      <section className="forest-adventure-intro"><div className="forest-exploration-title"><h1>{standalone?"Sua trilha pelo reino":"Explore com seu pet"}</h1>{!standalone&&<details className="forest-exploration-tests" onKeyDown={event=>{if(event.key==='Escape')event.currentTarget.open=false;}}><summary><Settings2 size={16} aria-hidden="true"/>Testes</summary><div className="forest-exploration-tests-panel"><strong>Área de testes</strong><button type="button" onClick={enterVillage}>Visitar vilas desta sala</button>{Array.from({length:10},(_,i)=><button key={i} type="button" onClick={()=>enterTest(30+i)}>{i===9?'Sala 40 e Castelo Bônus':'Visitar sala '+(31+i)}</button>)}<small>Seu progresso da campanha é preservado.</small></div></details>}</div>
+      <section className="forest-adventure-intro"><div className="forest-exploration-title"><h1>{standalone?"Sua trilha pelo reino":"Explore com seu lendário"}</h1>{!standalone&&<details className="forest-exploration-tests" onKeyDown={event=>{if(event.key==='Escape')event.currentTarget.open=false;}}><summary><Settings2 size={16} aria-hidden="true"/>Testes</summary><div className="forest-exploration-tests-panel"><strong>Área de testes</strong><button type="button" onClick={enterVillage}>Visitar vilas desta sala</button>{Array.from({length:10},(_,i)=><button key={i} type="button" onClick={()=>enterTest(30+i)}>{i===9?'Sala 40 e Castelo Bônus':'Visitar sala '+(31+i)}</button>)}<small>Seu progresso da campanha é preservado.</small></div></details>}</div>
         <div className="forest-adventure-pet-chip">{avatar?<span className="ldr-trail-avatar">{avatar}</span>:<img src={petImage} alt="" />}<span><small>AVENTUREIRO</small><strong>{petName}</strong></span><button type="button" className="forest-primary" disabled={!combatCampaign.supported} onClick={enterCampaign}><Play size={16}/>Continuar jogo</button></div>
       </section>
       {!supported && <div className="forest-adventure-version-note" role="status">Este perfil tem progresso de uma versão mais nova. Atualize o jogo para continuar; nada será sobrescrito.</div>}
@@ -470,7 +471,7 @@ export default function ForestPuzzleAdventure({ standalone=false, avatar, profil
       <p className="trail-page-description">Explore biomas, supere desafios e encontre itens raros. Cada portal abre o próximo trecho da sua jornada.</p>
     </main> : <main className="forest-adventure-game">
       <section className="forest-game-heading"><div><span className="forest-adventure-eyebrow"><Compass size={15} /> CAPÍTULO {game.chapter} · SALA {game.room} DE 2</span><h1>{currentSpec?.title}</h1><p>{currentSpec?.objective}</p></div>
-        <div className="forest-game-metrics"><span className="forest-key-counter" aria-label={`${game.collectedKeys.length} chaves`}><KeyRound size={18} />{game.collectedKeys.length}</span><button type="button" aria-pressed={overview || inspecting} onClick={() => { stopHeld(); if (overviewRef.current || cameraFocusRef.current) followPet(); else { overviewRef.current = true; setOverview(true); } }} aria-label={overview || inspecting ? "Voltar ao pet" : "Ver sala inteira"}>{overview || inspecting ? "Voltar ao pet" : "Ver sala"}</button><span><strong>{game.steps}</strong><small>passos</small></span><span><strong>{game.actions}</strong><small>ações</small></span><button ref={pauseButtonRef} type="button" onClick={pause} aria-label={overlay === "pause" ? "Retomar" : "Pausar"}>{overlay === "pause" ? <Play size={17} /> : <Pause size={17} />}</button></div>
+        <div className="forest-game-metrics"><span className="forest-key-counter" aria-label={`${game.collectedKeys.length} chaves`}><KeyRound size={18} />{game.collectedKeys.length}</span><button type="button" aria-pressed={overview || inspecting} onClick={() => { stopHeld(); if (overviewRef.current || cameraFocusRef.current) followPet(); else { overviewRef.current = true; setOverview(true); } }} aria-label={overview || inspecting ? "Voltar ao lendário" : "Ver sala inteira"}>{overview || inspecting ? "Voltar ao lendário" : "Ver sala"}</button><span><strong>{game.steps}</strong><small>passos</small></span><span><strong>{game.actions}</strong><small>ações</small></span><button ref={pauseButtonRef} type="button" onClick={pause} aria-label={overlay === "pause" ? "Retomar" : "Pausar"}>{overlay === "pause" ? <Play size={17} /> : <Pause size={17} />}</button></div>
       </section>
       <div className="forest-game-layout">
         <div className="forest-canvas-wrap"><canvas ref={canvasRef}
@@ -507,9 +508,9 @@ export default function ForestPuzzleAdventure({ standalone=false, avatar, profil
             stateRef.current=updated;gameRef.current=updated;setGame(updated);setUiMessage(updated.message);
           }}
           onPointerCancel={(event) => { if(dragRef.current?.id===event.pointerId)dragRef.current=null; }}
-          onLostPointerCapture={(event) => { if(dragRef.current?.id===event.pointerId)dragRef.current=null; }} aria-label={`Mapa de cima: ${currentSpec?.title}. Toque no chão para caminhar; arraste para olhar. Setas ou WASD movem o pet; E interage; F usa o objeto.`}
+          onLostPointerCapture={(event) => { if(dragRef.current?.id===event.pointerId)dragRef.current=null; }} aria-label={`Mapa de cima: ${currentSpec?.title}. Toque no chão para caminhar; arraste para olhar. Setas ou WASD movem o lendário; E interage; F usa o objeto.`}
           {...qaTelemetryAttributes} />
-          <div className="forest-live-message" aria-live="polite">{overview || inspecting ? "Inspeção pausada · use Voltar ao pet ou o direcional para jogar" : uiMessage || game.message}</div>
+          <div className="forest-live-message" aria-live="polite">{overview || inspecting ? "Inspeção pausada · use Voltar ao lendário ou o direcional para jogar" : uiMessage || game.message}</div>
           {overlay && <div ref={overlayElementRef} onKeyDown={trapOverlayFocus} className="forest-overlay" role="dialog" aria-modal="true" aria-label={overlay === "pause" ? "Jogo pausado" : overlay === "room" ? "Sala concluída" : "Capítulo concluído"}>
             <div className="forest-dialog">
               <span className="forest-dialog-icon">{overlay === "pause" ? "Ⅱ" : overlay === "room" ? "↗" : "✦"}</span>
@@ -521,7 +522,7 @@ export default function ForestPuzzleAdventure({ standalone=false, avatar, profil
                 : <div className="forest-dialog-actions"><button className="forest-primary" type="button" onClick={() => { const next = Math.min(3, (summary?.chapter ?? game.chapter) + 1); setSelectedChapter(next); returnToMap(); }}><Compass size={16} /> Ver capítulos</button><button className="forest-secondary" type="button" onClick={() => openGame(summary?.chapter ?? game.chapter)}><RotateCcw size={15} /> Rejogar capítulo</button></div>}
               {overlay === "pause" && <div className="forest-pause-menu">
                 <button type="button" className="forest-secondary" onClick={() => setShowHelp(value => !value)} aria-expanded={showHelp}><CircleHelp size={16} /> Como jogar</button>
-                {showHelp && <p>Setas ou WASD movem. E interage com o objeto à frente; F usa ou solta o objeto carregado. Toque no chão para caminhar até ele. O direcional cancela esse percurso. Arraste o cenário para inspecionar com o jogo pausado. Ver sala mostra o mapa inteiro; Voltar ao pet ou o direcional retoma a partida.</p>}
+                {showHelp && <p>Setas ou WASD movem. E interage com o objeto à frente; F usa ou solta o objeto carregado. Toque no chão para caminhar até ele. O direcional cancela esse percurso. Arraste o cenário para inspecionar com o jogo pausado. Ver sala mostra o mapa inteiro; Voltar ao lendário ou o direcional retoma a partida.</p>}
                 <button type="button" className="forest-secondary" onClick={() => requestExit("restart")}><RotateCcw size={16} /> Reiniciar sala</button>
                 <button type="button" className="forest-secondary" onClick={() => requestExit("map")}><Compass size={16} /> Seleção de capítulos</button>
                 <button type="button" className="forest-secondary" onClick={() => requestExit("adventure")}><ArrowLeft size={16} /> Aventura</button>

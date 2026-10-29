@@ -13,7 +13,7 @@ import {explorationTrailLayout,trailScrollTarget,trailViewedChapter} from '@/gam
 import {COMBAT_CARDS,bossCardForRoom,type CombatState} from '@/game/explorationCombat';
 import './ExplorationCampaignMap.css';
 type Props={avatar?:ReactNode;state:CombatState;onContinue:()=>void;onReplay:(index:number)=>void;onReview?:(index:number)=>void;petImage?:string;petName?:string};
-export default function ExplorationCampaignMap({avatar,state,onContinue,onReplay,onReview,petImage,petName='Seu pet'}:Props){
+export default function ExplorationCampaignMap({avatar,state,onContinue,onReplay,onReview,petImage,petName='Seu lendário'}:Props){
  const currentIndex=state.completed?Math.min(EXPLORATION_ROOMS.length-1,state.roomIndex+1):state.roomIndex;
  const [selected,setSelected]=useState(currentIndex),[viewedChapter,setViewedChapter]=useState(Math.floor(currentIndex/10));
  const [size,setSize]=useState({width:390,height:600,vertical:true}),viewport=useRef<HTMLDivElement>(null),drag=useRef<{id:number;x:number;y:number;left:number;top:number}|null>(null);

@@ -1,9 +1,9 @@
 import {expect,it} from 'vitest';
 import {createCombatState,pilotWalkable} from './explorationCombat';
-import {activeVillageDefinitions,WORLD_VILLAGERS,villageDoor,villageSettlements} from './explorationVillageLayout';
+import {activeVillageDefinitions,WORLD_VILLAGERS,CHAPTER_VILLAGERS,villageDoor,villageSettlements} from './explorationVillageLayout';
 import {tickVillage} from './explorationVillage';
-it('gives every citizen a distinct stable name and original unmodified clothing',()=>{
- expect(new Set(WORLD_VILLAGERS.map(d=>d.name)).size).toBe(WORLD_VILLAGERS.length);
+it('gives each chapter identity a stable name and original unmodified clothing',()=>{
+ expect(new Set(WORLD_VILLAGERS.map(d=>d.name)).size).toBe(CHAPTER_VILLAGERS.size);
  expect(WORLD_VILLAGERS.every(d=>d.clothing===0)).toBe(true);
 });
 it('original residents in the reported autumn city walk and resume their routine',()=>{

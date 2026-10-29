@@ -280,3 +280,41 @@
 
 /* Expanded lens: keep collapse outside the inventory and equipment hit targets. */
 .combat-lens-collapse:not(.is-minimized){top:calc(var(--lens-top) + var(--lens-size) + 24px)}
+
+/* The settings dialog owns an opaque parchment palette. World glass overlays
+   must never put dark guide text on a dark, translucent background. */
+dialog.combat-dialog.exploration-settings{background:#fff9e9!important;color:#263d31!important;color-scheme:light;backdrop-filter:none;-webkit-backdrop-filter:none;border:1px solid #8b7950;line-height:1.55;font-size:14px;overflow-y:auto}
+.exploration-settings :is(h2,h3,h4,p,li,label,output,strong,small,summary,span){color:#263d31;-webkit-text-fill-color:currentColor}
+.exploration-settings .exp-pause-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.exploration-settings .exp-pause-tabs button{flex:1 1 auto}
+.exploration-settings button,.exploration-settings button :is(span,small,svg){color:#fff9e9;-webkit-text-fill-color:#fff9e9}
+.exploration-settings select,.exploration-settings option{background:#fffdf5;color:#263d31;-webkit-text-fill-color:#263d31;border:1px solid #71816b;font-size:14px;padding:9px}
+.exploration-settings .exp-bestiary details{background:#f5f0dd;color:#263d31}
+.exploration-settings .exploration-release{margin:18px 0 6px;font-size:12px;color:#52614f;text-align:right}
+@media(max-width:480px){dialog.combat-dialog.exploration-settings{width:calc(100vw - 20px);inset:10px;padding:14px}.exploration-settings .combat-dialog-heading h2{font-size:18px;line-height:1.3}}
+/* Two powers orbit the attack control; interaction keeps its own clear target. */
+.combat-pilot .combat-actions{width:174px;height:210px}
+.combat-pilot .combat-actions .combat-action-power{right:0;bottom:96px;width:64px;height:68px}
+.combat-pilot .combat-actions .combat-action-secondary{right:74px;bottom:98px;width:64px;height:68px;background:#41566dd9;border-color:#c3aa68;min-width:44px;min-height:44px}
+.combat-action-secondary .exp-power-symbol{width:30px;height:30px}.combat-action-secondary>span:last-of-type{font-size:9px;line-height:1.1}.combat-action-secondary kbd{position:absolute;right:1px;top:-3px;font-size:9px;color:#ffedba}
+.combat-pilot .combat-actions .combat-action-interact{right:94px;bottom:20px;width:48px;height:48px}
+.combat-pilot .combat-item-tray{left:50%;bottom:max(26px,calc(env(safe-area-inset-bottom) + 22px))}
+.combat-release{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);width:max-content;background:none!important;border:0;padding:0;color:#ede7cf;text-shadow:0 1px 2px #153529;font:400 10px/1.2 system-ui,sans-serif;pointer-events:none}
+@media(orientation:landscape) and (max-height:500px){.combat-pilot .combat-actions{height:158px;width:184px}.combat-pilot .combat-actions .combat-action-power{right:0;bottom:88px;height:64px;width:60px}.combat-pilot .combat-actions .combat-action-secondary{right:68px;bottom:88px;height:64px;width:60px}.combat-pilot .combat-actions .combat-action-interact{right:98px;bottom:16px}}
+@media(orientation:portrait) and (max-width:350px){.combat-pilot .combat-item-tray{bottom:156px}}
+@media(orientation:portrait) and (max-width:600px){.combat-pilot .combat-actions{height:236px}.combat-pilot .combat-actions .combat-action-interact{right:76px;bottom:174px}}
+@media(orientation:landscape) and (max-height:500px){.combat-pilot .combat-actions .combat-action-interact{right:146px;bottom:16px}}
+@media(orientation:portrait) and (max-width:600px){.combat-pilot .combat-controls .exploration-joystick{width:110px;height:110px;min-width:110px;min-height:110px}.combat-pilot .combat-base-shortcut{max-width:174px}.combat-base-shortcut>button:first-child{min-width:0;white-space:normal;text-align:left}.combat-base-shortcut .combat-base-state{display:none}}
+/* Player settings and larger touch controls. */
+.combat-status-stack .combat-top{position:relative;inset:auto}.combat-top>div:first-child>small:first-of-type{padding-right:40px}.combat-player-settings{position:absolute;top:3px;right:3px;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid #d2c89899;border-radius:12px;background:#193e30dd;color:#fff1d1}.combat-top .combat-profile-trigger{padding-right:42px!important}
+.combat-pilot .combat-lens-collapse,.combat-pilot .combat-lens-collapse:not(.is-minimized){top:0;right:0;width:44px;height:44px;border-radius:12px}
+.combat-pilot .combat-controls{left:max(4px,env(safe-area-inset-left));right:max(4px,env(safe-area-inset-right))}.combat-pilot .combat-controls .exploration-joystick{width:144px;height:144px;min-width:144px;min-height:144px}.combat-pilot .combat-actions .combat-action-attack{width:104px;height:104px}.combat-pilot .combat-actions .combat-action-power{bottom:116px}.combat-pilot .combat-actions .combat-action-secondary{bottom:118px;right:76px}
+@media(orientation:portrait) and (max-width:600px){.combat-pilot .combat-controls .exploration-joystick{width:136px;height:136px;min-width:136px;min-height:136px}.combat-pilot .combat-actions .combat-action-attack{width:96px;height:96px}.combat-pilot .combat-item-tray{left:calc(50% + 20px)}.combat-pilot .combat-actions .combat-action-power{bottom:108px}.combat-pilot .combat-actions .combat-action-secondary{bottom:110px}}
+@media(orientation:portrait) and (max-width:375px){.combat-pilot .combat-controls .exploration-joystick{width:124px;height:124px;min-width:124px;min-height:124px}.combat-pilot .combat-actions .combat-action-attack{width:88px;height:88px}.combat-pilot .combat-item-tray{left:calc(50% + 18px)}}
+@media(orientation:portrait) and (max-width:350px){.combat-pilot .combat-item-tray{left:50%;bottom:240px}.combat-pilot .combat-base-shortcut{max-width:150px}}
+@media(orientation:landscape) and (max-height:500px){.combat-pilot .combat-controls .exploration-joystick{width:128px;height:128px;min-width:128px;min-height:128px}.combat-pilot .combat-actions .combat-action-attack{width:92px;height:92px}.combat-pilot .combat-actions .combat-action-power,.combat-pilot .combat-actions .combat-action-secondary{bottom:104px;height:64px}.combat-pilot .combat-item-tray{left:50%}}
+
+.combat-pilot--lens-dock .combat-minimap{right:max(var(--lens-right),env(safe-area-inset-right))}
+
+.combat-pilot--lens-dock .combat-status-stack .combat-top{position:relative}
+.combat-pilot .combat-top .combat-profile-trigger{padding-right:42px!important;box-sizing:border-box}

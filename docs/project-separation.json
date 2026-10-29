@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-29",
+  "exploration_owner": "Lendários do Rei",
+  "project_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
+  "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
+  "github_branch": "feat/lendarios-do-rei-site-20261028",
+  "original_project": "appgprj_6ac40994d8d881919d46203a60801e46",
+  "retained_identical_exploration_assets": 189,
+  "inherited_base": "1.52.3",
+  "intentional_king_changes": "Own home, account/profile adapter, controls, dual powers, story/codex and starter entitlement retained. Only missing guide dismissal change reconciled.",
+  "saves": "No deletion or silent transfer; old JSON export and validated new-game import."
+}

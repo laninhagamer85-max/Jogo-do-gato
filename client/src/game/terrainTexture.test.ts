@@ -1,6 +1,11 @@
 import {describe,it,expect,vi} from 'vitest';
 import {GRASS_MATERIAL,terrainPatch,terrainPatches,terrainChunkLayout,terrainCacheStats,TERRAIN_CACHE_PIXELS,drawTerrainTexture} from './terrainTexture';
 describe('biome terrain texture scale and blending',()=>{
+ it('keeps directional grass upright across the world without losing placement variation',()=>{
+ const patches=terrainPatches({left:-8,top:-11,width:30,height:32},{...GRASS_MATERIAL,upright:true});
+ expect(patches.every(p=>p.turn===0&&!p.mirror)).toBe(true);
+ expect(new Set(patches.map(p=>p.span)).size).toBeGreaterThan(20);
+ });
  it('samples all four atlas cells with stable world variants and crops rather than repeating the entire atlas',()=>{
   const material={...GRASS_MATERIAL,atlasColumns:2,atlasRows:2};
   const patches=terrainPatches({left:-3,top:-3,width:12,height:12},material);

@@ -1,0 +1,5 @@
+import {expect,it} from 'vitest';
+import {playerName,requirePlayerName,playerEvolution} from './lendariosProfile';
+import {createCombatState} from '../game/explorationCombat';
+it('keeps the chosen account name and normalizes blank/control characters',()=>{expect(requirePlayerName('  Ana   Lua  ')).toBe('Ana Lua');expect(playerName(null)).toBe('');expect(playerName('João\u0000')).toBe('João');expect(()=>requirePlayerName('  ')).toThrow();expect(playerName('a'.repeat(40))).toHaveLength(28);});
+it('uses actual game level thresholds and chapter completion without changing the save',()=>{const s=createCombatState();s.xp=159;s.completedRooms=[0,2,10];s.roomStars={'0':3,'2':2,'10':1};const before=JSON.stringify(s);expect(playerEvolution(s)).toMatchObject({level:2,xp:159,next:160,earned:119,needed:120,completed:3,stars:6,maxHp:112});expect(JSON.stringify(s)).toBe(before);s.xp=160;expect(playerEvolution(s)).toMatchObject({level:3,earned:0,next:360});s.xp=400000;expect(playerEvolution(s).next).toBeNull();});

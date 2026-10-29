@@ -94,7 +94,7 @@ export default function ExplorationMinimap({state,children}:{state:CombatState;c
  const enemies=state.enemies.filter(e=>!e.id.startsWith('roaming-master:')&&minimapRoom(state.roomIndex).bossId!==e.id).filter(e=>minimapNearby(state.player,e)&&minimapDiscovered(state.exploredCells,e));
  useEffect(()=>onBiomeArtChange(draw),[]);
  return <aside className="combat-minimap combat-minimap--lens" aria-label={state.castle?.active?"Minimapa do castelo":"Minimapa da clareira"}>
-  <canvas ref={canvas} width={384} height={384} role="img" aria-label={state.castle?.active?"Lupa da sala do castelo. Ponto vermelho: posição do personagem.":`Lupa do mapa, norte para cima. Ponto vermelho: seu pet. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
+  <canvas ref={canvas} width={384} height={384} role="img" aria-label={state.castle?.active?"Lupa da sala do castelo. Ponto vermelho: posição do personagem.":`Lupa do mapa, norte para cima. Ponto vermelho: seu lendário. ${enemies.length} inimigos próximos. Áreas escuras ainda não exploradas.`}/>
   <img className="combat-minimap-frame" src="/forest-adventure/map-lens-circle-v1.webp" alt="" aria-hidden="true"/>
   <span className="combat-minimap-north" aria-hidden="true">N</span>
   {children}
