@@ -1,0 +1,60 @@
+{
+  "source": "/home/ubuntu/qa-pet-20261014/acceptance/guided-3/conclusion-full-ui.webm",
+  "sourceSHA256": "050fe852915911404127c548b797c1795fe60f574d0ea8b2cdbd9b8e2751f107",
+  "output": "/home/ubuntu/qa-pet-20261014/Meu-Pet-Conclusao-Fase-1.mp4",
+  "sourceRangesSeconds": [
+    [
+      0,
+      18,
+      "entrada e primeiro trecho"
+    ],
+    [
+      43.8,
+      55,
+      "item 1 e primeiro inimigo"
+    ],
+    [
+      128.8,
+      140,
+      "inimigos centrais"
+    ],
+    [
+      312.4,
+      326,
+      "item 2 e marco"
+    ],
+    [
+      432,
+      444,
+      "encontros finais"
+    ],
+    [
+      617.5,
+      635,
+      "vão de 85px e portal"
+    ],
+    [
+      737,
+      748,
+      "decoração e sardinhas"
+    ],
+    [
+      815,
+      826,
+      "moedas"
+    ],
+    [
+      922,
+      933,
+      "mapa orgânico"
+    ],
+    [
+      1048,
+      1075,
+      "toque e fase 2"
+    ]
+  ],
+  "framing": "full 480x980 source; 44px footer added, no gameplay crop",
+  "speed": "no retiming; only long pauses and redundant terminal waiting omitted",
+  "note": "every active play segment retained with timing guards calibrated against actual frames; sequence ends at organic phase2 start"
+}
