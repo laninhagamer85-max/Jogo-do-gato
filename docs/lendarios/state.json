@@ -1,13 +1,54 @@
 {
-  "project": "Lend\u00e1rios do Rei",
-  "date": "2026-10-29",
-  "status": "validated",
-  "release": "1.0.9",
-  "run": "runs/2026-10-29-canonical-exploration.md",
+  "project": "Lendários do Rei",
+  "date": "2026-11-01",
+  "status": "published_1.0.17_with_pending_review",
+  "release": "1.0.17",
+  "run": "runs/2026-11-01.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 7,
+  "rollback_version": 16,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
-  "former_site_id": "appgprj_6ac40994d8d881919d46203a60801e46"
+  "former_site_id": "appgprj_6ac40994d8d881919d46203a60801e46",
+  "pending": [
+    "Reserva global de nomes únicos por API autenticada e banco central",
+    "Proteção de entrega do catálogo por API",
+    "Sincronização de progresso entre dispositivos"
+  ],
+  "publication": {
+    "id": "appgdep_6ae3a5990e6c81919f8c337119790a70",
+    "project_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
+    "title": "Lendários do Rei",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_abf9e2410f648191bc4026fd01005c89",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": "sediment://file_00000000b39481f8b4c8eceef09e8289",
+    "provider_deployment_id": "site---6ae2a66e7f4c8191860c2d39db928ac7",
+    "failure_message": null,
+    "env_set_revision": 0,
+    "updated_at": "2026-10-29T20:00:29.091035+00:00",
+    "product_version": "1.0.17",
+    "site_version": 17,
+    "source_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f"
+  },
+  "review": {
+    "status": "implemented_not_published",
+    "target_release": "1.0.18",
+    "branch": "review/lendarios-save-retry-20261101",
+    "base_site_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f",
+    "patch": "docs/lendarios/reviews/2026-11-01/save-retry.patch",
+    "typecheck": "passed",
+    "build": "passed;5.56s",
+    "focused_tests": "10/10",
+    "suite": "1012 passed;12failed",
+    "baseline": "112 passed;10same functional failures;two timeout files pass isolated",
+    "browser": "isolated storage adapter;save failure/retry/retained latest draft;5viewports;no real account",
+    "new_deployment": false,
+    "blockers": [
+      "Existing population/order/auth-message contracts fail on the exact published source.",
+      "Canonical GitHub branch predates current published UI;reconcile before applying patch."
+    ]
+  }
 }

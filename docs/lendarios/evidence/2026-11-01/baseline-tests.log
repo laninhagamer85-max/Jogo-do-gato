@@ -1,0 +1,134 @@
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-baseline-20261101
+
+ ❯ client/src/lib/authErrors.test.ts (4 tests | 1 failed) 16ms
+   ❯ guardian authentication error UX (4)
+     × keeps credential and account-existence errors generic while honoring the no-linking policy 11ms
+ ❯ client/src/game/exploration139.test.ts (5 tests | 1 failed) 398ms
+   × keeps unique full names per room, maps female art to female identity and preserves original clothing 11ms
+ ❯ client/src/game/explorationCivicSystems.test.ts (9 tests | 1 failed) 311ms
+   × keeps3200 unique short gendered names, no repeated identity and diverse clothing 10ms
+ ❯ client/src/game/explorationPopulation.test.ts (48 tests | 1 failed) 9249ms
+   × settlements grow through local work, unlock new residents and preserve growth 12ms
+ ❯ client/src/game/explorationVillageOrder.test.ts (6 tests | 6 failed) 73ms
+   × keeps original identities unique in every room and growth stage, including visiting merchants 61ms
+   × guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines 2ms
+   × never selects children, guards, unrelated villagers or consensual training as offenders 3ms
+   × persists detention without restarting the timer and expires while away or reloaded 2ms
+   × does not freeze citizens forever if the guard route is unreachable 3ms
+   × a one-sided assault detains only the aggressor, leaving the victim free 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  client/src/lib/authErrors.test.ts > guardian authentication error UX > keeps credential and account-existence errors generic while honoring the no-linking policy
+AssertionError: expected 'Não foi possível confirmar suas crede…' to be 'Não foi possível concluir o acesso. C…' // Object.is equality
+
+Expected: "Não foi possível concluir o acesso. Confira os dados, a conexão e a confirmação de e-mail."
+Received: "Não foi possível confirmar suas credenciais. Confira a senha e tente novamente."
+
+ ❯ client/src/lib/authErrors.test.ts:21:71
+     19|
+     20|   it("keeps credential and account-existence errors generic while hono…
+     21|     expect(guardianAuthErrorMessage({ code: "auth/wrong-password" })).…
+       |                                                                       ^
+     22|     expect(guardianAuthErrorMessage({ code: "auth/account-exists-with-…
+     23|     expect(guardianAuthErrorMessage(new Error("unknown"))).toContain("…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  client/src/game/exploration139.test.ts > keeps unique full names per room, maps female art to female identity and preserves original clothing
+AssertionError: expected 17 to be 105 // Object.is equality
+
+- Expected
++ Received
+
+- 105
++ 17
+
+ ❯ client/src/game/exploration139.test.ts:8:216
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  client/src/game/explorationCivicSystems.test.ts > keeps3200 unique short gendered names, no repeated identity and diverse clothing
+AssertionError: expected 53 to be 4005 // Object.is equality
+
+- Expected
++ Received
+
+- 4005
++ 53
+
+ ❯ client/src/game/explorationCivicSystems.test.ts:11:145
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  client/src/game/explorationPopulation.test.ts > settlements grow through local work, unlock new residents and preserve growth
+AssertionError: expected [ { id: 'r20:v0', …(24) }, …(1) ] to have a length of 5 but got 2
+
+- Expected
++ Received
+
+- 5
++ 2
+
+ ❯ client/src/game/explorationPopulation.test.ts:12:250
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > keeps original identities unique in every room and growth stage, including visiting merchants
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:7:402
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:8:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > never selects children, guards, unrelated villagers or consensual training as offenders
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:9:119
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > persists detention without restarting the timer and expires while away or reloaded
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:10:106
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > does not freeze citizens forever if the guard route is unreachable
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:11:90
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > a one-sided assault detains only the aggressor, leaving the victim free
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:13:95
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  5 failed | 2 passed (7)
+      Tests  10 failed | 112 passed (122)
+   Start at  08:25:23
+   Duration  73.24s (tests 97%, transform 1%, import 1%)
+
