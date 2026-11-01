@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-10-29",
+  "updated_date": "2026-11-01",
   "timezone": "America/Sao_Paulo",
   "status": "published_1.52.3",
   "active_run": "2026-10-29",
@@ -66,7 +66,7 @@
     "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8",
     "instructions": "Only if no newer publication;preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-10-29.md",
+  "latest_report": "docs/evolution/runs/2026-11-01.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -232,27 +232,21 @@
     "report": "docs/evolution/runs/2026-10-19.md"
   },
   "latest_cycle_coordination": {
-    "date": "2026-10-21",
-    "branch": "review/grass-option3-20261016",
-    "code_commit": "bf0109235b7ab5e6557668418739296fb43d7cb7",
-    "report_commit": "c7e828ef2b2c7afa528bf12e92926070c8289a4f",
-    "scope": "1.29.1 precise short taps; castle/elevation preserved",
-    "verification": {
-      "typescript": "passed",
-      "offline_tests": "603/603 in61 files; Firebase Admin staging integration excluded (no staging credential)",
-      "build": "passed17.34s; existing >500kB chunk warning",
-      "browser": "Real pointer clicks in isolated room21 at five iframe sizes: 0.2-unit diagonal targets within same cell reached within0.06; pause/resume after resize. Not device playthrough.",
-      "viewports": {
-        "375x667": "pointer move 1.7,1.7 ->1.5233,1.5233",
-        "375x812": "pointer move 1.5233,1.5233 ->1.7,1.7",
-        "390x844": "pointer move 1.7,1.7 ->1.5233,1.5233",
-        "844x390": "pointer move 1.5,1.5 ->1.7,1.7",
-        "1366x768": "pointer move 1.5233,1.5233 ->1.7,1.7"
-      },
-      "physical_phone": "not_tested",
-      "fps": "not_measured",
-      "real_online_phases_completed_in_cycle": 0
-    }
+    "date": "2026-11-01",
+    "target_project": "Lendários do Rei",
+    "status": "save_retry_patch_saved_not_published",
+    "report": "docs/evolution/runs/2026-11-01.md",
+    "review_branch": "review/lendarios-save-retry-20261101",
+    "review_commit": "3eb979a267077a4d418fd6ba991f8659a1424c08",
+    "canonical_docs_commit": "0af1fbefb4490c64c7f4f1b796744fb0b1a5dfda",
+    "build": "passed",
+    "typecheck": "passed",
+    "focused_tests": "10/10",
+    "full_suite": "1012pass/12fail;10samefunctional failures on published baseline;2timeouts pass isolated",
+    "published_this_cycle": false,
+    "meupet_runtime_modified": false,
+    "meupet_deployed": false,
+    "next_action": "Reconcile canonical GitHub with exact published Lendarios source and resolve baseline population/order/auth-message contracts before applying patch."
   },
   "independent_review": {
     "date": "2026-10-26",
@@ -307,5 +301,14 @@
     "version_number": 158,
     "product_version": "1.52.2",
     "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8"
+  },
+  "canonical_exploration": {
+    "project": "Lendários do Rei",
+    "project_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
+    "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
+    "branch": "feat/lendarios-do-rei-site-20261028",
+    "current_release": "1.0.17",
+    "site_version": 17,
+    "source_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f"
   }
 }
