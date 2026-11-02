@@ -1,9 +1,9 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-01",
-  "status": "published_1.0.17_with_pending_review",
+  "date": "2026-11-02",
+  "status": "publication_verified_source_reconciliation_required",
   "release": "1.0.17",
-  "run": "runs/2026-11-01.md",
+  "run": "runs/2026-11-02.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
   "rollback_version": 16,
   "canonical_exploration": true,
@@ -49,6 +49,21 @@
     "blockers": [
       "Existing population/order/auth-message contracts fail on the exact published source.",
       "Canonical GitHub branch predates current published UI;reconcile before applying patch."
-    ]
+    ],
+    "github_commit": "3eb979a267077a4d418fd6ba991f8659a1424c08",
+    "patch_url": "https://github.com/laninhagamer85-max/Jogo-do-gato/blob/review/lendarios-save-retry-20261101/docs/lendarios/reviews/2026-11-01/save-retry.patch"
+  },
+  "auth_error_review": {
+    "date": "2026-11-02",
+    "status": "implemented_tested_not_published",
+    "branch": "review/lendarios-save-retry-20261101",
+    "base_site_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f",
+    "patch": "docs/lendarios/reviews/2026-11-02/auth-error-privacy.patch",
+    "focused_tests": "18/18",
+    "typecheck": "passed",
+    "build": "passed;4.19s Vite plus routes",
+    "remaining_blockers": "59 passed;9 failed in population/order scoped tests",
+    "browser": "not repeated;pure message mapping;no real login",
+    "new_deployment": false
   }
 }

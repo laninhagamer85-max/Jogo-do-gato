@@ -1,0 +1,115 @@
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-20261101
+
+ ❯ client/src/game/explorationPopulation.test.ts (48 tests | 1 failed) 7426ms
+   × settlements grow through local work, unlock new residents and preserve growth 11ms
+ ❯ client/src/game/exploration139.test.ts (5 tests | 1 failed) 174ms
+   × keeps unique full names per room, maps female art to female identity and preserves original clothing 8ms
+ ❯ client/src/game/explorationCivicSystems.test.ts (9 tests | 1 failed) 265ms
+   × keeps3200 unique short gendered names, no repeated identity and diverse clothing 10ms
+ ❯ client/src/game/explorationVillageOrder.test.ts (6 tests | 6 failed) 68ms
+   × keeps original identities unique in every room and growth stage, including visiting merchants 58ms
+   × guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines 2ms
+   × never selects children, guards, unrelated villagers or consensual training as offenders 1ms
+   × persists detention without restarting the timer and expires while away or reloaded 1ms
+   × does not freeze citizens forever if the guard route is unreachable 1ms
+   × a one-sided assault detains only the aggressor, leaving the victim free 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  client/src/game/exploration139.test.ts > keeps unique full names per room, maps female art to female identity and preserves original clothing
+AssertionError: expected 17 to be 105 // Object.is equality
+
+- Expected
++ Received
+
+- 105
++ 17
+
+ ❯ client/src/game/exploration139.test.ts:8:216
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  client/src/game/explorationCivicSystems.test.ts > keeps3200 unique short gendered names, no repeated identity and diverse clothing
+AssertionError: expected 53 to be 4005 // Object.is equality
+
+- Expected
++ Received
+
+- 4005
++ 53
+
+ ❯ client/src/game/explorationCivicSystems.test.ts:11:145
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  client/src/game/explorationPopulation.test.ts > settlements grow through local work, unlock new residents and preserve growth
+AssertionError: expected [ { id: 'r20:v0', …(24) }, …(1) ] to have a length of 5 but got 2
+
+- Expected
++ Received
+
+- 5
++ 2
+
+ ❯ client/src/game/explorationPopulation.test.ts:12:250
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > keeps original identities unique in every room and growth stage, including visiting merchants
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:7:402
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:8:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > never selects children, guards, unrelated villagers or consensual training as offenders
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:9:119
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > persists detention without restarting the timer and expires while away or reloaded
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:10:106
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > does not freeze citizens forever if the guard route is unreachable
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:11:90
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  client/src/game/explorationVillageOrder.test.ts > a one-sided assault detains only the aggressor, leaving the victim free
+TypeError: Cannot read properties of undefined (reading 'id')
+ ❯ fixture client/src/game/explorationVillageOrder.test.ts:6:412
+
+ ❯ client/src/game/explorationVillageOrder.test.ts:13:95
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  9 failed | 59 passed (68)
+   Start at  20:27:46
+   Duration  9.98s (tests 85%, transform 10%, import 5%)
+

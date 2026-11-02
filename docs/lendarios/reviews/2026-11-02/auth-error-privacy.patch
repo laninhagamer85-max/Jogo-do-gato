@@ -1,0 +1,39 @@
+diff --git a/client/src/lib/authErrors.test.ts b/client/src/lib/authErrors.test.ts
+index 50bee0c..77c8ece 100644
+--- a/client/src/lib/authErrors.test.ts
++++ b/client/src/lib/authErrors.test.ts
+@@ -24,6 +24,20 @@ describe("guardian authentication error UX", () => {
+     expect(authErrorCode({ code: 4 })).toBeNull();
+   });
+ 
++  it.each(["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"])(
++    "does not distinguish account existence or echo provider details for %s",
++    (code) => {
++      const message = guardianAuthErrorMessage({ code, message: "Private provider details for synthetic-user@example.invalid" });
++      expect(message).toBe(guardianAuthErrorMessage(new Error("unknown")));
++      expect(message).not.toContain("synthetic-user@example.invalid");
++      expect(isActionableResetError({ code })).toBe(false);
++    },
++  );
++
++  it("keeps reauthentication guidance actionable without exposing account existence", () => {
++    expect(guardianAuthErrorMessage({ code: "auth/requires-recent-login" })).toContain("Confirme sua identidade novamente");
++  });
++
+   it("shows actionable setup failures for reset, but not whether an address exists", () => {
+     expect(isActionableResetError({ code: "auth/operation-not-allowed" })).toBe(true);
+     expect(isActionableResetError({ code: "auth/unauthorized-domain" })).toBe(true);
+diff --git a/client/src/lib/authErrors.ts b/client/src/lib/authErrors.ts
+index b2d1455..2e96caf 100644
+--- a/client/src/lib/authErrors.ts
++++ b/client/src/lib/authErrors.ts
+@@ -16,7 +16,8 @@ export function guardianAuthErrorMessage(error: unknown): string {
+       return "Confirme sua identidade novamente. Saia da conta, entre e repita a ação.";
+     case "auth/invalid-credential":
+     case "auth/wrong-password":
+-      return "Não foi possível confirmar suas credenciais. Confira a senha e tente novamente.";
++    case "auth/user-not-found":
++      return GENERIC_AUTH_ERROR;
+     case "auth/operation-not-allowed":
+       return "Este método de acesso está desativado no Firebase. O responsável pelo projeto precisa habilitar Google ou E-mail/senha nas configurações de Authentication.";
+     case "auth/unauthorized-domain":
