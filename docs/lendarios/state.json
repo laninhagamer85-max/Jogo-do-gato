@@ -1,11 +1,11 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-02",
-  "status": "publication_verified_source_reconciliation_required",
-  "release": "1.0.17",
-  "run": "runs/2026-11-02.md",
+  "date": "2026-11-03",
+  "status": "guard_save_review_pending_full_validation",
+  "release": "1.0.29",
+  "run": "runs/2026-11-03-guard-save.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 16,
+  "rollback_version": 28,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
@@ -15,56 +15,44 @@
     "Proteção de entrega do catálogo por API",
     "Sincronização de progresso entre dispositivos"
   ],
+  "multiplayer": {
+    "phase": "sites-worker-d1-infrastructure",
+    "status": "services-and-world-engine-pending",
+    "architecture": "multiplayer/architecture.md",
+    "run": "runs/2026-11-03-sites-d1-setup.md",
+    "tests": 104,
+    "backend": "multiplayer/sites-d1.md",
+    "hosting": "Sites Worker",
+    "databaseBinding": "DB"
+  },
   "publication": {
-    "id": "appgdep_6ae3a5990e6c81919f8c337119790a70",
-    "project_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-    "title": "Lendários do Rei",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_abf9e2410f648191bc4026fd01005c89",
-    "type": "publish",
+    "product_version": "1.0.29",
+    "site_version": 31,
+    "source_commit": "3ae8885d0646768409fce04c3fa4c07b18a2e619",
+    "id": "appgdep_6ae9b7d28a9c81919616077d089e68db",
     "status": "succeeded",
     "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "has_mcp": false,
-    "screenshot_asset_pointer": "sediment://file_00000000b39481f8b4c8eceef09e8289",
-    "provider_deployment_id": "site---6ae2a66e7f4c8191860c2d39db928ac7",
-    "failure_message": null,
-    "env_set_revision": 0,
-    "updated_at": "2026-10-29T20:00:29.091035+00:00",
-    "product_version": "1.0.17",
-    "site_version": 17,
-    "source_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f"
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_3ace2eb965d48191a377eaed7fcd1117"
   },
-  "review": {
-    "status": "implemented_not_published",
-    "target_release": "1.0.18",
-    "branch": "review/lendarios-save-retry-20261101",
-    "base_site_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f",
-    "patch": "docs/lendarios/reviews/2026-11-01/save-retry.patch",
-    "typecheck": "passed",
-    "build": "passed;5.56s",
-    "focused_tests": "10/10",
-    "suite": "1012 passed;12failed",
-    "baseline": "112 passed;10same functional failures;two timeout files pass isolated",
-    "browser": "isolated storage adapter;save failure/retry/retained latest draft;5viewports;no real account",
-    "new_deployment": false,
-    "blockers": [
-      "Existing population/order/auth-message contracts fail on the exact published source.",
-      "Canonical GitHub branch predates current published UI;reconcile before applying patch."
-    ],
-    "github_commit": "3eb979a267077a4d418fd6ba991f8659a1424c08",
-    "patch_url": "https://github.com/laninhagamer85-max/Jogo-do-gato/blob/review/lendarios-save-retry-20261101/docs/lendarios/reviews/2026-11-01/save-retry.patch"
+  "guard_save_review": {
+    "status": "implemented_focused_tests_passed_not_published",
+    "target_release": "1.0.30",
+    "base_site_commit": "3ae8885d0646768409fce04c3fa4c07b18a2e619",
+    "branch": "review/lendarios-guard-save-20261103",
+    "patch": "docs/lendarios/reviews/2026-11-03/guard-save.patch",
+    "related_tests": "85/85 including55guard/save cases",
+    "save_host_tests": "78/78",
+    "typecheck": "game and host passed",
+    "build": "official Worker build passed;421 retained files verified",
+    "full_suite": "interrupted exit130;no final total",
+    "baseline_failures": "15 verified in89 tests;74passed",
+    "browser": "not run;no visual/physics/animation change",
+    "published_this_cycle": false,
+    "github_commit": "e5461633e8aead19922ed9501d739dd6b732e4a9"
   },
-  "auth_error_review": {
-    "date": "2026-11-02",
-    "status": "implemented_tested_not_published",
+  "previous_save_auth_reviews": {
     "branch": "review/lendarios-save-retry-20261101",
-    "base_site_commit": "6d39bb4c54da12d7e0f5818722a8677b4b4d355f",
-    "patch": "docs/lendarios/reviews/2026-11-02/auth-error-privacy.patch",
-    "focused_tests": "18/18",
-    "typecheck": "passed",
-    "build": "passed;4.19s Vite plus routes",
-    "remaining_blockers": "59 passed;9 failed in population/order scoped tests",
-    "browser": "not repeated;pure message mapping;no real login",
-    "new_deployment": false,
-    "github_commit": "17144cf46b934584079f181148fe152e3f1099ec"
+    "status": "requires_rebase_on_sites31",
+    "last_commit": "17144cf46b934584079f181148fe152e3f1099ec"
   }
 }
