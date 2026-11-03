@@ -1,0 +1,32 @@
+Condensed log; full local output omitted (large enemy arrays).
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  client/src/lib/authErrors.test.ts > guardian authentication error UX > keeps credential and account-existence errors generic while honoring the no-linking policy
+AssertionError: expected 'Não foi possível confirmar suas crede…' to be 'Não foi possível concluir o acesso. C…' // Object.is equality
+ FAIL  client/src/game/exploration139.test.ts > keeps unique full names per room, maps female art to female identity and preserves original clothing
+AssertionError: expected 17 to be 105 // Object.is equality
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 31 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 32 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 33 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(20) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 34 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 35 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 36 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(22) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 37 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 38 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(26) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 39 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 40 has reachable portals, elevated villages and no placeholder hostiles
+AssertionError: expected [ …(24) ] to deeply equal []
+ FAIL  client/src/game/explorationCivicSystems.test.ts > keeps3200 unique short gendered names, no repeated identity and diverse clothing
+AssertionError: expected 53 to be 4005 // Object.is equality
+ Test Files  4 failed | 1 passed (5)
+      Tests  13 failed | 70 passed (83)
+   Start at  08:24:37
+   Duration  27.97s (tests 90%, import 7%, transform 3%)

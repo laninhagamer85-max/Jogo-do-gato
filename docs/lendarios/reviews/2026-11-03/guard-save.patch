@@ -1,0 +1,125 @@
+diff --git a/client/src/game/explorationVillageOrder.test.ts b/client/src/game/explorationVillageOrder.test.ts
+index 84dca23..caa21d8 100644
+--- a/client/src/game/explorationVillageOrder.test.ts
++++ b/client/src/game/explorationVillageOrder.test.ts
+@@ -3,11 +3,25 @@ import {createCombatState} from './explorationCombat';
+ import {tickVillage,readVillage,villageSnapshot,villageCitizens} from './explorationVillage';
+ import {activeVillageDefinitions,villagerAppearance,villageSettlements,villageLayout} from './explorationVillageLayout';
+ import {reportVillageAssault,reportVillageBrawl,tickVillageOrder,detainedCitizen,readVillageOrder} from './explorationVillageOrder';
+-function fixture(){let s=createCombatState();s.village!.growth=Object.fromEntries(villageSettlements(0).map(t=>[t.id,24]));s=tickVillage(s,0,1000);const defs=activeVillageDefinitions(s.village,0),guard=defs.find(d=>d.kind==='guard'&&d.settlement===0)!,pair=defs.filter(d=>d.settlement===0&&d.kind==='worker'&&!d.warrior).slice(0,2);for(const [i,d] of [...pair,guard].entries())Object.assign(s.village!.people[d.id],{x:-9+i*.3,y:-3,task:'visit',timer:0});return{s,guard,pair};}
++// Exercise a real current roster: a guard and two eligible adults share town 1.
++// Room 0's original painted trainers currently take precedence over its guards.
++function fixture(){
++ let s=createCombatState(10);
++ s.village!.growth=Object.fromEntries(villageSettlements(s.roomIndex).map(t=>[t.id,24]));
++ s=tickVillage(s,0,1000);
++ const defs=activeVillageDefinitions(s.village,s.roomIndex);
++ const guard=defs.find(d=>d.kind==='guard'&&d.settlement===1);
++ const pair=defs.filter(d=>d.settlement===1&&d.kind!=='guard'&&d.kind!=='child'&&!d.warrior).slice(0,2);
++ expect(guard,'Current roster must supply the guard used by this fixture').toBeDefined();
++ expect(pair,'Current roster must supply two eligible adults in the same town').toHaveLength(2);
++ const center=villageSettlements(s.roomIndex)[1];
++ for(const [i,d] of [...pair,guard!].entries())Object.assign(s.village!.people[d.id],{x:center.x+i*.3,y:center.y+2,task:'visit',timer:0});
++ return{s,guard:guard!,pair};
++}
+ it('keeps original identities unique in every room and growth stage, including visiting merchants',()=>{for(let r=0;r<32;r++)for(const stage of [0,8,24]){const v={growth:Object.fromEntries(villageSettlements(r).map(t=>[t.id,stage]))},defs=activeVillageDefinitions(v,r);expect(new Set(defs.map(villagerAppearance)).size).toBe(defs.length);expect(defs.length).toBeLessThanOrEqual(r===0?17:12);}const{s}=fixture();const visible=villageCitizens(s);expect(new Set(visible.map(villagerAppearance)).size).toBe(visible.length);});
+-it('guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines',()=>{let{s,pair,guard}=fixture();const beforeHP=s.hp,stock={...s.stock},bystander=activeVillageDefinitions(s.village,0).find(d=>!pair.includes(d)&&d.id!==guard.id)!;const original={...s.village!.people[bystander.id]};s=reportVillageBrawl(s,pair[0].id,pair[1].id,1000);expect(s.village!.order!.incidents['0'].phase).toBe('responding');const travel=(c:any,_id:string,p:any)=>{Object.assign(c,p);return true;};tickVillageOrder(s,50,1000,travel);expect(s.village!.order!.incidents['0'].phase).toBe('escort');tickVillageOrder(s,50,1050,travel);const i=s.village!.order!.incidents['0'];expect(i.phase).toBe('detained');expect(i.until).toBe(61050);expect(detainedCitizen(s.village,pair[0].id,61049)).toBe(true);expect(s.village!.people[bystander.id]).toEqual(original);tickVillageOrder(s,50,61050,travel);expect(s.village!.order!.incidents['0']).toBeUndefined();expect(s.village!.people[pair[0].id].task).toBe('inbound');expect(s.hp).toBe(beforeHP);expect(s.stock).toEqual(stock);});
++it('guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines',()=>{let{s,pair,guard}=fixture();const beforeHP=s.hp,stock={...s.stock},bystander=activeVillageDefinitions(s.village,0).find(d=>!pair.includes(d)&&d.id!==guard.id)!;const original={...s.village!.people[bystander.id]};s=reportVillageBrawl(s,pair[0].id,pair[1].id,1000);expect(s.village!.order!.incidents[String(s.roomIndex)].phase).toBe('responding');const travel=(c:any,_id:string,p:any)=>{Object.assign(c,p);return true;};tickVillageOrder(s,50,1000,travel);expect(s.village!.order!.incidents[String(s.roomIndex)].phase).toBe('escort');tickVillageOrder(s,50,1050,travel);const i=s.village!.order!.incidents[String(s.roomIndex)];expect(i.phase).toBe('detained');expect(i.until).toBe(61050);expect(detainedCitizen(s.village,pair[0].id,61049)).toBe(true);expect(s.village!.people[bystander.id]).toEqual(original);tickVillageOrder(s,50,61050,travel);expect(s.village!.order!.incidents[String(s.roomIndex)]).toBeUndefined();expect(s.village!.people[pair[0].id].task).toBe('inbound');expect(s.hp).toBe(beforeHP);expect(s.stock).toEqual(stock);});
+ it('never selects children, guards, unrelated villagers or consensual training as offenders',()=>{const{s,pair,guard}=fixture(),child=activeVillageDefinitions(s.village,0).find(d=>d.kind==='child')!;expect(reportVillageBrawl(s,guard.id,pair[0].id,1000)).toBe(s);expect(reportVillageBrawl(s,child.id,pair[0].id,1000)).toBe(s);expect(reportVillageBrawl(s,pair[0].id,pair[0].id,1000)).toBe(s);s.village!.people[pair[1].id].x+=20;expect(reportVillageBrawl(s,pair[0].id,pair[1].id,1000)).toBe(s);});
+-it('persists detention without restarting the timer and expires while away or reloaded',()=>{let{s,pair}=fixture();s=reportVillageBrawl(s,pair[0].id,pair[1].id,Date.now());const i=s.village!.order!.incidents['0'];i.phase='detained';i.until=Date.now()+30000;const saved=villageSnapshot(s.village!),loaded=readVillage(saved);expect(loaded.order!.incidents['0'].until).toBe(i.until);expect(readVillageOrder(saved.order,i.until+1).incidents).toEqual({});s.roomIndex=1;tickVillageOrder(s,0,i.until+1,()=>false);expect(s.village!.order!.incidents).toEqual({});});
+-it('does not freeze citizens forever if the guard route is unreachable',()=>{let{s,pair}=fixture();s=reportVillageBrawl(s,pair[0].id,pair[1].id,1000);s.village!.people[s.village!.order!.incidents['0'].guard].x+=5;s.village!.clock=47000;tickVillageOrder(s,50,47000,()=>false);expect(s.village!.order!.incidents).toEqual({});});
++it('persists detention without restarting the timer and expires while away or reloaded',()=>{let{s,pair}=fixture();s=reportVillageBrawl(s,pair[0].id,pair[1].id,Date.now());const i=s.village!.order!.incidents[String(s.roomIndex)];i.phase='detained';i.until=Date.now()+30000;const saved=villageSnapshot(s.village!),loaded=readVillage(saved);expect(loaded.order!.incidents[String(s.roomIndex)].until).toBe(i.until);expect(readVillageOrder(saved.order,i.until+1).incidents).toEqual({});s.roomIndex=1;tickVillageOrder(s,0,i.until+1,()=>false);expect(s.village!.order!.incidents).toEqual({});});
++it('does not freeze citizens forever if the guard route is unreachable',()=>{let{s,pair}=fixture();s=reportVillageBrawl(s,pair[0].id,pair[1].id,1000);s.village!.people[s.village!.order!.incidents[String(s.roomIndex)].guard].x+=5;s.village!.clock=47000;tickVillageOrder(s,50,47000,()=>false);expect(s.village!.order!.incidents).toEqual({});});
+ 
+-it('a one-sided assault detains only the aggressor, leaving the victim free',()=>{let{s,pair}=fixture();s=reportVillageAssault(s,pair[0].id,pair[1].id,1000);const incident=s.village!.order!.incidents['0'];expect(incident.offenders).toEqual([pair[0].id]);const held=tickVillageOrder(s,50,1000,()=>true);expect(held.has(pair[1].id)).toBe(false);expect(held.has(pair[0].id)).toBe(true);});
++it('a one-sided assault detains only the aggressor, leaving the victim free',()=>{let{s,pair}=fixture();s=reportVillageAssault(s,pair[0].id,pair[1].id,1000);const incident=s.village!.order!.incidents[String(s.roomIndex)];expect(incident.offenders).toEqual([pair[0].id]);const held=tickVillageOrder(s,50,1000,()=>true);expect(held.has(pair[1].id)).toBe(false);expect(held.has(pair[0].id)).toBe(true);});
+diff --git a/client/src/game/explorationVillageOrder.ts b/client/src/game/explorationVillageOrder.ts
+index 032c96c..42defaa 100644
+--- a/client/src/game/explorationVillageOrder.ts
++++ b/client/src/game/explorationVillageOrder.ts
+@@ -1,10 +1,11 @@
+ import type {CombatState,CombatPoint} from './explorationCombat';
++import {EXPLORATION_ROOM_COUNT} from './explorationNascentesLayout';
+ import type {Citizen,VillageProgress} from './explorationVillage';
+ import {activeVillageDefinitions,villagerDefinition,villageLayout,villageSettlements} from './explorationVillageLayout';
+ export type VillageIncident={room:number;settlement:number;offenders:string[];victim?:string;guard:string;phase:'responding'|'escort'|'detained';started:number;until:number};
+ export type VillageOrder={nextAt:number;incidents:Record<string,VillageIncident>};
+ const adult=(id:string)=>{const d=villagerDefinition(id);return d&&d.kind!=='child'&&d.kind!=='guard';};
+-export function readVillageOrder(raw:unknown,now=Date.now()):VillageOrder{const out:VillageOrder={nextAt:now+900000,incidents:{}};if(!raw||typeof raw!=='object')return out;const r=raw as VillageOrder;if(Number.isFinite(r.nextAt))out.nextAt=Math.min(now+900000,Math.max(0,r.nextAt));for(const i of Object.values(r.incidents??{})){if(!i||!Number.isInteger(i.room)||i.room<0||i.room>31||!Number.isInteger(i.settlement)||i.settlement<0||i.settlement>9||!Array.isArray(i.offenders)||(i.offenders.length<1||i.offenders.length>2)||new Set(i.offenders).size!==i.offenders.length||!i.offenders.every(id=>adult(id)&&villagerDefinition(id).room===i.room)||villagerDefinition(i.guard)?.kind!=='guard'||villagerDefinition(i.guard).room!==i.room||!['responding','escort','detained'].includes(i.phase)||!Number.isFinite(i.started)||!Number.isFinite(i.until))continue;if(i.phase==='detained'&&i.until<=now)continue;out.incidents[String(i.room)]={...i,offenders:[...i.offenders],until:Math.min(i.until,now+60000)};}return out;}
++export function readVillageOrder(raw:unknown,now=Date.now()):VillageOrder{const out:VillageOrder={nextAt:now+900000,incidents:{}};if(!raw||typeof raw!=='object')return out;const r=raw as VillageOrder;if(Number.isFinite(r.nextAt))out.nextAt=Math.min(now+900000,Math.max(0,r.nextAt));for(const i of Object.values(r.incidents??{})){if(!i||!Number.isInteger(i.room)||i.room<0||i.room>=EXPLORATION_ROOM_COUNT||!Number.isInteger(i.settlement)||i.settlement<0||i.settlement>9||!Array.isArray(i.offenders)||(i.offenders.length<1||i.offenders.length>2)||new Set(i.offenders).size!==i.offenders.length||!i.offenders.every(id=>adult(id)&&villagerDefinition(id).room===i.room)||villagerDefinition(i.guard)?.kind!=='guard'||villagerDefinition(i.guard).room!==i.room||!['responding','escort','detained'].includes(i.phase)||!Number.isFinite(i.started)||!Number.isFinite(i.until))continue;if(i.phase==='detained'&&i.until<=now)continue;out.incidents[String(i.room)]={...i,offenders:[...i.offenders],until:Math.min(i.until,now+60000)};}return out;}
+ /** Only mutual troublemakers are detained; a victim, child or passer-by is never selected. */
+ export function reportVillageBrawl(s:CombatState,a:string,b:string,now=Date.now()){
+  const v=s.village;if(!v||a===b||!adult(a)||!adult(b)||v.duel||s.castle?.active)return s;
+diff --git a/package.json b/package.json
+index 3d14735..c49e5a8 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.29",
++  "version": "1.0.30",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
+diff --git a/client/src/game/explorationVillageOrderSave.test.ts b/client/src/game/explorationVillageOrderSave.test.ts
+new file mode 100644
+index 0000000..220a7c5
+--- /dev/null
++++ b/client/src/game/explorationVillageOrderSave.test.ts
+@@ -0,0 +1,55 @@
++import { describe, expect, it, vi } from 'vitest';
++import { EXPLORATION_ROOM_COUNT } from './explorationNascentesLayout';
++import { roomVillagers } from './explorationVillageLayout';
++import { readVillage, villageSnapshot } from './explorationVillage';
++import { readVillageOrder, type VillageIncident } from './explorationVillageOrder';
++
++const NOW = 1_800_000_000_000;
++function incident(room: number): VillageIncident {
++  const defs = roomVillagers(room);
++  const guard = defs.find(d => d.kind === 'guard')!;
++  const offender = defs.find(d => d.settlement === guard.settlement && d.kind !== 'guard' && d.kind !== 'child')!;
++  expect(guard).toBeDefined();
++  expect(offender).toBeDefined();
++  return { room, settlement: guard.settlement, offenders: [offender.id], guard: guard.id,
++    phase: 'detained', started: NOW - 10_000, until: NOW + 30_000 };
++}
++
++describe('village order save boundaries', () => {
++  it.each(Array.from({ length: EXPLORATION_ROOM_COUNT }, (_, room) => room))(
++    'preserves a valid detention in room index %i without restarting its timer', room => {
++      const entry = incident(room);
++      const raw = { nextAt: NOW + 100_000, incidents: { [room]: entry } };
++      const loaded = readVillageOrder(JSON.parse(JSON.stringify(raw)), NOW);
++      expect(loaded.incidents[String(room)]).toEqual(entry);
++      expect(loaded.incidents[String(room)]?.offenders).not.toBe(entry.offenders);
++      expect(readVillageOrder(raw, entry.until).incidents).toEqual({});
++      expect(raw.incidents[room]).toEqual(entry);
++    },
++  );
++
++  it('retains room 40 through the actual village snapshot/restore path', () => {
++    vi.useFakeTimers();
++    try {
++      vi.setSystemTime(NOW);
++      const entry = incident(39);
++      const loaded = readVillage({ order: { nextAt: NOW + 100_000, incidents: { 39: entry } } });
++      const restored = readVillage(JSON.parse(JSON.stringify(villageSnapshot(loaded))));
++      expect(restored.order?.incidents['39']).toEqual(entry);
++    } finally { vi.useRealTimers(); }
++  });
++
++  it.each([-1, EXPLORATION_ROOM_COUNT, 1.5, '39', null, Number.NaN, Number.POSITIVE_INFINITY])(
++    'rejects an invalid or future room identifier %s', room => {
++      const raw = { ...incident(39), room };
++      expect(readVillageOrder({ incidents: { x: raw } }, NOW).incidents).toEqual({});
++    },
++  );
++
++  it('still rejects a guard or offender from a different room', () => {
++    const entry = incident(39), other = incident(30);
++    for (const invalid of [{ ...entry, guard: other.guard }, { ...entry, offenders: other.offenders }]) {
++      expect(readVillageOrder({ incidents: { 39: invalid } }, NOW).incidents).toEqual({});
++    }
++  });
++});

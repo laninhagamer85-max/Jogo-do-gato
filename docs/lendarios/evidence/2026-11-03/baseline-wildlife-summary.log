@@ -1,0 +1,10 @@
+Condensed log; full local output omitted (large enemy arrays).
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  client/src/game/explorationWildlife.test.ts > keeps the approved pilot fauna intact and supplies three new species only in the woodland expansion
+AssertionError: expected [ { id: 'beetle', …(12) }, …(23) ] to deeply equal [ { id: 'beetle', …(12) }, …(1) ]
+ FAIL  client/src/game/explorationWildlife.test.ts > rolls limited different encounters in safe, reachable woodland slots across seeds
+AssertionError: expected false to be true // Object.is equality
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  08:25:30
+   Duration  1.72s (import 35%, tests 32%, transform 32%)

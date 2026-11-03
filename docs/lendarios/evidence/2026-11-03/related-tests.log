@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-20261103
+
+
+ Test Files  9 passed (9)
+      Tests  85 passed (85)
+   Start at  08:23:00
+   Duration  7.72s (import 50%, tests 41%, transform 9%, worker 1%)
+
+    Isolate  9 workers spawned · ~107ms startup each (spawn + environment, per file)
+             at least ~857ms faster with isolate: false — reuses workers across files instead of one per file
+

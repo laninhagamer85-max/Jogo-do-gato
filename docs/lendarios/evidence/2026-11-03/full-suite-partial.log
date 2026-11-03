@@ -1,0 +1,26 @@
+Partial run interrupted with Ctrl+C, exit130. No final total.
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-20261103
+
+ ❯ client/src/game/explorationChapter4Expansion.test.ts (17 tests | 10 failed) 13022ms
+   ❯ ten authored Nascentes rooms for scenery review (14)
+     × room 31 has reachable portals, elevated villages and no placeholder hostiles 1987ms
+     × room 32 has reachable portals, elevated villages and no placeholder hostiles 401ms
+     × room 33 has reachable portals, elevated villages and no placeholder hostiles 520ms
+     × room 34 has reachable portals, elevated villages and no placeholder hostiles 1179ms
+     × room 35 has reachable portals, elevated villages and no placeholder hostiles 1232ms
+     × room 36 has reachable portals, elevated villages and no placeholder hostiles 656ms
+     × room 37 has reachable portals, elevated villages and no placeholder hostiles 1334ms
+     × room 38 has reachable portals, elevated villages and no placeholder hostiles 1137ms
+     × room 39 has reachable portals, elevated villages and no placeholder hostiles 779ms
+     × room 40 has reachable portals, elevated villages and no placeholder hostiles 3346ms
+ ❯ client/src/game/explorationCivicSystems.test.ts (9 tests | 1 failed) 231ms
+   × keeps3200 unique short gendered names, no repeated identity and diverse clothing 8ms
+ ❯ client/src/game/explorationWildlife.test.ts (6 tests | 2 failed) 409ms
+   × keeps the approved pilot fauna intact and supplies three new species only in the woodland expansion 28ms
+   × rolls limited different encounters in safe, reachable woodland slots across seeds 132ms
+ ❯ client/src/game/exploration139.test.ts (5 tests | 1 failed) 257ms
+   × keeps unique full names per room, maps female art to female identity and preserves original clothing 6ms
+ ❯ client/src/lib/authErrors.test.ts (4 tests | 1 failed) 12ms
+   ❯ guardian authentication error UX (4)
+     × keeps credential and account-existence errors generic while honoring the no-linking policy 8ms
