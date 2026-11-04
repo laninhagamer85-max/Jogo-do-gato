@@ -1,9 +1,9 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-03",
-  "status": "guard_save_review_pending_full_validation",
-  "release": "1.0.29",
-  "run": "runs/2026-11-03-guard-save.md",
+  "date": "2026-11-04",
+  "status": "qa_contracts_updated_no_runtime_change",
+  "release": "1.0.38",
+  "run": "runs/2026-11-04-current-contracts.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
   "rollback_version": 28,
   "canonical_exploration": true,
@@ -16,43 +16,56 @@
     "Sincronização de progresso entre dispositivos"
   ],
   "multiplayer": {
-    "phase": "sites-worker-d1-infrastructure",
-    "status": "services-and-world-engine-pending",
+    "phase": "authenticated-social",
+    "status": "social-ready-combat-pending",
     "architecture": "multiplayer/architecture.md",
-    "run": "runs/2026-11-03-sites-d1-setup.md",
-    "tests": 104,
+    "run": "runs/2026-11-03-social-multiplayer.md",
+    "tests": 151,
     "backend": "multiplayer/sites-d1.md",
     "hosting": "Sites Worker",
-    "databaseBinding": "DB"
+    "databaseBinding": "DB",
+    "pvp": false,
+    "pve": false,
+    "sharedLoot": "policy-tested-authoritative-npc-engine-pending",
+    "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.29",
-    "site_version": 31,
-    "source_commit": "3ae8885d0646768409fce04c3fa4c07b18a2e619",
-    "id": "appgdep_6ae9b7d28a9c81919616077d089e68db",
+    "product_version": "1.0.38",
+    "site_version": 40,
+    "source_commit": "5a7c9e428c2283aecddad07b278f41b42e0a6363",
+    "id": "appgdep_6aea3a40ee108191b781ad8ac70a95ec",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_6742926fc5988191b8a9662c94a467c3",
     "status": "succeeded",
-    "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_3ace2eb965d48191a377eaed7fcd1117"
+    "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site"
   },
-  "guard_save_review": {
-    "status": "implemented_focused_tests_passed_not_published",
-    "target_release": "1.0.30",
-    "base_site_commit": "3ae8885d0646768409fce04c3fa4c07b18a2e619",
-    "branch": "review/lendarios-guard-save-20261103",
-    "patch": "docs/lendarios/reviews/2026-11-03/guard-save.patch",
-    "related_tests": "85/85 including55guard/save cases",
-    "save_host_tests": "78/78",
+  "contract_review": {
+    "date": "2026-11-04",
+    "status": "test_contracts_validated",
+    "base_source": "5a7c9e428c2283aecddad07b278f41b42e0a6363",
+    "patch": "docs/lendarios/reviews/2026-11-04/current-contracts.patch",
+    "branch": "review/lendarios-contracts-20261104",
+    "before": "19pass/12fail in31tests",
+    "focused": "33/33 in4files",
+    "final_scoped": "40pass/9fail in49tests/7files",
+    "mutations": "duplicate placement ID and missing creature art detected;production sources restored",
     "typecheck": "game and host passed",
-    "build": "official Worker build passed;421 retained files verified",
-    "full_suite": "interrupted exit130;no final total",
-    "baseline_failures": "15 verified in89 tests;74passed",
-    "browser": "not run;no visual/physics/animation change",
+    "build": "official Worker build passed;426 asset copies verified",
+    "runtime_changed": false,
     "published_this_cycle": false,
-    "github_commit": "e5461633e8aead19922ed9501d739dd6b732e4a9"
+    "full_suite": "not rerun;no global pass claim",
+    "sites_source_commit": "a92116222221a904302bb6baacffc804bcfc8242",
+    "github_commit": "d96491d98b35083a698b37199182abe0d2b333a6"
   },
-  "previous_save_auth_reviews": {
-    "branch": "review/lendarios-save-retry-20261101",
-    "status": "requires_rebase_on_sites31",
-    "last_commit": "17144cf46b934584079f181148fe152e3f1099ec"
-  }
+  "pending_review_rebase": [
+    {
+      "branch": "review/lendarios-guard-save-20261103",
+      "commit": "e5461633e8aead19922ed9501d739dd6b732e4a9",
+      "status": "rebase_on_current_source_required"
+    },
+    {
+      "branch": "review/lendarios-save-retry-20261101",
+      "commit": "17144cf46b934584079f181148fe152e3f1099ec",
+      "status": "rebase_on_current_source_required"
+    }
+  ]
 }
