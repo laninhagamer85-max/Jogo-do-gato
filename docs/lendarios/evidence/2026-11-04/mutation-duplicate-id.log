@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-20261104
+
+ ❯ client/src/game/explorationCivicSystems.test.ts (9 tests | 1 failed | 8 skipped) 14ms
+   × retains 4005 save placement IDs and 53 chapter identities without repeating the active cast 13ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  08:21:12
+   Duration  1.01s (transform 53%, import 45%, tests 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  client/src/game/explorationCivicSystems.test.ts > retains 4005 save placement IDs and 53 chapter identities without repeating the active cast
+AssertionError: expected 4004 to be 4005 // Object.is equality
+
+- Expected
++ Received
+
+- 4005
++ 4004
+
+ ❯ client/src/game/explorationCivicSystems.test.ts:13:53
+     11| it('retains 4005 save placement IDs and 53 chapter identities without …
+     12|  expect(WORLD_VILLAGERS).toHaveLength(4005);
+     13|  expect(new Set(WORLD_VILLAGERS.map(d=>d.id)).size).toBe(4005);
+       |                                                     ^
+     14|  expect(CHAPTER_VILLAGERS.size).toBe(53);
+     15|  expect(new Set(WORLD_VILLAGERS.map(d=>d.name)).size).toBe(53);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

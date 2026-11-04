@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {createCombatState,combatSnapshot,readCombatState,stepCombat,pilotWalkable} from './explorationCombat';
-import {WORLD_VILLAGERS,villageSettlements} from './explorationVillageLayout';
+import {WORLD_VILLAGERS,villageSettlements,CHAPTER_VILLAGERS,chapterVillagerIdentity,activeVillageDefinitions} from './explorationVillageLayout';
 import {cityBanned,expelFromCity,safeSettlement} from './explorationCivic';
 import {ensureWilderness,syncWildernessEnemies,saveRoamingMaster,MASTER_RESPAWN_MS,wildernessDefinitions,worldEnemyDefinitions} from './explorationWilderness';
 import {finishCaravan,caravanDestination} from './explorationCaravans';
@@ -8,7 +8,28 @@ import {marketCommand,marketAvailable} from './explorationMarket';
 import {tintCloth,clothPixel} from './explorationGarments';
 import {drawHumanPose} from './explorationHumanGait';
 import {resourceNodes} from './explorationWorkshop';
-it('keeps3200 unique short gendered names, no repeated identity and diverse clothing',()=>{expect(new Set(WORLD_VILLAGERS.map(d=>d.name)).size).toBe(4005);expect(WORLD_VILLAGERS.every(d=>d.name.split(' ').length<=2)).toBe(true);for(let room=0;room<32;room++)for(let slot=0;slot<10;slot++){const people=WORLD_VILLAGERS.filter(d=>d.room===room&&d.settlement===slot);expect(people.filter(d=>d.kind==='child').length).toBeGreaterThanOrEqual(2);expect(new Set(people.map(d=>d.name)).size).toBe(people.length);}});
+it('retains 4005 save placement IDs and 53 chapter identities without repeating the active cast',()=>{
+ expect(WORLD_VILLAGERS).toHaveLength(4005);
+ expect(new Set(WORLD_VILLAGERS.map(d=>d.id)).size).toBe(4005);
+ expect(CHAPTER_VILLAGERS.size).toBe(53);
+ expect(new Set(WORLD_VILLAGERS.map(d=>d.name)).size).toBe(53);
+ expect(WORLD_VILLAGERS.every(d=>d.name.split(' ').length<=2)).toBe(true);
+ for(const d of WORLD_VILLAGERS){
+  const identity=chapterVillagerIdentity(d);
+  expect(d.name).toBe(identity.name);
+  expect(Math.floor(d.room/10)).toBe(Math.floor(identity.room/10));
+ }
+ for(let room=0;room<40;room++){
+  for(let slot=0;slot<10;slot++){
+   const positions=WORLD_VILLAGERS.filter(d=>d.room===room&&d.settlement===slot);
+   expect(positions.filter(d=>d.kind==='child').length).toBeGreaterThanOrEqual(2);
+  }
+  const growth=Object.fromEntries(villageSettlements(room).map(t=>[t.id,24]));
+  const cast=activeVillageDefinitions({growth},room);
+  expect(new Set(cast.map(d=>d.name)).size).toBe(cast.length);
+  expect(new Set(cast.map(d=>d.settlement)).size).toBeGreaterThanOrEqual(5);
+ }
+});
 it('tints cloth while preserving skin, warm hands, hair, neutral steel and alpha',()=>{expect(clothPixel(210,150,110,.5)).toBe(false);expect(clothPixel(35,95,110,.5)).toBe(true);const data=new Uint8ClampedArray(4*4*4).fill(0);data.set([210,150,110,255],(1*4+1)*4);data.set([35,95,110,255],(2*4+2)*4);const result=tintCloth(data,4,4,'#526b9a');expect([...result.slice(20,24)]).toEqual([210,150,110,255]);expect([...result.slice(40,43)]).not.toEqual([35,95,110]);expect(result[43]).toBe(255);});
 it('draws each authored walking pose intact instead of splitting its waist and legs',()=>{const calls:unknown[][]=[];const ctx={drawImage(...a:unknown[]){calls.push(a);},rotate(){throw Error('Body fragments must not rotate');}} as unknown as CanvasRenderingContext2D;const poses=Array.from({length:4},()=>({}) as CanvasImageSource);for(const pose of poses)drawHumanPose(ctx,pose,-25,-100,50,100);expect(calls).toEqual(poses.map(p=>[p,-25,-100,50,100]));});
 it('expels for5–10min, protects guards, blocks reentry and preserves the timer on reload',()=>{let s=createCombatState(23);const town=villageSettlements(23)[0];s.player={...town};const hp=s.hp;s=expelFromCity(s,0,p=>pilotWalkable(p,true,.3,23,s.workshop),1000);expect(s.village!.exile!.until).toBeGreaterThanOrEqual(301000);expect(s.village!.exile!.until).toBeLessThanOrEqual(601000);expect(safeSettlement(s)).toBe(false);expect(cityBanned(s,town,1001)).toBe(true);expect(cityBanned(s,town,s.village!.exile!.until)).toBe(false);expect(s.hp).toBe(hp);const r=readCombatState(combatSnapshot(s));expect(r.supported&&r.state.village!.exile).toEqual(s.village!.exile);});

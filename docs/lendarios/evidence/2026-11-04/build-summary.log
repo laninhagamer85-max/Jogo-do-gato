@@ -1,0 +1,10 @@
+Condensed log; large object dumps omitted.
+✓ built in 4.39s
+✓ built in 307ms
+✓ built in 86ms
+✓ built in 175ms
+✓ built in 762ms
+✓ built in 372ms
+  Build complete. Run `vinext start` to start the production server.
+Built existing game assets + Sites Worker + isolated D1 migrations
+426 retained game files verified byte for byte

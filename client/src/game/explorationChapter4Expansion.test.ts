@@ -5,7 +5,7 @@ import {nascentesElevations,plateauPoint} from './explorationNascentesLayout';
 import {nascentesGeometry,nascentesHeight,returnPortal,portalDestination,castleGatePoint} from './explorationChapter4';
 import {createCombatState,pilotRoute,pilotWalkable,stepCombat,tickCombatPortal,combatSnapshot,readCombatState} from './explorationCombat';
 import {villageSettlements,villageLayout,roomVillagers,villageDoor} from './explorationVillageLayout';
-import {worldEnemyDefinitions,ensureWilderness} from './explorationWilderness';
+import {worldEnemyDefinitions,ensureWilderness,wildernessDefinitions} from './explorationWilderness';
 import {startExplorationTestRoom,saveVillageVisit} from './explorationSelection';
 import {migrateChapter4Expansion} from './explorationChapter4Migration';
 
@@ -19,7 +19,7 @@ describe('ten authored Nascentes rooms for scenery review',()=>{
   expect(campaignRoom(39).title).toBe('Encosta das Fontes');
  });
  for(let index=30;index<40;index++){
-  it('room '+(index+1)+' has reachable portals, elevated villages and no placeholder hostiles',()=>{
+  it('room '+(index+1)+' has reachable portals, elevated villages and painted optional lake hostiles',()=>{
    const s=createCombatState(index),room=campaignRoom(index);
    expect(s.gateOpen).toBe(true);
    for(const q of [room.exit,returnPortal(index),...room.nodes,...room.switches]){
@@ -41,8 +41,20 @@ describe('ten authored Nascentes rooms for scenery review',()=>{
     }
    }
    expect(roomVillagers(index)).toHaveLength(100);
-   expect(campaignEnemies(index)).toEqual([]);
-   expect(worldEnemyDefinitions(ensureWilderness(s,1000))).toEqual([]);
+   const hostiles=campaignEnemies(index);
+   expect(hostiles.length).toBeGreaterThan(0);
+   expect(new Set(hostiles.map(e=>e.id)).size).toBe(hostiles.length);
+   for(const enemy of hostiles){
+    expect(enemy.id).toMatch(/^lake-hostile-/);
+    expect(enemy.art).toBe('river-mobs');
+    expect(enemy.boss).toBe(false);
+    expect(enemy.hp).toBeGreaterThan(0);
+    expect(enemy.level).toBeGreaterThanOrEqual(15);
+    expect(pilotWalkable(enemy,true,enemy.radius,index),`hostile ${index}/${enemy.id}`).toBe(true);
+   }
+   const initialized=ensureWilderness(s,1000),world=worldEnemyDefinitions(initialized);
+   expect(world.map(e=>e.id).sort()).toEqual(hostiles.map(e=>e.id).sort());
+   expect(wildernessDefinitions(initialized)).toEqual([]);
    expect(nascentesGeometry(index)).toHaveLength(nascentesElevations(index).length);
   });
  }

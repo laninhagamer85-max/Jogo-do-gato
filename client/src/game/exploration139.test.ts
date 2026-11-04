@@ -1,11 +1,24 @@
 import {it,expect} from 'vitest';
-import {WORLD_VILLAGERS,roomVillagers,villageSettlements} from './explorationVillageLayout';
+import {WORLD_VILLAGERS,roomVillagers,villageSettlements,activeVillageDefinitions,villagerAppearance} from './explorationVillageLayout';
 import {createCombatState,combatSnapshot,readCombatState,pilotWalkable} from './explorationCombat';
 import {baseBlocks,baseLayout} from './explorationBase';
 import {biomeDeposits,resourceNodes,upgradeChance,newWorkshop,workshopRecipes,workshopCommand} from './explorationWorkshop';
 import {validResourceSaveId} from './explorationWoodlandResources';
 import art from './explorationCitizenArt.json';
-it('keeps unique full names per room, maps female art to female identity and preserves original clothing',()=>{for(let room=0;room<32;room++){const defs=roomVillagers(room);expect(new Set(defs.map(d=>d.name)).size).toBe(room===0?105:100);expect(defs.every(d=>d.clothing===0)).toBe(true);for(const d of defs){if(d.kind!=='worker')expect(d.gender).toBe(d.variant?'female':'male');else if(d.art<4)expect(d.gender).toBe(d.art%2?'female':'male');}}});
+it('keeps names unique in the active cast, stable placement IDs, gendered art and original clothing',()=>{
+ for(let room=0;room<40;room++){
+  const defs=roomVillagers(room);
+  expect(new Set(defs.map(d=>d.id)).size).toBe(room===0?105:100);
+  for(const stage of [0,8,24]){
+   const growth=Object.fromEntries(villageSettlements(room).map(t=>[t.id,stage]));
+   const cast=activeVillageDefinitions({growth},room);
+   expect(new Set(cast.map(d=>d.name)).size).toBe(cast.length);
+   expect(new Set(cast.map(villagerAppearance)).size).toBe(cast.length);
+  }
+  expect(defs.every(d=>d.clothing===0)).toBe(true);
+  for(const d of defs){if(d.kind!=='worker')expect(d.gender).toBe(d.variant?'female':'male');else if(d.art<4)expect(d.gender).toBe(d.art%2?'female':'male');}
+ }
+});
 it('includes the entire elderly heads above the old rigid row boundary',()=>{for(const r of art.families.rects[3])expect(r[1]).toBeLessThan(768);for(const r of art.families.rects[2])expect(r[1]).toBeLessThan(512);});
 it('places shared mineral deposits outside village centers with persistent ids',()=>{for(const room of [0,10,20,30,31]){const nodes=biomeDeposits(room);expect(nodes.length).toBeGreaterThan(15);for(const n of nodes){expect(validResourceSaveId(n.id)).toBe(true);expect(resourceNodes(room)).toContain(n);expect(Math.min(...villageSettlements(room).map(c=>Math.hypot(c.x-n.x,c.y-n.y)))).toBeGreaterThan(10);}}});
 it('blocks the house body and spawns the pet on the free front approach',()=>{const s=createCombatState();const h=baseLayout(s).home;expect(baseBlocks({x:h.x,y:h.y-.7},.22,0,s.workshop)).toBe(true);expect(pilotWalkable(s.player,false,.22,0,s.workshop)).toBe(true);});

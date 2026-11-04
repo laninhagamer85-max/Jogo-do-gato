@@ -1,0 +1,24 @@
+Condensed log; large object dumps omitted.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  client/src/lib/authErrors.test.ts > guardian authentication error UX > keeps credential and account-existence errors generic while honoring the no-linking policy
+AssertionError: expected 'Não foi possível confirmar suas crede…' to be 'Não foi possível concluir o acesso. C…' // Object.is equality
+ FAIL  client/src/game/explorationVillageOrder.test.ts > keeps original identities unique in every room and growth stage, including visiting merchants
+TypeError: Cannot read properties of undefined (reading 'id')
+ FAIL  client/src/game/explorationVillageOrder.test.ts > guard responds, escorts only the two mutual offenders, detains for exactly 60s and resumes routines
+TypeError: Cannot read properties of undefined (reading 'id')
+ FAIL  client/src/game/explorationVillageOrder.test.ts > never selects children, guards, unrelated villagers or consensual training as offenders
+TypeError: Cannot read properties of undefined (reading 'id')
+ FAIL  client/src/game/explorationVillageOrder.test.ts > persists detention without restarting the timer and expires while away or reloaded
+TypeError: Cannot read properties of undefined (reading 'id')
+ FAIL  client/src/game/explorationVillageOrder.test.ts > does not freeze citizens forever if the guard route is unreachable
+TypeError: Cannot read properties of undefined (reading 'id')
+ FAIL  client/src/game/explorationVillageOrder.test.ts > a one-sided assault detains only the aggressor, leaving the victim free
+TypeError: Cannot read properties of undefined (reading 'id')
+ FAIL  client/src/game/explorationWildlife.test.ts > keeps the approved pilot fauna intact and supplies three new species only in the woodland expansion
+AssertionError: expected [ { id: 'beetle', …(12) }, …(23) ] to deeply equal [ { id: 'beetle', …(12) }, …(1) ]
+ FAIL  client/src/game/explorationWildlife.test.ts > rolls limited different encounters in safe, reachable woodland slots across seeds
+AssertionError: expected false to be true // Object.is equality
+ Test Files  3 failed | 4 passed (7)
+      Tests  9 failed | 40 passed (49)
+   Start at  08:22:03
+   Duration  16.14s (tests 82%, import 14%, transform 4%)

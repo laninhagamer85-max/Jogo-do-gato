@@ -1,0 +1,34 @@
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-20261104
+
+ ❯ client/src/game/explorationChapter4Expansion.test.ts (17 tests | 1 failed | 16 skipped) 1461ms
+   ❯ ten authored Nascentes rooms for scenery review (14)
+     × room 31 has reachable portals, elevated villages and painted optional lake hostiles 1459ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 skipped (17)
+   Start at  08:21:14
+   Duration  2.60s (tests 59%, transform 22%, import 19%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  client/src/game/explorationChapter4Expansion.test.ts > ten authored Nascentes rooms for scenery review > room 31 has reachable portals, elevated villages and painted optional lake hostiles
+AssertionError: expected undefined to be 'river-mobs' // Object.is equality
+
+- Expected:
+"river-mobs"
+
++ Received:
+undefined
+
+ ❯ client/src/game/explorationChapter4Expansion.test.ts:49:23
+     47|    for(const enemy of hostiles){
+     48|     expect(enemy.id).toMatch(/^lake-hostile-/);
+     49|     expect(enemy.art).toBe('river-mobs');
+       |                       ^
+     50|     expect(enemy.boss).toBe(false);
+     51|     expect(enemy.hp).toBeGreaterThan(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /workspace/scratch/8ce9b45c3855/lendarios-20261104
+
+
+ Test Files  4 passed (4)
+      Tests  33 passed (33)
+   Start at  08:20:26
+   Duration  16.45s (tests 89%, import 8%, transform 3%)
+
