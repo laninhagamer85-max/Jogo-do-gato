@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  wouter@3.7.1:
+    hash: 39efe0b909e99a95385328b0fb8c36373203e3b8d6caae6dc3b0b421bf865f9c
+    path: patches/wouter@3.7.1.patch
+
 importers:
 
   .:
@@ -214,7 +219,7 @@ importers:
         version: 1.1.2(@types/react-dom@19.2.1(@types/react@19.2.1))(@types/react@19.2.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       wouter:
         specifier: ^3.3.5
-        version: 3.7.1(react@19.2.1)
+        version: 3.7.1(patch_hash=39efe0b909e99a95385328b0fb8c36373203e3b8d6caae6dc3b0b421bf865f9c)(react@19.2.1)
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -8746,7 +8751,7 @@ snapshots:
 
   why-is-node-running@3.2.1: {}
 
-  wouter@3.7.1(react@19.2.1):
+  wouter@3.7.1(patch_hash=39efe0b909e99a95385328b0fb8c36373203e3b8d6caae6dc3b0b421bf865f9c)(react@19.2.1):
     dependencies:
       mitt: 3.0.1
       react: 19.2.1

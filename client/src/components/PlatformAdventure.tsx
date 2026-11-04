@@ -1,3 +1,4 @@
+import PetSymbol from "@/components/PetSymbol";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import {
   ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Coins, Gamepad2, Heart, Home as HomeIcon,
@@ -10,6 +11,9 @@ import { PlatformerEngine, type PlatformerHud } from "@/game/PlatformerEngine";
 import { setPlatformAudioMix, startPlatformMusic, stopPlatformMusic, unlockPlatformAudio, type PlatformAudioMix } from "@/game/platformerAudio";
 import { getPlatformStage, getPlatformWorld } from "@/game/platformerLevels";
 import "./PlatformAdventure.css";
+import "./AdventureMobile.css";
+import "./AdventureEntry.css";
+import { getAdventureEntry } from "@/game/adventureEntry";
 
 type Phase = "map" | "playing" | "paused" | "failed" | "won";
 type Completion = ReturnType<typeof completePlatformStage>;
@@ -53,9 +57,11 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const [attempt, setAttempt] = useState(0);
   const [reward, setReward] = useState<Completion | null>(null);
   const [rewardStep, setRewardStep] = useState(0);
-  const [helpOpen, setHelpOpen] = useState(!state.tutorialComplete);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [creatorOpen, setCreatorOpen] = useState(false);
+  const adventureRef = useRef<HTMLDivElement>(null);
+  const mapHeadingRef = useRef<HTMLHeadingElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageCarouselRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<PlatformerEngine | null>(null);
@@ -63,6 +69,8 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   const currentStage = useMemo(() => getPlatformStage(stageId)!, [stageId]);
   const chapter = getPlatformWorld(world)!;
   const completed = state.platformProgress.completedStages;
+  const entry = getAdventureEntry(state.platformProgress);
+  const entryWorld = getPlatformWorld(entry.world)!;
   const currentWorldStages = Array.from({ length: 10 }, (_, index) => (world - 1) * 10 + index + 1);
   const worldDone = currentWorldStages.filter((id) => completed.includes(id)).length;
   const totalDone = completed.length;
@@ -74,6 +82,10 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     : world * 10;
 
   useEffect(() => { completeStageRef.current = onCompleteStage; }, [onCompleteStage]);
+
+  useEffect(() => {
+    if (phase === "map") adventureRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [phase]);
 
   useEffect(() => {
     setPlatformAudioMix(audioMix);
@@ -93,7 +105,12 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
 
   useEffect(() => {
     if (phase !== "map") return;
-    document.getElementById(`pa-stage-${focusStage}`)?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const card = document.getElementById(`pa-stage-${focusStage}`);
+    const carousel = stageCarouselRef.current;
+    if (card && carousel) {
+      // Center the unlocked stage horizontally without moving the whole mobile map.
+      carousel.scrollTo({ left: card.offsetLeft - carousel.offsetLeft - (carousel.clientWidth - card.clientWidth) / 2, behavior: "smooth" });
+    }
   }, [phase, world, focusStage]);
 
   useEffect(() => {
@@ -206,13 +223,19 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
   }, [qaAutoPilot, qaStageLimit, phase, reward, rewardStep, finalRewardStep, stageId, state.platformProgress.unlockedStage]);
 
   function beginStage(id: number) {
-    if (id > state.platformProgress.unlockedStage) return;
+    if (!getPlatformStage(id) || id > state.platformProgress.unlockedStage) return;
     setStageId(id);
     setWorld(Math.ceil(id / 10));
     setHud(START_HUD);
     setReward(null);
     setRewardStep(0);
     setPhase("playing");
+  }
+
+  function chooseStage() {
+    const heading = mapHeadingRef.current;
+    heading?.focus({ preventScroll: true });
+    heading?.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
 
   function replayStage() {
@@ -267,12 +290,12 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     </button>;
   }
 
-  return <div className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
+  return <div ref={adventureRef} className={`platform-adventure ${phase === "playing" || phase === "paused" ? "pa-in-game" : ""}`}>
     <header className="pa-topbar">
       <div className="pa-brand"><span><PawPrint size={24} fill="currentColor" /></span><div><strong>Meu Pet Virtual</strong><small>AVENTURA DA TURMA</small></div></div>
       <div className="pa-mode-switch" aria-label="Modo do jogo"><span className="pa-mode-active"><Gamepad2 size={15} /> Aventura <b>100</b></span><button type="button" onClick={onGoToHouse}><HomeIcon size={15} /> Minha Casa</button></div>
       <button className="pa-creator-badge" type="button" onClick={() => setCreatorOpen(true)} aria-label="Conheça Allana Gabriela, idealizadora do Meu Pet Virtual">
-        <span className="pa-creator-emblem" aria-hidden="true">✦</span><span><small>IDEIA QUE VIROU JOGO</small><strong>Allana Gabriela</strong></span><ChevronRight size={15} />
+        <span className="pa-creator-emblem" aria-hidden="true"><PetSymbol symbol="✦" /></span><span><small>IDEIA QUE VIROU JOGO</small><strong>Allana Gabriela</strong></span><ChevronRight size={15} />
       </button>
       <div className="pa-top-actions">
         <div className="pa-pet-level"><Star size={16} fill="currentColor" /><span>Nível {state.level}</span><small>{state.xp}/{state.xpMax} XP</small></div>
@@ -284,20 +307,37 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
     </header>
 
     {phase === "map" ? <main className="pa-map-layout">
-      <aside className="pa-world-story" style={{ "--pa-accent": PLATFORM_PALETTE(world).accent } as React.CSSProperties}>
-        <span className="pa-kicker"><Map size={13} /> MAPA DA AVENTURA</span>
-        <div className="pa-story-pet"><img src={GAME_ASSETS.characters[state.profile?.characterId ?? "menino-prata"]} alt={state.profile?.name ?? "Seu gatinho"} /><span><b>{state.profile?.name ?? "Seu pet"}</b><small>pronto para explorar</small></span></div>
-        <span className="pa-world-number">MUNDO {String(world).padStart(2, "0")} <i>·</i> 10</span>
-        <h1>{chapter.location}</h1>
-        <p className="pa-world-story-copy">{chapter.story}</p>
-        <div className="pa-current-objective"><span><Sparkles size={15} /></span><div><small>DESAFIO DA VEZ</small><strong>{state.platformProgress.unlockedStage <= 100 ? (getPlatformStage(state.platformProgress.unlockedStage)?.subtitle ?? "Todos os mundos celebram!") : "A jornada completa!"}</strong></div></div>
-        <div className="pa-world-progress"><div><span>Fases deste mundo</span><strong>{worldDone}/10</strong></div><div className="pa-progress-track"><i style={{ width: `${worldDone * 10}%` }} /></div></div>
-        <div className="pa-campaign-progress"><Trophy size={16} /><span><strong>{totalDone} / 100</strong><small>aventuras concluídas</small></span><i>{Math.round(totalDone)}%</i></div>
-        <div className="pa-house-link"><Gamepad2 size={15} /><span>Minijogos e cuidados na casa ainda dão <b>XP e moedas</b> para ajudar seu pet a evoluir.</span></div>
+      <aside className="pa-entry-card" aria-labelledby="pa-entry-name">
+        <div className="pa-entry-overview">
+          <img className="pa-entry-pet" src={GAME_ASSETS.characters[state.profile?.characterId ?? "menino-prata"]} alt="" />
+          <div className="pa-entry-intro">
+            <span className="pa-entry-kicker">{entry.campaignComplete ? "AVENTURA COMPLETA" : "PRÓXIMA AVENTURA"}</span>
+            <h1 id="pa-entry-name">{state.profile?.name ?? "Seu gatinho"}</h1>
+            <p id="pa-entry-stage">Fase {entry.stageId} · {entryWorld.location}</p>
+            <p className="pa-entry-progress">{totalDone} de 100 fases concluídas</p>
+          </div>
+        </div>
+        <div className="pa-entry-actions">
+          <button className="pa-entry-play" type="button" aria-describedby="pa-entry-stage" onClick={() => beginStage(entry.stageId)}>
+            <Play size={21} fill="currentColor" aria-hidden="true" /> {entry.label}
+          </button>
+          <button className="pa-entry-map" type="button" onClick={chooseStage}><Map size={18} aria-hidden="true" /> Escolher fase</button>
+        </div>
+        <details className="pa-entry-details">
+          <summary>Progresso e história do mundo</summary>
+          <div className="pa-entry-detail-content">
+            <h2>Mundo {world} · {chapter.location}</h2>
+            <p>{chapter.story}</p>
+            <p><strong>Fases deste mundo: {worldDone} de 10</strong></p>
+            <progress value={worldDone} max={10} aria-label={`Fases concluídas no mundo ${world}`} />
+            <p>{entry.campaignComplete ? "Você completou a campanha! Escolha uma fase para jogar novamente." : `Próximo desafio: ${getPlatformStage(entry.stageId)?.subtitle}`}</p>
+            <p>Minijogos e cuidados na casa dão XP e moedas para ajudar seu pet a evoluir.</p>
+          </div>
+        </details>
       </aside>
 
       <section className="pa-map-card" aria-label="Mapa de fases">
-        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin">✦</span> Moedas + itens temáticos</span></div>
+        <div className="pa-map-heading"><div><span className="pa-kicker">10 MUNDOS · 10 ETAPAS CADA</span><h2 ref={mapHeadingRef} className="pa-map-title" tabIndex={-1}>Escolha sua próxima aventura</h2></div><span className="pa-collectible-key"><span className="pa-key-coin"><PetSymbol symbol="✦" /></span> Moedas + itens temáticos</span></div>
         <div className="pa-world-tabs" role="tablist" aria-label="Mundos da campanha">
           {Array.from({ length: 10 }, (_, index) => index + 1).map((worldId) => {
             const worldData = getPlatformWorld(worldId)!;
@@ -305,11 +345,11 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
             const locked = worldId > availableWorld;
             const done = completed.filter((id) => Math.ceil(id / 10) === worldId).length;
             return <button className={`${world === worldId ? "active" : ""} ${locked ? "locked" : ""}`} type="button" role="tab" aria-selected={world === worldId} disabled={locked} key={worldId} onClick={() => setWorld(worldId)} title={worldData.location}>
-              <span>{locked ? <LockKeyhole size={13} /> : String(worldId).padStart(2, "0")}</span><i aria-hidden="true">{worldMascot.icon}</i><small>{worldData.location.split(" ").slice(-1)[0]} · {done}/10</small>
+              <span>{locked ? <LockKeyhole size={13} /> : String(worldId).padStart(2, "0")}</span><i aria-hidden="true"><PetSymbol symbol={worldMascot.icon} /></i><small>{worldData.location.split(" ").slice(-1)[0]} · {done}/10</small>
             </button>;
           })}
         </div>
-        <div className="pa-map-world-caption"><div><span>CASA {world} · {chapter.location.toUpperCase()}</span><strong>{chapter.title}</strong><small className="pa-map-mascot-label">{chapter.location === "Lar" ? "🐱" : getPlatformStage(world * 10)!.mascot.icon} Mascote {getPlatformStage(world * 10)!.mascot.name} · chega ao concluir a fase 10</small></div><span className="pa-map-story-step">{worldDone === 10 ? "MUNDO CONCLUÍDO" : `${worldDone} de 10 fases`}</span></div>
+        <div className="pa-map-world-caption"><div><span>CASA {world} · {chapter.location.toUpperCase()}</span><strong>{chapter.title}</strong><small className="pa-map-mascot-label"><PetSymbol symbol={chapter.location === "Lar" ? "🐱" : getPlatformStage(world * 10)!.mascot.icon} /> Mascote {getPlatformStage(world * 10)!.mascot.name} · chega ao concluir a fase 10</small></div><span className="pa-map-story-step">{worldDone === 10 ? "MUNDO CONCLUÍDO" : `${worldDone} de 10 fases`}</span></div>
         <div className="pa-stage-carousel-shell">
           <button className="pa-carousel-arrow" type="button" aria-label="Ver fases anteriores" onClick={() => stageCarouselRef.current?.scrollBy({ left: -260, behavior: "smooth" })}><ArrowLeft size={17} /></button>
           <div ref={stageCarouselRef} className="pa-stage-carousel" tabIndex={0} aria-label={`Fases da Casa ${world}; deslize para ver os próximos prêmios`}>
@@ -345,7 +385,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
             {rewardStep === 0 && <div className="pa-reveal-panel"><div className="pa-win-stars" aria-label={`${state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud)} estrelas`}>{formatStars(state.platformProgress.starsByStage[String(currentStage.id)] ?? starsForRun(hud))}</div><p>Você chegou ao portal e concluiu <strong>{currentStage.title}</strong>.</p><small>Prepare as patinhas: sua recompensa está chegando.</small></div>}
             {rewardStep === 1 && <>
               {reward?.firstClear ? <div className="pa-stage-reward pa-stage-reward-large"><img src={GAME_ASSETS.decorations[currentStage.reward.id]} alt={currentStage.reward.name} /><div><small>CASA {currentStage.world} · FASE {currentStage.stageInWorld}</small><strong>{currentStage.reward.name}</strong><span>Conquistada e guardada na mochila para decorar Minha Casa.</span></div></div> : <div className="pa-reveal-panel"><p><strong>{currentStage.reward.name}</strong> já tinha sido conquistada nesta fase.</p><small>O replay não duplica decorações.</small></div>}
-              {reward?.bonusItem && <div className="pa-token-reward"><span aria-hidden="true">{reward.bonusItem.icon}</span><div><small>ITENS COLETADOS · {reward.collectedItems}/{hud.totalWorldItems}</small><strong>{reward.bonusItem.name}{reward.bonusItem.quantity > 0 ? ` ×${reward.bonusItem.quantity}` : ""}</strong><small>{reward.bonusItem.quantity > 0 ? "Guardados na Mochila para cuidar do pet." : "A Mochila está cheia; nenhum item foi perdido no save."}</small></div></div>}
+              {reward?.bonusItem && <div className="pa-token-reward"><span aria-hidden="true"><PetSymbol symbol={reward.bonusItem.icon} /></span><div><small>ITENS COLETADOS · {reward.collectedItems}/{hud.totalWorldItems}</small><strong>{reward.bonusItem.name}{reward.bonusItem.quantity > 0 ? ` ×${reward.bonusItem.quantity}` : ""}</strong><small>{reward.bonusItem.quantity > 0 ? "Guardados na Mochila para cuidar do pet." : "A Mochila está cheia; nenhum item foi perdido no save."}</small></div></div>}
             </>}
             {rewardStep === 2 && reward?.mascotUnlocked && <div className="pa-mascot-reveal"><img src={GAME_ASSETS.companions[currentStage.mascot.id]} alt={currentStage.mascot.name} /><div><small>MASCOTE DESBLOQUEADO · CASA {currentStage.world}</small><strong>{currentStage.mascot.name}</strong><span>{currentStage.mascot.species}</span><p>“{currentStage.mascot.phrase}”</p><small>Disponível em Minha Casa, somente na Casa {currentStage.world}.</small></div></div>}
             {showingCoins && <><div className="pa-earned-coins"><Coins size={25} fill="currentColor" /><strong>+{reward?.coins ?? 0}</strong><span>moedas</span></div><p className="pa-reward-caption">{reward?.firstClear ? "As moedas já foram adicionadas à sua carteira." : "Replay concluído: moedas e decoração não são duplicadas."}</p>
@@ -362,7 +402,7 @@ export default function PlatformAdventure({ state, soundOn, audioMix, onAudioMix
       <button className="pa-modal-close" type="button" onClick={finishGuide} aria-label="Fechar guia"><X size={18} /></button><span className="pa-guide-art"><BookOpen size={25} /></span><small>UM GUIA DE PATINHAS</small><h2 id="pa-guide-title">Como jogar a aventura</h2><div className="pa-guide-steps"><p><b>1</b><span><strong>Escolha uma fase aberta</strong><small>O mapa mostra 10 mundos e 100 etapas. Vença a próxima para abrir o caminho.</small></span></p><p><b>2</b><span><strong>Corra e pule</strong><small>No teclado: setas ou A/D para mover e Espaço, W ou ↑ para pular. No celular: use as setas e o botão PULAR.</small></span></p><p><b>3</b><span><strong>Desvie e colete</strong><small>Desvie do monstro e do obstáculo desta casa, pegue moedas e o item temático, e ative o marco no meio do caminho.</small></span></p><p><b>4</b><span><strong>Entre no portal dourado</strong><small>Ganhe estrelas, moedas, itens de cuidado e uma decoração para esta casa. Ao vencer a fase 10, libere também seu mascote. Replay não duplica prêmio.</small></span></p></div><div className="pa-guide-note"><Gamepad2 size={16} /><span>Os minijogos e cuidados continuam em Minha Casa e ajudam seu pet a evoluir com XP.</span></div><button className="pa-primary-action" type="button" onClick={finishGuide}>Entendi · vamos brincar <ChevronRight size={16} /></button>
     </section></div>}
 
-    {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><span className="pa-creator-modal-emblem" aria-hidden="true">✦</span><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}
+    {creatorOpen && <div className="pa-modal-backdrop" onClick={() => setCreatorOpen(false)}><section className="pa-creator-modal" role="dialog" aria-modal="true" aria-labelledby="pa-creator-title" onClick={(event) => event.stopPropagation()}><button className="pa-modal-close" type="button" onClick={() => setCreatorOpen(false)} aria-label="Fechar homenagem"><X size={18} /></button><small>UMA IDEIA QUE VIROU JOGO</small><span className="pa-creator-modal-emblem" aria-hidden="true"><PetSymbol symbol="✦" /></span><h2 id="pa-creator-title">Allana Gabriela</h2><p>{CREATOR_COPY}</p><button className="pa-primary-action" type="button" onClick={() => setCreatorOpen(false)}>Voltar à aventura</button></section></div>}
 
     {settingsOpen && <div className="pa-modal-backdrop" onClick={() => setSettingsOpen(false)}><section className="pa-guide-modal pa-settings-modal" role="dialog" aria-modal="true" aria-labelledby="pa-settings-title" onClick={(event) => event.stopPropagation()}>
       <button className="pa-modal-close" type="button" onClick={() => setSettingsOpen(false)} aria-label="Fechar configurações"><X size={18} /></button>
