@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "Meu Pet Virtual",
-  "updated_date": "2026-11-03",
+  "updated_date": "2026-11-04",
   "timezone": "America/Sao_Paulo",
   "status": "published_1.52.3",
   "active_run": "2026-10-29",
@@ -66,7 +66,7 @@
     "source_commit": "9773136628a96bc8409c29b71e59b4e5971fbac8",
     "instructions": "Only if no newer publication;preserve saves."
   },
-  "latest_report": "docs/evolution/runs/2026-11-03.md",
+  "latest_report": "docs/evolution/runs/2026-11-04.md",
   "source_reconciliation": {
     "status": "implemented_pending_browser_and_isolated_auth_validation",
     "account_dialog": "restored_in_source",
@@ -232,26 +232,28 @@
     "report": "docs/evolution/runs/2026-10-19.md"
   },
   "latest_cycle_coordination": {
-    "date": "2026-11-03",
+    "date": "2026-11-04",
     "target_project": "Lendários do Rei",
-    "status": "guard_save_patch_saved_not_published",
-    "report": "docs/evolution/runs/2026-11-03.md",
-    "review_branch": "review/lendarios-guard-save-20261103",
-    "review_commit": "e5461633e8aead19922ed9501d739dd6b732e4a9",
-    "canonical_docs_commit": "3aaf47e81507f3558083eb39b8c4fafe61557b67",
-    "base_source": "3ae8885d0646768409fce04c3fa4c07b18a2e619",
-    "base_product": "1.0.29",
-    "base_sites_version": 31,
-    "build": "official Worker build passed;421 asset copies verified",
+    "status": "qa_contracts_updated_no_runtime_change",
+    "report": "docs/evolution/runs/2026-11-04.md",
+    "review_branch": "review/lendarios-contracts-20261104",
+    "review_commit": "d96491d98b35083a698b37199182abe0d2b333a6",
+    "canonical_docs_commit": "8f69ff7e0a1aa10ca4c23775752c0dad6f2af17e",
+    "sites_source_commit": "a92116222221a904302bb6baacffc804bcfc8242",
+    "published_product": "1.0.38",
+    "published_sites_version": 40,
+    "published_source": "5a7c9e428c2283aecddad07b278f41b42e0a6363",
+    "before": "19pass/12fail in31tests",
+    "focused_tests": "33/33 in4files",
+    "final_scoped": "40pass/9fail in49tests/7files",
+    "mutations": "duplicate ID and missing creature art detected",
     "typecheck": "game and host passed",
-    "related_tests": "85/85 including55guard-save tests",
-    "save_host_tests": "78/78",
-    "baseline_failures": "15 verified in89tests;74passed",
-    "full_suite": "interrupted exit130;no final total",
+    "build": "official Worker passed;426 assets copied byte for byte",
+    "runtime_changed": false,
     "published_this_cycle": false,
     "meupet_runtime_modified": false,
     "meupet_deployed": false,
-    "next_action": "Reconcile current wildlife/identity contracts and finish full validation before publishing the guard save patch;rebase older reviews on Sites31."
+    "next_action": "Diagnose fauna seeds/coordinates and rebase pending save/guard/auth changes on the current Site;no global suite pass claim."
   },
   "independent_review": {
     "date": "2026-10-26",
@@ -312,8 +314,8 @@
     "project_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
     "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
     "branch": "feat/lendarios-do-rei-site-20261028",
-    "current_release": "1.0.29",
-    "site_version": 31,
-    "source_commit": "3ae8885d0646768409fce04c3fa4c07b18a2e619"
+    "current_release": "1.0.38",
+    "site_version": 40,
+    "source_commit": "5a7c9e428c2283aecddad07b278f41b42e0a6363"
   }
 }
