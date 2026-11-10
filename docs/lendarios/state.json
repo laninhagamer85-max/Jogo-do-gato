@@ -1,11 +1,11 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-04",
-  "status": "qa_contracts_updated_no_runtime_change",
-  "release": "1.0.38",
-  "run": "runs/2026-11-04-current-contracts.md",
+  "date": "2026-11-10",
+  "status": "published_fox_loading",
+  "release": "1.0.58",
+  "run": "runs/2026-11-10-fox-loading.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 28,
+  "rollback_version": 59,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
@@ -30,13 +30,14 @@
     "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.38",
-    "site_version": 40,
-    "source_commit": "5a7c9e428c2283aecddad07b278f41b42e0a6363",
-    "id": "appgdep_6aea3a40ee108191b781ad8ac70a95ec",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_6742926fc5988191b8a9662c94a467c3",
+    "product_version": "1.0.58",
+    "site_version": 60,
+    "source_commit": "23adc8ce8e34f200efd9cbb37fd08114ea868ec3",
+    "id": "appgdep_6af30790af548191ba9d67e2808b07af",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_44b90cdda7dc8191a0038ed88dcc8dd3",
     "status": "succeeded",
-    "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site"
+    "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
+    "confirmed_at": "2026-11-10T12:01:32.751841+00:00"
   },
   "contract_review": {
     "date": "2026-11-04",
@@ -52,9 +53,7 @@
     "build": "official Worker build passed;426 asset copies verified",
     "runtime_changed": false,
     "published_this_cycle": false,
-    "full_suite": "not rerun;no global pass claim",
-    "sites_source_commit": "a92116222221a904302bb6baacffc804bcfc8242",
-    "github_commit": "d96491d98b35083a698b37199182abe0d2b333a6"
+    "full_suite": "not rerun;no global pass claim"
   },
   "pending_review_rebase": [
     {
@@ -67,5 +66,80 @@
       "commit": "17144cf46b934584079f181148fe152e3f1099ec",
       "status": "rebase_on_current_source_required"
     }
-  ]
+  ],
+  "chapter4": {
+    "status": "playable-challenges",
+    "rooms": [
+      31,
+      40
+    ],
+    "boss": "Javali Rei do Âmbar",
+    "bossRoom": 40,
+    "rareSubBoss": "Urso Protetor das Nascentes",
+    "subBossRooms": [
+      35,
+      38
+    ],
+    "hostiles": [
+      "Raposa do Bosque",
+      "Javali do Bosque",
+      "Lagarto Espinhoso",
+      "Escaravelho Violeta"
+    ],
+    "levelRange": [
+      16,
+      22
+    ],
+    "directTestEntry": false
+  },
+  "chapter5": {
+    "status": "planned-not-playable",
+    "biome": "gelo e neve",
+    "reservedBoss": "Lobo real de cristais turquesa",
+    "reservedHostile": "Lobo menor",
+    "plan": "chapter5-snow-plan.md"
+  },
+  "vegetation": {
+    "distribution": "pine-dominant-separated-fruit-groves-and-village-orchards",
+    "fruit": {
+      "orange": "Uma laranja após10machadadas, sem madeira",
+      "fruta": "Uma maçã após10machadadas, sem madeira"
+    },
+    "berries": "Arbustos próprios de frutos azuis em todas as vilas",
+    "resin": "Uma árvore garantida perto de cada vila; quatro por vila no capítulo3, mais núcleos externos",
+    "wood": "Exclusiva de pinheiros e carvalhos verdes na coleta de árvores"
+  },
+  "survival_arena": {
+    "mode": "single-player-pve",
+    "entrance": "Barraca com mestre fixo na Vila1 de todas as40salas",
+    "geometry": "Ilha cercada de lago, duas pontes",
+    "victory": "Entrar na ilha, derrotar pelo menos1NPC e atravessar vivo pela ponte direita",
+    "rewards": "EXP e materiais/itens dos inimigos ficam pendentes até a vitória; chefões garantem essência rara",
+    "defeat": "Retorno à barraca sem prêmios da tentativa; campanha preservada",
+    "reload": "Encerra a tentativa sem prêmios, não há estado importável de arena"
+  },
+  "release_validation": {
+    "release": "1.0.44",
+    "scoped_tests": 200,
+    "typecheck": "passed",
+    "browser": "Barraca, diálogo, entrada e abandono da arena conferidos; reabertura final bloqueada pela política do navegador; sem aparelho físico"
+  },
+  "loading_scene_review": {
+    "id": "fox",
+    "assets": [
+      "fox-landscape-v1.webp",
+      "fox-portrait-v1.webp"
+    ],
+    "compressed_bytes": 154634,
+    "focused_tests": "25/25",
+    "browser": "Chrome isolated;5 sizes;failure/rotation/cache/recovery",
+    "typecheck": "game+host passed",
+    "build": "Worker passed;453 retained files verified",
+    "preparation": "serialized bootstrap and next;retains two scene groups",
+    "browser_heap_measured": false,
+    "stage_playtest": false,
+    "github_branch": "review/lendarios-fox-loading-20261110",
+    "github_commit": "a48eb83c05471f80bc566a67d2170e6b2914a5c7",
+    "published_this_cycle": true
+  }
 }
