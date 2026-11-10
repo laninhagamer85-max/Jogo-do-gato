@@ -1,0 +1,95 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index eefc77a..4c8018a 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'raposa-carregamento',version:'1.0.58',date:'2026-11-10',category:'Experiência',title:'A Raposa do Bosque faz uma pausa.',summary:'Uma nova ilustração acompanha o carregamento, com enquadramentos próprios para celular na vertical e telas na horizontal.',details:['A raposa descansa na grama enquanto a barra mostra a preparação dos recursos do jogo.','A imagem atual permanece enquanto a próxima está sendo preparada.'],link:'/jogar/',linkLabel:'Continuar a jornada'},
+  {id:'sombras-casas-15',version:'1.0.57',date:'2026-11-10',category:'Cenários',title:'Sombras junto aos alicerces.',summary:'As casas da Vila 1 da sala 15 agora projetam sombras que acompanham a forma de cada construção.',details:['A fundação, o telhado e a chaminé definem a projeção que muda com a hora do jogo.','Degraus e objetos próximos às paredes recebem sombras de contato próprias.'],link:'/jogar/',linkLabel:'Visitar a Vila 1'},
+  {id:'sombras-vila-15',version:'1.0.56',date:'2026-11-10',category:'Cenários',title:'A luz muda na Ponte das Marés.',summary:'A Vila 1 da sala 15 recebeu um piloto de sombras que acompanham o horário do jogo.',details:['Pela manhã e à tarde, árvores, casas e bancas projetam sombras em direções diferentes.','À noite, as sombras do sol desaparecem e a iluminação próxima ao aventureiro ganha destaque. A ponte da sala também projeta sombra na água.'],link:'/jogar/',linkLabel:'Explorar a Ponte das Marés'},
+  {id:'bestiario',version:'1.0.54',date:'2026-11-05',category:'Bestiário',title:'Mais conhecimento para a jornada.',summary:'O bestiário acompanha os novos encontros e as mudanças recentes do reino.',details:['Os habitantes do Jardim das Nascentes, o Javali Rei do Âmbar e o Urso Protetor estão no catálogo. O urso é identificado como subchefe opcional.','As fichas completas indicam presença na arena, uso dos frutos azuis e ofertas do Empório Real para itens e equipamentos.','A prévia pública apresenta os personagens; atributos, receitas e demais detalhes continuam disponíveis após entrar na conta.'],link:'/bestiario/?capitulo=4',linkLabel:'Conhecer o bestiário atualizado'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index b242140..25a49b3 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -5,6 +5,7 @@ export const LOADING_SCENES=[
+  {id:'armadillo',landscape:'/lendarios/loading/armadillo-v1.webp',portrait:'/lendarios/loading/armadillo-v1.webp'},
+  {id:'moth',landscape:'/lendarios/loading/moth-v1.webp',portrait:'/lendarios/loading/moth-v1.webp'},
+  {id:'boar',landscape:'/lendarios/loading/boar-v1.webp',portrait:'/lendarios/loading/boar-v1.webp'},
++ {id:'fox',landscape:'/lendarios/loading/fox-landscape-v1.webp',portrait:'/lendarios/loading/fox-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+ export function createLoadingSceneSelector(random= Math.random){let key='boot',current:typeof LOADING_SCENES[number]=LOADING_SCENES[0];return (destination:string)=>{if(destination===key)return current;const choices=LOADING_SCENES.filter(scene=>scene.id!==current.id);current=choices[Math.max(0,Math.min(choices.length-1,Math.floor(random()*choices.length)))];key=destination;return current;};}
+@@ -15,16 +16,24 @@ export type LoadingScene=typeof LOADING_SCENES[number];
+ export function createPreparedLoadingScenes(prepare:(scene:LoadingScene)=>Promise<unknown>,random=Math.random){
+  let key='boot',current:{scene:LoadingScene;art?:unknown}={scene:LOADING_SCENES[0]};
+  let next:{scene:LoadingScene;art:unknown}|undefined;
+- let pending:Promise<void>|undefined,boot:Promise<void>|undefined;
++ let pending:Promise<void>|undefined,boot:Promise<void>|undefined,booting=false;
+  function queue(){
+-  if(pending||next)return;
++  if(booting||pending||next)return;
+   const choices=LOADING_SCENES.filter(s=>s.id!==current.scene.id);
+   const scene=choices[Math.max(0,Math.min(choices.length-1,Math.floor(random()*choices.length)))];
+   pending=prepare(scene).then(art=>{next={scene,art};},()=>{/* Keep decoded current artwork on network/decode failure. */}).finally(()=>{pending=undefined;});
+  }
+- function start(){if(boot)return boot;const initial=current;return boot=prepare(initial.scene).then(art=>{initial.art=art;queue();},()=>{/* Initial HTML remains the fallback; retry on a later destination. */});}
++ function start(){
++  if(boot)return boot;
++  booting=true;
++  const initial=current;
++  return boot=prepare(initial.scene).then(art=>{initial.art=art;},()=>{/* Initial HTML remains the fallback. */}).finally(()=>{
++   booting=false;
++   if(initial.art||key!=='boot')queue();
++  });
++ }
+  return {start,select(destination:string){
+-  if(destination!==key){key=destination;if(next){current=next;next=undefined;}queue();}
++  if(destination!==key){key=destination;if(next){current=next;next=undefined;}if(boot)queue();else void start();}
+   // Retain only current + next Image objects, rather than every decoded scene.
+   return current.scene;
+  }};
+diff --git a/client/src/lib/preparedLoadingScenes.test.ts b/client/src/lib/preparedLoadingScenes.test.ts
+index 46183a2..e5e4dfd 100644
+--- a/client/src/lib/preparedLoadingScenes.test.ts
++++ b/client/src/lib/preparedLoadingScenes.test.ts
+@@ -8,3 +8,26 @@ it('retains the current image on preload failure and retries on a later destinat
+ it('starts bootstrap only once and never downloads in response to progress renders',async()=>{const {jobs,prepare,manager}=fixture();expect(manager.start()).toBe(manager.start());jobs[0].resolve([]);await flush();for(let i=0;i<50;i++)manager.select('boot');expect(prepare).toHaveBeenCalledTimes(2);});
+ 
+ it('renders a stable bootstrap fallback without browser image APIs',()=>{expect(loadingSceneFor('room:server').id).toBe('rest');});
++
++it('does not prepare two scene groups at once when room entry precedes bootstrap decode',async()=>{
++ const {jobs,manager}=fixture();
++ expect(manager.select('room:early').id).toBe('rest');
++ expect(manager.select('room:another').id).toBe('rest');
++ expect(jobs).toHaveLength(1);
++ jobs[0].resolve(['decoded bootstrap']);await flush();
++ expect(jobs).toHaveLength(2);
++ jobs[1].resolve(['decoded next']);await flush();
++ expect(manager.select('room:another').id).toBe('rest');
++ expect(manager.select('room:ready').id).toBe(jobs[1].scene.id);
++ expect(jobs).toHaveLength(3);
++});
++
++it('can recover a later scene if the bootstrap decode fails after early room entry',async()=>{
++ const {jobs,manager}=fixture();
++ manager.start();manager.select('room:early');
++ jobs[0].reject();await flush();
++ expect(jobs).toHaveLength(2);
++ jobs[1].resolve(['decoded next']);await flush();
++ expect(manager.select('room:early').id).toBe('rest');
++ expect(manager.select('room:ready').id).toBe(jobs[1].scene.id);
++});
+diff --git a/package.json b/package.json
+index 9ef4d22..bea35ca 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.57",
++  "version": "1.0.58",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
