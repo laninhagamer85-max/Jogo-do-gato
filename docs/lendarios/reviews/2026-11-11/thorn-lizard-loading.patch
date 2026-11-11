@@ -1,0 +1,12 @@
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index 25a49b3..e2360b3 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -6,6 +6,7 @@ export const LOADING_SCENES=[
+  {id:'moth',landscape:'/lendarios/loading/moth-v1.webp',portrait:'/lendarios/loading/moth-v1.webp'},
+  {id:'boar',landscape:'/lendarios/loading/boar-v1.webp',portrait:'/lendarios/loading/boar-v1.webp'},
+  {id:'fox',landscape:'/lendarios/loading/fox-landscape-v1.webp',portrait:'/lendarios/loading/fox-portrait-v1.webp'},
++ {id:'thorn-lizard',landscape:'/lendarios/loading/thorn-lizard-landscape-v1.webp',portrait:'/lendarios/loading/thorn-lizard-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+ export function createLoadingSceneSelector(random= Math.random){let key='boot',current:typeof LOADING_SCENES[number]=LOADING_SCENES[0];return (destination:string)=>{if(destination===key)return current;const choices=LOADING_SCENES.filter(scene=>scene.id!==current.id);current=choices[Math.max(0,Math.min(choices.length-1,Math.floor(random()*choices.length)))];key=destination;return current;};}
