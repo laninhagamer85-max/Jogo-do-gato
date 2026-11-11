@@ -1,11 +1,11 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-10",
-  "status": "published_fox_loading",
-  "release": "1.0.58",
-  "run": "runs/2026-11-10-fox-loading.md",
+  "date": "2026-11-11",
+  "status": "guided-room-one-workshop",
+  "release": "1.0.66",
+  "run": "runs/2026-11-11-thorn-lizard-loading.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 59,
+  "rollback_version": 67,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
@@ -30,14 +30,14 @@
     "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.58",
-    "site_version": 60,
-    "source_commit": "23adc8ce8e34f200efd9cbb37fd08114ea868ec3",
-    "id": "appgdep_6af30790af548191ba9d67e2808b07af",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_44b90cdda7dc8191a0038ed88dcc8dd3",
+    "product_version": "1.0.66",
+    "site_version": 68,
+    "source_commit": "1375ccb983596d55df1ef4701f7c8e3a0fa5e694",
+    "id": "appgdep_6af3da3daac48191a752a35316a01d39",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_367202c6759881918ac30eca55f0df3d",
     "status": "succeeded",
     "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "confirmed_at": "2026-11-10T12:01:32.751841+00:00"
+    "confirmed_at": "2026-11-11T03:00:40.595845+00:00"
   },
   "contract_review": {
     "date": "2026-11-04",
@@ -137,9 +137,22 @@
     "build": "Worker passed;453 retained files verified",
     "preparation": "serialized bootstrap and next;retains two scene groups",
     "browser_heap_measured": false,
-    "stage_playtest": false,
-    "github_branch": "review/lendarios-fox-loading-20261110",
-    "github_commit": "a48eb83c05471f80bc566a67d2170e6b2914a5c7",
-    "published_this_cycle": true
+    "stage_playtest": false
+  },
+  "last_product_run": "runs/2026-11-10-room-one-practice.md",
+  "loading_scene_pending": {
+    "id": "thorn-lizard",
+    "status": "validated_pending_integration",
+    "review_branch": "review/lendarios-thorn-lizard-loading-20261111",
+    "review_commit": "11f5561d3b3a19a5ba685381cb238806ee711f89",
+    "base_public_source": "1375ccb983596d55df1ef4701f7c8e3a0fa5e694",
+    "observed_sites_head": "7fa25a9ee94f68b6ddc6aa0d1d41a62e81d38c71",
+    "compressed_bytes": 191224,
+    "tests": "25/25",
+    "typecheck": "game+host passed",
+    "build": "Worker passed;459 files verified",
+    "browser": "Chrome isolated;5 sizes;portrait/landscape;cache;failure/recovery",
+    "published_this_cycle": false,
+    "blocker": "Unpublished room 41 changes on the Site source head; preserve and rebase once public."
   }
 }
