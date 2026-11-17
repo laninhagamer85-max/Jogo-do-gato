@@ -1,0 +1,172 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index 2c42ec1..7dfbfe7 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'lagarto-carregamento',version:'1.0.83',date:'2026-11-12',category:'Experiência',title:'Uma pausa com o Lagarto Espinhoso',summary:'O lagarto descansa na grama durante o carregamento, em cenas próprias para telas verticais e horizontais.',details:['O jogo mantém a imagem atual enquanto prepara a próxima, inclusive nas transições entre o Vale do Gelo e os outros biomas.'],link:'/jogar/',linkLabel:'Continuar a jornada'},
+  {id:'raposa-pacifica-sala-41',version:'1.0.82',date:'2026-11-12',category:'Exploração',title:'Primeiro teste de captura no Vale do Gelo',summary:'A Raposa Branca pacífica permite aproximação. Na Sala 41, abra a receita da poção pelo atalho e combine uma Erva de Cura com uma Fruta da Neve.',details:['A geada marca a tentativa de captura. Se funcionar, equipe a raposa em Animais capturados para ela acompanhar o herói durante a visita.','A manada de alces deixa o jogador se aproximar e reage se for atingida.'],link:'/jogar/',linkLabel:'Testar a Sala 41'},
+  {id:'manada-e-portal-do-vale',version:'1.0.81',date:'2026-11-12',category:'Exploração',title:'Alces das Neves e o portal do Vale do Gelo',summary:'No teste da Sala 41, manadas de três ou quatro alces fogem ao perceber o herói. Os adultos podem revidar quando a manada é atacada.',details:['Alces adultos podem derrubar a Poção de Cura Maior, que recupera até 120 HP.','A ruína abriga o portal de redemoinho roxo, guardado pelo Mestre Lobo. A raposa e os lobos atacam de perto, e as recompensas de inverno receberam novas ilustrações.'],link:'/jogar/',linkLabel:'Testar a Sala 41'},
+  {id:'escala-de-itens-e-efeitos',version:'1.0.80',date:'2026-11-11',category:'Exploração',title:'Itens na mesma escala em todos os capítulos',summary:'Coletas e recompensas no chão seguem o tamanho do primeiro capítulo. Os hostis de inverno têm escala ajustada ao mudar de direção.',details:['A detecção no Vale do Gelo segue as distâncias do capítulo anterior. Neve, poeira e gelo pintados mostram a preparação e o impacto dos ataques.'],link:'/jogar/',linkLabel:'Abrir o jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index 32c9641..0cafd96 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -6,17 +6,21 @@ export const LOADING_SCENES=[
+  {id:'moth',landscape:'/lendarios/loading/moth-v1.webp',portrait:'/lendarios/loading/moth-v1.webp'},
+  {id:'boar',landscape:'/lendarios/loading/boar-v1.webp',portrait:'/lendarios/loading/boar-v1.webp'},
+  {id:'fox',landscape:'/lendarios/loading/fox-landscape-v1.webp',portrait:'/lendarios/loading/fox-portrait-v1.webp'},
++ {id:'thorn-lizard',landscape:'/lendarios/loading/thorn-lizard-landscape-v1.webp',portrait:'/lendarios/loading/thorn-lizard-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+ export function createLoadingSceneSelector(random= Math.random){let key='boot',current:typeof LOADING_SCENES[number]=LOADING_SCENES[0];return (destination:string)=>{if(destination===key)return current;const choices=LOADING_SCENES.filter(scene=>scene.id!==current.id);current=choices[Math.max(0,Math.min(choices.length-1,Math.floor(random()*choices.length)))];key=destination;return current;};}
+-export const loadingSceneFor=(destination:string)=>typeof Image==='undefined'?LOADING_SCENES[0]:winterLoadingScenes.select(destination);
++export const loadingSceneFor=(destination:string)=>typeof Image==='undefined'?LOADING_SCENES[0]:preparedLoadingScenes.select(destination);
+ 
+ export const WINTER_LOADING_SCENES=[
+  {id:'geada-portal',landscape:'/lendarios/loading/geada-portal-landscape-v2.webp',portrait:'/lendarios/loading/geada-portal-portrait-v2.webp'},
+  {id:'geada-mestre',landscape:'/lendarios/loading/geada-mestre-landscape-v2.webp',portrait:'/lendarios/loading/geada-mestre-portrait-v2.webp'},
+ ] as const;
+-type WinterLoadingScene=typeof WINTER_LOADING_SCENES[number];
+-export type LoadingScene=typeof LOADING_SCENES[number]|WinterLoadingScene;
++export type LoadingScene=typeof LOADING_SCENES[number]|typeof WINTER_LOADING_SCENES[number];
++function scenePool(destination:string):readonly LoadingScene[]{
++ const room=/^room:(\d+)$/.exec(destination);
++ return room&&Number(room[1])>=40&&Number(room[1])<50?WINTER_LOADING_SCENES:LOADING_SCENES;
++}
+ /** Only hand off decoded artwork. Keep the current scene while the next is pending. */
+ export function createPreparedLoadingScenes(prepare:(scene:LoadingScene)=>Promise<unknown>,random=Math.random){
+  let key='boot',current:{scene:LoadingScene;art?:unknown}={scene:LOADING_SCENES[0]};
+@@ -24,9 +28,16 @@ export function createPreparedLoadingScenes(prepare:(scene:LoadingScene)=>Promis
+  let pending:Promise<void>|undefined,boot:Promise<void>|undefined,booting=false;
+  function queue(){
+   if(booting||pending||next)return;
+-  const choices=LOADING_SCENES.filter(s=>s.id!==current.scene.id);
++  const pool=scenePool(key);
++  const choices=pool.filter(s=>s.id!==current.scene.id);
+   const scene=choices[Math.max(0,Math.min(choices.length-1,Math.floor(random()*choices.length)))];
+-  pending=prepare(scene).then(art=>{next={scene,art};},()=>{/* Keep decoded current artwork on network/decode failure. */}).finally(()=>{pending=undefined;});
++  pending=prepare(scene).then(art=>{
++   if(scenePool(key)===pool)next={scene,art};
++  },()=>{/* Keep decoded current artwork on network/decode failure. */}).finally(()=>{
++   pending=undefined;
++   // If a destination changed biomes during decoding, prepare its artwork now.
++   if(scenePool(key)!==pool)queue();
++  });
+  }
+  function start(){
+   if(boot)return boot;
+@@ -38,48 +49,27 @@ export function createPreparedLoadingScenes(prepare:(scene:LoadingScene)=>Promis
+   });
+  }
+  return {start,select(destination:string){
+-  if(destination!==key){key=destination;if(next){current=next;next=undefined;}if(boot)queue();else void start();}
++  if(destination!==key){
++   key=destination;
++   if(next&&scenePool(key).includes(next.scene))current=next;
++   next=undefined;
++   if(boot)queue();else void start();
++  }
+   // Retain only current + next Image objects, rather than every decoded scene.
+   return current.scene;
+  }};
+ }
+-function decodeLoadingScene(scene:LoadingScene):Promise<HTMLImageElement[]>{
+- return Promise.all([...new Set([scene.portrait,scene.landscape])].map(src=>new Promise<HTMLImageElement>((resolve,reject)=>{
++async function decodeLoadingScene(scene:LoadingScene):Promise<HTMLImageElement[]>{
++ const results=await Promise.allSettled([...new Set([scene.portrait,scene.landscape])].map(src=>new Promise<HTMLImageElement>((resolve,reject)=>{
+   const image=new Image();let done=false;
+   const timer=setTimeout(()=>finish(false),12000);
+   function finish(ok:boolean){if(done)return;done=true;clearTimeout(timer);image.onload=null;image.onerror=null;ok?resolve(image):reject(new Error('Loading artwork unavailable'));}
+   image.onload=()=>{if(!image.naturalWidth){finish(false);return;}if(image.decode)void image.decode().then(()=>finish(true),()=>finish(false));else finish(true);};
+   image.onerror=()=>finish(false);image.decoding='async';image.src=src;
+  })));
++ return results.map(result=>{if(result.status==='rejected')throw result.reason;return result.value;});
+ }
+ const preparedLoadingScenes=createPreparedLoadingScenes(decodeLoadingScene);
+-export function createWinterLoadingScenes(prepare:(scene:LoadingScene)=>Promise<unknown>,fallback:(destination:string)=>LoadingScene){
+- const decoded=new Map<WinterLoadingScene,unknown>();
+- const pending=new Set<WinterLoadingScene>();
+- let lastWinter:WinterLoadingScene|undefined;
+- let key='',current:LoadingScene=LOADING_SCENES[0];
+- function start(){
+-  for(const scene of WINTER_LOADING_SCENES){
+-   if(decoded.has(scene)||pending.has(scene))continue;
+-   pending.add(scene);
+-   void prepare(scene).then(art=>{decoded.set(scene,art);},()=>{/* Fall back to a decoded general scene. */}).finally(()=>pending.delete(scene));
+-  }
+- }
+- return {start,select(destination:string){
+-  if(key===destination)return current;
+-  key=destination;
+-  const room=/^room:(\d+)$/.exec(destination);
+-  if(room&&Number(room[1])>=40&&Number(room[1])<50){
+-   start();
+-   const ready=WINTER_LOADING_SCENES.filter(scene=>decoded.has(scene));
+-   const scene=ready.find(item=>item!==lastWinter)??ready[0];
+-   if(scene){lastWinter=scene;current=scene;return current;}
+-  }
+-  current=fallback(destination);
+-  return current;
+- }};
+-}
+-const winterLoadingScenes=createWinterLoadingScenes(decodeLoadingScene,preparedLoadingScenes.select);
+ export function preloadNextLoadingScene(){
+- if(typeof Image!=='undefined')void preparedLoadingScenes.start().then(winterLoadingScenes.start);
++ if(typeof Image!=='undefined')void preparedLoadingScenes.start();
+ }
+diff --git a/client/src/lib/preparedLoadingScenes.test.ts b/client/src/lib/preparedLoadingScenes.test.ts
+index 0d5d7a4..201ae30 100644
+--- a/client/src/lib/preparedLoadingScenes.test.ts
++++ b/client/src/lib/preparedLoadingScenes.test.ts
+@@ -1,5 +1,5 @@
+ import {it,expect,vi} from 'vitest';
+-import {createPreparedLoadingScenes,createWinterLoadingScenes,LOADING_SCENES,WINTER_LOADING_SCENES,loadingSceneFor,type LoadingScene} from './loadingScenes';
++import {createPreparedLoadingScenes,WINTER_LOADING_SCENES,loadingSceneFor,type LoadingScene} from './loadingScenes';
+ const flush=async()=>{for(let i=0;i<6;i++)await Promise.resolve();};
+ function fixture(){const jobs:{scene:LoadingScene;resolve:(v:unknown)=>void;reject:()=>void}[]=[];const prepare=vi.fn((scene:LoadingScene)=>new Promise((resolve,reject)=>jobs.push({scene,resolve,reject:()=>reject(Error('offline'))})));return {jobs,prepare,manager:createPreparedLoadingScenes(prepare,()=>0)};}
+ it('prepares the next scene while playing and only selects it after decoding both orientations',async()=>{const {jobs,prepare,manager}=fixture();manager.start();expect(prepare).toHaveBeenCalledTimes(1);jobs[0].resolve(['rest images']);await flush();expect(jobs[1].scene.id).not.toBe('rest');expect(manager.select('room:0').id).toBe('rest');jobs[1].resolve(['decoded next']);await flush();const selected=manager.select('room:1');expect(selected.id).toBe(jobs[1].scene.id);expect(prepare).toHaveBeenCalledTimes(3);expect(jobs[2].scene.id).not.toBe(selected.id);});
+@@ -33,14 +33,22 @@ it('can recover a later scene if the bootstrap decode fails after early room ent
+ });
+ 
+ 
+-it('keeps a fallback through a winter transition and alternates decoded winter artwork on later visits',async()=>{
+- const jobs=new Map<LoadingScene,()=>void>();
+- const manager=createWinterLoadingScenes(scene=>new Promise<void>(resolve=>jobs.set(scene,resolve)),()=>LOADING_SCENES[0]);
+- expect(manager.select('room:40')).toBe(LOADING_SCENES[0]);
+- for(const resolve of jobs.values())resolve();
+- await flush();
+- expect(manager.select('room:40')).toBe(LOADING_SCENES[0]);
++it('serializes general and winter preparation, keeping the current image until an appropriate scene is ready',async()=>{
++ const {jobs,manager}=fixture();
++ manager.start();jobs[0].resolve([]);await flush();
++ expect(manager.select('room:40').id).toBe('rest');
++ expect(jobs).toHaveLength(2);
++ jobs[1].resolve([]);await flush();
++ expect(jobs[2].scene).toBe(WINTER_LOADING_SCENES[0]);
++ jobs[2].resolve([]);await flush();
++ expect(manager.select('room:40').id).toBe('rest');
+  expect(manager.select('room:41')).toBe(WINTER_LOADING_SCENES[0]);
+- expect(manager.select('room:39')).toBe(LOADING_SCENES[0]);
++ expect(jobs[3].scene).toBe(WINTER_LOADING_SCENES[1]);
++ jobs[3].resolve([]);await flush();
+  expect(manager.select('room:40')).toBe(WINTER_LOADING_SCENES[1]);
++ expect(manager.select('room:39')).toBe(WINTER_LOADING_SCENES[1]);
++ jobs[4].reject();await flush();
++ expect(jobs[5].scene.id).toBe('rest');
++ jobs[5].resolve([]);await flush();
++ expect(manager.select('room:38').id).toBe('rest');
+ });
+diff --git a/package.json b/package.json
+index d8a3d1f..b4a0849 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.82",
++  "version": "1.0.83",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
