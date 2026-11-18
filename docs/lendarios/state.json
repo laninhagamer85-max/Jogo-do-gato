@@ -1,9 +1,9 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "status": "guided-room-one-workshop",
-  "release": "1.0.83",
-  "run": "runs/2026-11-17-thorn-lizard-loading.md",
+  "release": "1.0.85",
+  "run": "runs/2026-11-18-loading-lifecycle.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
   "rollback_version": 84,
   "canonical_exploration": true,
@@ -30,14 +30,14 @@
     "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.83",
-    "site_version": 85,
-    "source_commit": "4087f45c58af42483aeed515770b220e899300be",
-    "id": "appgdep_6afc39e1519c81919d2403b9dc3ff022",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_888584e7ec5c8191a14b54280d8a7870",
+    "product_version": "1.0.85",
+    "site_version": 87,
+    "source_commit": "3f5584ebe19360c581b2eeff11075fca8ba6530f",
+    "id": "appgdep_6afd8f1931088191acd73d6c0e1bd301",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_0b54a79c987881919c890ce7b9c9412f",
     "status": "succeeded",
     "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "confirmed_at": "2026-11-17T11:26:41.820373+00:00"
+    "confirmed_at": "2026-11-18T11:42:40.179594+00:00"
   },
   "contract_review": {
     "date": "2026-11-04",
@@ -140,5 +140,27 @@
     "rollback_site_version": 84,
     "published_this_cycle": true
   },
-  "last_product_run": "runs/2026-11-17-thorn-lizard-loading.md"
+  "last_product_run": "runs/2026-11-17-thorn-lizard-loading.md",
+  "loading_lifecycle_validation": {
+    "date": "2026-11-18",
+    "status": "validated_tests_only",
+    "base_source": "1c30a5dad15b60c6af18ac1f626f6235344c527f",
+    "base_product": "1.0.84",
+    "current_public_source": "3f5584ebe19360c581b2eeff11075fca8ba6530f",
+    "loading_source_identical": true,
+    "added_tests": 4,
+    "focused_tests": 30,
+    "simulated_transitions": 300,
+    "mutation": "Promise.all replacing allSettled: 2 failures, restored",
+    "typecheck": "game and host passed on 1.0.84",
+    "build": "official Worker passed on 1.0.84; 551 asset copies verified",
+    "browser": false,
+    "physical_phone": false,
+    "heap_fps_measured": false,
+    "stage_playtest": false,
+    "new_art": false,
+    "runtime_changed": false,
+    "published_this_cycle": false,
+    "patch": "docs/lendarios/reviews/2026-11-18/loading-lifecycle.patch"
+  }
 }
