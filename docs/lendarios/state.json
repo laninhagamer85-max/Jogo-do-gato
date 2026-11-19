@@ -2,10 +2,10 @@
   "project": "Lendários do Rei",
   "date": "2026-11-19",
   "status": "guided-room-one-workshop",
-  "release": "1.0.85",
+  "release": "1.0.86",
   "run": "runs/2026-11-19-tide-master-loading.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 84,
+  "rollback_version": 87,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
@@ -30,14 +30,14 @@
     "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.85",
-    "site_version": 87,
-    "source_commit": "3f5584ebe19360c581b2eeff11075fca8ba6530f",
-    "id": "appgdep_6afd8f1931088191acd73d6c0e1bd301",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_0b54a79c987881919c890ce7b9c9412f",
+    "product_version": "1.0.86",
+    "site_version": 88,
+    "source_commit": "e96d3e6c67db9f4b2a28d8c740674b0d07e035de",
+    "id": "appgdep_6afedaedc3588191baf6a412f8a50171",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_94e100f56d0081918eef32bcf0355ae1",
     "status": "succeeded",
     "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "confirmed_at": "2026-11-18T11:42:40.179594+00:00"
+    "confirmed_at": "2026-11-19T11:18:31.028195+00:00"
   },
   "contract_review": {
     "date": "2026-11-04",
@@ -125,25 +125,34 @@
     "browser": "Barraca, diálogo, entrada e abandono da arena conferidos; reabertura final bloqueada pela política do navegador; sem aparelho físico"
   },
   "loading_scene_review": {
-    "date": "2026-11-17",
-    "id": "thorn-lizard",
+    "date": "2026-11-19",
+    "id": "tide-master",
     "status": "published",
-    "compressed_bytes": 191224,
-    "tests": "26/26 (12/11, exact source)",
+    "art_original": true,
+    "compressed_bytes": 318786,
+    "assets": [
+      "tide-master-landscape-v1.webp",
+      "tide-master-portrait-v1.webp"
+    ],
+    "focused_tests": 30,
+    "integrated_lifecycle_tests": 4,
+    "simulated_transitions": 300,
     "typecheck": "game+host passed",
-    "browser": "Chrome isolated; 5 sizes; orientations, cache, simulated network failure and recovery, winter selection",
-    "build": "Worker passed; 550 files verified",
+    "build": "Worker passed;558 retained assets byte-verified",
+    "browser": "Chrome isolated;five sizes;portrait/landscape;cache;four induced image errors;recovery;winter transitions",
+    "production_smoke": "news and Ver.1.0.86 visible after one reload;landscape asset loaded 1440x810",
     "browser_heap_measured": false,
+    "physical_phone": false,
     "stage_playtest": false,
-    "asset_review_commit": "11f5561d3b3a19a5ba685381cb238806ee711f89",
-    "patch": "docs/lendarios/reviews/2026-11-17/loading-1.0.83.patch",
-    "rollback_site_version": 84,
-    "published_this_cycle": true
+    "published_this_cycle": true,
+    "artifact_commit": "5dc133e255398dd741ed9cdbff27f0549b70a5b3",
+    "rollback_site_version": 87,
+    "meupet_runtime_modified": false
   },
-  "last_product_run": "runs/2026-11-17-thorn-lizard-loading.md",
+  "last_product_run": "runs/2026-11-19-tide-master-loading.md",
   "loading_lifecycle_validation": {
     "date": "2026-11-18",
-    "status": "validated_tests_only",
+    "status": "integrated",
     "base_source": "1c30a5dad15b60c6af18ac1f626f6235344c527f",
     "base_product": "1.0.84",
     "current_public_source": "3f5584ebe19360c581b2eeff11075fca8ba6530f",
@@ -161,16 +170,8 @@
     "new_art": false,
     "runtime_changed": false,
     "published_this_cycle": false,
-    "patch": "docs/lendarios/reviews/2026-11-18/loading-lifecycle.patch"
-  },
-  "loading_scene_pending": {
-    "id": "tide-master",
-    "status": "validated_awaiting_publish",
-    "compressed_bytes": 318786,
-    "focused_tests": 30,
-    "browser": "Chrome;five sizes;failure/recovery/rotation/winter",
-    "base_source": "3f5584ebe19360c581b2eeff11075fca8ba6530f",
-    "patch": "docs/lendarios/reviews/2026-11-19/loading-1.0.86.patch",
-    "meupet_runtime_modified": false
+    "patch": "docs/lendarios/reviews/2026-11-18/loading-lifecycle.patch",
+    "integrated_product": "1.0.86",
+    "source_commit": "e96d3e6c67db9f4b2a28d8c740674b0d07e035de"
   }
 }
