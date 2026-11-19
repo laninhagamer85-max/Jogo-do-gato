@@ -1,0 +1,147 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index 29f71a6..2c72c3c 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'mestre-mares-carregamento',version:'1.0.86',date:'2026-11-19',category:'Experiência',title:'Uma pausa com o Mestre das Marés',summary:'O caranguejo gigante descansa na grama em uma nova cena de carregamento.',details:['Composições próprias para retrato e paisagem preservam o personagem inteiro. A imagem atual permanece enquanto a próxima é preparada.'],link:'/jogar/',linkLabel:'Continuar a jornada'},
+  {id:'mestre-das-mares-gigante',version:'1.0.85',date:'2026-11-18',category:'Bestiário',title:'Um novo Mestre das Marés aguarda na Sala 20',summary:'O caranguejo gigante assume o desafio final das Marés, acompanhado de espécies menores. O antigo mestre passa a ser o Guardião das Marés.',details:['A vitória concede pérola, escama, 20 poções de cura, 20 de captura, 5.000 moedas, carta rara e relíquia equipável.','Caranguejos das salas 11 a 20 podem deixar a relíquia. Os bestiários recebem as novas criaturas e retratos corrigidos.'],link:'/bestiario/',linkLabel:'Ver o bestiário'},
+  {id:'vale-do-gelo-completo',version:'1.0.84',date:'2026-11-18',category:'Exploração',title:'O Vale do Gelo abre as salas 41 a 50',summary:'Avance por dez salas nevadas, enfrente encontros progressivos e ative os portais das ruínas. O Mestre Lobo das Neves guarda o fim do capítulo.',details:['Raposas, corvos, besouros, lobos e sentinelas ocupam as salas do bioma. A manada de alces vive na Sala 49.','O bestiário e o guia do Capítulo 5 mostram os encontros e suas recompensas. A Sala 41 conserva uma visita de teste separada.'],link:'/guia/capitulo-5/',linkLabel:'Consultar o Capítulo 5'},
+  {id:'lagarto-carregamento',version:'1.0.83',date:'2026-11-12',category:'Experiência',title:'Uma pausa com o Lagarto Espinhoso',summary:'O lagarto descansa na grama durante o carregamento, em cenas próprias para telas verticais e horizontais.',details:['O jogo mantém a imagem atual enquanto prepara a próxima, inclusive nas transições entre o Vale do Gelo e os outros biomas.'],link:'/jogar/',linkLabel:'Continuar a jornada'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index 0cafd96..34852ba 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -7,6 +7,7 @@ export const LOADING_SCENES=[
+  {id:'boar',landscape:'/lendarios/loading/boar-v1.webp',portrait:'/lendarios/loading/boar-v1.webp'},
+  {id:'fox',landscape:'/lendarios/loading/fox-landscape-v1.webp',portrait:'/lendarios/loading/fox-portrait-v1.webp'},
+  {id:'thorn-lizard',landscape:'/lendarios/loading/thorn-lizard-landscape-v1.webp',portrait:'/lendarios/loading/thorn-lizard-portrait-v1.webp'},
++ {id:'tide-master',landscape:'/lendarios/loading/tide-master-landscape-v1.webp',portrait:'/lendarios/loading/tide-master-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+ export function createLoadingSceneSelector(random= Math.random){let key='boot',current:typeof LOADING_SCENES[number]=LOADING_SCENES[0];return (destination:string)=>{if(destination===key)return current;const choices=LOADING_SCENES.filter(scene=>scene.id!==current.id);current=choices[Math.max(0,Math.min(choices.length-1,Math.floor(random()*choices.length)))];key=destination;return current;};}
+diff --git a/package.json b/package.json
+index 8fb964b..88c0ead 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.85",
++  "version": "1.0.86",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
+diff --git a/client/src/lib/loadingSceneLifecycle.test.ts b/client/src/lib/loadingSceneLifecycle.test.ts
+new file mode 100644
+index 0000000..9abb392
+--- /dev/null
++++ b/client/src/lib/loadingSceneLifecycle.test.ts
+@@ -0,0 +1,106 @@
++import {afterEach, beforeEach, expect, it, vi} from 'vitest';
++
++const flush=async()=>{for(let i=0;i<24;i++)await Promise.resolve();};
++class ControlledImage {
++ static instances:ControlledImage[]=[];
++ onload:(()=>void)|null=null;
++ onerror:(()=>void)|null=null;
++ naturalWidth=0;
++ src='';
++ decoding='';
++ private decoded!:()=>void;
++ private refused!:(reason:Error)=>void;
++ private completion=new Promise<void>((resolve,reject)=>{this.decoded=resolve;this.refused=reject;});
++ decode=vi.fn(()=>this.completion);
++ constructor(){ControlledImage.instances.push(this);}
++ load(){this.naturalWidth=810;this.onload?.();}
++ ready(){this.decoded();}
++ broken(){this.onerror?.();}
++ badDecode(){this.refused(Error('invalid pixels'));}
++}
++beforeEach(()=>{
++ vi.resetModules();vi.useFakeTimers();ControlledImage.instances=[];
++ vi.stubGlobal('Image',ControlledImage);vi.spyOn(Math,'random').mockReturnValue(.9999);
++});
++afterEach(()=>{vi.clearAllTimers();vi.useRealTimers();vi.unstubAllGlobals();vi.restoreAllMocks();});
++async function boot(){
++ const module=await import('./loadingScenes');
++ module.preloadNextLoadingScene();
++ const pair=ControlledImage.instances.slice();
++ expect(pair).toHaveLength(2);
++ for(const img of pair){img.load();img.ready();}
++ await flush();
++ expect(ControlledImage.instances).toHaveLength(4);
++ return module;
++}
++it('does not hand off artwork until both actual image decode promises finish',async()=>{
++ const m=await boot(),pair=ControlledImage.instances.slice(2);
++ for(const img of pair)img.load();
++ pair[0].ready();await flush();
++ expect(m.loadingSceneFor('room:1').id).toBe('rest');
++ expect(ControlledImage.instances).toHaveLength(4);
++ pair[1].ready();await flush();
++ // A progress update / retry for this destination cannot switch art midway.
++ expect(m.loadingSceneFor('room:1').id).toBe('rest');
++ expect(m.loadingSceneFor('room:2').id).toBe('tide-master');
++ expect(ControlledImage.instances).toHaveLength(6);
++});
++it('waits for the other orientation after a network error and retries only on another destination',async()=>{
++ const m=await boot(),pair=ControlledImage.instances.slice(2);
++ pair[0].broken();pair[1].load();
++ await flush();
++ for(let i=0;i<50;i++)expect(m.loadingSceneFor('room:3').id).toBe('rest');
++ expect(ControlledImage.instances).toHaveLength(4);
++ pair[1].ready();await flush();
++ expect(pair.every(img=>img.onload===null&&img.onerror===null)).toBe(true);
++ expect(vi.getTimerCount()).toBe(0);
++ expect(m.loadingSceneFor('room:3').id).toBe('rest');
++ expect(ControlledImage.instances).toHaveLength(4);
++ expect(m.loadingSceneFor('room:4').id).toBe('rest');
++ expect(ControlledImage.instances).toHaveLength(6);
++});
++it('retains the current artwork through a decode rejection and a stalled orientation timeout',async()=>{
++ const m=await boot(),pair=ControlledImage.instances.slice(2);
++ pair[0].load();pair[0].badDecode();await flush();
++ expect(m.loadingSceneFor('room:5').id).toBe('rest');
++ await vi.advanceTimersByTimeAsync(11999);
++ expect(ControlledImage.instances).toHaveLength(4);
++ await vi.advanceTimersByTimeAsync(1);await flush();
++ expect(vi.getTimerCount()).toBe(0);
++ expect(pair.every(img=>img.onload===null&&img.onerror===null)).toBe(true);
++ expect(m.loadingSceneFor('room:5').id).toBe('rest');
++ expect(m.loadingSceneFor('room:6').id).toBe('rest');
++ expect(ControlledImage.instances).toHaveLength(6);
++});
++it('serializes 300 biome handoffs without accumulating downloads or selecting an undecoded scene',async()=>{
++ const {createPreparedLoadingScenes}=await import('./loadingScenes');
++ const decoded=new Set<string>();
++ let pending:undefined|{scene:{id:string};resolve:()=>void;reject:()=>void};
++ let active=0,peak=0,calls=0;
++ const manager=createPreparedLoadingScenes(scene=>{
++  expect(pending).toBeUndefined();
++  active++;calls++;peak=Math.max(peak,active);
++  return new Promise<void>((resolve,reject)=>{
++   pending={scene,resolve:()=>{active--;pending=undefined;decoded.add(scene.id);resolve();},
++    reject:()=>{active--;pending=undefined;reject(Error('offline'));}};
++  });
++ },()=>.9999);
++ manager.start();pending!.resolve();await flush();
++ for(let i=0;i<300;i++){
++  // Change biomes while a request is in flight, then alternate error/success.
++  const key=i%2?'room:41':'room:1';
++  const before=manager.select(key);
++  expect(decoded.has(before.id)).toBe(true);
++  const snapshot=pending,callsBefore=calls;
++  for(let n=0;n<20;n++)expect(manager.select(key)).toBe(before);
++  expect(pending).toBe(snapshot);expect(calls).toBe(callsBefore);
++  if(pending){if(i%7===0)pending.reject();else pending.resolve();}
++  await flush();
++  // Completing an obsolete group can schedule only one replacement.
++  expect(active).toBeLessThanOrEqual(1);
++  expect(manager.select(key)).toBe(before);
++ }
++ expect(peak).toBe(1);
++ expect(calls).toBeLessThanOrEqual(602);
++});
++
