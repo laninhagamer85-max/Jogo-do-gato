@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-15",
+  "product_version": "1.9.16",
+  "method": "built-in imagegen",
+  "reference": "style and central grass color of backgrounds/clearing.webp",
+  "asset": "client/public/forest-adventure/grass-block-v1.png",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "sha256": "51fae871d05ca066dcab3d8733cbf0fb51de41c2739ca704a3b2061ab4e216a2",
+  "prompt": "One seamless tileable square short grass texture for illustrated children game; fine crisp tiny painted blades and stippling, uniform low-contrast forest green, detailed to all edges, suitable for repeat/quarter rotation. No clovers, flowers, recognizable isolated clusters, dirt patches, directional light, gradients, shadows, border, map, UI or text. Render as small fixed-world-scale block with randomized overlapping neighbors.",
+  "renderer": "terrainTexture.ts; 2 world-unit span, .9 spacing, .08 jitter, 18% feather, quarter rotations and reflection, deterministic hash",
+  "cache": "visible camera buffer plus .75 world unit margin, at native DPR when below 8MP cap; reused for small camera shifts",
+  "validation": "original texture inspected statically; mathematical coverage/cache/density tests; no real browser QA"
+}

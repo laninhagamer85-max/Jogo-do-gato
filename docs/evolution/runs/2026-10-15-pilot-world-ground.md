@@ -1,0 +1,21 @@
+# Base final de revisão do piloto — 15/10/2026
+
+Produto alvo 1.9.15, base pública 1.9.14 / Sites 33, fonte 1ba82a6d107fd2a45ef0ae488e5b5756f455558b.
+
+Problema confirmado nas capturas de David das 15:07: câmera seguia o pet além do retângulo da imagem 14×10, expondo preenchimento verde; imagem tinha pedras/vegetação pintadas sem colisão. Teste anterior verificava constantes da área, mas não o retângulo REAL enviado a drawImage: portanto não detectava esta regressão. Isto foi corrigido no teste, além da fonte.
+
+Entrega: arte original de chão sem moldura e sem obstáculos, no estilo da clareira aprovada. Um único drawImage opaco cobre o domínio 30×32 da câmera, sem máscara, espelhamento, repetição em tiles ou segunda imagem presa à tela. Câmera limitada ao domínio ilustrado; zoom mínimo garante cobertura inclusive em proporções extremas. Detalhes finos locais em coordenadas do mundo na resolução do Canvas. Fundo de proteção só aparece enquanto o asset não carregou; partida espera assets. Árvores/rochas/troncos somente em props com geometria já definida. Manifesto de arte e prompt: docs/evolution/ground-unframed-v1.json; asset client/public/forest-adventure/ground-clearing-unframed-v1.png, imagegen integrado, inspecionado estaticamente.
+
+Besouro e lagarta visualmente reduzidos de 1.02 para .82 unidade (~20%), mantendo animação, identidade, HP/dano e hitboxes existentes. Não alterado balanceamento silenciosamente.
+
+Coletáveis: SVGs exportados do componente original ExplorationItemIcon e carregados no Canvas. Chão, mochila e atalhos usam a mesma silhueta de fibra, erva, fruta e âmbar. Exportação faz parte do build e testes comparam bytes ao componente, evitando arte desatualizada. Sombra suave e flutuação discreta mantidas; modo reduzir movimentos respeitado. Queda, coleta, inventário e saves não mudam de regra.
+
+Planejamento reconciliado: fonte atual tem 3 capítulos × 2 salas de charadas e uma sala de combate separada. Regras anteriores confirmam construir dez salas distintas no capítulo 1 depois do aceite do piloto, então expandir para os seis capítulos. Não basta trocar contador. Plano de 60 salas com IDs, títulos, níveis propostos e auditoria vazia salvo em exploration-campaign-plan.json (status design_only_not_playable); novos biomas/nomes 4–6 são propostas. exploration-campaign-rollout.md registra controles comuns, água animada, inimigos por bioma, arte/recompensas compartilhadas da Aventura, cartas permanentes e migração segura. Nenhuma sala adicional, água, novo inimigo ou concessão rara foi publicada nesta revisão.
+
+Validação: TypeScript aprovado; 188 testes offline/26 arquivos; build aprovado com aviso preexistente de chunk, entrada aprovada em 101 estados simulados, paridade com armazenamento fictício aprovada. Novo teste chama o renderer e verifica uma única imagem sem fill verde com asset pronto, com cobertura total em 200 combinações: 5 dimensões × 4 cantos × 5 zooms × 2 modos. Quatro testes confirmam a identidade dos SVGs ao inventário. Isto não é teste de navegador nem playthrough. Nenhum Firebase ou save real alterado por ferramentas; controles/contas preservados.
+
+Limites: control-browser indisponível; inspeção de movimento, nitidez, controles e quatro cantos no aparelho segue pendente de David. Publicação para sua revisão autorizada; piloto não declarado concluído, não há 60 salas implementadas nem 100 fases testadas. Auditoria real neste ciclo: 0 partidas online.
+
+Pesquisa de 15/10/2026: MDN https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection (geometria independente da arte) e https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas (limitar detalhes à região visível e agrupar traços). Referência de arte: clearing.webp existente, somente estilo do chão.
+
+Publicação succeeded, produto 1.9.15 / Sites 34, https://meupet.aquimeusite.chatgpt.site em 15/10/2026 às 15:29:03 America/Sao_Paulo. Fonte Sites ad6369b33c3f0cf0bfacd75979c81c033abf0e1a; GitHub d7def4b1a64447e7fb9af4de59459b5fe862e033; deployment appgdep_6ad11b4c134c81918c0f0ebe1a592f8c. Rollback produto 1.9.14 / Sites 33. Depois do aceite: capítulo 1 com dez salas próprias, sem avançar os saves do usuário artificialmente.

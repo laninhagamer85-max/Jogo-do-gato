@@ -1,0 +1,48 @@
+/* Editable-source entry card. Not included in the preserved-v7 recovery build. */
+.platform-adventure .pa-entry-card {
+  min-width: 0; padding: 16px; border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 22px; background: linear-gradient(145deg, #23416b, #142c50);
+  color: #f7f9ff; box-shadow: 0 12px 30px rgb(0 0 0 / 18%);
+}
+.pa-entry-overview { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 14px; align-items: center; }
+.pa-entry-pet { width: 104px; height: 108px; object-fit: contain; filter: drop-shadow(0 5px 8px rgb(0 0 0 / 20%)); }
+.pa-entry-intro { min-width: 0; }
+.pa-entry-kicker { display: block; color: #ffdf85; font-size: 11px; font-weight: 900; letter-spacing: .5px; }
+.pa-entry-intro h1 { margin: 4px 0; font-size: 24px; line-height: 1.15; overflow-wrap: anywhere; }
+.pa-entry-intro p { margin: 4px 0 0; color: #e0ebfb; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
+.pa-entry-intro .pa-entry-progress { color: #bff3d1; font-size: 13px; }
+.pa-entry-actions { display: grid; gap: 8px; margin-top: 14px; }
+.platform-adventure .pa-entry-play, .platform-adventure .pa-entry-map {
+  display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px; border: 1px solid transparent; border-radius: 12px;
+  font: inherit; font-size: 16px; font-weight: 900; line-height: 1.3; text-align: center;
+  cursor: pointer; touch-action: manipulation;
+}
+.platform-adventure .pa-entry-play { min-height: 52px; background: #ffdc72; color: #182b43; box-shadow: 0 4px 0 #ba8b30; }
+.platform-adventure .pa-entry-play:hover { background: #ffe59b; }
+.platform-adventure .pa-entry-play:active { transform: translateY(2px); box-shadow: 0 2px 0 #ba8b30; }
+.platform-adventure .pa-entry-map { border-color: rgb(255 255 255 / 25%); background: transparent; color: #eef5ff; font-size: 14px; }
+.platform-adventure .pa-entry-map:hover { background: rgb(255 255 255 / 9%); }
+.pa-entry-actions svg { flex: 0 0 auto; }
+.pa-entry-details { margin-top: 12px; border-top: 1px solid rgb(255 255 255 / 16%); }
+.pa-entry-details > summary { min-height: 44px; padding: 12px 2px; color: #e1edff; font-size: 14px; line-height: 1.4; cursor: pointer; }
+.pa-entry-detail-content { padding: 0 2px 4px; }
+.pa-entry-detail-content h2 { margin: 8px 0; font-size: 20px; line-height: 1.2; }
+.pa-entry-detail-content p { margin: 8px 0; color: #d6e5fa; font-size: 14px; line-height: 1.5; }
+.pa-entry-detail-content progress { display: block; width: 100%; height: 12px; accent-color: #8ee2b0; }
+.platform-adventure .pa-entry-play:focus-visible, .platform-adventure .pa-entry-map:focus-visible,
+.pa-entry-details > summary:focus-visible { outline: 3px solid #a4ebff; outline-offset: 4px; }
+.platform-adventure .pa-map-title:focus-visible { outline: 3px solid #167cb2; outline-offset: 5px; }
+.platform-adventure .pa-map-title { scroll-margin-top: 20px; }
+
+@media (max-width: 620px) and (orientation: portrait) {
+  .platform-adventure .pa-entry-card { padding: 14px; }
+  .platform-adventure .pa-entry-overview { gap: 12px; }
+}
+@media (max-width: 900px) and (orientation: landscape) {
+  .platform-adventure .pa-entry-card { padding: 12px; }
+  .pa-entry-overview { grid-template-columns: 72px minmax(0, 1fr); gap: 10px; }
+  .pa-entry-pet { width: 72px; height: 80px; }
+  .pa-entry-intro h1 { font-size: 21px; }
+  .pa-entry-actions { margin-top: 10px; }
+}
