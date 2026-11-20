@@ -232,44 +232,39 @@
     "report": "docs/evolution/runs/2026-10-19.md"
   },
   "latest_cycle_coordination": {
-    "date": "2026-11-19",
-    "id": "tide-master",
+    "date": "2026-11-20",
     "status": "published",
-    "art_original": true,
-    "compressed_bytes": 318786,
-    "assets": [
-      "tide-master-landscape-v1.webp",
-      "tide-master-portrait-v1.webp"
-    ],
-    "focused_tests": 30,
-    "integrated_lifecycle_tests": 4,
-    "simulated_transitions": 300,
+    "id": "current-news",
+    "base_product": "1.0.104",
+    "base_source": "40ed5879090aab375c2b4151557bee7e2cf896c3",
+    "artifact_commit": "18a0cef1111ec74af3b5f8046c6b6c340a686fb3",
+    "patch": "docs/lendarios/reviews/2026-11-20/current-news.patch",
+    "tests": 23,
     "typecheck": "game+host passed",
-    "build": "Worker passed;558 retained assets byte-verified",
-    "browser": "Chrome isolated;five sizes;portrait/landscape;cache;four induced image errors;recovery;winter transitions",
-    "production_smoke": "news and Ver.1.0.86 visible after one reload;landscape asset loaded 1440x810",
-    "browser_heap_measured": false,
-    "physical_phone": false,
+    "build": "Worker passed;574 retained assets byte-verified",
+    "browser": "Chrome;five sizes;four article links;chapter count;production home-to-news link",
+    "new_loading_art": false,
+    "gameplay_modified": false,
     "stage_playtest": false,
+    "physical_phone": false,
     "published_this_cycle": true,
-    "artifact_commit": "5dc133e255398dd741ed9cdbff27f0549b70a5b3",
-    "rollback_site_version": 87,
     "meupet_runtime_modified": false,
+    "rollback_site_version": 107,
     "target_project": "Lendários do Rei",
-    "report": "docs/evolution/runs/2026-11-19.md",
-    "canonical_docs_commit": "62d53e5550d69b4a80b355b6731dd27f81017cf7",
+    "report": "docs/evolution/runs/2026-11-20.md",
+    "canonical_docs_commit": "c6a54d8e416d58474fd47a24726c2cf3707a2ae0",
     "publication": {
-      "product_version": "1.0.86",
-      "site_version": 88,
-      "source_commit": "e96d3e6c67db9f4b2a28d8c740674b0d07e035de",
-      "id": "appgdep_6afedaedc3588191baf6a412f8a50171",
-      "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_94e100f56d0081918eef32bcf0355ae1",
+      "product_version": "1.0.105",
+      "site_version": 108,
+      "source_commit": "e4fd2418438591d178c4ec06ba076276417da2e6",
+      "id": "appgdep_6b00352bd88c8191953cc43bcef889d8",
+      "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_6b18e0b5d9e48191a6fa47a64e4a0c60",
       "status": "succeeded",
       "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-      "confirmed_at": "2026-11-19T11:18:31.028195+00:00"
+      "confirmed_at": "2026-11-20T11:55:34.123327+00:00"
     },
     "meupet_deployed": false,
-    "next_action": "Testar transições em celular real;medir memória/fluidez;revisar texto final de novidades."
+    "next_action": "Conferir navegação em celular real;revisar avanço automático do carrossel."
   },
   "independent_review": {
     "date": "2026-10-26",
@@ -334,14 +329,14 @@
     "site_version": 68,
     "source_commit": "1375ccb983596d55df1ef4701f7c8e3a0fa5e694",
     "publication": {
-      "product_version": "1.0.86",
-      "site_version": 88,
-      "source_commit": "e96d3e6c67db9f4b2a28d8c740674b0d07e035de",
-      "id": "appgdep_6afedaedc3588191baf6a412f8a50171",
-      "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_94e100f56d0081918eef32bcf0355ae1",
+      "product_version": "1.0.105",
+      "site_version": 108,
+      "source_commit": "e4fd2418438591d178c4ec06ba076276417da2e6",
+      "id": "appgdep_6b00352bd88c8191953cc43bcef889d8",
+      "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_6b18e0b5d9e48191a6fa47a64e4a0c60",
       "status": "succeeded",
       "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-      "confirmed_at": "2026-11-19T11:18:31.028195+00:00"
+      "confirmed_at": "2026-11-20T11:55:34.123327+00:00"
     },
     "report": "https://github.com/laninhagamer85-max/Jogo-do-gato/blob/9a7778b839fa42b151a6f60c86a1d9e67dabcf7b/docs/lendarios/runs/2026-11-17-thorn-lizard-loading.md"
   }
