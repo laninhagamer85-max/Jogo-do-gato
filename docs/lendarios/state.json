@@ -2,10 +2,10 @@
   "project": "Lendários do Rei",
   "date": "2026-11-20",
   "status": "guided-room-one-workshop",
-  "release": "1.0.86",
+  "release": "1.0.105",
   "run": "runs/2026-11-20-current-news.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 87,
+  "rollback_version": 107,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
@@ -30,14 +30,14 @@
     "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.86",
-    "site_version": 88,
-    "source_commit": "e96d3e6c67db9f4b2a28d8c740674b0d07e035de",
-    "id": "appgdep_6afedaedc3588191baf6a412f8a50171",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_94e100f56d0081918eef32bcf0355ae1",
+    "product_version": "1.0.105",
+    "site_version": 108,
+    "source_commit": "e4fd2418438591d178c4ec06ba076276417da2e6",
+    "id": "appgdep_6b00352bd88c8191953cc43bcef889d8",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_6b18e0b5d9e48191a6fa47a64e4a0c60",
     "status": "succeeded",
     "url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "confirmed_at": "2026-11-19T11:18:31.028195+00:00"
+    "confirmed_at": "2026-11-20T11:55:34.123327+00:00"
   },
   "contract_review": {
     "date": "2026-11-04",
@@ -149,7 +149,7 @@
     "rollback_site_version": 87,
     "meupet_runtime_modified": false
   },
-  "last_product_run": "runs/2026-11-19-tide-master-loading.md",
+  "last_product_run": "runs/2026-11-20-current-news.md",
   "loading_lifecycle_validation": {
     "date": "2026-11-18",
     "status": "integrated",
@@ -175,10 +175,23 @@
     "source_commit": "e96d3e6c67db9f4b2a28d8c740674b0d07e035de"
   },
   "current_news_review": {
-    "status": "validated_awaiting_publish",
-    "base_public_source": "40ed5879090aab375c2b4151557bee7e2cf896c3",
-    "product_version": "1.0.105",
+    "date": "2026-11-20",
+    "status": "published",
+    "id": "current-news",
+    "base_product": "1.0.104",
+    "base_source": "40ed5879090aab375c2b4151557bee7e2cf896c3",
+    "artifact_commit": "18a0cef1111ec74af3b5f8046c6b6c340a686fb3",
+    "patch": "docs/lendarios/reviews/2026-11-20/current-news.patch",
     "tests": 23,
-    "patch": "docs/lendarios/reviews/2026-11-20/current-news.patch"
+    "typecheck": "game+host passed",
+    "build": "Worker passed;574 retained assets byte-verified",
+    "browser": "Chrome;five sizes;four article links;chapter count;production home-to-news link",
+    "new_loading_art": false,
+    "gameplay_modified": false,
+    "stage_playtest": false,
+    "physical_phone": false,
+    "published_this_cycle": true,
+    "meupet_runtime_modified": false,
+    "rollback_site_version": 107
   }
 }

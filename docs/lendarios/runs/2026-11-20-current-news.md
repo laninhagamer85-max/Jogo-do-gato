@@ -30,4 +30,10 @@ Em `client/src/LendariosNews.tsx`:
 
 Próximo: testar a navegação em celular real e revisar a rotação automática do carrossel. A fonte contém um avanço com módulo fixo4 apesar de haver7slides; a correção dessa outra área não faz parte desta entrega.
 
-**Validada em prévia, aguardando publicação.**
+## Publicação
+
+**Publicada a 1.0.105**, Sites 108, fonte `e4fd2418438591d178c4ec06ba076276417da2e6`, versão `appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_6b18e0b5d9e48191a6fa47a64e4a0c60`, deploy `appgdep_6b00352bd88c8191953cc43bcef889d8`, status `succeeded`, concluído em `2026-11-20T11:55:34.123327+00:00`.
+
+Na conferência posterior em produção, a home exibiu o destaque 1.0.105. O link “Ler a atualização” abriu [o artigo publicado](https://lendarios-do-rei.aquimeusite.chatgpt.site/novidades/#novidades-em-dia); a página mostrou os cinco capítulos. Não foi necessário login. [Código em patch](https://github.com/laninhagamer85-max/Jogo-do-gato/blob/18a0cef1111ec74af3b5f8046c6b6c340a686fb3/docs/lendarios/reviews/2026-11-20/current-news.patch), preservado antes da publicação.
+
+Rollback de referência: 1.0.104 / Sites107, versão `appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_171e457824608191a087e5994077d43b`, deploy `appgdep_6afff33c1cb08191b1c6149c9ac183ff`. Reverter somente se a1.0.105 continuar ativa e houver regressão confirmada; preservar qualquer publicação posterior. Público, domínio, autenticação e dados dos jogadores mantidos.
