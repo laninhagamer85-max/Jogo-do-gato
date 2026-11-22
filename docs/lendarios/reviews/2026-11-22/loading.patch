@@ -1,0 +1,35 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index a65efa1..f4448f7 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'repouso-urso-nascentes',version:'1.0.131',date:'2026-11-22',category:'Experiência',title:'O Urso das Nascentes descansa na trilha',summary:'Uma nova cena original do Urso Protetor das Nascentes participa da alternância das telas de carregamento, com enquadramentos para celular e paisagem.',details:['A cena seguinte continua sendo preparada antes da troca; se ela falhar, a imagem atual permanece.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'arte-aprovada-arena-pve',version:'1.0.130',date:'2026-11-22',category:'Exploração',title:'Novas telas da Arena PvE',summary:'Vitória e derrota ganham artes próprias em retrato e paisagem. A vitória destaca moedas, EXP, poções de captura e itens raros conquistados.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'resultado-visual-arena-pve',version:'1.0.129',date:'2026-11-22',category:'Exploração',title:'Vitória e derrota na Arena PvE',summary:'O resultado surge no centro da arena com um emblema animado. Na vitória, os itens conquistados aparecem com seus ícones e quantidades.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'arena-pve-por-capitulo',version:'1.0.128',date:'2026-11-22',category:'Exploração',title:'Arena PvE por capítulo',summary:'Cada arena reúne os adversários do capítulo da sala, incluindo guardião e mestre. A vitória rende itens do capítulo, moedas, EXP e 25 poções de captura.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index 34852ba..ab6f1ff 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -7,6 +7,7 @@ export const LOADING_SCENES=[
+  {id:'boar',landscape:'/lendarios/loading/boar-v1.webp',portrait:'/lendarios/loading/boar-v1.webp'},
+  {id:'fox',landscape:'/lendarios/loading/fox-landscape-v1.webp',portrait:'/lendarios/loading/fox-portrait-v1.webp'},
+  {id:'thorn-lizard',landscape:'/lendarios/loading/thorn-lizard-landscape-v1.webp',portrait:'/lendarios/loading/thorn-lizard-portrait-v1.webp'},
++ {id:'spring-bear',landscape:'/lendarios/loading/spring-bear-landscape-v1.webp',portrait:'/lendarios/loading/spring-bear-portrait-v1.webp'},
+  {id:'tide-master',landscape:'/lendarios/loading/tide-master-landscape-v1.webp',portrait:'/lendarios/loading/tide-master-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+diff --git a/package.json b/package.json
+index 382217c..b5d58c3 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.130",
++  "version": "1.0.131",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
