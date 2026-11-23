@@ -1,0 +1,35 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index f2784cb..9d1ff86 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'repouso-ra-ametista',version:'1.0.140',date:'2026-11-23',category:'Experiência',title:'A Rã Ametista nas pausas da jornada',summary:'Uma nova ilustração original da Rã Ametista na grama entra na alternância das telas de carregamento, com enquadramentos próprios para retrato e paisagem.',details:['A próxima cena continua sendo preparada antes da troca, preservando a imagem atual quando o download falha.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'resultados-arena-retrato',version:'1.0.139',date:'2026-11-23',category:'Exploração',title:'Resultados da Arena em retrato',summary:'A vitória coloca moedas e XP acima dos itens em telas verticais, e a roleta indica quando há um prêmio para revelar. Uma luz dourada contorna o título de vitória e uma luz avermelhada contorna o de derrota.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'vitoria-arena-cenario',version:'1.0.138',date:'2026-11-23',category:'Exploração',title:'A arena ao fundo da vitória',summary:'A tela de vitória destaca o título e as bandeiras com a arena visível ao fundo. Pontos de luz dourados acompanham a vitória e luzes vermelhas acompanham a derrota.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'roleta-premios-vila',version:'1.0.136',date:'2026-11-23',category:'Exploração',title:'Roleta de recompensas da Arena',summary:'Cada prêmio da roleta é revelado em cinco segundos ou ao tocar. A vitória rende poções de cura, poções de captura do capítulo e uma chance de item raro. Na vila, os ganhos aparecem um por um. A derrota fecha em 15 segundos.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index ab6f1ff..bbc8906 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -8,6 +8,7 @@ export const LOADING_SCENES=[
+  {id:'fox',landscape:'/lendarios/loading/fox-landscape-v1.webp',portrait:'/lendarios/loading/fox-portrait-v1.webp'},
+  {id:'thorn-lizard',landscape:'/lendarios/loading/thorn-lizard-landscape-v1.webp',portrait:'/lendarios/loading/thorn-lizard-portrait-v1.webp'},
+  {id:'spring-bear',landscape:'/lendarios/loading/spring-bear-landscape-v1.webp',portrait:'/lendarios/loading/spring-bear-portrait-v1.webp'},
++ {id:'amethyst-frog',landscape:'/lendarios/loading/amethyst-frog-landscape-v1.webp',portrait:'/lendarios/loading/amethyst-frog-portrait-v1.webp'},
+  {id:'tide-master',landscape:'/lendarios/loading/tide-master-landscape-v1.webp',portrait:'/lendarios/loading/tide-master-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+diff --git a/package.json b/package.json
+index 729f286..3b90292 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.139",
++  "version": "1.0.140",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {

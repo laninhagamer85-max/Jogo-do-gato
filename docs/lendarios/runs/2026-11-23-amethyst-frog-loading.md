@@ -1,0 +1,40 @@
+# 23/11/2026 — Rã Ametista nas telas de carregamento
+
+## Base e escopo
+Fonte atual do Site confirmada e igual ao HEAD: `0715ff85b892019d29c208627357529106d7561f`, produto **1.0.139**, Sites **142**, deployment `appgdep_6b03c6d3b1288191bef365a8df751f03` succeeded em2026-11-23T04:53:57.995474+00:00. Lidos AGENTS.md, README, README da aplicação, recovery/RETOMADA-MANUS.md histórico, estado e relatório22/11. Alterações recentes da Arena preservadas. Meu Pet Virtual não foi alterado nem publicado. Nenhum merge/force-push e nenhuma comunicação a terceiros.
+
+## Entrega
+Nova cena original `amethyst-frog`: Rã Ametista sozinha, sentada na grama de uma margem tranquila, com pele violeta/manchas ciano, ventre claro, olhos âmbar e dedos laranja preservados a partir de `forest-adventure/river-mobs-v1.webp` (segunda linha). Referência de estilo: carregamento atual do Urso das Nascentes. Composição nova, sem copa de árvore e sem repetir personagem das cenas anteriores. Sem relógio, interface ou texto pintados. Duas imagens geradas com a ferramenta integrada; nenhum asset externo incorporado.
+
+Arquivos:
+- `client/public/lendarios/loading/amethyst-frog-landscape-v1.webp`:1439×810,110736bytes.
+- `client/public/lendarios/loading/amethyst-frog-portrait-v1.webp`:810×1439,83846bytes.
+- Total194582bytes (~190.0KiB). Conversão WebP qualidade86, redimensionamento proporcional. Memória RGBA teórica do par:8.89MiB; não é medição do heap.
+- Entrada na lista em `client/src/lib/loadingScenes.ts`, notícia em `client/src/lib/lendariosNews.ts`, package.json **1.0.140**.
+- Fonte enviada ao repositório nativo: `0c94af269c772d0b413f86b1900e3633f12334a4`. Patch e duas artes preservados em `docs/lendarios/reviews/2026-11-23/`.
+
+O gerenciador permanece igual:próxima cena baixada e decodificada antes da seleção, falha mantém a atual, uma fila de preparação, referências limitadas à atual e seguinte. Não foi ampliado o conjunto de imagens retidas. Pausa da simulação e intervalo mínimo de1000ms após dois frames preservados sem alteração. Não foi executada nova partida para medir esses contratos no jogo.
+
+## Pesquisa —23/11/2026
+- https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/decode —preservar decode e rejeição antes da troca.
+- https://web.dev/learn/design/picture-element —direção de arte por orientação pelo picture existente.
+Sem dependências novas.
+
+## Verificação
+- **26/26 testes em5arquivos**:loadingScenes,preparedLoadingScenes,loadingSceneLifecycle,loadingReveal,gameAssetLoading. Incluem300 transições simuladas, timeout/rejeição/falha e cancelamento do reveal. Não é suíte completa nem playtest.
+- TypeScript jogo e host aprovados. Build oficial Worker aprovado; **593 arquivos preservados verificados byte a byte**.
+- Chrome na prévia oficial, componente real GameLoadingScreen e gerenciador real em harness isolado sem login/save. Seleção determinística apenas no harness.
+- Inspeção visual em375×667,375×812,390×844,844×390 e1366×768. Personagem inteiro, sem esticar ou cobrir a barra. Orientação selecionou o arquivo adequado; paisagem mediu1439×810 servido em844×390.
+- Progresso20→100% com8acionamentos:imagem mantida e contador de objetos Image permaneceu6. Sequência observada:rest→amethyst-frog→spring-bear→amethyst-frog, incluindo retorno com cache aquecido. Não medimos bytes do cache nem tempo de download.
+- Falha induzida apenas no harness substituindo as URLs da rã por arquivo inexistente:4eventos de erro em2tentativas,rest permaneceu visível sem fundo verde. Após restaurar URLs, destino2 manteve rest durante preparação, destino3 selecionou amethyst-frog.
+- Harness removido antes de empacotar;tar sem qa-loading. Duas imagens do tar idênticas aos arquivos aprovados;manifest manteve projeto/D1/R2.
+- Sem celular físico, FPS, heap real, partida, auditoria de100fases, desbloqueio, teste de combate ou save real. Tentativas/mortes/tempo/dificuldade por fase:não medidos neste ciclo de carregamento.
+
+## Prompt de produção
+Paisagem16:9:ilustração original infantil2D pintada, Rã Ametista da segunda linha do atlas atual preservada (violeta/ciano/âmbar/laranja), sozinha sentada sobre grama ao lado de trevos, margem com um riacho discreto e colinas distantes, sem copa de árvore, personagem central inteiro em30–70% da largura e35–64% da altura,28% inferior livre para progresso real, topo esquerdo livre para logo real;sem texto/interface/relógio/marca.
+Retrato9:16:mesma identidade/pose, central60% da largura com20% de margem lateral,40–63% da altura, topo25% céu simples e parte inferior28% de grama livre, sem esticar nem cortar dedos.
+
+## Publicação
+Revisão enviada e validada, aguardando resultado da publicação. Rollback de referência:Sites142, fonte0715ff85b892019d29c208627357529106d7561f, somente se não houver revisão posterior.
+
+Próximo:confirmar versão/notícia/arte públicas e continuar cenas de personagens ainda ausentes a partir da fonte mais nova. Validação em aparelho físico continua pendente. Movimento de NPCs/pets deve ter playtest separado;esta entrega não alega corrigir sua fluidez.
