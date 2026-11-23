@@ -35,6 +35,6 @@ Paisagem16:9:ilustração original infantil2D pintada, Rã Ametista da segunda l
 Retrato9:16:mesma identidade/pose, central60% da largura com20% de margem lateral,40–63% da altura, topo25% céu simples e parte inferior28% de grama livre, sem esticar nem cortar dedos.
 
 ## Publicação
-Revisão enviada e validada, aguardando resultado da publicação. Rollback de referência:Sites142, fonte0715ff85b892019d29c208627357529106d7561f, somente se não houver revisão posterior.
+**Publicada1.0.140, Sites143**. Fonte `0c94af269c772d0b413f86b1900e3633f12334a4`, versão salva `appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_9a2ca04385608191836c66fb87c6c8c3`, deployment `appgdep_6b04243c25b08191b51dc6ba08530cc3` com status succeeded em `2026-11-23T11:32:27.557339+00:00`. Uma única revisão publicada. [Jogo público](https://lendariosdorei.com.br/) e [URL da plataforma](https://lendarios-do-rei.aquimeusite.chatgpt.site). Chrome confirmou Ver.1.0.140 e a notícia “A Rã Ametista nas pausas da jornada”. A arte vertical pública810×1439 foi aberta e inspecionada. Sem partida de produção para forçar uma cena aleatória. Domínio, público, contas e saves preservados. Rollback de referência:Sites142, fonte0715ff85b892019d29c208627357529106d7561f, somente se não houver revisão posterior.
 
-Próximo:confirmar versão/notícia/arte públicas e continuar cenas de personagens ainda ausentes a partir da fonte mais nova. Validação em aparelho físico continua pendente. Movimento de NPCs/pets deve ter playtest separado;esta entrega não alega corrigir sua fluidez.
+Próximo:continuar cenas de personagens ainda ausentes a partir da fonte mais nova. Validação em aparelho físico continua pendente. Movimento de NPCs/pets deve ter playtest separado;esta entrega não alega corrigir sua fluidez.
