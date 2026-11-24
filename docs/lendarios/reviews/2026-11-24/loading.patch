@@ -1,0 +1,35 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index e150544..2072c7e 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'repouso-caranguejo-azul',version:'1.0.142',date:'2026-11-24',category:'Experiência',title:'O Caranguejo Azul descansa na margem',summary:'Uma nova cena original do Caranguejo Azul entra na alternância das telas de carregamento, com versões vertical e horizontal que preservam o personagem inteiro.',details:['A imagem seguinte continua sendo preparada antes da troca; em caso de falha, a cena atual permanece.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'movimento-sincronizado-fluido',version:'1.0.141',date:'2026-11-23',category:'Exploração',title:'Movimento mais estável na exploração',summary:'Jogador, hostis e pet equipado recuperam juntos pequenas pausas do navegador. No multiplayer, o aventureiro remoto não ultrapassa a última posição confirmada nem recua ao parar.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'repouso-ra-ametista',version:'1.0.140',date:'2026-11-23',category:'Experiência',title:'A Rã Ametista nas pausas da jornada',summary:'Uma nova ilustração original da Rã Ametista na grama entra na alternância das telas de carregamento, com enquadramentos próprios para retrato e paisagem.',details:['A próxima cena continua sendo preparada antes da troca, preservando a imagem atual quando o download falha.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'resultados-arena-retrato',version:'1.0.139',date:'2026-11-23',category:'Exploração',title:'Resultados da Arena em retrato',summary:'A vitória coloca moedas e XP acima dos itens em telas verticais, e a roleta indica quando há um prêmio para revelar. Uma luz dourada contorna o título de vitória e uma luz avermelhada contorna o de derrota.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index bbc8906..7e1ed7a 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -9,6 +9,7 @@ export const LOADING_SCENES=[
+  {id:'thorn-lizard',landscape:'/lendarios/loading/thorn-lizard-landscape-v1.webp',portrait:'/lendarios/loading/thorn-lizard-portrait-v1.webp'},
+  {id:'spring-bear',landscape:'/lendarios/loading/spring-bear-landscape-v1.webp',portrait:'/lendarios/loading/spring-bear-portrait-v1.webp'},
+  {id:'amethyst-frog',landscape:'/lendarios/loading/amethyst-frog-landscape-v1.webp',portrait:'/lendarios/loading/amethyst-frog-portrait-v1.webp'},
++ {id:'blue-crab',landscape:'/lendarios/loading/blue-crab-landscape-v1.webp',portrait:'/lendarios/loading/blue-crab-portrait-v1.webp'},
+  {id:'tide-master',landscape:'/lendarios/loading/tide-master-landscape-v1.webp',portrait:'/lendarios/loading/tide-master-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+diff --git a/package.json b/package.json
+index 9f4a9ee..7e9d18c 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.141",
++  "version": "1.0.142",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
