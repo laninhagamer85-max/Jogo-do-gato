@@ -1,11 +1,11 @@
 {
   "project": "Lendários do Rei",
-  "date": "2026-11-24",
-  "status": "published_loading_scene",
-  "release": "1.0.142",
-  "run": "runs/2026-11-24-blue-crab-loading.md",
+  "date": "2026-11-25",
+  "status": "published_npc_definition_reuse",
+  "release": "1.0.146",
+  "run": "runs/2026-11-25-npc-definition-cache.md",
   "site_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7",
-  "rollback_version": 107,
+  "rollback_version": 148,
   "canonical_exploration": true,
   "inherited_engine": "1.52.3",
   "retained_identical_assets": 189,
@@ -30,16 +30,16 @@
     "sharedNpcs": "pending-authoritative-room-simulation"
   },
   "publication": {
-    "product_version": "1.0.142",
-    "site_version": 145,
-    "source_commit": "bb0f0f93ca1e6922915ef03d2abea0c3e54f398c",
-    "id": "appgdep_6b05723a96148191a7eb204a4505debe",
-    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_ebf4c6a65db48191bf0f4e560ea2d5a9",
+    "product_version": "1.0.146",
+    "site_version": 149,
+    "source_commit": "d4fb006b33e3844c20eb35027d6f82bdd6ed625e",
+    "id": "appgdep_6b06c5f7199481919c539455fca76455",
+    "version_id": "appgprj_6ae2a66e7f4c8191860c2d39db928ac7~appgver_07b453b470b481918aa99d1055e57f6e",
     "status": "succeeded",
     "url": "https://lendariosdorei.com.br/",
     "platform_url": "https://lendarios-do-rei.aquimeusite.chatgpt.site",
-    "confirmed_at": "2026-11-24T11:17:27.251183+00:00",
-    "observed_on": "2026-11-24"
+    "confirmed_at": "2026-11-25T11:26:57.991641+00:00",
+    "observed_on": "2026-11-25"
   },
   "contract_review": {
     "date": "2026-11-04",
@@ -157,7 +157,7 @@
     "production_smoke": "Chrome home initially1.0.141,then1.0.142 and new news after reload;direct public image check inconclusive",
     "publication_id": "appgdep_6b05723a96148191a7eb204a4505debe"
   },
-  "last_product_run": "runs/2026-11-24-blue-crab-loading.md",
+  "last_product_run": "runs/2026-11-25-npc-definition-cache.md",
   "loading_lifecycle_validation": {
     "date": "2026-11-18",
     "status": "integrated",
@@ -233,5 +233,56 @@
     "confirmed_on": "2026-11-22",
     "confirmed_source": "af2cd09d34a726b62037e4910827064b68b64fab",
     "confirmed_site_version": 134
+  },
+  "npc_definition_review": {
+    "date": "2026-11-25",
+    "status": "published",
+    "base_product": "1.0.145",
+    "base_source": "aeaab77263a8da7e92a8d952284280f45961eae4",
+    "source_commit": "d4fb006b33e3844c20eb35027d6f82bdd6ed625e",
+    "product_version": "1.0.146",
+    "site_version": 149,
+    "focused_tests": 33,
+    "baseline_civic_failures": 2,
+    "typecheck": "game+host passed",
+    "build": "Worker;600 assets byte-verified",
+    "benchmark": {
+      "count": 10000,
+      "samples": 9,
+      "enemies": 125,
+      "oldMedianMs": 282.0393589999999,
+      "newMedianMs": 2.754041000000143,
+      "oldTimes": [
+        271.92986499999984,
+        285.96331199999986,
+        271.21755299999995,
+        279.1828969999997,
+        282.0393589999999,
+        279.08796299999995,
+        282.49983999999995,
+        296.0626079999997,
+        282.17437500000005
+      ],
+      "newTimes": [
+        2.00935800000002,
+        4.452199999999948,
+        1.6409189999999398,
+        2.7559400000000096,
+        1.5370769999999538,
+        2.973269000000073,
+        1.7328370000000177,
+        2.754041000000143,
+        3.277114999999867
+      ],
+      "checksum": 60000000
+    },
+    "browser": "Chrome;isolated training;movement,power,damage,pause,resume;five sizes;no kill/reward proven",
+    "physical_phone": false,
+    "heap_gc_measured": false,
+    "full_fps_comparison": false,
+    "meupet_modified": false,
+    "new_loading_art": false,
+    "rollback_site_version": 148,
+    "production_smoke": "Chrome home:Ver.1.0.146 and new release news"
   }
 }

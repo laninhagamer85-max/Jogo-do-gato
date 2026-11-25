@@ -1,0 +1,111 @@
+diff --git a/client/src/game/explorationCombat.ts b/client/src/game/explorationCombat.ts
+index 8b5d9b3..816b168 100644
+--- a/client/src/game/explorationCombat.ts
++++ b/client/src/game/explorationCombat.ts
+@@ -21,7 +21,7 @@ import {insideRegion} from './biomeComposition';
+ import {migrateChapter4Expansion} from './explorationChapter4Migration';
+ import {chapter4Review,chapter4TestAccess,CHAPTER4_END,plateauPoint} from './explorationNascentesLayout';
+ import {legendKit} from './explorationLegendKits';
+-import {ensureWilderness,worldEnemyDefinitions,syncWildernessEnemies,saveRoamingMaster,masterWanderGoal} from './explorationWilderness';
++import {ensureWilderness,worldEnemyDefinitions,worldEnemyIndex,syncWildernessEnemies,saveRoamingMaster,masterWanderGoal} from './explorationWilderness';
+ import {cityBanned,safeSettlement,expelFromCity} from './explorationCivic';
+ import {registerPatrolNavigation} from './explorationCampaign';
+ import {newVillage,readVillage,villageSnapshot,tickVillage,villageCitizens,citizenIndoors,nearestVillager,startVillageDuel,stepVillageDuel,villageDueling,type VillageProgress} from './explorationVillage';
+@@ -366,7 +366,7 @@ function stepCombatCore(current: CombatState, input: CombatInput, elapsedMs: num
+   const guided=isGuidedOpening(s);
+   const trainingFight=journeyEnemyActive(s,'beetle');
+   const activeEnemy=(id:string)=>!guided||trainingFight&&id==='beetle';
+-  const definitionsById=new Map(definitions.map(def=>[def.id,def]));
++  const definitionsById=worldEnemyIndex(definitions);
+   const roamBudget={remaining:3};
+   const previous = s.player;
+   if(length){
+diff --git a/client/src/game/explorationCombatView.ts b/client/src/game/explorationCombatView.ts
+index d149136..bb90080 100644
+--- a/client/src/game/explorationCombatView.ts
++++ b/client/src/game/explorationCombatView.ts
+@@ -27,7 +27,7 @@ import {beginPlayerReveal,shouldRevealScenery} from './explorationPlayerReveal';
+ import {playerCameraFraction} from './explorationRewardPresentation';
+ import {castleBridgePillarBase,onCastleBridge,castleBridgeRenderRank} from './explorationCastleBridge';
+ import {drawCastleForeground,drawBridgePiece} from './explorationChapter4View';
+-import {worldEnemyDefinitions} from './explorationWilderness';
++import {worldEnemyDefinitions,worldEnemyIndex} from './explorationWilderness';
+ import {drawTrailLantern,trailLanterns} from './explorationTrailLanterns';
+ import {drawExplorationDaylight} from './explorationDaylightView';
+ import {villageLayout,villageSettlements,settlementStage} from './explorationVillageLayout';
+@@ -90,7 +90,7 @@ export function drawCombatPilot(ctx: CanvasRenderingContext2D, width: number, he
+   if(state.village?.duel)state={...state,player:state.village.duel.player};
+   const qa=typeof window!=='undefined'&&window.location.pathname==='/qa-exploration-lab';let mark=qa?performance.now():0;const trace=(name:string)=>{if(qa){ctx.canvas.dataset[name]=(performance.now()-mark).toFixed(1);mark=performance.now();}};
+   const room=campaignRoom(state.roomIndex),river=room.biome==='river',autumn=room.biome==='autumn',definitions=worldEnemyDefinitions(state);
+-  const definitionsById=new Map(definitions.map(def=>[def.id,def]));
++  const definitionsById=worldEnemyIndex(definitions);
+   if(autumn){background=explorationColorVariant(background,AUTUMN_GROUND_FILTER)!;propsAtlas=explorationColorVariant(propsAtlas,AUTUMN_PROP_FILTER);gardenAtlas=explorationColorVariant(gardenAtlas,AUTUMN_PROP_FILTER);mobsAtlas=explorationColorVariant(mobsAtlas,'sepia(.65) saturate(1.4) hue-rotate(338deg)');portalAtlas=explorationColorVariant(portalAtlas,'sepia(.6) saturate(1.3)');}
+   trace('paletteMs');
+   const rawView = baseEditing?baseView(width,height,state):room.index>=30?nascentesView(width,height,state.player,zoom,overview):combatView(width, height, state.player, zoom, overview,room.index);
+diff --git a/client/src/game/explorationWilderness.ts b/client/src/game/explorationWilderness.ts
+index f858518..f319e2a 100644
+--- a/client/src/game/explorationWilderness.ts
++++ b/client/src/game/explorationWilderness.ts
+@@ -24,8 +24,37 @@ export function settlementWildlife(room:number,seed:number){if(room>=30)return [
+  for(const town of villageSettlements(room))for(let k=0;k<5;k++)for(let attempt=0;attempt<12;attempt++){const a=(k+town.slot*3+attempt*.7)*2.399,r=14+k*3,p={x:Math.round((town.x+Math.cos(a)*r)*2)/2,y:Math.round((town.y+Math.sin(a)*r)*2)/2};if(villageSafeAt(room,p)||!pilotWalkable(p,true,.35,room))continue;const base=source[(town.slot*3+k)%source.length];if(base)out.push({...base,...p,id:`village-wild:${room}:${town.slot}:${k}`,boss:false,level:base.level+(room>=30?6:0),hp:Math.ceil(base.hp*(room>=30?1.3:1)),attack:base.attack+(room>=30?8:0),leash:16,detection:6});break;}
+  wildlife.set(key,out);if(wildlife.size>64)wildlife.delete(wildlife.keys().next().value!);return out;}
+ export const isWildernessEnemy=(id:string)=>id.startsWith('roaming-master:')||id.startsWith('master-escort:')||id.startsWith('village-wild:');
+-export function wildernessDefinitions(s:CombatState):CampaignEnemy[]{if(s.roomIndex>=30||!s.village?.wilderness)return [];const out=[...settlementWildlife(s.roomIndex,s.encounterSeed)],chapter=Math.min(3,Math.floor(s.roomIndex/10)),master=s.village?.wilderness?.masters[chapter];if(master?.room===s.roomIndex&&!master.nextAt){const d=masterTemplate(chapter);out.push({...d,x:master.homeX,y:master.homeY});const escorts=settlementWildlife(s.roomIndex,s.encounterSeed).slice(0,3);for(let i=0;i<escorts.length;i++){const q={x:master.homeX+(i-1)*1.7,y:master.homeY+2},base=escorts[i];if(pilotWalkable(q,true,.3,s.roomIndex)&&!villageSafeAt(s.roomIndex,q))out.push({...base,...q,id:`master-escort:${chapter}:${i}`,hp:Math.ceil(base.hp*1.5),leash:30});}}return out;}
+-export function worldEnemyDefinitions(s:CombatState){return s.winterTrial?WINTER_ENEMIES:[...campaignEnemies(s.roomIndex,s.encounterSeed),...wildernessDefinitions(s)];}
++const noWilderness:CampaignEnemy[]=[];
++// Definition templates are read-only during play; live HP/position remain in s.enemies.
++// Keep only the last configuration, rather than retaining every account/room visited.
++let wildernessCache: {room:number;seed:number;composition:unknown;active:boolean;homeX:number;homeY:number;definitions:CampaignEnemy[]}|undefined;
++export function wildernessDefinitions(s:CombatState):CampaignEnemy[]{
++ if(s.roomIndex>=30||!s.village?.wilderness)return noWilderness;
++ const chapter=Math.min(3,Math.floor(s.roomIndex/10)),master=s.village.wilderness.masters[chapter];
++ const active=master?.room===s.roomIndex&&!master.nextAt;
++ const homeX=active?master.homeX:0,homeY=active?master.homeY:0;
++ const composition=campaignRoom(s.roomIndex).composition;
++ const cached=wildernessCache;
++ if(cached&&cached.room===s.roomIndex&&cached.seed===s.encounterSeed&&cached.composition===composition&&cached.active===active&&cached.homeX===homeX&&cached.homeY===homeY)return cached.definitions;
++ const out=[...settlementWildlife(s.roomIndex,s.encounterSeed)];
++ if(active){const d=masterTemplate(chapter);out.push({...d,x:homeX,y:homeY});const escorts=settlementWildlife(s.roomIndex,s.encounterSeed).slice(0,3);for(let i=0;i<escorts.length;i++){const q={x:homeX+(i-1)*1.7,y:homeY+2},base=escorts[i];if(pilotWalkable(q,true,.3,s.roomIndex)&&!villageSafeAt(s.roomIndex,q))out.push({...base,...q,id:`master-escort:${chapter}:${i}`,hp:Math.ceil(base.hp*1.5),leash:30});}}
++ wildernessCache={room:s.roomIndex,seed:s.encounterSeed,composition,active,homeX,homeY,definitions:out};
++ return out;
++}
++let worldCache:{base:CampaignEnemy[];wild:CampaignEnemy[];definitions:CampaignEnemy[]}|undefined;
++export function worldEnemyDefinitions(s:CombatState){
++ if(s.winterTrial)return WINTER_ENEMIES;
++ const base=campaignEnemies(s.roomIndex,s.encounterSeed),wild=wildernessDefinitions(s);
++ if(!wild.length)return base;
++ if(worldCache?.base===base&&worldCache.wild===wild)return worldCache.definitions;
++ const definitions=[...base,...wild];worldCache={base,wild,definitions};return definitions;
++}
++const definitionIndexes=new WeakMap<CampaignEnemy[],ReadonlyMap<string,CampaignEnemy>>();
++export function worldEnemyIndex(definitions:CampaignEnemy[]):ReadonlyMap<string,CampaignEnemy>{
++ let index=definitionIndexes.get(definitions);
++ if(!index){index=new Map(definitions.map(def=>[def.id,def]));definitionIndexes.set(definitions,index);}
++ return index;
++}
+ export function syncWildernessEnemies(s:CombatState){const defs=wildernessDefinitions(s),ids=new Set(defs.map(d=>d.id)),chapter=Math.min(3,Math.floor(s.roomIndex/10)),master=s.village?.wilderness?.masters[chapter];s.enemies=s.enemies.filter(e=>!isWildernessEnemy(e.id)||ids.has(e.id)&&(!(e.id.startsWith('roaming-master:')||e.id.startsWith('master-escort:'))||e.generation===master?.generation));const present=new Set(s.enemies.map(e=>e.id)),captured=new Set(s.capturedPetTargets);for(const d of defs)if(!captured.has('enemy:'+d.id)&&!present.has(d.id)){const m=d.id.startsWith('roaming-master:')?master:undefined;s.enemies.push({id:d.id,x:m?.x??d.x,y:m?.y??d.y,hp:m?.hp??d.hp,generation:d.id.startsWith('master-escort:')?master?.generation??0:m?.generation??0,attackAt:s.time+1500,respawnAt:0});}return s;}
+ export function saveRoamingMaster(s:CombatState,now=Date.now()){const chapter=Math.min(3,Math.floor(s.roomIndex/10)),old=s.village?.wilderness,m=old?.masters[chapter],e=s.enemies.find(e=>e.id===`roaming-master:${chapter}`);if(!old||!m||!e||m.room!==s.roomIndex||m.nextAt)return;const dead=e.hp===0;s.village={...s.village!,wilderness:{...old,masters:{...old.masters,[chapter]:{...m,x:e.x,y:e.y,hp:e.hp,nextAt:dead?now+MASTER_RESPAWN_MS:0,defeated:m.defeated+(dead?1:0)}}}};}
+ /** Deterministic wandering target changes every twelve seconds, away from safe towns. */
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index 3da70bb..4eb18c9 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'reuso-definicoes-npcs',version:'1.0.146',date:'2026-11-25',category:'Exploração',title:'Menos trabalho repetido durante a exploração',summary:'O jogo reutiliza os dados de referência dos inimigos durante a caminhada e o desenho da sala, atualizando-os quando o encontro muda. Vida, movimento, recompensas e progresso continuam independentes.',details:[],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'teste-de-mapas',version:'1.0.145',date:'2026-11-25',category:'Exploração',title:'Dois cenários para testar',summary:'Explore o Vale das Lagoas e a Margem dos Cristais em partidas temporárias. A exploração reduz buscas por NPCs durante a caminhada e compartilha a imagem dos itens no carregamento da sala.',details:[],link:'/teste-de-mapas/',linkLabel:'Testar os mapas'},
+  {id:'hud-arena-fileira',version:'1.0.144',date:'2026-11-24',category:'Exploração',title:'Novo painel de combate na Arena PvE',summary:'O painel compacto reúne retrato, nome, vida e energia. A vida muda de verde a vermelho, os atalhos ficam em uma fileira e os ícones dos poderes equipados acompanham o botão Atacar.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'repouso-caranguejo-azul',version:'1.0.142',date:'2026-11-24',category:'Experiência',title:'O Caranguejo Azul descansa na margem',summary:'Uma nova cena original do Caranguejo Azul entra na alternância das telas de carregamento, com versões vertical e horizontal que preservam o personagem inteiro.',details:['A imagem seguinte continua sendo preparada antes da troca; em caso de falha, a cena atual permanece.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+diff --git a/package.json b/package.json
+index c2858dd..2a0833d 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.145",
++  "version": "1.0.146",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
