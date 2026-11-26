@@ -1,0 +1,35 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index 4eb18c9..54cf7a2 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'repouso-guardiao-mares',version:'1.0.147',date:'2026-11-26',category:'Experiência',title:'O Guardião das Marés repousa junto ao lago',summary:'O guardião de pedra e cristais turquesa ganha uma cena original na alternância do carregamento, com enquadramentos para retrato e paisagem.',details:['A cena seguinte continua sendo preparada antes da troca. Se o carregamento falhar, a imagem atual permanece.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'reuso-definicoes-npcs',version:'1.0.146',date:'2026-11-25',category:'Exploração',title:'Menos trabalho repetido durante a exploração',summary:'O jogo reutiliza os dados de referência dos inimigos durante a caminhada e o desenho da sala, atualizando-os quando o encontro muda. Vida, movimento, recompensas e progresso continuam independentes.',details:[],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'teste-de-mapas',version:'1.0.145',date:'2026-11-25',category:'Exploração',title:'Dois cenários para testar',summary:'Explore o Vale das Lagoas e a Margem dos Cristais em partidas temporárias. A exploração reduz buscas por NPCs durante a caminhada e compartilha a imagem dos itens no carregamento da sala.',details:[],link:'/teste-de-mapas/',linkLabel:'Testar os mapas'},
+  {id:'hud-arena-fileira',version:'1.0.144',date:'2026-11-24',category:'Exploração',title:'Novo painel de combate na Arena PvE',summary:'O painel compacto reúne retrato, nome, vida e energia. A vida muda de verde a vermelho, os atalhos ficam em uma fileira e os ícones dos poderes equipados acompanham o botão Atacar.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index 7e1ed7a..4ba9414 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -10,6 +10,7 @@ export const LOADING_SCENES=[
+  {id:'spring-bear',landscape:'/lendarios/loading/spring-bear-landscape-v1.webp',portrait:'/lendarios/loading/spring-bear-portrait-v1.webp'},
+  {id:'amethyst-frog',landscape:'/lendarios/loading/amethyst-frog-landscape-v1.webp',portrait:'/lendarios/loading/amethyst-frog-portrait-v1.webp'},
+  {id:'blue-crab',landscape:'/lendarios/loading/blue-crab-landscape-v1.webp',portrait:'/lendarios/loading/blue-crab-portrait-v1.webp'},
++ {id:'river-guardian',landscape:'/lendarios/loading/river-guardian-landscape-v1.webp',portrait:'/lendarios/loading/river-guardian-portrait-v1.webp'},
+  {id:'tide-master',landscape:'/lendarios/loading/tide-master-landscape-v1.webp',portrait:'/lendarios/loading/tide-master-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+diff --git a/package.json b/package.json
+index 2a0833d..2f05f4f 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.146",
++  "version": "1.0.147",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
