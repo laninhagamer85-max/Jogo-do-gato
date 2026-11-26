@@ -1,3 +1,4 @@
+import PetSymbol from "@/components/PetSymbol";
 import { useMemo, useState, type FormEvent } from "react";
 import { ArrowLeft, ArrowRight, Check, PawPrint, Sparkles, Volume2 } from "lucide-react";
 import { defaultCharacter, PET_CHARACTERS, type PetGender, type PetProfile } from "@/game/PetGame";
@@ -46,9 +47,9 @@ export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHea
         <div className="intro-art">
           <span className="intro-glow" />
           <span className="intro-paw"><PawPrint size={25} fill="currentColor" /></span>
-          <span className="intro-orbit orbit-one">✦</span><span className="intro-orbit orbit-two">✧</span>
+          <span className="intro-orbit orbit-one"><PetSymbol symbol="✦" /></span><span className="intro-orbit orbit-two">✧</span>
           <img src={characterId ? GAME_ASSETS.characters[characterId] : GAME_ASSETS.kitten} alt={characterId ? `Personagem ${PET_CHARACTERS.find((item) => item.id === characterId)?.name}` : "Um gatinho aguardando para ser escolhido"} />
-          <div className="intro-speech">{step === 0 ? "Miau! Vamos escolher quem vai viver esta aventura?" : step === 1 ? `Encontre o ${genderWord} que combina com você!` : `Quase lá! Como vou me chamar?`} <span>♥</span></div>
+          <div className="intro-speech">{step === 0 ? "Miau! Vamos escolher quem vai viver esta aventura?" : step === 1 ? `Encontre o ${genderWord} que combina com você!` : `Quase lá! Como vou me chamar?`} <span><PetSymbol symbol="♥" /></span></div>
         </div>
         <div className="intro-form-wrap">
           <span className="intro-kicker"><Sparkles size={14} /> UMA NOVA HISTÓRIA COMEÇA</span>
@@ -60,8 +61,8 @@ export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHea
             <p className="intro-copy">Primeiro escolha se seu companheiro é menino ou menina. Depois você escolhe entre três gatinhos únicos.</p>
             <button className="intro-hear" type="button" onClick={onHearIntro}><Volume2 size={15} /> Ouvir a apresentação</button>
             <div className="onboarding-gender-grid" role="group" aria-label="Escolha o sexo do pet">
-              <button className={`onboarding-gender-card boy ${gender === "menino" ? "selected" : ""}`} type="button" onClick={() => chooseGender("menino")} aria-pressed={gender === "menino"}><span>🧢</span><strong>Menino</strong><small>Com boné e três personagens</small></button>
-              <button className={`onboarding-gender-card girl ${gender === "menina" ? "selected" : ""}`} type="button" onClick={() => chooseGender("menina")} aria-pressed={gender === "menina"}><span>🎀</span><strong>Menina</strong><small>Com lacinho e três personagens</small></button>
+              <button className={`onboarding-gender-card boy ${gender === "menino" ? "selected" : ""}`} type="button" onClick={() => chooseGender("menino")} aria-pressed={gender === "menino"}><span><PetSymbol symbol="🧢" /></span><strong>Menino</strong><small>Com boné e três personagens</small></button>
+              <button className={`onboarding-gender-card girl ${gender === "menina" ? "selected" : ""}`} type="button" onClick={() => chooseGender("menina")} aria-pressed={gender === "menina"}><span><PetSymbol symbol="🎀" /></span><strong>Menina</strong><small>Com lacinho e três personagens</small></button>
             </div>
           </>}
           {step === 1 && <>
@@ -93,7 +94,7 @@ export default function OnboardingFlow({ profile, onComplete, onHearIntro, onHea
               <button className="intro-submit" type="button" disabled={step === 0 ? !gender : !characterId} onClick={() => { setStep(step + 1); setError(""); }}>{step === 0 ? "Escolher meu gatinho" : "Continuar"} <ArrowRight size={17} /></button>
             </div>
           </>}
-          <p className="intro-private"><span>🔒</span> Sua aventura fica salva só neste navegador.</p>
+          <p className="intro-private"><span><PetSymbol symbol="🔒" /></span> Sua aventura fica salva só neste navegador.</p>
         </div>
       </section>
     </div>

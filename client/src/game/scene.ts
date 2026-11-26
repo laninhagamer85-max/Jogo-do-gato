@@ -6,6 +6,7 @@ import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Engine } from "@babylonjs/core/Engines/engine";
@@ -82,6 +83,36 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
   let backgroundTexture = new Texture(GAME_ASSETS.levels[currentRoom - 1] ?? GAME_ASSETS.levels[0], scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   backgroundMaterial.diffuseTexture = backgroundTexture;
 
+  // One small procedural texture shared by both shadows; no external asset or per-frame redraw.
+  const contactTexture = new DynamicTexture("pet-contact-shadow", { width: 128, height: 128 }, scene, false);
+  contactTexture.hasAlpha = true;
+  const shadowContext = contactTexture.getContext();
+  const gradient = shadowContext.createRadialGradient(64, 64, 4, 64, 64, 62);
+  gradient.addColorStop(0, "rgba(38, 28, 29, 0.42)");
+  gradient.addColorStop(0.38, "rgba(38, 28, 29, 0.26)");
+  gradient.addColorStop(0.75, "rgba(38, 28, 29, 0.08)");
+  gradient.addColorStop(1, "rgba(38, 28, 29, 0)");
+  shadowContext.fillStyle = gradient;
+  shadowContext.fillRect(0, 0, 128, 128);
+  contactTexture.update();
+  const createContactShadow = (name: string) => {
+    const mesh = MeshBuilder.CreatePlane(name, { width: 1, height: 1 }, scene);
+    const material = new StandardMaterial(`${name}-material`, scene);
+    material.disableLighting = true;
+    material.diffuseTexture = contactTexture;
+    material.emissiveColor = Color3.White();
+    material.useAlphaFromDiffuseTexture = true;
+    material.backFaceCulling = false;
+    mesh.material = material;
+    mesh.isPickable = false;
+    mesh.alphaIndex = -1; // Behind transparent characters and decorations, above the opaque room.
+    mesh.position.z = 1.9;
+    return { mesh, material };
+  };
+  const petShadow = createContactShadow("pet-floor-contact");
+  const companionShadow = createContactShadow("companion-floor-contact");
+  companionShadow.mesh.isVisible = false;
+
   const kittenAsset = saved.characterId ? GAME_ASSETS.characters[saved.characterId] : GAME_ASSETS.kitten;
   const { mesh: kitten, material: kittenMaterial } = imageSprite(scene, "the-named-pet", kittenAsset, 3.35, 3.35);
   let characterTexture = kittenMaterial.diffuseTexture as Texture;
@@ -110,6 +141,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     companionSprite?.mesh.dispose(false, true);
     companionSprite = null;
     companionId = id;
+    companionShadow.mesh.isVisible = Boolean(id);
     if (!id) return;
     const url = GAME_ASSETS.companions[id];
     companionSprite = imageSprite(scene, `friend-${id}`, url, 1.62, 1.62);
@@ -153,6 +185,8 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     const width = Math.max(1, engine.getRenderWidth());
     const height = Math.max(1, engine.getRenderHeight());
     const aspect = width / height;
+    const previousBaseY = baseY;
+    const previousViewWidth = viewHeight * sceneAspect;
     sceneAspect = aspect;
     camera.orthoTop = viewHeight / 2;
     camera.orthoBottom = -viewHeight / 2;
@@ -171,7 +205,15 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
 
     baseY = usePortraitFit ? 0.78 : aspect < 1.15 ? -0.35 : -1.12;
     petWidth = aspect < 0.7 ? Math.min(2.2, viewWidth * 0.60) : Math.min(3.35, viewWidth * 0.48);
-    kitten.position.y = baseY;
+    // Move the animation coordinates too: previously the next frame undid portrait framing.
+    const verticalOffset = baseY - previousBaseY;
+    positionY += verticalOffset;
+    targetY += verticalOffset;
+    const horizontalRatio = previousViewWidth > 0 ? viewWidth / previousViewWidth : 1;
+    const horizontalLimit = Math.max(0, (viewWidth - petWidth) / 2);
+    positionX = Math.max(-horizontalLimit, Math.min(horizontalLimit, positionX * horizontalRatio));
+    targetX = Math.max(-horizontalLimit, Math.min(horizontalLimit, targetX * horizontalRatio));
+    kitten.position.set(positionX, positionY, 0);
     const scale = petWidth / 3.35;
     kitten.scaling.set(scale, scale, 1);
     boyHat.mesh.position.set(-0.12 * scale, baseY + 1.42 * scale, -0.22);
@@ -263,7 +305,7 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     reactionKind = "select";
     reactionStart = performance.now();
   };
-  const onCompanion = (event: Event) => setCompanion((event as PetCompanionEvent).detail?.companionId ?? null);
+  const onCompanion = (event: Event) => { setCompanion((event as PetCompanionEvent).detail?.companionId ?? null); resizeScene(); };
   const onPetBlink = (_event: PetBlinkEvent) => { blinkTriggerStart = performance.now(); };
   window.addEventListener("pet:action", onAction);
   window.addEventListener("pet:skin", onSkin);
@@ -314,6 +356,12 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
       }
     }
     kitten.position.set(positionX + moveX, positionY + wave + jump, 0);
+    // The footprint stays on the floor while the pet reacts above it.
+    const elevation = Math.max(0, wave + jump);
+    const shadowSpread = 1 + Math.min(0.4, elevation * 0.7);
+    petShadow.mesh.position.set(positionX + moveX, positionY - petWidth * 0.46, 1.9);
+    petShadow.mesh.scaling.set(petWidth * 0.62 * shadowSpread, petWidth * 0.115 * shadowSpread, 1);
+    petShadow.material.alpha = Math.max(0.42, 0.9 - elevation * 0.65);
     const canvasRect = canvas.getBoundingClientRect();
     const viewWidth = viewHeight * sceneAspect;
     if (canvasRect.width && canvasRect.height && viewWidth) {
@@ -344,7 +392,12 @@ export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement,
     girlBow.mesh.rotation.z = kitten.rotation.z * 0.6;
     if (companionSprite) {
       companionSprite.mesh.position.x = positionX + companionBaseX + Math.sin(now / 820 + 1.2) * 0.07;
-      companionSprite.mesh.position.y = positionY - 0.55 * (petWidth / 3.35) + Math.sin(now / 640 + 1.4) * 0.045;
+      const companionGroundY = positionY - 0.55 * (petWidth / 3.35);
+      companionSprite.mesh.position.y = companionGroundY + Math.sin(now / 640 + 1.4) * 0.045;
+      const companionWidth = 1.62 * companionSprite.mesh.scaling.x;
+      companionShadow.mesh.position.set(companionSprite.mesh.position.x, companionGroundY - companionWidth * 0.45, 1.9);
+      companionShadow.mesh.scaling.set(companionWidth * 0.66, companionWidth * 0.13, 1);
+      companionShadow.material.alpha = 0.7;
     }
   });
 
