@@ -56,3 +56,8 @@ Rollback de referência: Sites155 / fonte e475e8c2e1af44dbdd201f5e7bd7b5e4360657
 ## Próximo
 
 Validar em aparelho físico e continuar a investigação de renderização durante caminhada/combate. Próximas artes devem usar outro personagem existente, sem repetir o alce ou as cenas anteriores.
+
+
+## Correção posterior solicitada pelo usuário — 28/11/2026
+
+A identidade visual desta cena foi contestada por David. A imagem estática usada diferia do atlas ativo do bestiário. A cena forest-moose foi retirada da seleção na1.0.154 / Sites157 e substituída pela entrega do Alce das Neves no pool41–50. Este relatório permanece histórico, não representa o estado atual. Ver [correção](2026-11-28-snow-moose-correction.md).
