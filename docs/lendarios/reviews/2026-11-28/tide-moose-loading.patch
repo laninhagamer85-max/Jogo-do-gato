@@ -1,0 +1,68 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index d9548f1..475f09e 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'alce-mares-carregamento',version:'1.0.155',date:'2026-11-28',category:'Experiência',title:'O Alce das Marés repousa à beira do rio',summary:'As salas 11 a 20 ganham uma cena do Alce das Marés junto às águas turquesa, com versões para retrato e paisagem.',details:['A nova ilustração alterna com cenas da região das Marés. O Alce das Neves continua na alternância das salas 41 a 50.','A imagem atual permanece enquanto a próxima cena é preparada ou se houver uma falha.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'alce-neves-carregamento',version:'1.0.154',date:'2026-11-28',category:'Experiência',title:'O Alce das Neves acompanha as viagens pelo gelo',summary:'Uma nova cena do Alce das Neves participa do carregamento das salas 41 a 50, com enquadramentos para retrato e paisagem.',details:['A ilustração preserva a pelagem com pintas e as galhadas nevadas do personagem do bestiário. A cena anterior do alce castanho foi retirada da alternância.','A imagem atual continua visível enquanto a próxima é preparada ou se houver uma falha.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'repouso-gaio-troncos',version:'1.0.152',date:'2026-11-27',category:'Experiência',title:'O Gaio dos Troncos descansa na clareira',summary:'Uma nova cena original do Gaio dos Troncos participa da alternância do carregamento, com composições próprias para celular e paisagem.',details:['A próxima cena continua sendo preparada antes da troca, preservando a imagem atual enquanto ela não estiver pronta.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'coleta-salvamento-periodico',version:'1.0.151',date:'2026-11-27',category:'Exploração',title:'Menos trabalho ao recolher itens',summary:'Os itens entram na mochila ao passar sobre eles. A coleta é salva junto com o próximo salvamento automático ou ao pausar ou sair da sala.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index e93a9b1..273cb7b 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -23,10 +23,15 @@ export const WINTER_LOADING_SCENES=[
+  {id:'geada-portal',landscape:'/lendarios/loading/geada-portal-landscape-v2.webp',portrait:'/lendarios/loading/geada-portal-portrait-v2.webp'},
+  {id:'geada-mestre',landscape:'/lendarios/loading/geada-mestre-landscape-v2.webp',portrait:'/lendarios/loading/geada-mestre-portrait-v2.webp'},
+ ] as const;
+-export type LoadingScene=typeof LOADING_SCENES[number]|typeof WINTER_LOADING_SCENES[number];
++export const TIDE_LOADING_SCENES=[
++ {id:'tide-moose',landscape:'/lendarios/loading/tide-moose-landscape-v1.webp',portrait:'/lendarios/loading/tide-moose-portrait-v1.webp'},
++ ...LOADING_SCENES.filter(scene=>['amethyst-frog','blue-crab','river-guardian','tide-master'].includes(scene.id)),
++] as const;
++export type LoadingScene=typeof LOADING_SCENES[number]|typeof WINTER_LOADING_SCENES[number]|typeof TIDE_LOADING_SCENES[number];
+ function scenePool(destination:string):readonly LoadingScene[]{
+  const room=/^room:(\d+)$/.exec(destination);
+- return room&&Number(room[1])>=40&&Number(room[1])<50?WINTER_LOADING_SCENES:LOADING_SCENES;
++ const index=room?Number(room[1]):-1;
++ return index>=40&&index<50?WINTER_LOADING_SCENES:index>=10&&index<20?TIDE_LOADING_SCENES:LOADING_SCENES;
+ }
+ /** Only hand off decoded artwork. Keep the current scene while the next is pending. */
+ export function createPreparedLoadingScenes(prepare:(scene:LoadingScene)=>Promise<unknown>,random=Math.random){
+diff --git a/client/src/lib/preparedLoadingScenes.test.ts b/client/src/lib/preparedLoadingScenes.test.ts
+index 2d2121e..d316228 100644
+--- a/client/src/lib/preparedLoadingScenes.test.ts
++++ b/client/src/lib/preparedLoadingScenes.test.ts
+@@ -68,3 +68,18 @@ it.each([39,50])('excludes the snow moose outside winter at destination index %i
+  expect(prepared[1].id).not.toBe('snow-moose');
+  expect(WINTER_LOADING_SCENES.some(scene=>scene.id===prepared[1].id)).toBe(false);
+ });
++
++it.each(Array.from({length:10},(_,i)=>i+10))('prepares the tide moose for Marés destination index %i',async(index)=>{
++ const prepared:LoadingScene[]=[];
++ const manager=createPreparedLoadingScenes(async scene=>{prepared.push(scene);return ['decoded pair'];},()=>0);
++ manager.select(`room:${index}`);await flush();await flush();
++ expect(prepared[1].id).toBe('tide-moose');
++ expect(manager.select(`room:${index}`).id).toBe('rest');
++ expect(manager.select(`room:${index===19?18:index+1}`).id).toBe('tide-moose');
++});
++it.each([9,20])('does not prepare the tide moose outside Marés at destination index %i',async(index)=>{
++ const prepared:LoadingScene[]=[];
++ const manager=createPreparedLoadingScenes(async scene=>{prepared.push(scene);return [];},()=>0);
++ manager.select(`room:${index}`);await flush();await flush();
++ expect(prepared[1].id).not.toBe('tide-moose');
++});
+diff --git a/package.json b/package.json
+index eff1d11..a6b3c45 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.154",
++  "version": "1.0.155",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
