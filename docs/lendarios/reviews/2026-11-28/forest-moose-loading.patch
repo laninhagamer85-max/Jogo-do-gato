@@ -1,0 +1,35 @@
+diff --git a/client/src/lib/lendariosNews.ts b/client/src/lib/lendariosNews.ts
+index 0d361e0..52e79d3 100644
+--- a/client/src/lib/lendariosNews.ts
++++ b/client/src/lib/lendariosNews.ts
+@@ -1,5 +1,6 @@
+ /** Public player-facing release notes. Add verified published changes here. */
+ export const LENDARIOS_NEWS=[
++ {id:'repouso-alce-troncos',version:'1.0.153',date:'2026-11-28',category:'Experiência',title:'O Alce dos Troncos encontra uma clareira tranquila',summary:'Uma nova cena original do Alce dos Troncos participa do carregamento, com enquadramentos próprios para retrato e paisagem.',details:['A próxima ilustração continua sendo preparada antes da troca. A imagem atual permanece enquanto a seguinte não estiver pronta ou falhar.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'repouso-gaio-troncos',version:'1.0.152',date:'2026-11-27',category:'Experiência',title:'O Gaio dos Troncos descansa na clareira',summary:'Uma nova cena original do Gaio dos Troncos participa da alternância do carregamento, com composições próprias para celular e paisagem.',details:['A próxima cena continua sendo preparada antes da troca, preservando a imagem atual enquanto ela não estiver pronta.'],link:'/jogar/',linkLabel:'Entrar no reino'},
+  {id:'coleta-salvamento-periodico',version:'1.0.151',date:'2026-11-27',category:'Exploração',title:'Menos trabalho ao recolher itens',summary:'Os itens entram na mochila ao passar sobre eles. A coleta é salva junto com o próximo salvamento automático ou ao pausar ou sair da sala.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+  {id:'aviso-sincronizacao-trilha',version:'1.0.150',date:'2026-11-27',category:'Experiência',title:'Aviso de sincronização na trilha',summary:'O jogo tenta sincronizar novamente após falhas temporárias. Se houver progresso pendente, a opção manual aparece na trilha. O aviso fica fora das salas e das telas de carregamento.',details:[],link:'/jogar/',linkLabel:'Entrar no jogo'},
+diff --git a/client/src/lib/loadingScenes.ts b/client/src/lib/loadingScenes.ts
+index 98d4582..944e68b 100644
+--- a/client/src/lib/loadingScenes.ts
++++ b/client/src/lib/loadingScenes.ts
+@@ -12,6 +12,7 @@ export const LOADING_SCENES=[
+  {id:'blue-crab',landscape:'/lendarios/loading/blue-crab-landscape-v1.webp',portrait:'/lendarios/loading/blue-crab-portrait-v1.webp'},
+  {id:'river-guardian',landscape:'/lendarios/loading/river-guardian-landscape-v1.webp',portrait:'/lendarios/loading/river-guardian-portrait-v1.webp'},
+  {id:'forest-jay',landscape:'/lendarios/loading/forest-jay-landscape-v1.webp',portrait:'/lendarios/loading/forest-jay-portrait-v1.webp'},
++ {id:'forest-moose',landscape:'/lendarios/loading/forest-moose-landscape-v1.webp',portrait:'/lendarios/loading/forest-moose-portrait-v1.webp'},
+  {id:'tide-master',landscape:'/lendarios/loading/tide-master-landscape-v1.webp',portrait:'/lendarios/loading/tide-master-portrait-v1.webp'},
+ ] as const;
+ /** A destination keeps its image through progress updates, retries and portal handoff. */
+diff --git a/package.json b/package.json
+index 8615751..1c21207 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "lendarios-do-rei",
+-  "version": "1.0.152",
++  "version": "1.0.153",
+   "type": "module",
+   "license": "MIT",
+   "scripts": {
